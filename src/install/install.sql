@@ -1,0 +1,67 @@
+CREATE USER `attend`@`localhost` identified by 'attend';
+
+CREATE DATABASE `attend` /*!40100 DEFAULT CHARACTER SET utf8 */;
+
+USE attend;
+
+CREATE TABLE `classrooms` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `name_UNIQUE` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+
+INSERT INTO classrooms (name) VALUES ("123's"), ("ABC's"), ("Pre-K");
+
+CREATE TABLE `students` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `family_name` varchar(45) NOT NULL,
+  `first_name` varchar(45) NOT NULL,
+  `enrolled` int(1) NOT NULL DEFAULT 0,
+  `classroom_id` int(10) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `fk_student_classroom_idx` (`classroom_id`),
+  CONSTRAINT `fk_student_classroom` FOREIGN KEY (`classroom_id`) REFERENCES `classrooms` (`id`) ON DELETE SET NULL ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=202 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `schedules` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `student_id` int(10) unsigned NOT NULL,
+  `mon_am` tinyint(1) NOT NULL DEFAULT '1',
+  `mon_noon` tinyint(1) NOT NULL DEFAULT '1',
+  `mon_pm` tinyint(1) NOT NULL DEFAULT '1',
+  `tue_am` tinyint(1) NOT NULL DEFAULT '1',
+  `tue_noon` tinyint(1) NOT NULL DEFAULT '1',
+  `tue_pm` tinyint(1) NOT NULL DEFAULT '1',
+  `wed_am` tinyint(1) NOT NULL DEFAULT '1',
+  `wed_noon` tinyint(1) NOT NULL DEFAULT '1',
+  `wed_pm` tinyint(1) NOT NULL DEFAULT '1',
+  `thu_am` tinyint(1) NOT NULL DEFAULT '1',
+  `thu_noon` tinyint(1) NOT NULL DEFAULT '1',
+  `thu_pm` tinyint(1) NOT NULL DEFAULT '1',
+  `fri_am` tinyint(1) NOT NULL DEFAULT '1',
+  `fri_noon` tinyint(1) NOT NULL DEFAULT '1',
+  `fri_pm` tinyint(1) NOT NULL DEFAULT '1',
+  `start_date` date NOT NULL,
+  `entered_at` int(11) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  UNIQUE KEY `student_date_unique` (`student_id`,`start_date`),
+  KEY `fk_student_idx` (`student_id`),
+  CONSTRAINT `fk_student` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COMMENT='Table indicating when students are scheduled to attend';
+
+CREATE TABLE `attendance` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `student_id` int(10) unsigned NOT NULL,
+  `check_in` int(11) DEFAULT NULL,
+  `check_out` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `fk_students_idx` (`student_id`),
+  CONSTRAINT `fk_students` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+grant all on attend.* to `attend`@`localhost`;

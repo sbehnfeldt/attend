@@ -1,0 +1,164 @@
+body {
+    margin-bottom: 50px;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+th,
+td {
+    border: 1px solid black;
+}
+
+label {
+    display: block;
+}
+
+th {
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: #eee;
+    text-align: center;
+}
+
+td {
+    margin: auto;
+    text-align: center;
+}
+div.page-header {
+    margin: 0;
+    border-bottom: none;
+}
+
+div.print-header {
+    display: none;
+}
+
+
+div.time-date {
+    border-bottom: 3px solid #eaeaea;
+    margin-bottom: 10px;
+}
+td.row-header {
+    background-color: #eee;
+}
+
+td.modified {
+    background-color: #ffff88;
+}
+
+input[type=text], textarea {
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    transition: all 0.30s ease-in-out;
+    outline: none;
+
+    border: 3px solid #dddddd;
+    padding: 0px 0px 0px 0px;
+}
+
+input[type=text]:focus, textarea:focus {
+    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    border: 3px solid rgba(81, 203, 238, 1);
+}
+
+input[type=text].modified, textarea.modified {
+    background-color: #ffff88;
+}
+
+select.modified {
+    background-color: #ffff88;
+}
+
+.tab.active {
+    color: #222;
+    font-weight: bold;
+    background-color: rgba(81, 203, 238, 1);
+}
+
+.page {
+    padding-top: 70px;
+    display: none;
+}
+
+.panel {
+    background-color: #eeeeee;
+}
+.panel table {
+    width: 100%;
+}
+
+.report {
+    display: none;
+}
+
+span.clock {
+    padding: 15px;
+}
+
+.btn-group-toggle button.btn-default {
+    color: #222222;
+    background-image: linear-gradient(to bottom, #bbb 0%, #a0a0a0 100%);
+}
+
+.btn-group-toggle button.btn-selected {
+    background-image: linear-gradient(to bottom, #fff 0%, #e0e0e0 100%);
+    color: #00bb00;
+    font-weight: bold;
+    border-right: 2px solid #e0e0e0;
+    border-top: 2px solid #e0e0e0;
+}
+
+#attendance-page .attendance-report {
+    display: none;
+}
+#attendance-page .attendance-schedule th {
+    text-align: center;
+}
+
+#attendance-page td {
+    width: 5%;
+}
+#attendance-page td.attendance-schedule-name {
+    width: 25%;
+}
+#attendance-page td.attendance-schedule-notes {
+    text-align: left;
+    width: 25%;
+}
+
+#attendance-page .attendance-schedule td:first-child {
+    text-align: left;
+}
+
+#attendance-page td {
+    background-color: #fff;
+}
+
+
+#attendance-page td.absent {
+    background-color: #bdbdbd;
+}
+
+#signin-page h4 {
+    text-align: center;
+}
+#signin-page  .signin-page-contents table {
+    width: 100%;
+}
+
+#enrollment-page .student-list select {
+    width: 100%;
+}
+
+.checkcontrol  {
+    text-align: center;
+}
+
+.checkcontrol button {
+    width: 50%;
+}
+

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="attend" default="install" basedir="." description="Attendance-management Web application">
+
+    <property name="srcDir" value="./src" />
+    <property name="buildDir" value="./build" />
+    <property name="testDir" value="./test" />
+    <property name="distDir" value="./dist" />
+    <property name="webDir" value="./web" />
+
+
+    <target name="test">
+        <echo msg="Running tests..."/>
+    </target>
+
+    <fileset dir="${srcDir}" id="srcfiles">
+        <include name="cli-config.php" />
+        <include name="composer.json" />
+        <include name="config.ini" />
+        <include name="classes/**" />
+        <include name="install/**" />
+        <include name="templates/**" />
+        <include name="assets/**" />
+    </fileset>
+
+
+    <target name="build" description="Translate source files into output files">
+        <echo msg="Building..." />
+        <mkdir dir="${buildDir}" />
+        <copy description="Copy source files to build directory"  todir="${buildDir}">
+            <fileset refid="srcfiles" />
+        </copy>
+    </target>
+
+    <target name="package" depends="build">
+        <echo msg="Packaging distributable..." />
+        <mkdir dir="${distDir}" />
+        <zip destfile="${distDir}/attend.zip">
+            <fileset dir="${buildDir}">
+                <include name="**" />
+            </fileset>
+        </zip>
+    </target>
+
+    <target name="install" depends="package">
+        <echo msg="Installing package locally..." />
+        <mkdir dir="${webDir}" />
+        <unzip todir="${webDir}" file="${distDir}/attend.zip"/>
+        <mkdir dir="${webDir}/logs" />
+        <mkdir dir="${webDir}/sessions" />
+    </target>
+
+    <target name="clean">
+        <echo msg="Cleaning..." />
+        <delete dir="${buildDir}" />
+        <delete dir="${distDir}" />
+        <delete dir="${webDir}" />
+    </target>
+
+</project>

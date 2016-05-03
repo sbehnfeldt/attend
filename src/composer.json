@@ -1,0 +1,8 @@
+{
+    "name" : "smidgen/attend",
+    "require" : {
+      "twig/twig": "1.*",
+      "phpunit/phpunit": "3.7.*",
+      "phake/phake" : "@stable"
+    }
+}
