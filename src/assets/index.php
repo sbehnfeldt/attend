@@ -53,7 +53,7 @@ $route = array_shift( $routes );
 switch ($route) {
     case '':
 //        render('index.html.twig', []);
-        readfile('../templates/index.html.twig');
+        readfile('index.html');
         break;
 
     case 'css':
