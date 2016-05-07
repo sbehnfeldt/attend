@@ -17,16 +17,16 @@ function my_autoload($className) {
     require $require;
 }
 
-function render($template, $params)
-{
-    \Twig_Autoloader::register();
-    $loader = new \Twig_Loader_Filesystem(INSTALL . '/templates');
-    $twig = new \Twig_Environment($loader, array(
-        //'cache' => '../templates/cache',
-        'cache' => false,
-    ));
-    echo $twig->render( $template, $params );
-}
+//function render($template, $params)
+//{
+//    \Twig_Autoloader::register();
+//    $loader = new \Twig_Loader_Filesystem(INSTALL . '/templates');
+//    $twig = new \Twig_Environment($loader, array(
+//        //'cache' => '../templates/cache',
+//        'cache' => false,
+//    ));
+//    echo $twig->render( $template, $params );
+//}
 
 
 /********************************************************************************
@@ -39,7 +39,7 @@ ini_set( 'error_log', INSTALL . '/logs/php_errors.log' );
 $config = parse_ini_file('../config.ini', true);
 $webroot = $config['app']['root'];
 
-require_once INSTALL . '/vendor/autoload.php';
+//require_once INSTALL . '/vendor/autoload.php';
 spl_autoload_register( 'my_autoload' );
 session_save_path( INSTALL . '/sessions');
 session_start( );
@@ -52,7 +52,8 @@ $route = array_shift( $routes );
 
 switch ($route) {
     case '':
-        render('index.html.twig', []);
+//        render('index.html.twig', []);
+        readfile('../templates/index.html.twig');
         break;
 
     case 'css':

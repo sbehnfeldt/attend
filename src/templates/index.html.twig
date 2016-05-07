@@ -256,7 +256,6 @@
         <script type="application/javascript" src="js/attend.js"></script>
 
         <script type="text/x-handlebars-template" id="attendance-schedule-class-template">
-            {% verbatim %}
             <div class="panel">
                 <h4 class="classroom">
                     <span class="pull-left">{{ classroom.name }}</span>
@@ -300,11 +299,9 @@
                     </tbody>
                 </table>
             </div>
-            {% endverbatim %}
         </script>
 
         <script type="text/x-handlebars-template" id="attendance-signin-class-template">
-            {% verbatim %}
             <div>
                 <h4>Camelot Sign-In Sheet</h4>
                 <div class="clearfix">
@@ -353,13 +350,11 @@
 
                 </tbody>
             </table>
-            {% endverbatim %}
         </script>
 
 
         <!-- A single row in the Check-In Report -->
         <script type="text/x-handlebars-template" id="attendance-checkin-row-template">
-            {% verbatim %}
                 <tr class="data" data-student-id="{{ id }}">
                     <td>
                         <div class="btn-tolbar" role="toolbar">
@@ -374,41 +369,32 @@
                     <td class="check-in">{{formatTime checkedIn }}</td>
                     <td class="check-out">{{formatTime checkedOut}}</td>
                 </tr>
-            {% endverbatim %}
         </script>
 
         <!-- Single student in the Student List selection box -->
         <script type="text/x-handlebars-template" id="enrollment-list-option-template">
-            {% verbatim %}
                 <option value="{{ id }}" data-classroom="{{ classroom }}">{{ familyName }}, {{ firstName }}</option>
-            {% endverbatim %}
         </script>
 
         <script type="x-handlebars-template" id="enrollment-list-template">
-            {% verbatim %}
                 {{#each student}}
                     {{> stdent}}
                 {{/each}}
-            {% endverbatim %}
         </script>
 
         <!-- Single Row in the Student Attendance Record -->
         <script type="text/x-handlebars-template" id="student-attendance-table-row-template">
-            {% verbatim %}
                 <tr>
                     <td>{{#if checkedIn }}{{ formatDate checkedIn }}{{ else }}{{ formatDate checkedOut }}{{/if }}</td>
                     <td>{{formatTime checkedIn }}</td>
                     <td>{{formatTime checkedOut }}</td>
                     <td>(Notes)</td>
                 </tr>
-            {% endverbatim %}
         </script>
         <script type="x-handlebars-template" id="student-attendance-table-template">
-            {% verbatim %}
                 {{#each student}}
                     {{> stdent}}
                 {{/each}}
-            {% endverbatim %}
         </script>
 
     </body>
