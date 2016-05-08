@@ -40,7 +40,8 @@
         line-height: 200%;
     }
 
-    #attendance-page .attendance-page-schedules .panel table.attendance-schedule tbody tr td.absent {
+    #attendance-page td.absent,
+    #signin-page td.absent {
         background-color: #9d9d9d !important;
     }
 
