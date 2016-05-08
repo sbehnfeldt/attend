@@ -342,10 +342,28 @@
                     <tr>
                         <td rowspan="2">{{ familyName }}</td>
                         <td rowspan="2">{{ firstName }}</td>
-                        <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+                        <td{{#unless schedule.mon}} class='absent'{{/unless}}>&nbsp;</td>
+                        <td{{#unless schedule.mon}} class='absent'{{/unless}}>&nbsp;</td>
+                        <td{{#unless schedule.tue}} class='absent'{{/unless}}>&nbsp;</td>
+                        <td{{#unless schedule.tue}} class='absent'{{/unless}}>&nbsp;</td>
+                        <td{{#unless schedule.wed}} class='absent'{{/unless}}>&nbsp;</td>
+                        <td{{#unless schedule.wed}} class='absent'{{/unless}}>&nbsp;</td>
+                        <td{{#unless schedule.thu}} class='absent'{{/unless}}>&nbsp;</td>
+                        <td{{#unless schedule.thu}} class='absent'{{/unless}}>&nbsp;</td>
+                        <td{{#unless schedule.fri}} class='absent'{{/unless}}>&nbsp;</td>
+                        <td{{#unless schedule.fri}} class='absent'{{/unless}}>&nbsp;</td>
                     </tr>
                     <tr>
-                        <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+                        <td{{#unless schedule.mon}} class='absent'{{/unless}}>&nbsp;</td>
+                        <td{{#unless schedule.mon}} class='absent'{{/unless}}>&nbsp;</td>
+                        <td{{#unless schedule.tue}} class='absent'{{/unless}}>&nbsp;</td>
+                        <td{{#unless schedule.tue}} class='absent'{{/unless}}>&nbsp;</td>
+                        <td{{#unless schedule.wed}} class='absent'{{/unless}}>&nbsp;</td>
+                        <td{{#unless schedule.wed}} class='absent'{{/unless}}>&nbsp;</td>
+                        <td{{#unless schedule.thu}} class='absent'{{/unless}}>&nbsp;</td>
+                        <td{{#unless schedule.thu}} class='absent'{{/unless}}>&nbsp;</td>
+                        <td{{#unless schedule.fri}} class='absent'{{/unless}}>&nbsp;</td>
+                        <td{{#unless schedule.fri}} class='absent'{{/unless}}>&nbsp;</td>
                     </tr>
                 {{/each}}
 

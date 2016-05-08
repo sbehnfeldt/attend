@@ -55,6 +55,51 @@
         return date;
     }
 
+    // From all of a student's schedules, build a composite schedule effective the week of startDate
+    function getCompositeSchedule(student, startDate) {
+        var composite,   // Return value
+            cur,         // Current date within the
+            sched,       // Current student's schedule
+            index;       // Index into student's schedules for NEXT schedule
+
+        // Find which student's schedule is in effect on "startDate", or null if his first schedule
+        // does not take effect until some point in the future.  This way, users can enroll students
+        // in advance.
+        sched = null;
+        index = 0;
+        while (index < student.schedules.length) {
+            if (student.schedules[index].startDate > startDate) {
+                break;
+            }
+            sched = student.schedules[index];
+            index++;
+        }
+        // "sched" is now the schedule in effect on "startDate" (or null), and "index" points to
+        // the NEXT schedule.
+        composite = {};
+        cur = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+        ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(function (day, i, arr) {
+            if (sched == null) {
+                composite[day] = null;
+            } else if (cur.getDay() - i >= 2) {
+                // If some clown passes in a startDate in the middle  of the week, the effective
+                // schedule for all days prior to the start date should be null.
+                composite[day] = null;
+            } else {
+                composite[day] = sched[day];
+            }
+
+            // Prepare for the next day: see if the student's next schedule goes into effect
+            cur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() + 1);
+            if (index < student.schedules.length) {
+                if (cur >= student.schedules[index].startDate) {
+                    sched = student.schedules[index];
+                    index++;
+                }
+            }
+        });
+        return composite;
+    }
 
     /********************************************************************************
      * Table showing checkin/checkout
@@ -416,51 +461,6 @@
             });
         }
 
-        // From all of a student's schedules, build a composite schedule effective the week of startDate
-        function getCompositeSchedule(student, startDate) {
-            var composite,   // Return value
-                cur,         // Current date within the
-                sched,       // Current student's schedule
-                index;       // Index into student's schedules for NEXT schedule
-
-            // Find which student's schedule is in effect on "startDate", or null if his first schedule
-            // does not take effect until some point in the future.  This way, users can enroll students
-            // in advance.
-            sched = null;
-            index = 0;
-            while ( index < student.schedules.length ) {
-                if ( student.schedules[ index ].startDate > startDate ) {
-                    break;
-                }
-                sched = student.schedules[ index ];
-                index++;
-            }
-            // "sched" is now the schedule in effect on "startDate" (or null), and "index" points to
-            // the NEXT schedule.
-            composite = {};
-            cur = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-            ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(function(day, i, arr) {
-                if ( sched == null ) {
-                    composite[day] = null;
-                } else if ( cur.getDay() - i >= 2) {
-                    // If some clown passes in a startDate in the middle  of the week, the effective
-                    // schedule for all days prior to the start date should be null.
-                    composite[day] = null;
-                } else {
-                    composite[day] = sched[day];
-                }
-
-                // Prepare for the next day: see if the student's next schedule goes into effect
-                cur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() + 1);
-                if ( index < student.schedules.length ) {
-                    if ( cur >= student.schedules[index].startDate ) {
-                        sched = student.schedules[index];
-                        index++;
-                    }
-                }
-            });
-            return composite;
-        }
 
         function sort(key) {
             var $rows = $tbody.children('tr[data-student-id]');
@@ -534,6 +534,24 @@
                                             a.id < b.id ? -1 : 1;
                         })
                     };
+                    context.students.forEach(function(student, i, arr) {
+                        var composite;
+                        var notes;
+                        composite = getCompositeSchedule(student, weekOf);
+                        student.schedule = {};
+                        for ( var day in composite ) {
+                            if ( null == composite[day]) {
+                                stdudent.schedule[day] = false;
+                            } else {
+                                student.schedule[day] = [];
+                                if (composite[day]['Am']) student.schedule[day].push('A');
+                                if (composite[day]['Noon']) student.schedule[day].push('L');
+                                if (composite[day]['Pm']) student.schedule[day].push('P');
+                                student.schedule[day] = student.schedule[day].join('/');
+                            }
+                        }
+                    });
+
                     html = template(context);
                     $contents.append($(html));
                 });
@@ -1014,7 +1032,6 @@
 
                 $studentList.empty();
                 Students.forEach(function(student) {
-                    //$studentList.append($('<option>').text(student.familyName + ', ' + student.firstName).val(student.id));
                     $studentList.addStudent(student);
                 });
                 $studentList.sort().resetStudentDetails();

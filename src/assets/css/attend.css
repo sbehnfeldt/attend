@@ -113,6 +113,10 @@ span.clock {
     border-top: 2px solid #e0e0e0;
 }
 
+td.absent {
+    background-color: #bdbdbd;
+}
+
 #attendance-page .attendance-report {
     display: none;
 }
@@ -139,10 +143,6 @@ span.clock {
     background-color: #fff;
 }
 
-
-#attendance-page td.absent {
-    background-color: #bdbdbd;
-}
 
 #signin-page h4 {
     text-align: center;
