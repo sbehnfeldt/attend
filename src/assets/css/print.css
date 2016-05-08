@@ -8,16 +8,16 @@
         font: 10pt sans-serif;
     }
 
-    div.page-header {
-        display: none;
-    }
-
     h3 {
         display: none;
     }
 
-    div.print-header {
-        display: block;
+    header {
+        display: none;
+    }
+
+    div.controls {
+        display: none;
     }
 
     #attendance-page div.col-lg-2 {
