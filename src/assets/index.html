@@ -23,7 +23,7 @@
                     <a class="navbar-brand" href="#">Attend</a>
                 </div>
                 <div id="navbar" class="collapse navbar-collapse">
-                    <ul class="tabs nav navbar-nav">
+                    <ul class="tabs nav navbar-nav" role="menu">
                         <li><a href="#attendance-page" class="tab">Attendance</a></li>
                         <li><a href="#signin-page" class="tab">Sign In</a></li>
                         <!-- li><a href="#checkin-page" class="tab">Checkin</a></li -->
@@ -36,68 +36,68 @@
             </div>
         </nav>
 
-        <div class="container" role="main">
+        <main>
 
             <!-- Attendance Page -->
-            <div class="page container" id="attendance-page">
-                <div class="page-header">
+            <article class="page container" id="attendance-page">
+                <header>
                     <h2>Attendance</h2>
-                </div>
+                </header>
                 Week Of:
                 <input type="text" name="week-of" />
                 <div class="attendance-page-schedules"></div>
-            </div><!-- end attendance page -->
+            </article><!-- end attendance page -->
 
             <!-- Sign-In Page -->
-            <div class="page container" id="signin-page">
-                <div class="page-header">
+            <article class="page container" id="signin-page">
+                <header>
                     <h2>Sign In</h2>
-                </div>
+                </header>
                 <div class="signin-page-contents"></div>
-            </div><!-- end signin page -->
+            </article><!-- end signin page -->
 
             <!-- Checkin Page -->
-            <div class="page container" id="checkin-page">
-                <div class="page-header">
+            <article class="page container" id="checkin-page">
+                <header>
                     <h2>Check-In</h2>
-                    <div class="row time-date">
-                        <span class="clock"></span>
-                        <span class="glyphicon glyphicon-time"></span>
-                        <span class="calendar"></span>
-                    </div>
-
-                    <div class="row attendance-report attendance-checkin">
-                        <div class="btn-group btn-group-xs btn-group-toggle" role="group">
-                            <button type="button" class="btn btn-default btn-selected" data-toggle="scheduled">Scheduled</button>
-                            <button type="button" class="btn btn-default" data-toggle="enrolled">Active</button>
-                        </div>
-
-                        <select class="filter-select">
-                            <option value="">Show All</option>
-                            <option value="0">Unassigned</option>
-                        </select>
-
-                        <table class='clearfix' id="attendance-checkin-table">
-                            <thead>
-                            <tr>
-                                <th>Controls</th>
-                                <th>Student</th>
-                                <th>Checked In</th>
-                                <th>Checked Out</th>
-                            </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                        <a href="#attendance">top</a>
-                    </div>
+                </header>
+                <div class="row time-date">
+                    <span class="clock"></span>
+                    <span class="glyphicon glyphicon-time"></span>
+                    <span class="calendar"></span>
                 </div>
-            </div><!-- Checkin Page -->
+
+                <div class="row attendance-report attendance-checkin">
+                    <div class="btn-group btn-group-xs btn-group-toggle" role="group">
+                        <button type="button" class="btn btn-default btn-selected" data-toggle="scheduled">Scheduled</button>
+                        <button type="button" class="btn btn-default" data-toggle="enrolled">Active</button>
+                    </div>
+
+                    <select class="filter-select">
+                        <option value="">Show All</option>
+                        <option value="0">Unassigned</option>
+                    </select>
+
+                    <table class='clearfix' id="attendance-checkin-table">
+                        <thead>
+                        <tr>
+                            <th>Controls</th>
+                            <th>Student</th>
+                            <th>Checked In</th>
+                            <th>Checked Out</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <a href="#attendance">top</a>
+                </div>
+            </article><!-- Checkin Page -->
 
             <!-- Reports Page -->
-            <div class="page container" id="reports">
-                <div class="page-header">
+            <article class="page container" id="reports">
+                <header>
                     <h2>Reports</h2>
-                </div>
+                </header>
                 <div class="row">
                     <div class="col-lg-2 report-list">
                         <div>
@@ -123,13 +123,13 @@
                         <h3>Students</h3>
                     </div>
                 </div>
-            </div><!-- Reports Page -->
+            </article><!-- Reports Page -->
 
             <!-- Enrollment Page -->
-            <div class="page container" id="enrollment-page">
-                <div class="page-header">
+            <article class="page container" id="enrollment-page">
+                <header>
                     <h2>Enrollment</h2>
-                </div>
+                </header>
 
                 <div class="row">
                     <div class="col-lg-2 student-list">
@@ -230,24 +230,25 @@
                     </div>
 
                 </div>
-            </div>
+            </article>
 
-            <div class="page" id="classes-page">
-                <div class="page-header">
+            <article class="page" id="classes-page">
+                <header>
                     <h2>Classes</h2>
-                </div>
+                </header>
                 <div>
                     <select name="classes-list" size="10"></select>
                 </div>
                 <div>
                     <input type="text" name="class-name">
                 </div>
-            </div>
+            </article>
 
-            <div class="page" id="teachers">
+            <article  class="page" id="teachers">
                 Define Teachers
-            </div>
-        </div>
+            </article>
+        </main>
+
         <script type="application/javascript" src="js/jquery-1.11.0.min.js"></script>
         <script type="application/javascript" src="js/jquery-ui.js"></script>
         <script type="application/javascript" src="js/bootstrap.min.js"></script>
