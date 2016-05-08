@@ -8,11 +8,7 @@
         font: 10pt sans-serif;
     }
 
-    h3 {
-        display: none;
-    }
-
-    header {
+    header:not(.print-only) {
         display: none;
     }
 

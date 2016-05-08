@@ -490,6 +490,7 @@
         var $page,
             $contents,
             weekOf,   // Monday of the week to display; default to this week
+            $weekOf,  // Control to select weekOf
             publicApi;
 
         function init(selector) {
@@ -497,65 +498,74 @@
             bindEvents();
 
             weekOf = new Date();
-            if ( weekOf.getDay() < 6) {
-                // normalize to Monday of this week
-                weekOf = new Date( weekOf.getFullYear(), weekOf.getMonth(), weekOf.getDate() - (weekOf.getDay() - 1));
-            } else {
-                // Normalize to Monday of next week
-                weekOf = new Date( weekOf.getFullYear(), weekOf.getMonth(), weekOf.getDate() + 2);
-            }
+            weekOf = normalizeDateToMonday(weekOf);
+            $weekOf.datepicker();
+            $weekOf.datepicker('option', 'showAnim', 'slideDown');
+            $weekOf.datepicker('setDate', weekOf);
         }
 
         function cacheDom(selector) {
             $page = $(selector);
+            $weekOf = $page.find('input[name=week-of]');
             $contents = $page.find('.signin-page-contents');
         }
 
-        function bindEvents() {
-            $page.on('show', function() {
-                var source;     // Source for the Handlebars template
-                var template;   // The compiled template
-                $contents.empty();
-                source = $('#attendance-signin-class-template').html();
-                template = Handlebars.compile(source);
-                Classrooms.forEach(function(classroom) {
-                    var context,
-                        html;
-                    context = {
-                        classroom: classroom.name,
-                        weekOf : weekOf.toDateString(),
-                        students: Students.filter(function(e, i, arr) {
-                            return ((e.classroomId == classroom.id) && (true == e.enrolled));
-                        }).sort(function( a, b ) {
-                            return (a.familyName < b.familyName) ? -1 :
-                                (a.familyName > b.familyName) ? 1 :
-                                    (a.firstName < b.firstName) ? -1 :
-                                        (a.firstName > b.firstName) ? 1 :
-                                            a.id < b.id ? -1 : 1;
-                        })
-                    };
-                    context.students.forEach(function(student, i, arr) {
-                        var composite;
-                        var notes;
-                        composite = getCompositeSchedule(student, weekOf);
-                        student.schedule = {};
-                        for ( var day in composite ) {
-                            if ( null == composite[day]) {
-                                stdudent.schedule[day] = false;
-                            } else {
-                                student.schedule[day] = [];
-                                if (composite[day]['Am']) student.schedule[day].push('A');
-                                if (composite[day]['Noon']) student.schedule[day].push('L');
-                                if (composite[day]['Pm']) student.schedule[day].push('P');
-                                student.schedule[day] = student.schedule[day].join('/');
-                            }
-                        }
-                    });
 
-                    html = template(context);
-                    $contents.append($(html));
+        function generateSigninSheets() {
+            var source;     // Source for the Handlebars template
+            var template;   // The compiled template
+            $contents.empty();
+            source = $('#attendance-signin-class-template').html();
+            template = Handlebars.compile(source);
+            Classrooms.forEach(function (classroom) {
+                var context,
+                    html;
+                context = {
+                    classroom: classroom.name,
+                    weekOf: weekOf.toDateString(),
+                    students: Students.filter(function (e, i, arr) {
+                        return ((e.classroomId == classroom.id) && (true == e.enrolled));
+                    }).sort(function (a, b) {
+                        return (a.familyName < b.familyName) ? -1 :
+                            (a.familyName > b.familyName) ? 1 :
+                                (a.firstName < b.firstName) ? -1 :
+                                    (a.firstName > b.firstName) ? 1 :
+                                        a.id < b.id ? -1 : 1;
+                    })
+                };
+                context.students.forEach(function (student, i, arr) {
+                    var composite;
+                    var notes;
+                    composite = getCompositeSchedule(student, weekOf);
+                    student.schedule = {};
+                    for (var day in composite) {
+                        if (null == composite[day]) {
+                            stdudent.schedule[day] = false;
+                        } else {
+                            student.schedule[day] = [];
+                            if (composite[day]['Am']) student.schedule[day].push('A');
+                            if (composite[day]['Noon']) student.schedule[day].push('L');
+                            if (composite[day]['Pm']) student.schedule[day].push('P');
+                            student.schedule[day] = student.schedule[day].join('/');
+                        }
+                    }
                 });
-            })
+
+                html = template(context);
+                $contents.append($(html));
+            });
+
+        }
+
+        function bindEvents() {
+            $page.on('show', generateSigninSheets);
+
+            $weekOf.on('change', function onWeekOfChange() {
+                weekOf = $weekOf.datepicker('getDate');
+                weekOf = normalizeDateToMonday(weekOf);
+                $weekOf.datepicker('setDate', weekOf).blur();
+                generateSigninSheets();
+            });
         }
 
         publicApi = {

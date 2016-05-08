@@ -164,3 +164,9 @@ span.clock {
     width: 50%;
 }
 
+@media screen {
+    .print-only {
+        display: none;
+    }
+}
+

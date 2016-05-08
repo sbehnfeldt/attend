@@ -53,6 +53,10 @@
                 <header>
                     <h2>Sign In</h2>
                 </header>
+                <header class="print-only"><h4>Camelot Sign-In Sheet</h4></header>
+                <div class="controls">
+                    Week of: <input type="text" name="week-of" />
+                </div>
                 <div class="signin-page-contents"></div>
             </section><!-- end signin page -->
 
@@ -303,12 +307,9 @@
         </script>
 
         <script type="text/x-handlebars-template" id="attendance-signin-class-template">
-            <div>
-                <h4>Camelot Sign-In Sheet</h4>
-                <div class="clearfix">
-                    <span class="pull-left">Week of {{ weekOf }}</span>
-                    <span class="pull-right">{{ classroom }}</span>
-                </div>
+            <div class="print-only clearfix">
+                <span class="pull-left">Week of {{ weekOf }}</span>
+                <span class="pull-right">{{ classroom }}</span>
             </div>
 
             <table>
