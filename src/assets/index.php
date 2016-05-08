@@ -68,6 +68,13 @@ switch ($route) {
         readfile($route . '/' . $routes[0]);
         exit;
 
+    case 'img':
+        header('Content-Type: image/png');
+        header('Content-Length: ' . filesize($route . '/' . $routes[0]));
+        readfile($route . '/' . $routes[0]);
+        exit;
+
+
     case 'fonts':
         readfile($route . '/' . $routes[0]);
         exit;
