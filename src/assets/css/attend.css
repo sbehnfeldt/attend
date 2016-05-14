@@ -2,17 +2,32 @@ body {
     margin-bottom: 50px;
 }
 
+
+header {
+    margin: 0;
+    border-bottom: none;
+}
+
 h2 {
     margin-top: 0;
+}
+
+label {
+    display: block;
+}
+
+table {
+    page-break-inside: auto;
+}
+
+tr {
+    page-break-inside: avoid;
+    page-break-after: auto
 }
 
 th,
 td {
     border: 1px solid black;
-}
-
-label {
-    display: block;
 }
 
 th {
@@ -27,9 +42,9 @@ td {
     text-align: center;
 }
 
-header {
-    margin: 0;
-    border-bottom: none;
+
+div.in-out {
+    border-bottom: 1px solid black;
 }
 
 div.print-header {
