@@ -675,7 +675,6 @@
             $checkButtons,
             $saveButtons,
             $saveAndAnother,
-            $saveAndContinue,
             $saveAndClose,
             $cancelStudent,
             publicApi;
@@ -718,7 +717,6 @@
             $checkButtons = $scheduleTable.find('.checkcontrol button');
             $saveButtons = $page.find('button.btn-save');
             $saveAndAnother = $page.find('button[name=save-and-another]');
-            $saveAndContinue = $page.find('button[name=save-and-continue]');
             $saveAndClose = $page.find('button[name=save-and-close]');
             $cancelStudent = $page.find('button[name=cancel-student-button]');
         }
@@ -1236,8 +1234,6 @@
                                     .updateStudentDetails(json.student.id);
                                 if ($button.attr('name') == $saveAndAnother.attr('name')) {
                                     $newStudent.trigger('click');
-                                } else if ( $button.attr('name') == $saveAndContinue.attr('name')) {
-                                    // No op
                                 } else if ( $button.attr('name') === $saveAndClose.attr('name')) {
                                     $cancelStudent.trigger('click');
                                 }
@@ -1278,8 +1274,6 @@
                                     .updateStudentDetails(json.student.id);
                                 if ($button.attr('name') == $saveAndAnother.attr('name')) {
                                     $newStudent.trigger('click');
-                                } else if ( $button.attr('name') == $saveAndContinue.attr('name')) {
-                                    // No op
                                 } else if ( $button.attr('name') === $saveAndClose.attr('name')) {
                                     $cancelStudent.trigger('click');
                                 }
