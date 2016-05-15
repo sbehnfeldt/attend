@@ -44,7 +44,15 @@ td {
 
 
 div.in-out {
-    border-bottom: 1px solid black;
+    border-bottom: 1px dashed black;
+}
+
+tr.half-row {
+    border-bottom: 2px dashed dimgray;
+}
+
+tr.full-row  {
+    border-bottom: 5px double black;
 }
 
 div.print-header {
