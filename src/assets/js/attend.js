@@ -561,6 +561,16 @@
                     }
                 });
 
+                // Append 3 blank entries to end of each class list
+                [1, 2, 3].forEach( function() {
+                    context.students.push({
+                        firstName: '',
+                        familyName: '',
+                        schedule: { 'mon' : {}, 'tue' : {}, 'wed' : {},'thu' : {}, 'fri' : {}},
+                        notes: ''
+                    });
+                });
+
                 html = template(context);
                 $contents.append($(html));
             });
