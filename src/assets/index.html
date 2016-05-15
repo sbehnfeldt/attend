@@ -39,24 +39,24 @@
         <main>
             <!-- Attendance Page -->
             <section class="page container" id="attendance-page">
-                <header>
+                <header class="page-header">
                     <h2>Attendance</h2>
+                    <div class="controls">
+                        Week Of: <input type="text" name="week-of" />
+                    </div>
                 </header>
-                <div class="controls">
-                    Week Of: <input type="text" name="week-of" />
-                </div>
+
                 <div class="attendance-page-schedules"></div>
             </section><!-- end attendance page -->
 
             <!-- Sign-In Page -->
             <section class="page container" id="signin-page">
-                <header>
+                <header class="page-header">
                     <h2>Sign In</h2>
+                    <div class="controls">
+                        Week of: <input type="text" name="week-of" />
+                    </div>
                 </header>
-                <header class="print-only"><h4>Camelot Sign-In Sheet</h4></header>
-                <div class="controls">
-                    Week of: <input type="text" name="week-of" />
-                </div>
                 <div class="signin-page-contents"></div>
             </section><!-- end signin page -->
 
@@ -262,11 +262,14 @@
 
         <script type="text/x-handlebars-template" id="attendance-schedule-class-template">
             <div class="panel">
-                <h4 class="classroom">
-                    <span>{{ classroom.name }}</span>
-                    <span>Attendance</span>
-                    <span>Week of {{  weekOf }}</span>
-                </h4>
+                <header>
+                    <h4 class="text-center">Attendance</h4>
+                    <p class="classroom clearfix">
+                        <span>{{ classroom.name }}</span>
+                        <span class="pull-right text-right">Week of {{ weekOf }}</span>
+                    </p>
+                </header>
+
                 <table class="attendance-schedule">
                     <thead>
                         <tr>
@@ -308,10 +311,11 @@
         </script>
 
         <script type="text/x-handlebars-template" id="attendance-signin-class-template">
-            <div class="print-only clearfix">
-                <span class="pull-left">Week of {{ weekOf }}</span>
-                <span class="pull-right">{{ classroom }}</span>
-            </div>
+            <h4 class="text-center">Sign-In</h4>
+            <p class="classroom clearfix">
+                <span>{{ classroom }}</span>
+                <span class="pull-right text-right">Week of {{ weekOf }}</span>
+            </p>
 
             <table>
                 <thead>

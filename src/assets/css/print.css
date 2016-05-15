@@ -4,12 +4,12 @@
         margin: 0.5cm;
     }
 
-    table {
-        font: 10pt sans-serif;
+    header.page-header {
+        display: none;
     }
 
-    header:not(.print-only) {
-        display: none;
+    table {
+        font: 10pt sans-serif;
     }
 
     div.controls {
@@ -20,9 +20,11 @@
         display: none;
     }
 
-    #attendance-page h4.classroom span {
+    #attendance-page p.classroom {}
+
+    #attendance-page p.classroom span {
         display: inline-block;
-        width: 32%;
+        width: 40%;
     }
 
     #attendance-page div.panel {
