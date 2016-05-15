@@ -284,11 +284,11 @@
                     {{#each students}}
                         <tr>
                             <td class="attendance-schedule-name">{{firstName}} {{familyName}}</td>
-                            <td{{#unless schedule.mon}} class='absent'{{/unless}}></td>
-                            <td{{#unless schedule.tue}} class='absent'{{/unless}}></td>
-                            <td{{#unless schedule.wed}} class='absent'{{/unless}}></td>
-                            <td{{#unless schedule.thu}} class='absent'{{/unless}}></td>
-                            <td{{#unless schedule.fri}} class='absent'{{/unless}}></td>
+                            <td{{#unless schedule.mon}} class='absent'{{/unless}}>&nbsp;</td>
+                            <td{{#unless schedule.tue}} class='absent'{{/unless}}>&nbsp;</td>
+                            <td{{#unless schedule.wed}} class='absent'{{/unless}}>&nbsp;</td>
+                            <td{{#unless schedule.thu}} class='absent'{{/unless}}>&nbsp;</td>
+                            <td{{#unless schedule.fri}} class='absent'{{/unless}}>&nbsp;</td>
                             <td class="attendance-schedule-notes">{{notes}}</td>
                         </tr>
                     {{/each}}
