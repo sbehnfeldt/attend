@@ -263,8 +263,9 @@
         <script type="text/x-handlebars-template" id="attendance-schedule-class-template">
             <div class="panel">
                 <h4 class="classroom">
-                    <span class="pull-left">{{ classroom.name }}</span>
-                    <span class="pull-right">Week of {{  weekOf }}</span>
+                    <span>{{ classroom.name }}</span>
+                    <span>Attendance</span>
+                    <span>Week of {{  weekOf }}</span>
                 </h4>
                 <table class="attendance-schedule">
                     <thead>
@@ -282,7 +283,7 @@
 
                     {{#each students}}
                         <tr>
-                            <td class="attendance-schedule-name">{{familyName}}, {{firstName}}</td>
+                            <td class="attendance-schedule-name">{{firstName}} {{familyName}}</td>
                             <td{{#unless schedule.mon}} class='absent'{{/unless}}></td>
                             <td{{#unless schedule.tue}} class='absent'{{/unless}}></td>
                             <td{{#unless schedule.wed}} class='absent'{{/unless}}></td>

@@ -20,6 +20,11 @@
         display: none;
     }
 
+    #attendance-page h4.classroom span {
+        display: inline-block;
+        width: 32%;
+    }
+
     #attendance-page div.panel {
         page-break-after: always;
     }
@@ -56,4 +61,5 @@
     #signin-page .signin-page-contents table th {
         background-color: #eeeeee !important;
     }
+
 }
