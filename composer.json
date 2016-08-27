@@ -1,0 +1,9 @@
+{
+  "name": "smidgen/attend",
+  "require": {},
+  "require-dev": {
+    "phing/phing" : "@stable",
+    "phpunit/phpunit": "3.7.*",
+    "phake/phake": "@stable"
+  }
+}
