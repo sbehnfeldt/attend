@@ -4,12 +4,27 @@
         margin: 0.5cm;
     }
 
+    body, article {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    nav {
+        display: none;
+    }
+
     header.page-header {
         display: none;
     }
 
     table {
         font: 10pt sans-serif;
+        page-break-inside: auto;
+    }
+    tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
     }
 
     div.controls {
