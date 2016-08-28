@@ -17,17 +17,6 @@ function my_autoload($className) {
     require $require;
 }
 
-//function render($template, $params)
-//{
-//    \Twig_Autoloader::register();
-//    $loader = new \Twig_Loader_Filesystem(INSTALL . '/templates');
-//    $twig = new \Twig_Environment($loader, array(
-//        //'cache' => '../templates/cache',
-//        'cache' => false,
-//    ));
-//    echo $twig->render( $template, $params );
-//}
-
 
 /********************************************************************************
  * Main Script
@@ -52,7 +41,6 @@ $route = array_shift( $routes );
 
 switch ($route) {
     case '':
-//        render('index.html.twig', []);
         readfile('index.html');
         break;
 
