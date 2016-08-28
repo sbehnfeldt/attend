@@ -13,7 +13,7 @@ function my_autoload($className) {
     }
     $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
 
-    $require = INSTALL . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . $fileName;
+    $require = INSTALL . DIRECTORY_SEPARATOR . 'web' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . $fileName;
     require $require;
 }
 
@@ -22,7 +22,7 @@ function my_autoload($className) {
  * Main Script
  ********************************************************************************/
 
-define( 'INSTALL', dirname( __DIR__ ));
+define( 'INSTALL', dirname(dirname( __DIR__ )));
 
 ini_set( 'error_log', INSTALL . '/logs/php_errors.log' );
 $config = parse_ini_file('../config.ini', true);
@@ -284,6 +284,17 @@ switch ($route) {
     case 'unauthorized':
 //        $page = new \Pages\Error403Page();
 //        $this->render( $page, \Entities\User::getUser());
+        break;
+
+    case 'pdf' :
+//        require( 'fpdf.php');
+        define('FPDF_FONTPATH', INSTALL . DIRECTORY_SEPARATOR. 'web' . DIRECTORY_SEPARATOR . 'font' . DIRECTORY_SEPARATOR );
+        $pdf = new FPDF();
+        $pdf->AddPage();
+        $pdf->SetFont('Arial', 'B', 16);
+        $pdf->Cell(40, 10, 'Hello, World' );
+        $pdf->Output();
+
         break;
 
     default:
