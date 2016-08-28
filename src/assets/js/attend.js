@@ -550,7 +550,7 @@
                     student.schedule = {};
                     for (var day in composite) {
                         if (null == composite[day]) {
-                            stdudent.schedule[day] = false;
+                            student.schedule[day] = false;
                         } else {
                             student.schedule[day] = [];
                             if (composite[day]['Am']) student.schedule[day].push('A');
@@ -1453,10 +1453,15 @@
      * Document on-ready handler
      ********************************************************************************/
     $(function () {
+        // All of the tabs in the top-level menu, <a href="#target">
         var $tabs = $('.tab');
+
+        // DOM elements identified by the href attributes in the $tabs
         var targets = $tabs.map(function () {
-            return this.hash;
+            return this.hash;   // Return the anchor part of the URL
         }).get();
+
+        //
         var $pages = $(targets.join(','));
 
         function showPage(id) {
