@@ -356,6 +356,7 @@
             $weekOf.datepicker();
             $weekOf.datepicker('option', 'showAnim', 'slideDown');
             $weekOf.datepicker('setDate', weekOf);
+            $('#pdf-attendance').attr( 'href', 'pdf/attendance?week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate() );
         }
 
 
@@ -468,6 +469,7 @@
                 weekOf = normalizeDateToMonday(weekOf);
                 $weekOf.datepicker('setDate', weekOf).blur();
                 generateAttendanceSheets();
+                $('#pdf-attendance').attr( 'href', 'pdf/attendance?week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate() );
             });
         }
 
@@ -512,6 +514,7 @@
             $weekOf.datepicker();
             $weekOf.datepicker('option', 'showAnim', 'slideDown');
             $weekOf.datepicker('setDate', weekOf);
+            $('#pdf-signin').attr( 'href', 'pdf/signin?week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate() );
         }
 
         function cacheDom(selector) {
@@ -585,6 +588,7 @@
                 weekOf = normalizeDateToMonday(weekOf);
                 $weekOf.datepicker('setDate', weekOf).blur();
                 generateSigninSheets();
+                $('#pdf-signin').attr( 'href', 'pdf/signin?week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate() );
             });
         }
 
@@ -1563,7 +1567,7 @@
                     showPage(targets.indexOf(location.hash.split('/')[0]) !== -1 ? location.hash : '');
                 }
             },
-            error: function onFetchStduentsError(jqXHR, textStatus, errorThrown) {
+            error: function onFetchStudentsError(jqXHR, textStatus, errorThrown) {
                 alert("AJAX error fetching students: " + textStatus);
                 wait--;
                 if (!wait) {

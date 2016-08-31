@@ -34,9 +34,21 @@ session_save_path( INSTALL . '/sessions');
 session_start( );
 
 // Routing: explode the incoming URI along the slashes and process accordingly
-$routes = $_SERVER[ 'REQUEST_URI' ];
-$routes = substr( $routes, strlen( $webroot ));
-$routes = explode( '/', $routes );
+$uri = $_SERVER[ 'REQUEST_URI' ];
+$uri = substr( $uri, strlen( $webroot ));
+$temp = explode( '?', $uri );
+$path = $temp[0];
+if ( count($temp)> 1 ) {
+    $t2 = explode( '&', $temp[1] );
+    foreach ( $t2 as $t3 ) {
+        list($k, $v) = explode( '=', $t3 );
+        $params[ $k ] = $v;
+    }
+} else {
+    $qstring = [];
+    $params = [];
+}
+$routes = explode( '/', $path );
 $route = array_shift( $routes );
 
 switch ($route) {
@@ -287,12 +299,18 @@ switch ($route) {
         break;
 
     case 'pdf' :
-//        require( 'fpdf.php');
         define('FPDF_FONTPATH', INSTALL . DIRECTORY_SEPARATOR. 'web' . DIRECTORY_SEPARATOR . 'font' . DIRECTORY_SEPARATOR );
-        $pdf = new FPDF();
-        $pdf->AddPage();
-        $pdf->SetFont('Arial', 'B', 16);
-        $pdf->Cell(40, 10, 'Hello, World' );
+        switch ($routes[0]) {
+            case 'attendance' :
+                $pdf = new AttendancePdf(new Api());
+                $pdf->setWeekOf( $params['week'] );
+
+                break;
+
+            case 'signin' :
+                $pdf = new SigninPdf(new Api());
+                break;
+        }
         $pdf->Output();
 
         break;
