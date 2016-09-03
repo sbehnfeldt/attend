@@ -3,6 +3,10 @@
 
 class AttendPdf extends FPDF
 {
+
+    /** @var  array */
+    protected static $dayAbbrevs = ['mon', 'tue', 'wed', 'thu', 'fri' ];
+
     /** @var Api */
     protected $api;
 
@@ -18,7 +22,7 @@ class AttendPdf extends FPDF
     /** @var  int */
     protected $headerHeight;
 
-    /** @var  string */
+    /** @var  DateTime */
     protected $weekOf;
 
     public function __construct($api, $orientation = 'P', $unit = 'mm', $size = 'A4')
@@ -26,9 +30,9 @@ class AttendPdf extends FPDF
         $this->api = $api;
         $this->theClassroom = null;
         $this->colWidths = [];
-        $this->headerHeight = 15;
-        $this->rowHeight = 5;
-        $this->weekOf = '';
+        $this->headerHeight = 5;
+        $this->rowHeight = 10;
+        $this->weekOf = new DateTime();
         parent::__construct($orientation, $unit, $size);
     }
 
@@ -113,7 +117,7 @@ class AttendPdf extends FPDF
     }
 
     /**
-     * @return string
+     * @return DateTime
      */
     public function getWeekOf()
     {
@@ -125,6 +129,30 @@ class AttendPdf extends FPDF
      */
     public function setWeekOf($weekOf)
     {
-        $this->weekOf = $weekOf;
+        $this->weekOf = new DateTime($weekOf);
+    }
+
+    /**
+     * @return array
+     */
+    public static function getDayAbbrevs()
+    {
+        return self::$dayAbbrevs;
+    }
+
+
+    /**
+     * @param $student
+     *
+     * From all of a student's schedules, build a composite schedule effective
+     * the week of $this->startDate
+     */
+    public function getCompositeSchedule($student)
+    {
+        $composite = null;
+        $schedules = $this->getApi()->fetchSchedules($student['id']);
+
+        return $schedules[0];
+//        return $composite;
     }
 }
