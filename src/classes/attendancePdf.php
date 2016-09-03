@@ -29,8 +29,8 @@ class AttendancePdf  extends AttendPdf
         }
         $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), '', 'LTR', 0, 'C', true );
         $this->ln();
-        $i = 0;
 
+        $i = 0;
         $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), 'Student', 'LBR', 0, 'C', true );
         $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), "29-Aug",  'LBR', 0, 'C', true );
         $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), '30-Aug',  'LBR', 0, 'C', true );
@@ -39,7 +39,6 @@ class AttendancePdf  extends AttendPdf
         $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), '2-Sep',   'LBR', 0, 'C', true );
         $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), 'Notes',   'LBR', 0, 'C', true );
         $this->ln();
-
     }
 
     public function Footer()

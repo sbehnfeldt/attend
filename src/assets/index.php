@@ -303,7 +303,6 @@ switch ($route) {
         switch ($routes[0]) {
             case 'attendance' :
                 $pdf = new AttendancePdf(new Api());
-                $pdf->setWeekOf( $params['week'] );
 
                 break;
 
@@ -311,6 +310,7 @@ switch ($route) {
                 $pdf = new SigninPdf(new Api());
                 break;
         }
+        $pdf->setWeekOf( $params['week'] );
         $pdf->Output();
 
         break;
