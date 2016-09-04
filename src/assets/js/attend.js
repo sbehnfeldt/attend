@@ -915,21 +915,25 @@
                 var i;
 
                 $opts = $whichSchedule.find('option');
-                if (targetDate <= $opts.eq(0).data('startDate')) {
-                    $whichSchedule.val(0);
+                if ( 0 == $opts.length ) {
+                    $checkboxes.reset();
                 } else {
-                    for ( i = 1; i < $opts.length; i++ ) {
-                        startDate = $opts.eq(i).data('startDate');
-                        if ( startDate > targetDate ) {
-                            $whichSchedule.val(i-1);
-                            break;
+                    if (targetDate <= $opts.eq(0).data('startDate')) {
+                        $whichSchedule.val(0);
+                    } else {
+                        for ( i = 1; i < $opts.length; i++ ) {
+                            startDate = $opts.eq(i).data('startDate');
+                            if ( startDate > targetDate ) {
+                                $whichSchedule.val(i-1);
+                                break;
+                            }
+                        }
+                        if ( i == $opts.length ) {
+                            $whichSchedule.val($opts.length-1);
                         }
                     }
-                    if ( i == $opts.length ) {
-                        $whichSchedule.val($opts.length-1);
-                    }
+                    $whichSchedule.updateSchedule();
                 }
-                $whichSchedule.updateSchedule();
             };
 
             // Update the GUI when user selects a new schedule
@@ -979,6 +983,15 @@
                 $checkboxes.each(function initializeScheduleCheckbox(i, e) {
                     $(e).prop('checked', sched[$(e).attr('name')][$(e).closest('tr').data('day-part')]);
                     $(e).data('dbval', sched[$(e).attr('name')][$(e).closest('tr').data('day-part')]);
+                    $(e).removeClass('modified').prop('disabled', false).closest('td').removeClass('modified');
+                });
+            };
+
+            // Clear all checkboxes
+            $checkboxes.reset= function() {
+                $checkboxes.each(function resetCheckbox(i, e) {
+                    $(e).prop('checked', false );
+                    $(e).data('dbval', false );
                     $(e).removeClass('modified').prop('disabled', false).closest('td').removeClass('modified');
                 });
             };
