@@ -20,23 +20,28 @@ class AttendancePdf  extends AttendPdf
         $this->Cell(0, 10, 'Week of ' . $this->getWeekOf()->format('M j, Y'), 0, 1, 'R');
 
         // Draw the table header
-        $i = 0;
         $this->SetFont('Arial', '', 10);
         $this->SetFillColor( 200 );
+
+        $i = 0;
+        $d = new DateTime( $this->getWeekOf()->format('Y-m-d'));
         $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), '', 'LTR', 0, 'C', true );
-        foreach ( self::getDayAbbrevs() as $day ) {
-            $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), $day,     'LTR', 0, 'C', true );
-        }
+        $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), $d->format('D'),  'LTR', 0, 'C', true );
+        $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), $d->add( new DateInterval('P1D'))->format('D'), 'LTR', 0, 'C', true );
+        $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), $d->add( new DateInterval('P1D'))->format('D'), 'LTR', 0, 'C', true );
+        $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), $d->add( new DateInterval('P1D'))->format('D'), 'LTR', 0, 'C', true );
+        $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), $d->add( new DateInterval('P1D'))->format('D'), 'LTR', 0, 'C', true );
         $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), '', 'LTR', 0, 'C', true );
         $this->ln();
 
         $i = 0;
+        $d = new DateTime( $this->getWeekOf()->format('Y-m-d'));
         $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), 'Student', 'LBR', 0, 'C', true );
-        $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), "29-Aug",  'LBR', 0, 'C', true );
-        $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), '30-Aug',  'LBR', 0, 'C', true );
-        $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), '31-Aug',  'LBR', 0, 'C', true );
-        $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), '1-Sep',   'LBR', 0, 'C', true );
-        $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), '2-Sep',   'LBR', 0, 'C', true );
+        $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), $d->format("M j"),  'LBR', 0, 'C', true );
+        $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), $d->add(new DateInterval('P1D'))->format('M j'),  'LBR', 0, 'C', true );
+        $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), $d->add(new DateInterval('P1D'))->format('M j'),  'LBR', 0, 'C', true );
+        $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), $d->add(new DateInterval('P1D'))->format('M j'),  'LBR', 0, 'C', true );
+        $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), $d->add(new DateInterval('P1D'))->format('M j'),  'LBR', 0, 'C', true );
         $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), 'Notes',   'LBR', 0, 'C', true );
         $this->ln();
     }
