@@ -84,7 +84,7 @@ class AttendancePdf  extends AttendPdf
             }
             foreach ( $students as $student ) {
                 if ( $student[ 'classroomId' ] === $class[ 'id' ] ) {
-                    $composite = $this->getCompositeSchedule( $student );
+                    $composite = $this->getCompositeSchedule( $student, $this->getWeekOf());
                     $student[ 'schedule' ] = [];
                     $notes = [
                         'HD'  => 0,

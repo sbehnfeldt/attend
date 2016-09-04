@@ -147,12 +147,49 @@ class AttendPdf extends FPDF
      * From all of a student's schedules, build a composite schedule effective
      * the week of $this->startDate
      */
-    public function getCompositeSchedule($student)
+    public function getCompositeSchedule($student, $startDate)
     {
-        $composite = null;
-        $schedules = $this->getApi()->fetchSchedules($student['id']);
 
-        return $schedules[0];
-//        return $composite;
+        // Find which of the student's schedules is in effect on $startDate.
+        $schedules = $this->getApi()->fetchSchedules($student['id']);
+        $sched = null;
+        $index = 0;
+        while ( $index < count($schedules)) {
+            if ( $schedules[$index]['startDate'] > $startDate ) {
+                break;
+            }
+            $sched = $schedules[$index];
+            $index++;
+        }
+
+        // $sched is now the schedule in effect on $startDate.  (If $sched is null, this means that the student
+        // starts at some point in the future of $startDate.  This is needed so that users may enroll students
+        // in advance.
+        $composite = null;
+        $cur = new DateTime( $this->getWeekOf()->format('Y-m-d'));
+        foreach ( $this->getDayAbbrevs() as $i => $day ) {
+            if ( null == $sched ) {
+                $composite[$day] = null;
+            } else if ( $cur->format('w') -$i >= 2 ) {
+                // If some clown passes in a $startDate in the middle of the week, the effective
+                // schedule for all days prior to the start date should be null
+                $composite[$day] = null;
+            } else {
+                $composite[$day] = $sched[$day];
+            }
+
+            // Prepare for the next day: see if the student's next schedule goes into effect
+            $cur->add(new DateInterval('P1D'));
+            if ( $index < count($schedules)) {
+                if ( $cur >= $schedules[$index]['startDate']) {
+                    $sched = $schedules[$index]['startDate'];
+                    $index++;
+                }
+            }
+
+        }
+
+
+        return $composite;
     }
 }
