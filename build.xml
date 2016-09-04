@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="attend" default="install" basedir="." description="Attendance-management Web application">
 
-    <property name="srcDir" value="./src" />
-    <property name="buildDir" value="./build" />
-    <property name="testDir" value="./test" />
-    <property name="distDir" value="./dist" />
-    <property name="webDir" value="./web" />
+    <property name="srcDir" value="${project.basedir}/src" />
+    <property name="buildDir" value="${project.basedir}/build" />
+    <property name="testDir" value="${project.basedir}/test" />
+    <property name="distDir" value="${project.basedir}/dist" />
+    <property name="webDir" value="${project.basedir}/web" />
 
 
     <target name="test">
@@ -42,7 +42,11 @@
     </target>
 
     <target name="install" depends="package">
+        <echo msg="${project.basedir}" />
+        <echo msg="${application.startdir}" />
         <echo msg="Installing package locally..." />
+        <resolvepath propertyName="srcDir" file="${project.basedir}" />
+
         <mkdir dir="${webDir}" />
         <unzip todir="${webDir}" file="${distDir}/attend.zip"/>
         <mkdir dir="${webDir}/logs" />
