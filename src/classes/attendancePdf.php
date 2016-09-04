@@ -17,7 +17,7 @@ class AttendancePdf  extends AttendPdf
         $this->SetFont('Arial', '', 12);
         $this->ln();
         $this->Cell(0, 10, $this->getTheClassroom()[ 'name' ], 0, 0, 'L');
-        $this->Cell(0, 10, 'Week of ' . $this->getWeekOf()->format('Y-m-d'), 0, 1, 'R');
+        $this->Cell(0, 10, 'Week of ' . $this->getWeekOf()->format('M j, Y'), 0, 1, 'R');
 
         // Draw the table header
         $i = 0;

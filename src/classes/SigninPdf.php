@@ -18,15 +18,14 @@ class SigninPdf extends AttendPdf
         $this->SetFont('Arial', '', 12);
         $this->ln();
         $this->Cell(0, 10, $this->getTheClassroom()[ 'name' ], 0, 0, 'L');
-        $this->Cell(0, 10, 'Week of ' . $this->getWeekOf()->format('Y-m-d'), 0, 1, 'R');
+        $this->Cell(0, 10, 'Week of ' . $this->getWeekOf()->format('M j, Y'), 0, 1, 'R');
 
         // Draw the table header
-        $i = 0;
         $this->SetFont('Arial', '', 10);
         $this->SetFillColor( 200 );
 
         $i = 0;
-        $d = $this->getWeekOf();
+        $d = new DateTime( $this->getWeekOf()->format('Y-m-d'));
         $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), '', 'LTR', 0, 'C', true );
 
         $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), $d->format('D'),  'LTR', 0, 'C', true );
@@ -37,9 +36,9 @@ class SigninPdf extends AttendPdf
         $this->ln();
 
         $i = 0;
-        $d = $this->getWeekOf();
+        $d = new DateTime( $this->getWeekOf()->format('Y-m-d'));
         $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), '', 'LR', 0, 'C', true );
-        $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), $d->format('M d'),  'LBR', 0, 'C', true );
+        $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), $d->format('M j'),  'LBR', 0, 'C', true );
         $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), $d->add(new DateInterval('P1D'))->format('M d'),  'LBR', 0, 'C', true );
         $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), $d->add(new DateInterval('P1D'))->format('M d'),  'LBR', 0, 'C', true );
         $this->Cell($this->colWidths[$i++], $this->getHeaderHeight(), $d->add(new DateInterval('P1D'))->format('M d'),   'LBR', 0, 'C', true );
@@ -87,6 +86,13 @@ class SigninPdf extends AttendPdf
                 if ( $student[ 'classroomId' ] === $class[ 'id' ] ) {
                     $this->Cell( $this->colWidths[$i++], $this->getRowHeight(), $student[ 'firstName' ] . ' ' . $student[ 'familyName' ], 1, 0 );
                     foreach ( self::getDayAbbrevs() as $day ) {
+                        $x = $this->GetX();
+                        $y = $this->GetY();
+                        $this->SetDrawColor(175, 175, 175);
+                        $this->Line( $x, $y + ($this->getRowHeight() / 2), $x + $this->colWidths[$i], $y + ($this->getRowHeight()/2));
+                        $this->SetDrawColor( 0, 0, 0 );
+
+
                         $this->Cell($this->colWidths[$i]/2, $this->getRowHeight(), "",  1, 0, 'C', false );
                         $this->Cell($this->colWidths[$i++]/2, $this->getRowHeight(), "",  1, 0, 'C', false );
                     }
