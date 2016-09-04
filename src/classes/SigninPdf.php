@@ -74,6 +74,18 @@ class SigninPdf extends AttendPdf
     public function Output()
     {
         $students = $this->getApi()->fetchStudents();
+        usort($students, function($a, $b) {
+            if ($a['familyName'] > $b[ 'familyName' ]) {
+                return 1;
+            } else if ( $a[ 'familyName' ] < $b[ 'familyName' ]) {
+                return -1;
+            } else if ( $a[ 'firstName' ] > $b[ 'firstName' ]) {
+                return 1;
+            } else if ( $a[ 'firstName' ] < $b[ 'firstName' ]) {
+                return -1;
+            }
+            return 0;
+        });
         $classes = $this->getApi()->fetchClassrooms();
         $this->AliasNbPages();
         $this->colWidths = [55, 45, 45, 45, 45, 45];
