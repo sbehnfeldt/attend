@@ -28,7 +28,6 @@ ini_set( 'error_log', INSTALL . '/logs/php_errors.log' );
 $config = parse_ini_file('../config.ini', true);
 $webroot = $config['app']['root'];
 
-//require_once INSTALL . '/vendor/autoload.php';
 spl_autoload_register( 'my_autoload' );
 session_save_path( INSTALL . '/sessions');
 session_start( );

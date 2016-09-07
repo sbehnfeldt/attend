@@ -101,12 +101,12 @@ class AttendancePdf  extends AttendPdf
                             if ($composite[$day]['Am']) array_push( $student['schedule'][$day], 'A');
                             if ($composite[$day]['Noon']) array_push( $student['schedule'][$day], 'L');
                             if ($composite[$day]['Pm']) array_push( $student['schedule'][$day], 'P');
-                            $student['schedule'][$day] = implode( '/', $student['schedule'[$day]]);
+                            $student['schedule'][$day] = implode( '/', $student['schedule'][$day]);
                             if ($student['schedule'][$day]) $totals[$day]++;
 
                             if (($composite[$day]['Am']) && ($composite[$day]['Pm'])) {
                                 $notes['FD']++;
-                            } else if (( $composite[$day]['Am']) || ($composite[day]['Pm'])) {
+                            } else if (( $composite[$day]['Am']) || ($composite[$day]['Pm'])) {
                                 if ($composite[$day]['Noon']) {
                                     $notes['HDL']++;
                                 } else {
