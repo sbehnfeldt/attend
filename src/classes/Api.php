@@ -121,7 +121,7 @@ class Api
             'familyName' => $params['familyName'],
             'firstName' => $params['firstName'],
             'enrolled' => $params['enrolled'],
-            'classroomId' => $params['classroomId']
+            'classroomId' => (string)$params['classroomId']
         ];
         return $student;
     }
