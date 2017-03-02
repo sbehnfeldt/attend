@@ -298,7 +298,7 @@ switch ($route) {
         break;
 
     case 'pdf' :
-        define('FPDF_FONTPATH', INSTALL . DIRECTORY_SEPARATOR. 'web' . DIRECTORY_SEPARATOR . 'font' . DIRECTORY_SEPARATOR );
+        define('FPDF_FONTPATH', INSTALL . DIRECTORY_SEPARATOR. 'font' . DIRECTORY_SEPARATOR );
         switch ($routes[0]) {
             case 'attendance' :
                 $pdf = new AttendancePdf(new Api());

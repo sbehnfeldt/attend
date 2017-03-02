@@ -182,7 +182,7 @@ class AttendPdf extends FPDF
             $cur->add(new DateInterval('P1D'));
             if ( $index < count($schedules)) {
                 if ( $cur >= $schedules[$index]['startDate']) {
-                    $sched = $schedules[$index]['startDate'];
+                    $sched = $schedules[$index];
                     $index++;
                 }
             }
