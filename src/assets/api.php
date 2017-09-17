@@ -19,23 +19,28 @@ $host   = $config['db']['host'];
 $dbname = $config['db']['dbname'];
 $uname  = $config['db']['uname'];
 $pword  = $config['db']['pword'];
-$pdo = new \PDO( "mysql:host=$host;dbname=$dbname", $uname, $pword );
+$pdo    = new \PDO( "mysql:host=$host;dbname=$dbname", $uname, $pword );
 
 switch ( $resourceType ) {
 	case 'classrooms':
-		$repo       = new ClassroomRepo( $pdo );
+		$repo = new ClassroomRepo( $pdo );
 		if ( $resourceId ) {
 			$classrooms = $repo->selectOne( $resourceId );
 		} else {
 			$classrooms = $repo->select();
 		}
-		echo json_encode( [ 'success' => true, 'classrooms' => $classrooms ] );
+		echo json_encode( [ 'success' => true, 'data' => $classrooms ] );
 		break;
 
 	case 'students':
-		$repo     = new StudentRepo( $pdo );
-		$students = $repo->selectOne( $resourceId );
-		echo json_encode( [ 'success' => true, 'students' => $students ] );
+		$repo = new StudentRepo( $pdo );
+		if ( $resourceId ) {
+
+			$students = $repo->selectOne( $resourceId );
+		} else {
+			$students = $repo->select();
+		}
+		echo json_encode( [ 'success' => true, 'data' => $students ] );
 		break;
 
 	default:

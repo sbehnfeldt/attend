@@ -54,8 +54,8 @@
             $panel = $(selector);
             $table = $panel.find('table');
             table = $table.DataTable({
-                'paging' : false,
-                'searching' : false
+                'paging': false,
+                'searching': false
             });
             $edit = $panel.find('input[name=class-name]')
         }
@@ -65,7 +65,7 @@
         }
 
         function whenClassroomsLoaded(classrooms) {
-            for (var i = 0; i < 3; i++) {
+            for (var i = 0; i < classrooms.length; i++) {
                 var api = table.row.add([
                     classrooms[i].name,
                     '<button><span class="glyphicon glyphicon-edit" style="color: #080"/></button>',
@@ -91,7 +91,7 @@
                 dataType: 'json',
                 success: function onFetchClassroomsSuccess(json) {
                     console.log(json);
-                    Classrooms.load(json.classrooms);
+                    Classrooms.load(json.data);
                 },
                 error: function onFetchClassroomsError(jqXHR, textStatus, errorThrown) {
                     alert("AJAX error fetching classes: " + textStatus);
@@ -101,7 +101,98 @@
     };
 
 
-    var Students = [];
+    var Students = (function () {
+        function init() {
+            this.students = [];
+            this.callbacks = {
+                'load': $.Callbacks(),
+                'add': $.Callbacks(),
+                'remove': $.Callbacks(),
+                'edit': $.Callbacks()
+            }
+        }
+
+        function subscribe(event, fn) {
+            this.callbacks[event].add(fn);
+        }
+
+        function load(students) {
+            this.classrooms = students;
+            this.callbacks['load'].fire(students);
+        }
+
+        function add(student) {
+            this.classrooms.push(student);
+            this.callbacks['add'].fire(student);
+        }
+
+
+        return {
+            'init': init,
+            'subscribe': subscribe,
+            'load': load
+        }
+
+    })();
+
+    var StudentsPanel = (function () {
+        var $panel;
+        var $table;
+        var table;
+
+        function init(selector) {
+            cacheDom(selector);
+            bindEvents();
+
+            Students.subscribe('load', whenStudentsLoaded );
+        }
+
+        function bindEvents() {}
+
+        function cacheDom(selector) {
+            $panel = $(selector);
+            $table = $panel.find('table.students-table');
+            table = $table.DataTable();
+        }
+
+        function whenStudentsLoaded(students) {
+            for (var i = 0; i < students.length; i++) {
+                var api = table.row.add([
+                    students[i].familyName,
+                    students[i].firstName,
+                    '<button><span class="glyphicon glyphicon-edit" style="color: #080"/></button>',
+                    '<button><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
+                ]);
+            }
+            table.draw();
+
+        }
+
+        return {
+            'init': init
+        };
+    })();
+
+
+    var StudentController = {
+        'load': function () {
+
+            $.ajax({
+                url: 'api/students',
+                method: 'get',
+
+                dataType: 'json',
+                success: function onFetchStudentsSuccess(json) {
+                    console.log(json);
+                    Students.load(json.data);
+                },
+                error: function onFetchClassroomsError(jqXHR, textStatus, errorThrown) {
+                    alert("AJAX error fetching classes: " + textStatus);
+                }
+            });
+        }
+
+    };
 
     var CallbackSelect = (function () {
         var $select, publicApi, callback;
@@ -1668,5 +1759,9 @@
     Classrooms.init();
     ClassroomPanel.init('#classes-page');
     ClassroomController.load();
+
+    Students.init();
+    StudentsPanel.init('#enrollment-page');
+    StudentController.load();
 
 })(this, jQuery);
