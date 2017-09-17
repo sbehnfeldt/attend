@@ -160,6 +160,8 @@
                 var api = table.row.add([
                     students[i].familyName,
                     students[i].firstName,
+                    students[i].classroomId,
+                    '<input type="checkbox" />',
                     '<button><span class="glyphicon glyphicon-edit" style="color: #080"/></button>',
                     '<button><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
                 ]);
@@ -1713,55 +1715,16 @@
 
         var wait = 2;
 
-        /*
-         $.ajax({
-         url: 'api/fetchStudents',
-         method: 'post',
-         data: {'schedules': true, 'attendance': true},
+        Classrooms.init();
+        ClassroomPanel.init('#classes-page');
+        ClassroomController.load();
 
-         dataType: 'json',
-         success: function onFetchStudentsSuccess(json) {
-         console.log("Students fetched");
-         if (!json.success) {
-         alert("Unable to retrieve students from database: " + json.message);
-         } else {
-         json.students.forEach(function (student) {
-         // PHP deals with time in seconds; JS deals with time in milliseconds. Convert here.
-         student.attendance.forEach(function (att, i, arr) {
-         att.checkIn *= 1000;
-         att.checkOut *= 1000;
-         });
-         student.schedules.forEach(function (schedule, i, schedules) {
-         // ref: http://stackoverflow.com/questions/3075577/convert-mysql-datetime-stamp-into-javascripts-date-format
-         var t = schedule.startDate.date.split(/[- :]/);
-         schedules[i].startDate = new Date(t[0], t[1] - 1, t[2], t[3], t[4], t[5]);
-         });
-         Students[student.id] = student;
-         });
-         }
-         wait--;
-         if (!wait) {
-         showPage(targets.indexOf(location.hash.split('/')[0]) !== -1 ? location.hash : '');
-         }
-         },
-         error: function onFetchStudentsError(jqXHR, textStatus, errorThrown) {
-         alert("AJAX error fetching students: " + textStatus);
-         wait--;
-         if (!wait) {
-         showPage(targets.indexOf(location.hash.split('/')[0]) !== -1 ? location.hash : '');
-         }
-         }
-         });
-         */
+        Students.init();
+        StudentsPanel.init('#enrollment-page');
+        StudentController.load();
+
+        showPage(targets.indexOf(location.hash) !== -1 ? location.hash : '');
     });
 
-
-    Classrooms.init();
-    ClassroomPanel.init('#classes-page');
-    ClassroomController.load();
-
-    Students.init();
-    StudentsPanel.init('#enrollment-page');
-    StudentController.load();
 
 })(this, jQuery);
