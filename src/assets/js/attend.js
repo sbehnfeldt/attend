@@ -91,27 +91,10 @@
                 dataType: 'json',
                 success: function onFetchClassroomsSuccess(json) {
                     console.log(json);
-                    /*
-                     if (false === json.success) {
-                     alert("Error fetching classes: " + json.message);
-                     } else {
-                     json.classrooms.forEach(function (classroom) {
-                     Classrooms[classroom.id] = classroom;
-                     });
-                     }
-                     */
                     Classrooms.load(json.classrooms);
-                    //wait--;
-                    //if (!wait) {
-                    //    showPage(targets.indexOf(location.hash.split('/')[0]) !== -1 ? location.hash : '');
-                    //}
                 },
                 error: function onFetchClassroomsError(jqXHR, textStatus, errorThrown) {
                     alert("AJAX error fetching classes: " + textStatus);
-                    //wait--;
-                    //if (!wait) {
-                    //    showPage(targets.indexOf(location.hash.split('/')[0]) !== -1 ? location.hash : '');
-                    //}
                 }
             });
         }
@@ -119,7 +102,6 @@
 
 
     var Students = [];
-    //var Classrooms = [];
 
     var CallbackSelect = (function () {
         var $select, publicApi, callback;
@@ -492,7 +474,7 @@
             $attendanceSchedules.empty();
             source = $('#attendance-schedule-class-template').html();
             template = Handlebars.compile(source);
-            Classrooms.forEach(function (classroom) {
+            Classrooms.classrooms.forEach(function (classroom) {
                 var context,   // The runtime data to pass to Handlebars
                     html;
                 context = {
@@ -647,7 +629,7 @@
             $contents.empty();
             source = $('#attendance-signin-class-template').html();
             template = Handlebars.compile(source);
-            Classrooms.forEach(function (classroom) {
+            Classrooms.classrooms.forEach(function (classroom) {
                 var context,
                     html;
                 context = {
@@ -1182,13 +1164,12 @@
 
                 $classFilter.empty();
                 $classFilter.append($('<option>').text('Show All').val(''));
-                ;
                 $classFilter.append($('<option>').text('Unassigned').val(0));
 
                 $classrooms.empty();
                 $classrooms.append($('<option>').text('Unassigned').val(0));
 
-                Classrooms.forEach(function (classroom) {
+                Classrooms.classrooms.forEach(function (classroom) {
                     $classrooms.addClassroom(classroom);
                     $classFilter.addClassroom(classroom);
                 });
@@ -1614,15 +1595,13 @@
         });
 
         // Extend jQuery
-        /*
-         $.each(['show', 'hide'], function (i, ev) {
-         var el = $.fn[ev];
-         $.fn[ev] = function () {
-         this.trigger(ev);
-         return el.apply(this, arguments);
-         };
-         });
-         */
+        // $.each(['show', 'hide'], function (i, ev) {
+        // var el = $.fn[ev];
+        // $.fn[ev] = function () {
+        // this.trigger(ev);
+        // return el.apply(this, arguments);
+        // };
+        // });
 
 
         Handlebars.registerHelper('formatTime', formatTime);
