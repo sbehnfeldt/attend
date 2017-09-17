@@ -22,16 +22,20 @@ $pword  = $config['db']['pword'];
 $pdo = new \PDO( "mysql:host=$host;dbname=$dbname", $uname, $pword );
 
 switch ( $resourceType ) {
+	case 'classrooms':
+		$repo       = new ClassroomRepo( $pdo );
+		if ( $resourceId ) {
+			$classrooms = $repo->selectOne( $resourceId );
+		} else {
+			$classrooms = $repo->select();
+		}
+		echo json_encode( [ 'success' => true, 'classrooms' => $classrooms ] );
+		break;
+
 	case 'students':
 		$repo     = new StudentRepo( $pdo );
 		$students = $repo->selectOne( $resourceId );
 		echo json_encode( [ 'success' => true, 'students' => $students ] );
-		break;
-
-	case 'classrooms':
-		$repo       = new ClassroomRepo( $pdo );
-		$classrooms = $repo->selectOne( $resourceId );
-		echo json_encode( [ 'success' => true, 'classrooms' => $classrooms ] );
 		break;
 
 	default:
