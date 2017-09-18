@@ -45,7 +45,6 @@
         var $panel;
         var $table;
         var table;
-        var $edit;
 
         function init(selector) {
             cacheDom(selector);
@@ -61,19 +60,32 @@
                 'paging': false,
                 'searching': false
             });
-            $edit = $panel.find('input[name=class-name]')
         }
 
         function bindEvents() {
+            $table.on('change', 'input.edit-student', onEditClassroomChange );
+            $table.on('click', 'button.edit-student', onEditClassroomClick );
+            $table.on('click', 'button.delete-student', onDeleteClassroomClick );
+        }
 
+        function onEditClassroomChange() {
+            console.log( $(this).closest('tr').data());
+            console.log( $(this).val());
+        }
+        function onEditClassroomClick() {
+            console.log( 'Edit classroom' );
+        }
+
+        function onDeleteClassroomClick() {
+            console.log( 'Delete classroom' );
         }
 
         function whenClassroomsLoaded(classrooms) {
             for (var i = 0; i < classrooms.length; i++) {
                 var api = table.row.add([
-                    classrooms[i].name,
-                    '<button><span class="glyphicon glyphicon-edit" style="color: #080"/></button>',
-                    '<button><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
+                    '<input type="edit" class="edit-student" value="' + classrooms[i].name + '" />',
+                    '<button class="edit-student"><span class="glyphicon glyphicon-edit" style="color: #080"/></button>',
+                    '<button class="delete-student"><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
                 ]);
                 $(api.node()).data(classrooms[i]);
             }
