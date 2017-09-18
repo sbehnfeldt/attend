@@ -18,7 +18,11 @@
         }
 
         function load(classrooms) {
-            this.classrooms = classrooms;
+            this.classrooms = [];
+            for (var i = 0; i < classrooms.length; i++) {
+                var c = classrooms[i];
+                this.classrooms[parseInt(c.id)] = c;
+            }
             this.callbacks['load'].fire(classrooms);
         }
 
@@ -71,6 +75,7 @@
                     '<button><span class="glyphicon glyphicon-edit" style="color: #080"/></button>',
                     '<button><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
                 ]);
+                $(api.node()).data(classrooms[i]);
             }
             table.draw();
         }
@@ -144,10 +149,12 @@
             cacheDom(selector);
             bindEvents();
 
-            Students.subscribe('load', whenStudentsLoaded );
+            Students.subscribe('load', whenStudentsLoaded);
+            Classrooms.subscribe('load', whenClassroomsLoaded);
         }
 
-        function bindEvents() {}
+        function bindEvents() {
+        }
 
         function cacheDom(selector) {
             $panel = $(selector);
@@ -160,14 +167,18 @@
                 var api = table.row.add([
                     students[i].familyName,
                     students[i].firstName,
-                    students[i].classroomId,
+                    Classrooms.classrooms.length > 0 ?
+                        Classrooms.classrooms[students[i].classroomId].name : students[i].classroomId,
                     '<input type="checkbox" />',
                     '<button><span class="glyphicon glyphicon-edit" style="color: #080"/></button>',
                     '<button><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
                 ]);
+                $(api.node()).data(students[i]);
             }
             table.draw();
+        }
 
+        function whenClassroomsLoaded(classrooms) {
         }
 
         return {
@@ -1687,15 +1698,6 @@
             showPage(location.hash);
         });
 
-        // Extend jQuery
-        // $.each(['show', 'hide'], function (i, ev) {
-        // var el = $.fn[ev];
-        // $.fn[ev] = function () {
-        // this.trigger(ev);
-        // return el.apply(this, arguments);
-        // };
-        // });
-
 
         Handlebars.registerHelper('formatTime', formatTime);
         Handlebars.registerHelper('formatDate', formatDate);
@@ -1716,11 +1718,12 @@
         var wait = 2;
 
         Classrooms.init();
-        ClassroomPanel.init('#classes-page');
-        ClassroomController.load();
-
         Students.init();
+
+        ClassroomPanel.init('#classes-page');
         StudentsPanel.init('#enrollment-page');
+
+        ClassroomController.load();
         StudentController.load();
 
         showPage(targets.indexOf(location.hash) !== -1 ? location.hash : '');
