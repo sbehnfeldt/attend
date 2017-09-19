@@ -24,44 +24,21 @@ $pdo    = new \PDO( "mysql:host=$host;dbname=$dbname", $uname, $pword );
 switch ( $resourceType ) {
 	case 'classrooms':
 		$repo = new ClassroomRepo( $pdo );
-		if ( $resourceId ) {
-			$classrooms = $repo->selectOne( $resourceId );
-		} else {
-			$classrooms = $repo->select();
-		}
-		echo json_encode( [ 'success' => true, 'data' => $classrooms ] );
 		break;
 
 	case 'students':
 		$repo = new StudentRepo( $pdo );
-		if ( $resourceId ) {
-
-			$students = $repo->selectOne( $resourceId );
-		} else {
-			$students = $repo->select();
-		}
-		echo json_encode( [ 'success' => true, 'data' => $students ] );
 		break;
 
 	default:
-		break;
+		die('Unknown resource type');
 }
 
 
+if ( $resourceId ) {
+	$results = $repo->selectOne( $resourceId );
+} else {
+	$results = $repo->select();
+}
+echo json_encode( [ 'success' => true, 'data' => $results ] );
 
-
-//
-//
-//if ( count( $temp ) > 1 ) {
-//	$t2 = explode( '&', $temp[1] );
-//	foreach ( $t2 as $t3 ) {
-//		list( $k, $v ) = explode( '=', $t3 );
-//		$params[ $k ] = $v;
-//	}
-//} else {
-//	$qstring = [ ];
-//	$params  = [ ];
-//}
-//$routes = explode( '/', $path );
-//$route  = array_shift( $routes );
-//
