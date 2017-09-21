@@ -35,7 +35,8 @@
         return {
             'init': init,
             'subscribe': subscribe,
-            'load': load
+            'load': load,
+            'add' : add
         }
 
     })();
@@ -52,6 +53,7 @@
             bindEvents();
 
             Classrooms.subscribe('load', whenClassroomsLoaded);
+            Classrooms.subscribe('add', whenClassroomAdded);
         }
 
         function cacheDom(selector) {
@@ -83,25 +85,24 @@
         function onKeyupEditClassroom() {
             var $tr = $(this).closest('tr');
             var id = $tr.data('classroomId');
-            var current = Classrooms.classrooms[ id];
-            if ( current.name != $(this).val()) {
-                $(this).addClass( 'modified' );
-                $tr.find( 'button.update').removeClass( 'disabled').attr( 'disabled', false );
+            var current = Classrooms.classrooms[id];
+            if (current.name != $(this).val()) {
+                $(this).addClass('modified');
+                $tr.find('button.update').removeClass('disabled').attr('disabled', false);
             } else {
-                $(this).removeClass( 'modified' );
-                $tr.find( 'button.update').addClass( 'disabled').attr( 'disabled', true );
+                $(this).removeClass('modified');
+                $tr.find('button.update').addClass('disabled').attr('disabled', true);
             }
         }
 
         // When a change is made to the name of a new classroom
         function onKeyupNewClassroom() {
-            console.log($(this).val());
             if ($(this).val().length > 0) {
-                $(this).addClass('modified' );
+                $(this).addClass('modified');
                 $(this).closest('tr').find('button.submit').attr('disabled', false).removeClass('disabled');
             } else {
                 $(this).closest('tr').find('button.submit').attr('disabled', true).addClass('disabled');
-                $(this).removeClass('modified' );
+                $(this).removeClass('modified');
             }
         }
 
@@ -129,14 +130,16 @@
         // When a new classroom is to be submitted to the database
         function onClickSubmitClassroom() {
             ClassroomController.insert({
-                'name' : $(this).closest('tr').find('td input').val()
+                'name': $(this).closest('tr').find('td input').val()
             });
         }
 
+        // When the 'discard' button in a new classroom is clicked,
+        // discard the new classroom.
         function onClickDiscardClassroom() {
             var $tr = $(this).closest('tr');
-            var $input = $tr.find('td input');
-            if ( confirm( 'Are you sure you want to discard this new classroom?' )) {
+            $tr.find('td input');
+            if (confirm('Are you sure you want to discard this new classroom?')) {
                 table.row($tr).remove();
                 $tr.remove();
                 $newButton.show();
@@ -146,13 +149,16 @@
 
         // When the "New Classroom" button is clicked
         function onClickNewClassroom() {
-            table.row.add([
+            var api = table.row.add([
                 '<input type="text" class="new-classroom"  />',
                 '<button class="submit disabled" disabled><span class="glyphicon glyphicon-ok" /></button>',
                 '<button class="discard"><span class="glyphicon glyphicon-remove" /></button>'
             ]);
             table.draw();
+            $(api.node()).addClass( 'new-classroom' );
+            $(api.node()).find( 'input').focus();
             $newButton.hide();
+
         }
 
         ////////////////////////////////////////////////////////////////////////////////
@@ -171,6 +177,20 @@
             table.draw();
         }
 
+        function whenClassroomAdded(classroom) {
+            var row = table.row('.new-classroom');
+            row.remove();
+            $(row).remove();
+            var api = table.row.add([
+                '<input type="text" class="edit-classroom"  value="' + classroom.name + '"/>',
+                '<button class="submit disabled" disabled><span class="glyphicon glyphicon-ok" /></button>',
+                '<button class="discard"><span class="glyphicon glyphicon-remove" /></button>'
+            ]);
+            table.draw();
+            $(api.node()).data( 'classroomId', classroom.id );
+            $newButton.show();
+        }
+
         return {
             'init': init
         }
@@ -179,7 +199,6 @@
 
     var ClassroomController = {
         'insert': function (data) {
-            console.log($.param( data ));
             $.ajax({
                 'url': 'api/classrooms',
                 'method': 'post',
@@ -188,6 +207,8 @@
                 'dataType': 'json',
                 'success': function (json) {
                     console.log(json);
+                    data.id = json.data;
+                    Classrooms.add(data);
                 },
                 'error': function (xhr) {
                     console.log('AJAX error inserting new record');
