@@ -42,6 +42,20 @@ td {
     text-align: center;
 }
 
+button.discard span,
+button.delete span {
+    color: #f00;
+}
+
+button.submit span,
+button.update span {
+    color: #080;
+}
+
+button.disabled span {
+    color: #aaa;
+}
+
 
 div.in-out {
     border-bottom: 1px dashed black;

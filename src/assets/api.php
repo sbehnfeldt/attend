@@ -31,14 +31,25 @@ switch ( $resourceType ) {
 		break;
 
 	default:
-		die('Unknown resource type');
+		die( 'Unknown resource type' );
 }
 
+switch ( $_SERVER['REQUEST_METHOD'] ) {
+	case 'GET' :
+		if ( $resourceId ) {
+			$results = $repo->selectOne( $resourceId );
+		} else {
+			$results = $repo->select();
+		}
+		break;
 
-if ( $resourceId ) {
-	$results = $repo->selectOne( $resourceId );
-} else {
-	$results = $repo->select();
+	case 'POST' :
+		$results = $repo->insert( $_POST );
+		break;
+
+	default :
+		die( 'Unknown request method' );
+
+
 }
-echo json_encode( [ 'success' => true, 'data' => $results ] );
-
+echo json_encode( [ 'code' => 200, 'status' => 'success', 'messaage' => 'OK', 'data' => $results ] );

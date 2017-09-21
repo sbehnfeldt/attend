@@ -12,6 +12,23 @@ class ClassroomRepo {
 	}
 
 
+	public function insert( $post ) {
+		global $config;
+		$host   = $config['db']['host'];
+		$dbname = $config['db']['dbname'];
+		$uname  = $config['db']['uname'];
+		$pword  = $config['db']['pword'];
+		$pdo    = new \PDO( "mysql:host=$host;dbname=$dbname", $uname, $pword );
+
+		$sql = 'insert into classrooms (name) values (:name)';
+		$sth = $pdo->prepare( $sql );
+//		$pdo->beginTransaction();
+		$bool = $sth->execute( [':name' => $post['name']]);
+		$id = $pdo->lastInsertId();
+//		$this->pdo->commit();
+		return $id;
+	}
+
 	public function select() {
 		$classrooms = [ ];
 		$rows       = $this->pdo->query( 'select * from classrooms' );
