@@ -22,10 +22,9 @@ class ClassroomRepo {
 
 		$sql = 'insert into classrooms (name) values (:name)';
 		$sth = $pdo->prepare( $sql );
-//		$pdo->beginTransaction();
-		$bool = $sth->execute( [':name' => $post['name']]);
+		$sth->execute( [ ':name' => $post['name'] ] );
 		$id = $pdo->lastInsertId();
-//		$this->pdo->commit();
+
 		return $id;
 	}
 
@@ -58,8 +57,8 @@ class ClassroomRepo {
 	}
 
 	public function remove( $id ) {
-		$sth        = $this->pdo->prepare( 'delete from classrooms where id=:id' );
-		$rows       = $sth->execute( [ ':id' => $id ] );
+		$sth  = $this->pdo->prepare( 'delete from classrooms where id=:id' );
+		$rows = $sth->execute( [ ':id' => $id ] );
 
 		return $id;
 
