@@ -36,7 +36,6 @@
             this.callbacks[ 'remove' ].fire( id );
         }
 
-
         return {
             'init'     : init,
             'subscribe': subscribe,
@@ -102,7 +101,7 @@
             }
         }
 
-        // When a change is made to the name of a new classroom
+        // When a change is made to the name of a new classroom,
         function onKeyupNewClassroom() {
             if ( $( this ).val().length > 0 ) {
                 $( this ).addClass( 'modified' );
@@ -113,14 +112,15 @@
             }
         }
 
-        // To save the edits to an existing classroom
+        // When the 'Update' button for an existing classroom is clicked,
+        // update the database (via the controller) accordingly
         function onClickUpdateClassroom() {
-            // Save changes to classroom
-            console.log( 'Submit changes' );
-
+            // TODO: Save changes to classroom
+            console.log( 'TODO: Submit changes' );
         }
 
-        // Delete an existing classroom
+        // When the 'Delete' button for an existing classroom is clicked,
+        // delete the data from the database (via the controller)
         function onClickDeleteClassroom() {
             var $tr = $( this ).closest( 'tr' );
             var id  = $tr.data( 'classroomId' );
@@ -130,18 +130,20 @@
         }
 
 
-        // When a new classroom is to be submitted to the database
+        // When the 'Submit' button for a new classroom is clicked,
+        // insert the new data to the database (via the controller).
         function onClickSubmitClassroom() {
             ClassroomController.insert( {
                 'name': $( this ).closest( 'tr' ).find( 'td input' ).val()
             } );
         }
 
-        // When the 'discard' button in a new classroom is clicked,
-        // discard the new classroom.
+        // When the 'Discard' button for a new classroom is clicked,
+        // discard the "New Classroom" row in the table.
+        // Since this classroom has not yet been entered in to the model or database,
+        // no call to the model or database (via the controller) is necessary.
         function onClickDiscardClassroom() {
             var $tr = $( this ).closest( 'tr' );
-            $tr.find( 'td input' );
             if ( confirm( 'Are you sure you want to discard this new classroom?' ) ) {
                 table.row( $tr ).remove();
                 $tr.remove();
@@ -150,24 +152,26 @@
         }
 
 
-        // When the "New Classroom" button is clicked
+        // When the "New Classroom" button is clicked,
+        // add an empty row to the end of the Classrooms table
         function onClickNewClassroom() {
-            var api = table.row.add( [
+            var row = table.row.add( [
                 '<input type="text" class="new-classroom"  />',
                 '<button class="submit disabled" disabled><span class="glyphicon glyphicon-ok" /></button>',
                 '<button class="discard"><span class="glyphicon glyphicon-remove" /></button>'
             ] );
             table.draw();
-            $( api.node() ).addClass( 'new-classroom' );
-            $( api.node() ).find( 'input' ).focus();
+            $( row.node() ).addClass( 'new-classroom' );
+            $( row.node() ).find( 'input' ).focus();
             $newButton.hide();
-
         }
 
         ////////////////////////////////////////////////////////////////////////////////
         // Callback Functions
         ////////////////////////////////////////////////////////////////////////////////
 
+        // When classrooms are loaded into the model,
+        // populate the Classrooms table
         function whenClassroomsLoaded( classrooms ) {
             for ( var i = 0; i < classrooms.length; i++ ) {
                 var row = table.row.add( [
@@ -180,20 +184,25 @@
             table.draw();
         }
 
+        // When a new classroom is added to the model,
+        // add a new classroom to the Classrooms table
         function whenClassroomAdded( classroom ) {
             var row = table.row( '.new-classroom' );
             row.remove();
             $( row ).remove();
-            var api = table.row.add( [
+
+            row = table.row.add( [
                 '<input type="text" class="edit-classroom"  value="' + classroom.name + '"/>',
                 '<button class="submit disabled" disabled><span class="glyphicon glyphicon-ok" /></button>',
                 '<button class="delete"><span class="glyphicon glyphicon-remove" /></button>'
             ] );
             table.draw();
-            $( api.node() ).data( 'classroomId', classroom.id );
+            $( row.node() ).data( 'classroomId', classroom.id );
             $newButton.show();
         }
 
+        // When a classroom is removed from the model,
+        // remove the corresponding row from the Classrooms table
         function whenClassroomRemoved( id ) {
             table.rows().nodes().each( function ( e, i ) {
                 var $tr  = $( e );
@@ -231,8 +240,8 @@
                 }
             } );
         },
-        'load'  : function () {
 
+        'load': function () {
             $.ajax( {
                 'url'   : 'api/classrooms',
                 'method': 'get',
@@ -247,6 +256,7 @@
                 }
             } );
         },
+
         'remove': function ( id ) {
             $.ajax( {
                 'url'   : 'api/classrooms/' + id,
