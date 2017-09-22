@@ -5,44 +5,44 @@
     var Classrooms = (function () {
         function init() {
             this.classrooms = [];
-            this.callbacks = {
-                'load': $.Callbacks(),
-                'add': $.Callbacks(),
+            this.callbacks  = {
+                'load'  : $.Callbacks(),
+                'add'   : $.Callbacks(),
                 'remove': $.Callbacks(),
-                'edit': $.Callbacks()
+                'edit'  : $.Callbacks()
             }
         }
 
-        function subscribe(event, fn) {
-            this.callbacks[event].add(fn);
+        function subscribe( event, fn ) {
+            this.callbacks[ event ].add( fn );
         }
 
-        function load(classrooms) {
+        function load( classrooms ) {
             this.classrooms = [];
-            for (var i = 0; i < classrooms.length; i++) {
-                var c = classrooms[i];
-                this.classrooms[parseInt(c.id)] = c;
+            for ( var i = 0; i < classrooms.length; i++ ) {
+                var c                               = classrooms[ i ];
+                this.classrooms[ parseInt( c.id ) ] = c;
             }
-            this.callbacks['load'].fire(classrooms);
+            this.callbacks[ 'load' ].fire( classrooms );
         }
 
-        function add(classroom) {
-            this.classrooms[parseInt(classroom.id)] = classroom;
-            this.callbacks['add'].fire(classroom);
+        function add( classroom ) {
+            this.classrooms[ parseInt( classroom.id ) ] = classroom;
+            this.callbacks[ 'add' ].fire( classroom );
         }
 
-        function remove(id) {
-            this.classrooms[parseInt(id)] = undefined;
-            this.callbacks['remove'].fire(id);
+        function remove( id ) {
+            this.classrooms[ parseInt( id ) ] = undefined;
+            this.callbacks[ 'remove' ].fire( id );
         }
 
 
         return {
-            'init': init,
+            'init'     : init,
             'subscribe': subscribe,
-            'load': load,
-            'add': add,
-            'remove': remove
+            'load'     : load,
+            'add'      : add,
+            'remove'   : remove
         }
 
     })();
@@ -54,34 +54,34 @@
         var table;
         var $newButton;
 
-        function init(selector) {
-            cacheDom(selector);
+        function init( selector ) {
+            cacheDom( selector );
             bindEvents();
 
-            Classrooms.subscribe('load', whenClassroomsLoaded);
-            Classrooms.subscribe('add', whenClassroomAdded);
-            Classrooms.subscribe('remove', whenClassroomRemoved);
+            Classrooms.subscribe( 'load', whenClassroomsLoaded );
+            Classrooms.subscribe( 'add', whenClassroomAdded );
+            Classrooms.subscribe( 'remove', whenClassroomRemoved );
         }
 
-        function cacheDom(selector) {
-            $panel = $(selector);
-            $table = $panel.find('table');
-            table = $table.DataTable({
-                'info': false,
-                'paging': false,
+        function cacheDom( selector ) {
+            $panel     = $( selector );
+            $table     = $panel.find( 'table' );
+            table      = $table.DataTable( {
+                'info'     : false,
+                'paging'   : false,
                 'searching': false
-            });
-            $newButton = $panel.find('button.new-record');
+            } );
+            $newButton = $panel.find( 'button.new-record' );
         }
 
         function bindEvents() {
-            $table.on('keyup', 'input.edit-classroom', onKeyupEditClassroom);
-            $table.on('keyup', 'input.new-classroom', onKeyupNewClassroom);
-            $table.on('click', 'button.update', onClickUpdateClassroom);
-            $table.on('click', 'button.delete', onClickDeleteClassroom);
-            $table.on('click', 'button.submit', onClickSubmitClassroom);
-            $table.on('click', 'button.discard', onClickDiscardClassroom);
-            $newButton.on('click', onClickNewClassroom);
+            $table.on( 'keyup', 'input.edit-classroom', onKeyupEditClassroom );
+            $table.on( 'keyup', 'input.new-classroom', onKeyupNewClassroom );
+            $table.on( 'click', 'button.update', onClickUpdateClassroom );
+            $table.on( 'click', 'button.delete', onClickDeleteClassroom );
+            $table.on( 'click', 'button.submit', onClickSubmitClassroom );
+            $table.on( 'click', 'button.discard', onClickDiscardClassroom );
+            $newButton.on( 'click', onClickNewClassroom );
         }
 
         ////////////////////////////////////////////////////////////////////////////////
@@ -90,60 +90,60 @@
 
         // When the "Classroom" edit box is changed; ie, when the classroom is re-named
         function onKeyupEditClassroom() {
-            var $tr = $(this).closest('tr');
-            var id = $tr.data('classroomId');
-            var current = Classrooms.classrooms[id];
-            if (current.name != $(this).val()) {
-                $(this).addClass('modified');
-                $tr.find('button.update').removeClass('disabled').attr('disabled', false);
+            var $tr     = $( this ).closest( 'tr' );
+            var id      = $tr.data( 'classroomId' );
+            var current = Classrooms.classrooms[ id ];
+            if ( current.name != $( this ).val() ) {
+                $( this ).addClass( 'modified' );
+                $tr.find( 'button.update' ).removeClass( 'disabled' ).attr( 'disabled', false );
             } else {
-                $(this).removeClass('modified');
-                $tr.find('button.update').addClass('disabled').attr('disabled', true);
+                $( this ).removeClass( 'modified' );
+                $tr.find( 'button.update' ).addClass( 'disabled' ).attr( 'disabled', true );
             }
         }
 
         // When a change is made to the name of a new classroom
         function onKeyupNewClassroom() {
-            if ($(this).val().length > 0) {
-                $(this).addClass('modified');
-                $(this).closest('tr').find('button.submit').attr('disabled', false).removeClass('disabled');
+            if ( $( this ).val().length > 0 ) {
+                $( this ).addClass( 'modified' );
+                $( this ).closest( 'tr' ).find( 'button.submit' ).attr( 'disabled', false ).removeClass( 'disabled' );
             } else {
-                $(this).closest('tr').find('button.submit').attr('disabled', true).addClass('disabled');
-                $(this).removeClass('modified');
+                $( this ).closest( 'tr' ).find( 'button.submit' ).attr( 'disabled', true ).addClass( 'disabled' );
+                $( this ).removeClass( 'modified' );
             }
         }
 
         // To save the edits to an existing classroom
         function onClickUpdateClassroom() {
             // Save changes to classroom
-            console.log('Submit changes');
+            console.log( 'Submit changes' );
 
         }
 
         // Delete an existing classroom
         function onClickDeleteClassroom() {
-            var $tr = $(this).closest('tr');
-            var id = $tr.data('classroomId');
-            if (window.confirm('Are you sure you want to delete the ' + Classrooms.classrooms[id].name + ' classroom?')) {
-                ClassroomController.remove(id);
+            var $tr = $( this ).closest( 'tr' );
+            var id  = $tr.data( 'classroomId' );
+            if ( window.confirm( 'Are you sure you want to delete the ' + Classrooms.classrooms[ id ].name + ' classroom?' ) ) {
+                ClassroomController.remove( id );
             }
         }
 
 
         // When a new classroom is to be submitted to the database
         function onClickSubmitClassroom() {
-            ClassroomController.insert({
-                'name': $(this).closest('tr').find('td input').val()
-            });
+            ClassroomController.insert( {
+                'name': $( this ).closest( 'tr' ).find( 'td input' ).val()
+            } );
         }
 
         // When the 'discard' button in a new classroom is clicked,
         // discard the new classroom.
         function onClickDiscardClassroom() {
-            var $tr = $(this).closest('tr');
-            $tr.find('td input');
-            if (confirm('Are you sure you want to discard this new classroom?')) {
-                table.row($tr).remove();
+            var $tr = $( this ).closest( 'tr' );
+            $tr.find( 'td input' );
+            if ( confirm( 'Are you sure you want to discard this new classroom?' ) ) {
+                table.row( $tr ).remove();
                 $tr.remove();
                 $newButton.show();
             }
@@ -152,14 +152,14 @@
 
         // When the "New Classroom" button is clicked
         function onClickNewClassroom() {
-            var api = table.row.add([
+            var api = table.row.add( [
                 '<input type="text" class="new-classroom"  />',
                 '<button class="submit disabled" disabled><span class="glyphicon glyphicon-ok" /></button>',
                 '<button class="discard"><span class="glyphicon glyphicon-remove" /></button>'
-            ]);
+            ] );
             table.draw();
-            $(api.node()).addClass('new-classroom');
-            $(api.node()).find('input').focus();
+            $( api.node() ).addClass( 'new-classroom' );
+            $( api.node() ).find( 'input' ).focus();
             $newButton.hide();
 
         }
@@ -168,42 +168,42 @@
         // Callback Functions
         ////////////////////////////////////////////////////////////////////////////////
 
-        function whenClassroomsLoaded(classrooms) {
-            for (var i = 0; i < classrooms.length; i++) {
-                var api = table.row.add([
-                    '<input type="text" class="edit-classroom" value="' + classrooms[i].name + '" />',
+        function whenClassroomsLoaded( classrooms ) {
+            for ( var i = 0; i < classrooms.length; i++ ) {
+                var row = table.row.add( [
+                    '<input type="text" class="edit-classroom" value="' + classrooms[ i ].name + '" />',
                     '<button class="update disabled" disabled><span class="glyphicon glyphicon-ok" /></button>',
                     '<button class="delete"><span class="glyphicon glyphicon-remove" /></button>'
-                ]);
-                $(api.node()).data('classroomId', classrooms[i].id);
+                ] );
+                $( row.node() ).data( 'classroomId', classrooms[ i ].id );
             }
             table.draw();
         }
 
-        function whenClassroomAdded(classroom) {
-            var row = table.row('.new-classroom');
+        function whenClassroomAdded( classroom ) {
+            var row = table.row( '.new-classroom' );
             row.remove();
-            $(row).remove();
-            var api = table.row.add([
+            $( row ).remove();
+            var api = table.row.add( [
                 '<input type="text" class="edit-classroom"  value="' + classroom.name + '"/>',
                 '<button class="submit disabled" disabled><span class="glyphicon glyphicon-ok" /></button>',
                 '<button class="delete"><span class="glyphicon glyphicon-remove" /></button>'
-            ]);
+            ] );
             table.draw();
-            $(api.node()).data('classroomId', classroom.id);
+            $( api.node() ).data( 'classroomId', classroom.id );
             $newButton.show();
         }
 
-        function whenClassroomRemoved(id) {
-            table.rows().nodes().each(function(e, i) {
-                var $tr = $(e);
-                var data = $tr.data('classroomId');
+        function whenClassroomRemoved( id ) {
+            table.rows().nodes().each( function ( e, i ) {
+                var $tr  = $( e );
+                var data = $tr.data( 'classroomId' );
                 if ( data === id ) {
                     $tr.remove();
-                    table.row(e).remove();
+                    table.row( e ).remove();
                     return false;
                 }
-            });
+            } );
         }
 
         return {
@@ -213,89 +213,89 @@
 
 
     var ClassroomController = {
-        'insert': function (data) {
-            $.ajax({
-                'url': 'api/classrooms',
+        'insert': function ( data ) {
+            $.ajax( {
+                'url'   : 'api/classrooms',
                 'method': 'post',
-                'data': $.param(data),
+                'data'  : $.param( data ),
 
                 'dataType': 'json',
-                'success': function (json) {
-                    console.log(json);
+                'success' : function ( json ) {
+                    console.log( json );
                     data.id = json.data;
-                    Classrooms.add(data);
+                    Classrooms.add( data );
                 },
-                'error': function (xhr) {
-                    console.log('AJAX error inserting new record');
-                    console.log(xhr);
+                'error'   : function ( xhr ) {
+                    console.log( 'AJAX error inserting new record' );
+                    console.log( xhr );
                 }
-            });
+            } );
         },
-        'load': function () {
+        'load'  : function () {
 
-            $.ajax({
-                'url': 'api/classrooms',
+            $.ajax( {
+                'url'   : 'api/classrooms',
                 'method': 'get',
 
                 'dataType': 'json',
-                'success': function onFetchClassroomsSuccess(json) {
-                    console.log(json);
-                    Classrooms.load(json.data);
+                'success' : function onFetchClassroomsSuccess( json ) {
+                    console.log( json );
+                    Classrooms.load( json.data );
                 },
-                'error': function onFetchClassroomsError(jqXHR, textStatus, errorThrown) {
-                    alert("AJAX error fetching classes: " + textStatus);
+                'error'   : function onFetchClassroomsError( jqXHR, textStatus, errorThrown ) {
+                    alert( "AJAX error fetching classes: " + textStatus );
                 }
-            });
+            } );
         },
-        'remove': function (id) {
-            $.ajax({
-                'url': 'api/classrooms/' + id,
+        'remove': function ( id ) {
+            $.ajax( {
+                'url'   : 'api/classrooms/' + id,
                 'method': 'delete',
 
                 'dataType': 'json',
-                'success': function (json) {
-                    console.log(json);
-                    Classrooms.remove(id);
+                'success' : function ( json ) {
+                    console.log( json );
+                    Classrooms.remove( id );
                 },
-                'error': function (xhr) {
-                    console.log('error');
-                    console.log(xhr);
+                'error'   : function ( xhr ) {
+                    console.log( 'error' );
+                    console.log( xhr );
                 }
-            })
+            } )
         }
     };
 
 
     var Students = (function () {
         function init() {
-            this.students = [];
+            this.students  = [];
             this.callbacks = {
-                'load': $.Callbacks(),
-                'add': $.Callbacks(),
+                'load'  : $.Callbacks(),
+                'add'   : $.Callbacks(),
                 'remove': $.Callbacks(),
-                'edit': $.Callbacks()
+                'edit'  : $.Callbacks()
             }
         }
 
-        function subscribe(event, fn) {
-            this.callbacks[event].add(fn);
+        function subscribe( event, fn ) {
+            this.callbacks[ event ].add( fn );
         }
 
-        function load(students) {
+        function load( students ) {
             this.classrooms = students;
-            this.callbacks['load'].fire(students);
+            this.callbacks[ 'load' ].fire( students );
         }
 
-        function add(student) {
-            this.classrooms.push(student);
-            this.callbacks['add'].fire(student);
+        function add( student ) {
+            this.classrooms.push( student );
+            this.callbacks[ 'add' ].fire( student );
         }
 
 
         return {
-            'init': init,
+            'init'     : init,
             'subscribe': subscribe,
-            'load': load
+            'load'     : load
         }
 
     })();
@@ -305,40 +305,40 @@
         var $table;
         var table;
 
-        function init(selector) {
-            cacheDom(selector);
+        function init( selector ) {
+            cacheDom( selector );
             bindEvents();
 
-            Students.subscribe('load', whenStudentsLoaded);
-            Classrooms.subscribe('load', whenClassroomsLoaded);
+            Students.subscribe( 'load', whenStudentsLoaded );
+            Classrooms.subscribe( 'load', whenClassroomsLoaded );
         }
 
         function bindEvents() {
         }
 
-        function cacheDom(selector) {
-            $panel = $(selector);
-            $table = $panel.find('table.students-table');
-            table = $table.DataTable();
+        function cacheDom( selector ) {
+            $panel = $( selector );
+            $table = $panel.find( 'table.students-table' );
+            table  = $table.DataTable();
         }
 
-        function whenStudentsLoaded(students) {
-            for (var i = 0; i < students.length; i++) {
-                var api = table.row.add([
-                    students[i].familyName,
-                    students[i].firstName,
+        function whenStudentsLoaded( students ) {
+            for ( var i = 0; i < students.length; i++ ) {
+                var api = table.row.add( [
+                    students[ i ].familyName,
+                    students[ i ].firstName,
                     Classrooms.classrooms.length > 0 ?
-                        Classrooms.classrooms[students[i].classroomId].name : students[i].classroomId,
+                        Classrooms.classrooms[ students[ i ].classroomId ].name : students[ i ].classroomId,
                     '<input type="checkbox" />',
                     '<button><span class="glyphicon glyphicon-edit" style="color: #080"/></button>',
                     '<button><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
-                ]);
-                $(api.node()).data(students[i]);
+                ] );
+                $( api.node() ).data( students[ i ] );
             }
             table.draw();
         }
 
-        function whenClassroomsLoaded(classrooms) {
+        function whenClassroomsLoaded( classrooms ) {
         }
 
         return {
@@ -350,19 +350,19 @@
     var StudentController = {
         'load': function () {
 
-            $.ajax({
-                url: 'api/students',
+            $.ajax( {
+                url   : 'api/students',
                 method: 'get',
 
                 dataType: 'json',
-                success: function onFetchStudentsSuccess(json) {
-                    console.log(json);
-                    Students.load(json.data);
+                success : function onFetchStudentsSuccess( json ) {
+                    console.log( json );
+                    Students.load( json.data );
                 },
-                error: function onFetchClassroomsError(jqXHR, textStatus, errorThrown) {
-                    alert("AJAX error fetching classes: " + textStatus);
+                error   : function onFetchClassroomsError( jqXHR, textStatus, errorThrown ) {
+                    alert( "AJAX error fetching classes: " + textStatus );
                 }
-            });
+            } );
         }
 
     };
@@ -370,17 +370,17 @@
     var CallbackSelect = (function () {
         var $select, publicApi, callback;
 
-        function init($el, cb) {
-            $select = $el;
+        function init( $el, cb ) {
+            $select  = $el;
             callback = cb;
-            $select.on('change', callback);
+            $select.on( 'change', callback );
         }
 
-        function addOption(label, val) {
+        function addOption( label, val ) {
             var $option;
-            $option = $('<option>');
-            $option.val(val).text(label);
-            $select.append($option);
+            $option = $( '<option>' );
+            $option.val( val ).text( label );
+            $select.append( $option );
         }
 
         function empty() {
@@ -394,9 +394,9 @@
         callback = null;
 
         publicApi = {
-            init: init,
-            empty: empty,
-            val: val,
+            init     : init,
+            empty    : empty,
+            val      : val,
             addOption: addOption
         };
         return publicApi;
@@ -404,22 +404,22 @@
 
 
     // Return a Date object set to Monday of the week of the input date.
-    function normalizeDateToMonday(date) {
-        if (false === (date instanceof Date)) {
+    function normalizeDateToMonday( date ) {
+        if ( false === (date instanceof Date) ) {
             throw 'Can only normalize a Date object';
         }
-        if (date.getDay() < 6) {
+        if ( date.getDay() < 6 ) {
             // normalize to Monday of this week
-            date = new Date(date.getFullYear(), date.getMonth(), date.getDate() - (date.getDay() - 1));
+            date = new Date( date.getFullYear(), date.getMonth(), date.getDate() - (date.getDay() - 1) );
         } else {
             // Normalize to Monday of next week
-            date = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 2);
+            date = new Date( date.getFullYear(), date.getMonth(), date.getDate() + 2 );
         }
         return date;
     }
 
     // From all of a student's schedules, build a composite schedule effective the week of startDate
-    function getCompositeSchedule(student, startDate) {
+    function getCompositeSchedule( student, startDate ) {
         var composite,   // Return value
             cur,         // Current date within the
             sched,       // Current student's schedule
@@ -430,37 +430,37 @@
         // in advance.
         sched = null;
         index = 0;
-        while (index < student.schedules.length) {
-            if (student.schedules[index].startDate > startDate) {
+        while ( index < student.schedules.length ) {
+            if ( student.schedules[ index ].startDate > startDate ) {
                 break;
             }
-            sched = student.schedules[index];
+            sched = student.schedules[ index ];
             index++;
         }
         // "sched" is now the schedule in effect on "startDate" (or null), and "index" points to
         // the NEXT schedule.
         composite = {};
-        cur = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-        ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(function (day, i, arr) {
-            if (sched == null) {
-                composite[day] = null;
-            } else if (cur.getDay() - i >= 2) {
+        cur       = new Date( startDate.getFullYear(), startDate.getMonth(), startDate.getDate() );
+        [ 'mon', 'tue', 'wed', 'thu', 'fri' ].forEach( function ( day, i, arr ) {
+            if ( sched == null ) {
+                composite[ day ] = null;
+            } else if ( cur.getDay() - i >= 2 ) {
                 // If some clown passes in a startDate in the middle  of the week, the effective
                 // schedule for all days prior to the start date should be null.
-                composite[day] = null;
+                composite[ day ] = null;
             } else {
-                composite[day] = sched[day];
+                composite[ day ] = sched[ day ];
             }
 
             // Prepare for the next day: see if the student's next schedule goes into effect
-            cur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() + 1);
-            if (index < student.schedules.length) {
-                if (cur >= student.schedules[index].startDate) {
-                    sched = student.schedules[index];
+            cur = new Date( cur.getFullYear(), cur.getMonth(), cur.getDate() + 1 );
+            if ( index < student.schedules.length ) {
+                if ( cur >= student.schedules[ index ].startDate ) {
+                    sched = student.schedules[ index ];
                     index++;
                 }
             }
-        });
+        } );
         return composite;
     }
 
@@ -480,216 +480,216 @@
             publicApi;
         var source, template;
 
-        function init(selector) {
-            cacheDom(selector);
+        function init( selector ) {
+            cacheDom( selector );
             bindEvents();
-            source = $('#attendance-checkin-row-template').html();
-            template = Handlebars.compile(source);
+            source   = $( '#attendance-checkin-row-template' ).html();
+            template = Handlebars.compile( source );
 
             today = new Date();
             tick();
         }
 
-        function cacheDom(selector) {
-            $page = $(selector);
-            $clock = $page.find('span.clock');
-            $calendar = $page.find('span.calendar');
+        function cacheDom( selector ) {
+            $page     = $( selector );
+            $clock    = $page.find( 'span.clock' );
+            $calendar = $page.find( 'span.calendar' );
 
-            $checkInReport = $page.find('div.attendance-checkin');
-            $filterButtons = $page.find('.btn-group-toggle button');
-            $classFilter = Object.create(CallbackSelect);
-            $classFilter.init($page.find('select.filter-select'), function filterByClassroom(event) {
+            $checkInReport = $page.find( 'div.attendance-checkin' );
+            $filterButtons = $page.find( '.btn-group-toggle button' );
+            $classFilter   = Object.create( CallbackSelect );
+            $classFilter.init( $page.find( 'select.filter-select' ), function filterByClassroom( event ) {
                 $tbody.filter();
-            });
-            $checkinTable = $page.find('table#attendance-checkin-table');
-            $tbody = $checkinTable.find('tbody');
+            } );
+            $checkinTable = $page.find( 'table#attendance-checkin-table' );
+            $tbody        = $checkinTable.find( 'tbody' );
         }
 
         function bindEvents() {
-            $page.on('show', function onCheckinPageShow(event) {
+            $page.on( 'show', function onCheckinPageShow( event ) {
                 event.stopPropagation();
                 $classFilter.empty();
-                $classFilter.addOption('Show All');
-                $classFilter.addOption('Unassigned', 0);
-                Classrooms.forEach(function (classroom) {
-                    $classFilter.addOption(classroom.name, classroom.id);
-                });
+                $classFilter.addOption( 'Show All' );
+                $classFilter.addOption( 'Unassigned', 0 );
+                Classrooms.forEach( function ( classroom ) {
+                    $classFilter.addOption( classroom.name, classroom.id );
+                } );
                 $tbody.filter();
 
                 $tbody.empty();
-                Students.forEach(function (student) {
+                Students.forEach( function ( student ) {
                     var att;
                     var date;
-                    if (student.attendance.length > 0) {
-                        att = student.attendance[student.attendance.length - 1];
-                        if (att.checkIn) {
-                            date = new Date(att.checkIn);
-                            if (date.getDate() === today.getDate()) {
+                    if ( student.attendance.length > 0 ) {
+                        att = student.attendance[ student.attendance.length - 1 ];
+                        if ( att.checkIn ) {
+                            date = new Date( att.checkIn );
+                            if ( date.getDate() === today.getDate() ) {
                                 student.checkedIn = date;
                             }
                         }
-                        if (att.checkOut) {
-                            date = new Date(att.checkOut);
-                            if (date.getDate() === today.getDate()) {
+                        if ( att.checkOut ) {
+                            date = new Date( att.checkOut );
+                            if ( date.getDate() === today.getDate() ) {
                                 student.checkedOut = date;
                             }
                         }
                     }
-                    var html = template(student);
-                    $tbody.append($(html));
-                });
-                var $rows = $tbody.children('tr');
-                $rows.sort(function (row1, row2) {
-                    var a = Students[$(row1).data('student-id')];
-                    var b = Students[$(row2).data('student-id')];
+                    var html = template( student );
+                    $tbody.append( $( html ) );
+                } );
+                var $rows = $tbody.children( 'tr' );
+                $rows.sort( function ( row1, row2 ) {
+                    var a = Students[ $( row1 ).data( 'student-id' ) ];
+                    var b = Students[ $( row2 ).data( 'student-id' ) ];
                     return (a.familyName < b.familyName) ? -1 :
                         (a.familyName > b.familyName) ? 1 :
                             (a.firstName < b.firstName) ? -1 :
                                 (a.firstName > b.firstName) ? 1 :
                                     a.id < b.id ? -1 : 0;
-                });
-                $rows.detach().appendTo($tbody);
-            });
+                } );
+                $rows.detach().appendTo( $tbody );
+            } );
 
-            $filterButtons.on('click', function () {
-                if (!$(this).hasClass('btn-selected')) {
-                    $filterButtons.removeClass('btn-selected');
-                    $(this).addClass('btn-selected');
+            $filterButtons.on( 'click', function () {
+                if ( !$( this ).hasClass( 'btn-selected' ) ) {
+                    $filterButtons.removeClass( 'btn-selected' );
+                    $( this ).addClass( 'btn-selected' );
                     $tbody.filter();
                 }
-            });
+            } );
 
-            $tbody.on('show', 'tr', function (event) {
+            $tbody.on( 'show', 'tr', function ( event ) {
                 event.stopPropagation();
-            });
-            $tbody.on('click', 'button.check-in', function () {
+            } );
+            $tbody.on( 'click', 'button.check-in', function () {
                 var $button, studentId, checkIn;
-                $button = $(this);
-                studentId = $button.closest('tr').data('student-id');
-                $.ajax({
-                    url: 'api/checkIn',
-                    method: 'post',
-                    data: {
+                $button   = $( this );
+                studentId = $button.closest( 'tr' ).data( 'student-id' );
+                $.ajax( {
+                    url     : 'api/checkIn',
+                    method  : 'post',
+                    data    : {
                         'studentId': studentId,
-                        'time': Date.now() / 1000
+                        'time'     : Date.now() / 1000
                     },
                     dataType: 'json',
-                    success: function onCheckInSuccess(json) {
-                        if (!json.success) {
-                            alert('Error checking in student: ' + json.message);
+                    success : function onCheckInSuccess( json ) {
+                        if ( !json.success ) {
+                            alert( 'Error checking in student: ' + json.message );
                         } else {
-                            Students[studentId].attendance.push({
-                                'checkIn': json.attendance.checkIn * 1000,
+                            Students[ studentId ].attendance.push( {
+                                'checkIn' : json.attendance.checkIn * 1000,
                                 'checkOut': json.attendance.checkOut * 1000
-                            });
-                            checkIn = new Date(1000 * json.attendance.checkIn);
-                            $button.closest('tr').find('td.check-in').text(formatTime(checkIn));
-                            $button.closest('tr').find('td.check-out').text('');
+                            } );
+                            checkIn = new Date( 1000 * json.attendance.checkIn );
+                            $button.closest( 'tr' ).find( 'td.check-in' ).text( formatTime( checkIn ) );
+                            $button.closest( 'tr' ).find( 'td.check-out' ).text( '' );
                         }
                     },
-                    error: function onCheckInError(jqXHR, textStatus, errorThrown) {
-                        alert('AJAX error checking in student: ' + textStatus);
+                    error   : function onCheckInError( jqXHR, textStatus, errorThrown ) {
+                        alert( 'AJAX error checking in student: ' + textStatus );
                     }
-                });
-            });
+                } );
+            } );
 
-            $tbody.on('click', 'button.check-out', function () {
+            $tbody.on( 'click', 'button.check-out', function () {
                 var $button, studentId, checkOut;
-                $button = $(this);
-                studentId = $button.closest('tr').data('student-id');
-                $.ajax({
-                    url: 'api/checkOut',
-                    method: 'post',
-                    data: {
+                $button   = $( this );
+                studentId = $button.closest( 'tr' ).data( 'student-id' );
+                $.ajax( {
+                    url     : 'api/checkOut',
+                    method  : 'post',
+                    data    : {
                         'studentId': studentId,
-                        'time': Date.now() / 1000
+                        'time'     : Date.now() / 1000
                     },
                     dataType: 'json',
-                    success: function onCheckOutSuccess(json) {
+                    success : function onCheckOutSuccess( json ) {
                         var att;
-                        if (!json.success) {
-                            alert('Error checking out student: ' + json.message);
-                        } else if (0 === Students[studentId].attendance.length) {
-                            Students[studentId].attendance.push({
-                                'checkIn': json.attendance.checkIn * 1000,
+                        if ( !json.success ) {
+                            alert( 'Error checking out student: ' + json.message );
+                        } else if ( 0 === Students[ studentId ].attendance.length ) {
+                            Students[ studentId ].attendance.push( {
+                                'checkIn' : json.attendance.checkIn * 1000,
                                 'checkOut': json.attendance.checkOut * 1000
-                            });
+                            } );
                         } else {
-                            att = Students[studentId].attendance[Students[studentId].attendance.length - 1];
-                            if (null === att.checkOut) {
+                            att = Students[ studentId ].attendance[ Students[ studentId ].attendance.length - 1 ];
+                            if ( null === att.checkOut ) {
                                 att.checkOut = json.attendance.checkOut;
                             } else {
-                                Students[studentId].attendance.push({
-                                    'checkIn': json.attendance.checkIn * 1000,
+                                Students[ studentId ].attendance.push( {
+                                    'checkIn' : json.attendance.checkIn * 1000,
                                     'checkOut': json.attendance.checkOut * 1000
-                                });
+                                } );
                             }
                         }
-                        checkOut = new Date(1000 * json.attendance.checkOut);
-                        var t = $button.closest('tr').find('td.check-out').text();
-                        if (t != '') {
-                            $button.closest('tr').find('td.check-in').text('');
+                        checkOut = new Date( 1000 * json.attendance.checkOut );
+                        var t    = $button.closest( 'tr' ).find( 'td.check-out' ).text();
+                        if ( t != '' ) {
+                            $button.closest( 'tr' ).find( 'td.check-in' ).text( '' );
                         }
-                        $button.closest('tr').find('td.check-out').text(formatTime(checkOut));
+                        $button.closest( 'tr' ).find( 'td.check-out' ).text( formatTime( checkOut ) );
 
                     },
-                    error: function onCheckOutError(jqXHR, textStatus, errorThrown) {
-                        alert('AJAX error checking out student: ' + textStatus);
+                    error   : function onCheckOutError( jqXHR, textStatus, errorThrown ) {
+                        alert( 'AJAX error checking out student: ' + textStatus );
                     }
-                });
-            });
+                } );
+            } );
 
             $tbody.filter = function () {
                 var now, day;
                 var toggle;
                 var classroom;
 
-                toggle = $filterButtons.filter('.btn-selected').data('toggle');
+                toggle    = $filterButtons.filter( '.btn-selected' ).data( 'toggle' );
                 classroom = $classFilter.val();
-                now = new Date();
-                day = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][now.getDay()];
-                $tbody.find('tr.data').each(function (i, e) {
+                now       = new Date();
+                day       = [ 'sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat' ][ now.getDay() ];
+                $tbody.find( 'tr.data' ).each( function ( i, e ) {
                     var student, sched;
-                    student = Students[$(e).data('student-id')];
-                    sched = student.schedules[student.schedules.length - 1][day];
-                    if (((toggle == 'enrolled') || (sched && (sched.Am || sched.Noon || sched.Pm )))
-                        && (('' == classroom) || ((0 == classroom) && (undefined == student.classroomId)) || (classroom == student.classroomId ))) {
-                        $(e).show()
+                    student = Students[ $( e ).data( 'student-id' ) ];
+                    sched   = student.schedules[ student.schedules.length - 1 ][ day ];
+                    if ( ((toggle == 'enrolled') || (sched && (sched.Am || sched.Noon || sched.Pm )))
+                        && (('' == classroom) || ((0 == classroom) && (undefined == student.classroomId)) || (classroom == student.classroomId )) ) {
+                        $( e ).show()
                     } else {
-                        $(e).hide();
+                        $( e ).hide();
                     }
-                });
+                } );
             };
         }
 
         function tick() {
             var now, hh, mm, ss;
-            var months = ['Jan', 'Feb', 'Mar', 'Apr', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            var months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
 
             now = new Date();
-            hh = now.getHours() % 12;
-            if (0 == hh) hh = 12;
+            hh  = now.getHours() % 12;
+            if ( 0 == hh ) hh = 12;
             mm = now.getMinutes();
-            if (mm < 10) {
+            if ( mm < 10 ) {
                 mm = '0' + mm;
             }
             ss = now.getSeconds();
-            if (ss < 10) {
+            if ( ss < 10 ) {
                 ss = '0' + ss;
             }
-            $clock.text(hh + ':' + mm + ':' + ss + (now.getHours() < 12 ? 'am' : 'pm'));
-            $calendar.text(months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear());
-            if (today.getDate() != now.getDate()) {
+            $clock.text( hh + ':' + mm + ':' + ss + (now.getHours() < 12 ? 'am' : 'pm') );
+            $calendar.text( months[ now.getMonth() ] + ' ' + now.getDate() + ', ' + now.getFullYear() );
+            if ( today.getDate() != now.getDate() ) {
                 today = new Date();
                 clearData();
             }
-            setTimeout(tick, 1000);
+            setTimeout( tick, 1000 );
         }
 
         function clearData() {
-            $tbody.find('td.check-in').text('');
-            $tbody.find('td.check-out').text('');
-            $tbody.find('span.glyphicon-ok').remove();
+            $tbody.find( 'td.check-in' ).text( '' );
+            $tbody.find( 'td.check-out' ).text( '' );
+            $tbody.find( 'span.glyphicon-ok' ).remove();
         }
 
         publicApi = {
@@ -710,23 +710,23 @@
             publicApi;
 
 
-        function init(selector) {
-            cacheDom(selector);
+        function init( selector ) {
+            cacheDom( selector );
             bindEvents();
 
             weekOf = new Date();
-            weekOf = normalizeDateToMonday(weekOf);
+            weekOf = normalizeDateToMonday( weekOf );
             $weekOf.datepicker();
-            $weekOf.datepicker('option', 'showAnim', 'slideDown');
-            $weekOf.datepicker('setDate', weekOf);
-            $('#pdf-attendance').attr('href', 'pdf/attendance?week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate());
+            $weekOf.datepicker( 'option', 'showAnim', 'slideDown' );
+            $weekOf.datepicker( 'setDate', weekOf );
+            $( '#pdf-attendance' ).attr( 'href', 'pdf/attendance?week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate() );
         }
 
 
-        function cacheDom(selector) {
-            $page = $(selector);
-            $weekOf = $page.find('input[name=week-of]');
-            $attendanceSchedules = $page.find('div.attendance-page-schedules');
+        function cacheDom( selector ) {
+            $page                = $( selector );
+            $weekOf              = $page.find( 'input[name=week-of]' );
+            $attendanceSchedules = $page.find( 'div.attendance-page-schedules' );
         }
 
 
@@ -736,32 +736,32 @@
             var template;   // The compiled template
 
             $attendanceSchedules.empty();
-            source = $('#attendance-schedule-class-template').html();
-            template = Handlebars.compile(source);
-            Classrooms.classrooms.forEach(function (classroom) {
+            source   = $( '#attendance-schedule-class-template' ).html();
+            template = Handlebars.compile( source );
+            Classrooms.classrooms.forEach( function ( classroom ) {
                 var context,   // The runtime data to pass to Handlebars
                     html;
                 context = {
                     classroom: classroom,
-                    weekOf: weekOf.toDateString(),
-                    dates: [
+                    weekOf   : weekOf.toDateString(),
+                    dates    : [
                         weekOf,
-                        new Date(weekOf.getFullYear(), weekOf.getMonth(), weekOf.getDate() + 1),
-                        new Date(weekOf.getFullYear(), weekOf.getMonth(), weekOf.getDate() + 2),
-                        new Date(weekOf.getFullYear(), weekOf.getMonth(), weekOf.getDate() + 3),
-                        new Date(weekOf.getFullYear(), weekOf.getMonth(), weekOf.getDate() + 4),
+                        new Date( weekOf.getFullYear(), weekOf.getMonth(), weekOf.getDate() + 1 ),
+                        new Date( weekOf.getFullYear(), weekOf.getMonth(), weekOf.getDate() + 2 ),
+                        new Date( weekOf.getFullYear(), weekOf.getMonth(), weekOf.getDate() + 3 ),
+                        new Date( weekOf.getFullYear(), weekOf.getMonth(), weekOf.getDate() + 4 ),
                     ],
 
-                    students: Students.filter(function (e, i, arr) {
+                    students: Students.filter( function ( e, i, arr ) {
                         return ((e.classroomId == classroom.id) && (true == e.enrolled));
-                    }).sort(function (a, b) {
+                    } ).sort( function ( a, b ) {
                         return (a.familyName < b.familyName) ? -1 :
                             (a.familyName > b.familyName) ? 1 :
                                 (a.firstName < b.firstName) ? -1 :
                                     (a.firstName > b.firstName) ? 1 :
                                         a.id < b.id ? -1 : 1;
-                    }),
-                    totals: {
+                    } ),
+                    totals  : {
                         'mon': 0,
                         'tue': 0,
                         'wed': 0,
@@ -770,84 +770,84 @@
                     }
                 };
 
-                context.students.forEach(function (student, i, arr) {
+                context.students.forEach( function ( student, i, arr ) {
                     var composite;
                     var notes;
-                    composite = getCompositeSchedule(student, weekOf);
+                    composite        = getCompositeSchedule( student, weekOf );
                     student.schedule = {};
-                    notes = {
-                        'HD': 0,
+                    notes            = {
+                        'HD' : 0,
                         'HDL': 0,
-                        'FD': 0
+                        'FD' : 0
                     };
-                    for (var day in composite) {
-                        if (null == composite[day]) {
-                            student.schedule[day] = false;
+                    for ( var day in composite ) {
+                        if ( null == composite[ day ] ) {
+                            student.schedule[ day ] = false;
                         } else {
-                            student.schedule[day] = [];
-                            if (composite[day]['Am']) student.schedule[day].push('A');
-                            if (composite[day]['Noon']) student.schedule[day].push('L');
-                            if (composite[day]['Pm']) student.schedule[day].push('P');
-                            student.schedule[day] = student.schedule[day].join('/');
-                            if (student.schedule[day]) context.totals[day]++;
+                            student.schedule[ day ] = [];
+                            if ( composite[ day ][ 'Am' ] ) student.schedule[ day ].push( 'A' );
+                            if ( composite[ day ][ 'Noon' ] ) student.schedule[ day ].push( 'L' );
+                            if ( composite[ day ][ 'Pm' ] ) student.schedule[ day ].push( 'P' );
+                            student.schedule[ day ] = student.schedule[ day ].join( '/' );
+                            if ( student.schedule[ day ] ) context.totals[ day ]++;
 
-                            if (( composite[day]['Am']) && ( composite[day]['Pm'])) {
-                                notes['FD']++;
-                            } else if (( composite[day]['Am']) || ( composite[day]['Pm'])) {
-                                if (composite[day]['Noon']) {
-                                    notes['HDL']++;
+                            if ( ( composite[ day ][ 'Am' ]) && ( composite[ day ][ 'Pm' ]) ) {
+                                notes[ 'FD' ]++;
+                            } else if ( ( composite[ day ][ 'Am' ]) || ( composite[ day ][ 'Pm' ]) ) {
+                                if ( composite[ day ][ 'Noon' ] ) {
+                                    notes[ 'HDL' ]++;
                                 } else {
-                                    notes['HD']++;
+                                    notes[ 'HD' ]++;
                                 }
                             }
                         }
                     }
                     student.notes = [];
-                    if (notes['FD']) student.notes.push(notes['FD'] + 'FD');
-                    if (notes['HD']) student.notes.push(notes['HD'] + 'HD');
-                    if (notes['HDL']) student.notes.push(notes['HDL'] + 'HDL');
-                    student.notes = student.notes.join(',');
-                });
+                    if ( notes[ 'FD' ] ) student.notes.push( notes[ 'FD' ] + 'FD' );
+                    if ( notes[ 'HD' ] ) student.notes.push( notes[ 'HD' ] + 'HD' );
+                    if ( notes[ 'HDL' ] ) student.notes.push( notes[ 'HDL' ] + 'HDL' );
+                    student.notes = student.notes.join( ',' );
+                } );
 
                 // Append 3 blank entries to end of each class list
-                [1, 2, 3].forEach(function () {
-                    context.students.push({
-                        firstName: '',
+                [ 1, 2, 3 ].forEach( function () {
+                    context.students.push( {
+                        firstName : '',
                         familyName: '',
-                        schedule: {'mon': {}, 'tue': {}, 'wed': {}, 'thu': {}, 'fri': {}},
-                        notes: ''
-                    });
-                });
-                html = template(context);
-                $attendanceSchedules.append($(html));
-            });
+                        schedule  : { 'mon': {}, 'tue': {}, 'wed': {}, 'thu': {}, 'fri': {} },
+                        notes     : ''
+                    } );
+                } );
+                html = template( context );
+                $attendanceSchedules.append( $( html ) );
+            } );
 
         }
 
 
         function bindEvents() {
-            $page.on('show', generateAttendanceSheets);
-            $weekOf.on('change', function onWeekOfChange() {
-                weekOf = $weekOf.datepicker('getDate');
-                weekOf = normalizeDateToMonday(weekOf);
-                $weekOf.datepicker('setDate', weekOf).blur();
+            $page.on( 'show', generateAttendanceSheets );
+            $weekOf.on( 'change', function onWeekOfChange() {
+                weekOf = $weekOf.datepicker( 'getDate' );
+                weekOf = normalizeDateToMonday( weekOf );
+                $weekOf.datepicker( 'setDate', weekOf ).blur();
                 generateAttendanceSheets();
-                $('#pdf-attendance').attr('href', 'pdf/attendance?week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate());
-            });
+                $( '#pdf-attendance' ).attr( 'href', 'pdf/attendance?week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate() );
+            } );
         }
 
 
-        function sort(key) {
-            var $rows = $tbody.children('tr[data-student-id]');
-            $rows.sort(function (a, b) {
+        function sort( key ) {
+            var $rows = $tbody.children( 'tr[data-student-id]' );
+            $rows.sort( function ( a, b ) {
                 var id1, id2, key1, key2;
-                id1 = $(a).attr('data-student-id');
-                id2 = $(b).attr('data-student-id');
-                key1 = Students[id1][key];
-                key2 = Students[id2][key];
+                id1  = $( a ).attr( 'data-student-id' );
+                id2  = $( b ).attr( 'data-student-id' );
+                key1 = Students[ id1 ][ key ];
+                key2 = Students[ id2 ][ key ];
                 return (key1 > key2) ? 1 : (key2 > key1) ? -1 : 0;
-            });
-            $rows.detach().prependTo($tbody);
+            } );
+            $rows.detach().prependTo( $tbody );
         }
 
 
@@ -868,22 +868,22 @@
             $weekOf,  // Control to select weekOf
             publicApi;
 
-        function init(selector) {
-            cacheDom(selector);
+        function init( selector ) {
+            cacheDom( selector );
             bindEvents();
 
             weekOf = new Date();
-            weekOf = normalizeDateToMonday(weekOf);
+            weekOf = normalizeDateToMonday( weekOf );
             $weekOf.datepicker();
-            $weekOf.datepicker('option', 'showAnim', 'slideDown');
-            $weekOf.datepicker('setDate', weekOf);
-            $('#pdf-signin').attr('href', 'pdf/signin?week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate());
+            $weekOf.datepicker( 'option', 'showAnim', 'slideDown' );
+            $weekOf.datepicker( 'setDate', weekOf );
+            $( '#pdf-signin' ).attr( 'href', 'pdf/signin?week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate() );
         }
 
-        function cacheDom(selector) {
-            $page = $(selector);
-            $weekOf = $page.find('input[name=week-of]');
-            $contents = $page.find('.signin-page-contents');
+        function cacheDom( selector ) {
+            $page     = $( selector );
+            $weekOf   = $page.find( 'input[name=week-of]' );
+            $contents = $page.find( '.signin-page-contents' );
         }
 
 
@@ -891,68 +891,68 @@
             var source;     // Source for the Handlebars template
             var template;   // The compiled template
             $contents.empty();
-            source = $('#attendance-signin-class-template').html();
-            template = Handlebars.compile(source);
-            Classrooms.classrooms.forEach(function (classroom) {
+            source   = $( '#attendance-signin-class-template' ).html();
+            template = Handlebars.compile( source );
+            Classrooms.classrooms.forEach( function ( classroom ) {
                 var context,
                     html;
                 context = {
                     classroom: classroom.name,
-                    weekOf: weekOf.toDateString(),
-                    students: Students.filter(function (e, i, arr) {
+                    weekOf   : weekOf.toDateString(),
+                    students : Students.filter( function ( e, i, arr ) {
                         return ((e.classroomId == classroom.id) && (true == e.enrolled));
-                    }).sort(function (a, b) {
+                    } ).sort( function ( a, b ) {
                         return (a.familyName < b.familyName) ? -1 :
                             (a.familyName > b.familyName) ? 1 :
                                 (a.firstName < b.firstName) ? -1 :
                                     (a.firstName > b.firstName) ? 1 :
                                         a.id < b.id ? -1 : 1;
-                    })
+                    } )
                 };
-                context.students.forEach(function (student, i, arr) {
+                context.students.forEach( function ( student, i, arr ) {
                     var composite;
                     var notes;
-                    composite = getCompositeSchedule(student, weekOf);
+                    composite        = getCompositeSchedule( student, weekOf );
                     student.schedule = {};
-                    for (var day in composite) {
-                        if (null == composite[day]) {
-                            student.schedule[day] = false;
+                    for ( var day in composite ) {
+                        if ( null == composite[ day ] ) {
+                            student.schedule[ day ] = false;
                         } else {
-                            student.schedule[day] = [];
-                            if (composite[day]['Am']) student.schedule[day].push('A');
-                            if (composite[day]['Noon']) student.schedule[day].push('L');
-                            if (composite[day]['Pm']) student.schedule[day].push('P');
-                            student.schedule[day] = student.schedule[day].join('/');
+                            student.schedule[ day ] = [];
+                            if ( composite[ day ][ 'Am' ] ) student.schedule[ day ].push( 'A' );
+                            if ( composite[ day ][ 'Noon' ] ) student.schedule[ day ].push( 'L' );
+                            if ( composite[ day ][ 'Pm' ] ) student.schedule[ day ].push( 'P' );
+                            student.schedule[ day ] = student.schedule[ day ].join( '/' );
                         }
                     }
-                });
+                } );
 
                 // Append 3 blank entries to end of each class list
-                [1, 2, 3].forEach(function () {
-                    context.students.push({
-                        firstName: '',
+                [ 1, 2, 3 ].forEach( function () {
+                    context.students.push( {
+                        firstName : '',
                         familyName: '',
-                        schedule: {'mon': {}, 'tue': {}, 'wed': {}, 'thu': {}, 'fri': {}},
-                        notes: ''
-                    });
-                });
+                        schedule  : { 'mon': {}, 'tue': {}, 'wed': {}, 'thu': {}, 'fri': {} },
+                        notes     : ''
+                    } );
+                } );
 
-                html = template(context);
-                $contents.append($(html));
-            });
+                html = template( context );
+                $contents.append( $( html ) );
+            } );
 
         }
 
         function bindEvents() {
-            $page.on('show', generateSigninSheets);
+            $page.on( 'show', generateSigninSheets );
 
-            $weekOf.on('change', function onWeekOfChange() {
-                weekOf = $weekOf.datepicker('getDate');
-                weekOf = normalizeDateToMonday(weekOf);
-                $weekOf.datepicker('setDate', weekOf).blur();
+            $weekOf.on( 'change', function onWeekOfChange() {
+                weekOf = $weekOf.datepicker( 'getDate' );
+                weekOf = normalizeDateToMonday( weekOf );
+                $weekOf.datepicker( 'setDate', weekOf ).blur();
                 generateSigninSheets();
-                $('#pdf-signin').attr('href', 'pdf/signin?week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate());
-            });
+                $( '#pdf-signin' ).attr( 'href', 'pdf/signin?week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate() );
+            } );
         }
 
         publicApi = {
@@ -968,45 +968,45 @@
     var ReportsPage = (function () {
         var $page, $pills, targets, $panels, publicApi;
 
-        function init(selector) {
-            cacheDom(selector);
+        function init( selector ) {
+            cacheDom( selector );
             bindEvents();
         }
 
-        function cacheDom(selector) {
-            $page = $(selector);
-            $pills = $page.find('li.report-pill');
-            targets = $pills.map(function () {
-                return $(this).data('target');
-            }).get();
-            $panels = $page.find('div.report');
+        function cacheDom( selector ) {
+            $page   = $( selector );
+            $pills  = $page.find( 'li.report-pill' );
+            targets = $pills.map( function () {
+                return $( this ).data( 'target' );
+            } ).get();
+            $panels = $page.find( 'div.report' );
         }
 
         function bindEvents() {
-            $page.on('show', '.panel', function (event) {
+            $page.on( 'show', '.panel', function ( event ) {
                 event.stopPropagation();
-            });
+            } );
 
-            $page.on('show', function () {
+            $page.on( 'show', function () {
                 showReport();
-            });
+            } );
 
-            $pills.on('click', function () {
-                showReport($(this).data('target'));
-            });
+            $pills.on( 'click', function () {
+                showReport( $( this ).data( 'target' ) );
+            } );
 
         }
 
-        function showReport(id) {
-            id = id || targets[0];
-            $pills.removeClass('active').filter(function () {
-                return ($(this).data('target') === id);
-            }).addClass('active');
-            $panels.hide().filter(id).show();
+        function showReport( id ) {
+            id = id || targets[ 0 ];
+            $pills.removeClass( 'active' ).filter( function () {
+                return ($( this ).data( 'target' ) === id);
+            } ).addClass( 'active' );
+            $panels.hide().filter( id ).show();
         }
 
         publicApi = {
-            init: init,
+            init      : init,
             showReport: showReport
         };
         return publicApi;
@@ -1046,46 +1046,46 @@
             $cancelStudent,
             publicApi;
 
-        function init(selector) {
-            cacheDom(selector);
+        function init( selector ) {
+            cacheDom( selector );
             bindMethods();
             bindEvents();
         }
 
-        function cacheDom(selector) {
-            $page = $(selector);
-            $classFilter = $page.find('select[name=classroom-filter]');
-            $activeFilter = $page.find('select[name=active-filter]');
-            $studentList = $page.find('select[name=student-list]');
+        function cacheDom( selector ) {
+            $page         = $( selector );
+            $classFilter  = $page.find( 'select[name=classroom-filter]' );
+            $activeFilter = $page.find( 'select[name=active-filter]' );
+            $studentList  = $page.find( 'select[name=student-list]' );
 
-            $newStudent = $page.find('button[name=new-student-button]');
-            $deleteStudent = $page.find('button[name=delete-student-button]');
+            $newStudent    = $page.find( 'button[name=new-student-button]' );
+            $deleteStudent = $page.find( 'button[name=delete-student-button]' );
 
-            $studentDetails = $page.find('.student-detail-panel');
+            $studentDetails = $page.find( '.student-detail-panel' );
 
-            $familyName = $page.find('input[name=familyName]');
-            $firstName = $page.find('input[name=firstName]');
-            $isEnrolled = $page.find('input[name=enrolled]');
-            $classrooms = $page.find('select[name=classrooms]');
-            $inputs = $page.find('input[type=text]');
-            $startDate = $page.find('input[name=startDate]');
+            $familyName = $page.find( 'input[name=familyName]' );
+            $firstName  = $page.find( 'input[name=firstName]' );
+            $isEnrolled = $page.find( 'input[name=enrolled]' );
+            $classrooms = $page.find( 'select[name=classrooms]' );
+            $inputs     = $page.find( 'input[type=text]' );
+            $startDate  = $page.find( 'input[name=startDate]' );
             $startDate.datepicker();
-            $startDate.datepicker("option", "showAnim", 'slideDown');
-            $endDate = $page.find('input[name=endDate]');
+            $startDate.datepicker( "option", "showAnim", 'slideDown' );
+            $endDate = $page.find( 'input[name=endDate]' );
             $endDate.datepicker();
-            $endDate.datepicker("option", "showAnim", 'slideDown');
+            $endDate.datepicker( "option", "showAnim", 'slideDown' );
 
-            $whichSchedule = $page.find('select[name=whichSchedule]');
-            $scheduleTable = $page.find('table#student-schedule-table');
-            $checkAll = $page.find('button.checkAll');
-            $checkboxes = $scheduleTable.find('input[type=checkbox]');
-            $thCheckers = $scheduleTable.find('th.checkcontrol');
-            $tdCheckers = $scheduleTable.find('td.checkcontrol');
-            $checkButtons = $scheduleTable.find('.checkcontrol button');
-            $saveButtons = $page.find('button.btn-save');
-            $saveAndAnother = $page.find('button[name=save-and-another]');
-            $saveAndClose = $page.find('button[name=save-and-close]');
-            $cancelStudent = $page.find('button[name=cancel-student-button]');
+            $whichSchedule  = $page.find( 'select[name=whichSchedule]' );
+            $scheduleTable  = $page.find( 'table#student-schedule-table' );
+            $checkAll       = $page.find( 'button.checkAll' );
+            $checkboxes     = $scheduleTable.find( 'input[type=checkbox]' );
+            $thCheckers     = $scheduleTable.find( 'th.checkcontrol' );
+            $tdCheckers     = $scheduleTable.find( 'td.checkcontrol' );
+            $checkButtons   = $scheduleTable.find( '.checkcontrol button' );
+            $saveButtons    = $page.find( 'button.btn-save' );
+            $saveAndAnother = $page.find( 'button[name=save-and-another]' );
+            $saveAndClose   = $page.find( 'button[name=save-and-close]' );
+            $cancelStudent  = $page.find( 'button[name=cancel-student-button]' );
         }
 
         function bindMethods() {
@@ -1093,9 +1093,9 @@
             ////////////////////////////////////////////////////////////////////////////////
             // Methods bound to the "Class Filter" drop-down list
             ////////////////////////////////////////////////////////////////////////////////
-            $classFilter.addClassroom = function (classroom) {
-                var $option = $('<option>').text(classroom.name).val(classroom.id);
-                $classFilter.append($option);
+            $classFilter.addClassroom = function ( classroom ) {
+                var $option = $( '<option>' ).text( classroom.name ).val( classroom.id );
+                $classFilter.append( $option );
                 return $classFilter;
             };
 
@@ -1110,62 +1110,62 @@
                 var classId, active;
                 classId = $classFilter.val();
 
-                $(this).find('span > option').unwrap();   // Show all
-                if ('' == classId) {
+                $( this ).find( 'span > option' ).unwrap();   // Show all
+                if ( '' == classId ) {
                     // Show all
-                } else if (classId == 0) {
+                } else if ( classId == 0 ) {
                     // Show unassigned
-                    $(this).find('option').each(function (i, e) {
-                        var student = Students[$(e).val()];
-                        if (null != student.classroomId) {
-                            $(e).wrap('<span>');
+                    $( this ).find( 'option' ).each( function ( i, e ) {
+                        var student = Students[ $( e ).val() ];
+                        if ( null != student.classroomId ) {
+                            $( e ).wrap( '<span>' );
                         }
-                    });
+                    } );
                 } else {
-                    $(this).find('option').each(function (i, e) {
-                        var student = Students[$(e).val()];
-                        if (null == student.classroomId || classId !== student.classroomId) {
-                            $(e).wrap('<span>');
+                    $( this ).find( 'option' ).each( function ( i, e ) {
+                        var student = Students[ $( e ).val() ];
+                        if ( null == student.classroomId || classId !== student.classroomId ) {
+                            $( e ).wrap( '<span>' );
                         }
-                    });
+                    } );
                 }
 
                 active = $activeFilter.val();
-                if ('' == active) {
+                if ( '' == active ) {
                     // Show all
                 } else {
-                    $(this).find('option').each(function (i, e) {
-                        var student = Students[$(e).val()];
-                        if ($(e).parent().is('span')) {
+                    $( this ).find( 'option' ).each( function ( i, e ) {
+                        var student = Students[ $( e ).val() ];
+                        if ( $( e ).parent().is( 'span' ) ) {
                             // No option; don't double-wrap
-                        } else if ('true' == active && !student.enrolled) {
-                            $(e).wrap('<span>');
-                        } else if ('false' == active && student.enrolled) {
-                            $(e).wrap('<span>');
+                        } else if ( 'true' == active && !student.enrolled ) {
+                            $( e ).wrap( '<span>' );
+                        } else if ( 'false' == active && student.enrolled ) {
+                            $( e ).wrap( '<span>' );
                         }
-                    });
+                    } );
                 }
                 return $studentList;
             };
 
             // Add a student to the Student List
-            $studentList.addStudent = function (student) {
+            $studentList.addStudent = function ( student ) {
                 var $option;
-                $option = $('<option>')
-                    .text(student.familyName + ', ' + student.firstName).val(student.id);
-                $studentList.append($option);
+                $option = $( '<option>' )
+                    .text( student.familyName + ', ' + student.firstName ).val( student.id );
+                $studentList.append( $option );
                 return $studentList;
             };
 
             // Update one of the students in the student list
-            $studentList.updateStudent = function (student) {
+            $studentList.updateStudent = function ( student ) {
                 var $opt, filter;
-                $opt = $(this).find('option[value=' + student.id + ']');
-                $opt.text(student.familyName + ', ' + student.firstName);
+                $opt = $( this ).find( 'option[value=' + student.id + ']' );
+                $opt.text( student.familyName + ', ' + student.firstName );
                 filter = $classFilter.val();
-                if (( '' == filter )
+                if ( ( '' == filter )
                     || (( 0 == filter ) && ( undefined == student.classroomId ))
-                    || ((undefined != student.classroomId) && (filter == student.classroomId ))) {
+                    || ((undefined != student.classroomId) && (filter == student.classroomId )) ) {
                     $opt.show();
                 } else {
                     $opt.hide();
@@ -1176,69 +1176,69 @@
             };
 
             // Remove the student identified by the input parameter
-            $studentList.deleteStudent = function (studentId) {
-                $studentList.find('option[value=' + studentId + ']').remove();
+            $studentList.deleteStudent = function ( studentId ) {
+                $studentList.find( 'option[value=' + studentId + ']' ).remove();
                 return $studentList;
             };
 
             // Sort the student list according to last name
             $studentList.sort = function () {
-                var $options = $(this).children('option');
-                $options.sort(function (a, b) {
-                    return (Students[$(a).val()].familyName > Students[$(b).val()].familyName) ? 1 :
-                        (Students[$(a).val()].familyName < Students[$(b).val()].familyName) ? -1 :
-                            (Students[$(a).val()].firstName > Students[$(b).val()].firstName) ? 1 :
-                                (Students[$(a).val()].firstName < Students[$(b).val()].firstName) ? -1 : 0;
-                });
-                $options.detach().prependTo($(this));
+                var $options = $( this ).children( 'option' );
+                $options.sort( function ( a, b ) {
+                    return (Students[ $( a ).val() ].familyName > Students[ $( b ).val() ].familyName) ? 1 :
+                        (Students[ $( a ).val() ].familyName < Students[ $( b ).val() ].familyName) ? -1 :
+                            (Students[ $( a ).val() ].firstName > Students[ $( b ).val() ].firstName) ? 1 :
+                                (Students[ $( a ).val() ].firstName < Students[ $( b ).val() ].firstName) ? -1 : 0;
+                } );
+                $options.detach().prependTo( $( this ) );
                 return $studentList;
             };
 
             // How to update the GUI after a student has been selected in the Student List
-            $studentList.updateStudentDetails = function (studentId) {
+            $studentList.updateStudentDetails = function ( studentId ) {
                 var student;
 
-                student = Students[studentId];
-                $deleteStudent.prop('disabled', student.enrolled);
-                $familyName.val(student.familyName).data('dbval', student.familyName).removeClass('modified').prop('disabled', false);
-                $firstName.val(student.firstName).data('dbval', student.firstName).removeClass('modified').prop('disabled', false);
-                $isEnrolled.prop('checked', student.enrolled).prop('disabled', false);
-                $classrooms.val(student.classroomId ? student.classroomId : 0).data('dbval', student.classroomId).removeClass('modified').prop('disabled', false);
+                student = Students[ studentId ];
+                $deleteStudent.prop( 'disabled', student.enrolled );
+                $familyName.val( student.familyName ).data( 'dbval', student.familyName ).removeClass( 'modified' ).prop( 'disabled', false );
+                $firstName.val( student.firstName ).data( 'dbval', student.firstName ).removeClass( 'modified' ).prop( 'disabled', false );
+                $isEnrolled.prop( 'checked', student.enrolled ).prop( 'disabled', false );
+                $classrooms.val( student.classroomId ? student.classroomId : 0 ).data( 'dbval', student.classroomId ).removeClass( 'modified' ).prop( 'disabled', false );
 
-                $whichSchedule.prop('disabled', false).empty();
-                student.schedules.forEach(function (e, i, arr) {
-                    $whichSchedule.addSchedule(e, i);
-                });
+                $whichSchedule.prop( 'disabled', false ).empty();
+                student.schedules.forEach( function ( e, i, arr ) {
+                    $whichSchedule.addSchedule( e, i );
+                } );
 
-                $whichSchedule.selectSchedule(getToday());
-                $checkAll.prop('disabled', false);
-                $checkButtons.prop('disabled', false);
-                $startDate.enable(false);
-                $endDate.enable(false);
+                $whichSchedule.selectSchedule( getToday() );
+                $checkAll.prop( 'disabled', false );
+                $checkButtons.prop( 'disabled', false );
+                $startDate.enable( false );
+                $endDate.enable( false );
 
-                $saveButtons.prop('disabled', false);
-                $cancelStudent.prop('disabled', false);
+                $saveButtons.prop( 'disabled', false );
+                $cancelStudent.prop( 'disabled', false );
 
                 return $studentList;
             };
 
             // Unselect all students and reset page state.
             $studentList.resetStudentDetails = function () {
-                $newStudent.prop('disabled', false);
-                $deleteStudent.prop('disabled', true);
-                $inputs.val('').data('dbval', '').removeClass('modified').prop('disabled', true);
-                $isEnrolled.prop('checked', false).prop('disabled', true);
-                $classrooms.val(0).data('dbval', 0).removeClass('modified').prop('disabled', true);
-                $whichSchedule.empty().removeClass('modified').prop('disabled', true);
-                $checkAll.prop('disabled', true);
-                $checkButtons.prop('disabled', true);
-                $checkboxes.prop('checked', false)
-                    .data('dbval', false)
-                    .removeClass('modified')
-                    .prop('disabled', true)
-                    .closest('td').removeClass('modified');
-                $saveButtons.prop('disabled', true);
-                $cancelStudent.prop('disabled', true);
+                $newStudent.prop( 'disabled', false );
+                $deleteStudent.prop( 'disabled', true );
+                $inputs.val( '' ).data( 'dbval', '' ).removeClass( 'modified' ).prop( 'disabled', true );
+                $isEnrolled.prop( 'checked', false ).prop( 'disabled', true );
+                $classrooms.val( 0 ).data( 'dbval', 0 ).removeClass( 'modified' ).prop( 'disabled', true );
+                $whichSchedule.empty().removeClass( 'modified' ).prop( 'disabled', true );
+                $checkAll.prop( 'disabled', true );
+                $checkButtons.prop( 'disabled', true );
+                $checkboxes.prop( 'checked', false )
+                    .data( 'dbval', false )
+                    .removeClass( 'modified' )
+                    .prop( 'disabled', true )
+                    .closest( 'td' ).removeClass( 'modified' );
+                $saveButtons.prop( 'disabled', true );
+                $cancelStudent.prop( 'disabled', true );
                 return $studentList;
             };
 
@@ -1246,9 +1246,9 @@
             ////////////////////////////////////////////////////////////////////////////////
             // Methods bound to the "Class" drop-down list
             ////////////////////////////////////////////////////////////////////////////////
-            $classrooms.addClassroom = function (classroom) {
-                var $option = $('<option>').text(classroom.name).val(classroom.id);
-                $classrooms.append($option);
+            $classrooms.addClassroom = function ( classroom ) {
+                var $option = $( '<option>' ).text( classroom.name ).val( classroom.id );
+                $classrooms.append( $option );
                 return $classrooms;
             };
 
@@ -1258,41 +1258,41 @@
             ////////////////////////////////////////////////////////////////////////////////
 
             // Add a new schedule to the list of available schedules
-            $whichSchedule.addSchedule = function (schedule, index) {
+            $whichSchedule.addSchedule = function ( schedule, index ) {
                 var startDate,
                     $option,
                     months;
-                months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                startDate = new Date(schedule.startDate);
-                $option = $('<option>')
-                    .text(months[startDate.getMonth()] + ' ' + startDate.getDate() + ', ' + startDate.getFullYear())
-                    .val(index)
-                    .data('startDate', startDate);
-                $whichSchedule.append($option);
+                months    = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
+                startDate = new Date( schedule.startDate );
+                $option   = $( '<option>' )
+                    .text( months[ startDate.getMonth() ] + ' ' + startDate.getDate() + ', ' + startDate.getFullYear() )
+                    .val( index )
+                    .data( 'startDate', startDate );
+                $whichSchedule.append( $option );
             };
 
             // Selects the schedule which will be effective on the given date
-            $whichSchedule.selectSchedule = function (targetDate) {
+            $whichSchedule.selectSchedule = function ( targetDate ) {
                 var $opts;
                 var startDate;
                 var i;
 
-                $opts = $whichSchedule.find('option');
-                if (0 == $opts.length) {
+                $opts = $whichSchedule.find( 'option' );
+                if ( 0 == $opts.length ) {
                     $checkboxes.reset();
                 } else {
-                    if (targetDate <= $opts.eq(0).data('startDate')) {
-                        $whichSchedule.val(0);
+                    if ( targetDate <= $opts.eq( 0 ).data( 'startDate' ) ) {
+                        $whichSchedule.val( 0 );
                     } else {
-                        for (i = 1; i < $opts.length; i++) {
-                            startDate = $opts.eq(i).data('startDate');
-                            if (startDate > targetDate) {
-                                $whichSchedule.val(i - 1);
+                        for ( i = 1; i < $opts.length; i++ ) {
+                            startDate = $opts.eq( i ).data( 'startDate' );
+                            if ( startDate > targetDate ) {
+                                $whichSchedule.val( i - 1 );
                                 break;
                             }
                         }
-                        if (i == $opts.length) {
-                            $whichSchedule.val($opts.length - 1);
+                        if ( i == $opts.length ) {
+                            $whichSchedule.val( $opts.length - 1 );
                         }
                     }
                     $whichSchedule.updateSchedule();
@@ -1303,9 +1303,9 @@
             $whichSchedule.updateSchedule = function () {
                 var student;
                 var schedule;
-                student = Students[$studentList.val()];
-                schedule = student.schedules[$whichSchedule.val()];
-                $checkboxes.initialize(schedule);
+                student  = Students[ $studentList.val() ];
+                schedule = student.schedules[ $whichSchedule.val() ];
+                $checkboxes.initialize( schedule );
             };
 
 
@@ -1316,47 +1316,47 @@
             // Return true if any of the checkboxes have been modified - that is, have a value different from the one
             // stored in the database.
             $checkboxes.areModified = function () {
-                return ($checkboxes.filter(function (index) {
-                    return $(this).data('dbval') !== $(this).prop('checked');
-                }).length > 0);
+                return ($checkboxes.filter( function ( index ) {
+                    return $( this ).data( 'dbval' ) !== $( this ).prop( 'checked' );
+                } ).length > 0);
             };
 
             // Convert the checkboxes into something that can be passed in an HTTP request
             $checkboxes.serializeSchedule = function () {
-                var temp = {};
+                var temp  = {};
                 var part;
                 var day;
                 var sched = [];
-                $scheduleTable.find('tbody tr[data-day-part]').each(function (i, e) {
-                    temp[$(e).data('day-part')] = ($(e).find('input:checked').map(function (i, e) {
-                        return $(e).attr('name');
-                    }).get());
-                });
+                $scheduleTable.find( 'tbody tr[data-day-part]' ).each( function ( i, e ) {
+                    temp[ $( e ).data( 'day-part' ) ] = ($( e ).find( 'input:checked' ).map( function ( i, e ) {
+                        return $( e ).attr( 'name' );
+                    } ).get());
+                } );
 
-                for (part in temp) {
-                    for (day in temp[part]) {
-                        sched.push(temp[part][day] + part + '=On');
+                for ( part in temp ) {
+                    for ( day in temp[ part ] ) {
+                        sched.push( temp[ part ][ day ] + part + '=On' );
                     }
                 }
-                return sched.join('&');
+                return sched.join( '&' );
             };
 
             // Set/clear the schedule checkbox
-            $checkboxes.initialize = function (sched) {
-                $checkboxes.each(function initializeScheduleCheckbox(i, e) {
-                    $(e).prop('checked', sched[$(e).attr('name')][$(e).closest('tr').data('day-part')]);
-                    $(e).data('dbval', sched[$(e).attr('name')][$(e).closest('tr').data('day-part')]);
-                    $(e).removeClass('modified').prop('disabled', false).closest('td').removeClass('modified');
-                });
+            $checkboxes.initialize = function ( sched ) {
+                $checkboxes.each( function initializeScheduleCheckbox( i, e ) {
+                    $( e ).prop( 'checked', sched[ $( e ).attr( 'name' ) ][ $( e ).closest( 'tr' ).data( 'day-part' ) ] );
+                    $( e ).data( 'dbval', sched[ $( e ).attr( 'name' ) ][ $( e ).closest( 'tr' ).data( 'day-part' ) ] );
+                    $( e ).removeClass( 'modified' ).prop( 'disabled', false ).closest( 'td' ).removeClass( 'modified' );
+                } );
             };
 
             // Clear all checkboxes
             $checkboxes.reset = function () {
-                $checkboxes.each(function resetCheckbox(i, e) {
-                    $(e).prop('checked', false);
-                    $(e).data('dbval', false);
-                    $(e).removeClass('modified').prop('disabled', false).closest('td').removeClass('modified');
-                });
+                $checkboxes.each( function resetCheckbox( i, e ) {
+                    $( e ).prop( 'checked', false );
+                    $( e ).data( 'dbval', false );
+                    $( e ).removeClass( 'modified' ).prop( 'disabled', false ).closest( 'td' ).removeClass( 'modified' );
+                } );
             };
 
 
@@ -1366,21 +1366,21 @@
 
             // Enable or disable the Start Date widget.  If enabling, initialize with the current date.  Otherwise,
             // clear the widget and remove the 'modified' class.
-            $startDate.enable = function (b) {
-                $startDate.prop('disabled', !b);
-                if (true === b) {
-                    if (!$startDate.val()) {
-                        $startDate.datepicker('setDate', new Date());
+            $startDate.enable = function ( b ) {
+                $startDate.prop( 'disabled', !b );
+                if ( true === b ) {
+                    if ( !$startDate.val() ) {
+                        $startDate.datepicker( 'setDate', new Date() );
                     }
                 } else {
-                    $startDate.val('').removeClass('modified');
+                    $startDate.val( '' ).removeClass( 'modified' );
                 }
             };
 
-            $endDate.enable = function (b) {
-                $endDate.prop('disabled', !b);
-                if (false === b) {
-                    $endDate.val('').removeClass('modified');
+            $endDate.enable = function ( b ) {
+                $endDate.prop( 'disabled', !b );
+                if ( false === b ) {
+                    $endDate.val( '' ).removeClass( 'modified' );
                 }
             };
 
@@ -1390,32 +1390,32 @@
             ////////////////////////////////////////////////////////////////////////////////
 
             // Enable or disable the Delete Student control.
-            $deleteStudent.enable = function (b) {
-                $deleteStudent.prop('disabled', !b);
+            $deleteStudent.enable = function ( b ) {
+                $deleteStudent.prop( 'disabled', !b );
             };
 
-            $deleteStudent.deleteStudent = function (studentId) {
-                if (confirm('Are you sure you want to delete ' + Students[studentId].firstName + ' ' + Students[studentId].familyName + '?')) {
-                    $.ajax({
-                        url: 'api/deleteStudent',
-                        method: 'post',
-                        data: {'id': studentId},
+            $deleteStudent.deleteStudent = function ( studentId ) {
+                if ( confirm( 'Are you sure you want to delete ' + Students[ studentId ].firstName + ' ' + Students[ studentId ].familyName + '?' ) ) {
+                    $.ajax( {
+                        url     : 'api/deleteStudent',
+                        method  : 'post',
+                        data    : { 'id': studentId },
                         dataType: 'json',
-                        success: function onDeleteStudentSuccess(json) {
-                            if (true != json.success) {
-                                alert('Unable to delete student: ' + json.message);
+                        success : function onDeleteStudentSuccess( json ) {
+                            if ( true != json.success ) {
+                                alert( 'Unable to delete student: ' + json.message );
                             } else {
-                                delete Students[studentId];
-                                $studentList.deleteStudent(studentId);
-                                if (!$studentList.val()) {
+                                delete Students[ studentId ];
+                                $studentList.deleteStudent( studentId );
+                                if ( !$studentList.val() ) {
                                     $studentList.resetStudentDetails();
                                 }
                             }
                         },
-                        error: function onDeleteStudentError(jqXHR, textStatus, errorThrown) {
-                            alert('AJAX error deleting student: ' + textStatus);
+                        error   : function onDeleteStudentError( jqXHR, textStatus, errorThrown ) {
+                            alert( 'AJAX error deleting student: ' + textStatus );
                         }
-                    });
+                    } );
                 }
             }
         }
@@ -1423,254 +1423,254 @@
 
         function bindEvents() {
             // We can do this because we extended the jQuery 'show' function
-            $page.on('show', function (event) {
+            $page.on( 'show', function ( event ) {
                 event.stopPropagation();
 
                 $classFilter.empty();
-                $classFilter.append($('<option>').text('Show All').val(''));
-                $classFilter.append($('<option>').text('Unassigned').val(0));
+                $classFilter.append( $( '<option>' ).text( 'Show All' ).val( '' ) );
+                $classFilter.append( $( '<option>' ).text( 'Unassigned' ).val( 0 ) );
 
                 $classrooms.empty();
-                $classrooms.append($('<option>').text('Unassigned').val(0));
+                $classrooms.append( $( '<option>' ).text( 'Unassigned' ).val( 0 ) );
 
-                Classrooms.classrooms.forEach(function (classroom) {
-                    $classrooms.addClassroom(classroom);
-                    $classFilter.addClassroom(classroom);
-                });
+                Classrooms.classrooms.forEach( function ( classroom ) {
+                    $classrooms.addClassroom( classroom );
+                    $classFilter.addClassroom( classroom );
+                } );
 
                 $studentList.empty();
-                Students.forEach(function (student) {
-                    $studentList.addStudent(student);
-                });
+                Students.forEach( function ( student ) {
+                    $studentList.addStudent( student );
+                } );
                 $studentList.sort().resetStudentDetails();
-            });
+            } );
 
 
-            $classFilter.on('change', function () {
+            $classFilter.on( 'change', function () {
                 $studentList.filter();
-            });
+            } );
 
-            $activeFilter.on('change', function () {
+            $activeFilter.on( 'change', function () {
                 $studentList.filter();
-            });
+            } );
 
-            $studentList.on('change', function () {
-                if ($(this).val()) {
-                    $studentList.updateStudentDetails($(this).val());
+            $studentList.on( 'change', function () {
+                if ( $( this ).val() ) {
+                    $studentList.updateStudentDetails( $( this ).val() );
                 } else {
                     $studentList.resetStudentDetails();
                 }
-            });
+            } );
 
 
-            $studentList.on('show', 'option', function (event) {
+            $studentList.on( 'show', 'option', function ( event ) {
                 event.stopPropagation();
-            });
+            } );
 
 
-            $newStudent.on('click', function () {
-                $studentList.val('');
+            $newStudent.on( 'click', function () {
+                $studentList.val( '' );
                 $studentList.resetStudentDetails();
-                $deleteStudent.prop('disabled', true);
-                $inputs.val('').removeClass('modified').prop('disabled', false);
+                $deleteStudent.prop( 'disabled', true );
+                $inputs.val( '' ).removeClass( 'modified' ).prop( 'disabled', false );
 
-                $isEnrolled.prop('checked', false).prop('disabled', false);
-                $classrooms.val(0).removeClass('modified').prop('disabled', false);
+                $isEnrolled.prop( 'checked', false ).prop( 'disabled', false );
+                $classrooms.val( 0 ).removeClass( 'modified' ).prop( 'disabled', false );
 
-                $whichSchedule.empty().prop('disbaled', true);
-                $checkAll.prop('disabled', false);
-                $checkButtons.prop('disabled', false);
-                $checkboxes.prop('checked', false).removeClass('modified').prop('disabled', false)
-                    .closest('td').removeClass('modified');
-                $startDate.datepicker('setDate', new Date());
+                $whichSchedule.empty().prop( 'disbaled', true );
+                $checkAll.prop( 'disabled', false );
+                $checkButtons.prop( 'disabled', false );
+                $checkboxes.prop( 'checked', false ).removeClass( 'modified' ).prop( 'disabled', false )
+                    .closest( 'td' ).removeClass( 'modified' );
+                $startDate.datepicker( 'setDate', new Date() );
 
-                $saveButtons.prop('disabled', false);
-                $cancelStudent.prop('disabled', false);
+                $saveButtons.prop( 'disabled', false );
+                $cancelStudent.prop( 'disabled', false );
 
                 $familyName.focus();
-            });
+            } );
 
-            $deleteStudent.on('click', function () {
-                $deleteStudent.deleteStudent($studentList.val());
+            $deleteStudent.on( 'click', function () {
+                $deleteStudent.deleteStudent( $studentList.val() );
 
-            });
+            } );
 
             // When the user changes the value in an input control, set the 'modified' class on that control if the new
             // value is different from the value in the database; clear the 'modified' class if the the new value is the
             // same as the value in the database.
-            $inputs.on('change', function () {
-                if ($(this).val() != $(this).data('dbval')) {
-                    $(this).addClass('modified');
+            $inputs.on( 'change', function () {
+                if ( $( this ).val() != $( this ).data( 'dbval' ) ) {
+                    $( this ).addClass( 'modified' );
                 } else {
-                    $(this).removeClass('modified');
+                    $( this ).removeClass( 'modified' );
                 }
-            });
+            } );
 
-            $classrooms.on('change', function () {
-                $(this).addClass('modified');
-            });
+            $classrooms.on( 'change', function () {
+                $( this ).addClass( 'modified' );
+            } );
 
-            $whichSchedule.on('change', function () {
+            $whichSchedule.on( 'change', function () {
                 $whichSchedule.updateSchedule();
-            });
+            } );
 
             // When a checkbox in the 'Schedule' table changes value, add the 'modified' class if the new value is
             // different from the value in the database.
-            $checkboxes.on('change', function () {
-                if ($(this).is(':checked') != $(this).data('dbval')) {
-                    $(this).addClass('modified');
-                    $(this).closest('td').addClass('modified');
+            $checkboxes.on( 'change', function () {
+                if ( $( this ).is( ':checked' ) != $( this ).data( 'dbval' ) ) {
+                    $( this ).addClass( 'modified' );
+                    $( this ).closest( 'td' ).addClass( 'modified' );
                 } else {
-                    $(this).removeClass('modified');
-                    $(this).closest('td').removeClass('modified');
+                    $( this ).removeClass( 'modified' );
+                    $( this ).closest( 'td' ).removeClass( 'modified' );
                 }
 
                 // If any of the checkboxes in the Schedule table are modified, enable the start- and end-date widgets
-                $startDate.enable($checkboxes.areModified());
-                $endDate.enable($checkboxes.areModified());
-            });
+                $startDate.enable( $checkboxes.areModified() );
+                $endDate.enable( $checkboxes.areModified() );
+            } );
 
             // When the user clicks on the 'Check All' button above the 'Schedule' table, set all of the checkboxes
             // in the table, unless they ARE already set, in which case, clear them.
-            $checkAll.on('click', function () {
+            $checkAll.on( 'click', function () {
                 var $unchecked;
-                $unchecked = $checkboxes.filter(':not(:checked)');
-                if ($unchecked.length) {
-                    $unchecked.trigger('click');
+                $unchecked = $checkboxes.filter( ':not(:checked)' );
+                if ( $unchecked.length ) {
+                    $unchecked.trigger( 'click' );
                 } else {
-                    $checkboxes.trigger('click');
+                    $checkboxes.trigger( 'click' );
                 }
-            });
+            } );
 
             // When the user clicks on a column header in the 'Schedule' table, set all of the checkboxes in that
             // column, unless they ARE all already set, in which case, clear them.
-            $thCheckers.on('click', 'button', function () {
+            $thCheckers.on( 'click', 'button', function () {
                 var index, $boxes, $unchecked;
-                index = ($(this).closest('th').index()) + 1;
-                $boxes = $scheduleTable.find('tr > td:nth-child(' + index + ') input[type=checkbox]');
-                $unchecked = $boxes.filter(':not(:checked)');
-                if ($unchecked.length) {
-                    $unchecked.trigger('click');
+                index      = ($( this ).closest( 'th' ).index()) + 1;
+                $boxes     = $scheduleTable.find( 'tr > td:nth-child(' + index + ') input[type=checkbox]' );
+                $unchecked = $boxes.filter( ':not(:checked)' );
+                if ( $unchecked.length ) {
+                    $unchecked.trigger( 'click' );
                 } else {
-                    $boxes.trigger('click');
+                    $boxes.trigger( 'click' );
                 }
-            });
+            } );
 
             // When the user clicks on a row header in the 'Schedule' table, set all of the checkboxes in that
             // row, unless the ARE all already set, in which case, clear them.
-            $tdCheckers.on('click', 'button', function () {
+            $tdCheckers.on( 'click', 'button', function () {
                 var $siblings, $boxes, $unchecked;
-                $siblings = $(this).closest('td').siblings();
-                $boxes = $siblings.find('input[type=checkbox]');
-                $unchecked = $boxes.filter(':not(:checked)');
-                if ($unchecked.length) {
-                    $unchecked.trigger('click');
+                $siblings  = $( this ).closest( 'td' ).siblings();
+                $boxes     = $siblings.find( 'input[type=checkbox]' );
+                $unchecked = $boxes.filter( ':not(:checked)' );
+                if ( $unchecked.length ) {
+                    $unchecked.trigger( 'click' );
                 } else {
-                    $boxes.trigger('click');
+                    $boxes.trigger( 'click' );
                 }
-            });
+            } );
 
             // Submit new student, or update selected student
-            $saveButtons.on('click', function onSubmitStudentClick() {
+            $saveButtons.on( 'click', function onSubmitStudentClick() {
                 var $button,
                     studentId,
                     schedule;
 
-                $button = $(this);
+                $button   = $( this );
                 studentId = $studentList.val();
-                if ($checkboxes.areModified()) {
+                if ( $checkboxes.areModified() ) {
                     schedule = $checkboxes.serializeSchedule();
                 }
-                if (!studentId) {
-                    $.ajax({
-                        url: 'api/enrollStudent',
+                if ( !studentId ) {
+                    $.ajax( {
+                        url   : 'api/enrollStudent',
                         method: 'post',
-                        data: {
-                            'familyName': $familyName.val(),
-                            'firstName': $firstName.val(),
-                            'enrolled': $isEnrolled.is(':checked'),
+                        data  : {
+                            'familyName' : $familyName.val(),
+                            'firstName'  : $firstName.val(),
+                            'enrolled'   : $isEnrolled.is( ':checked' ),
                             'classroomId': $classrooms.val(),
-                            'schedule': schedule,
-                            'startDate': $startDate.val(),
-                            'endDate': $endDate.val()
+                            'schedule'   : schedule,
+                            'startDate'  : $startDate.val(),
+                            'endDate'    : $endDate.val()
                         },
 
                         dataType: 'json',
-                        success: function onEnrollStudentSuccess(json) {
-                            if (!json.success) {
-                                alert('Unable to enroll new student: ' + json.message);
+                        success : function onEnrollStudentSuccess( json ) {
+                            if ( !json.success ) {
+                                alert( 'Unable to enroll new student: ' + json.message );
                             } else {
-                                json.student.schedules.forEach(function (schedule, i, schedules) {
+                                json.student.schedules.forEach( function ( schedule, i, schedules ) {
                                     // ref: http://stackoverflow.com/questions/3075577/convert-mysql-datetime-stamp-into-javascripts-date-format
-                                    var t = schedule.startDate.date.split(/[- :]/);
-                                    schedules[i].startDate = new Date(t[0], t[1] - 1, t[2], t[3], t[4], t[5]);
-                                });
+                                    var t                    = schedule.startDate.date.split( /[- :]/ );
+                                    schedules[ i ].startDate = new Date( t[ 0 ], t[ 1 ] - 1, t[ 2 ], t[ 3 ], t[ 4 ], t[ 5 ] );
+                                } );
 
-                                Students[json.student.id] = json.student;
-                                $studentList.addStudent(json.student)
+                                Students[ json.student.id ] = json.student;
+                                $studentList.addStudent( json.student )
                                     .sort()
-                                    .filter($classFilter.val())
-                                    .val(json.student.id)
-                                    .updateStudentDetails(json.student.id);
-                                if ($button.attr('name') == $saveAndAnother.attr('name')) {
-                                    $newStudent.trigger('click');
-                                } else if ($button.attr('name') === $saveAndClose.attr('name')) {
-                                    $cancelStudent.trigger('click');
+                                    .filter( $classFilter.val() )
+                                    .val( json.student.id )
+                                    .updateStudentDetails( json.student.id );
+                                if ( $button.attr( 'name' ) == $saveAndAnother.attr( 'name' ) ) {
+                                    $newStudent.trigger( 'click' );
+                                } else if ( $button.attr( 'name' ) === $saveAndClose.attr( 'name' ) ) {
+                                    $cancelStudent.trigger( 'click' );
                                 }
                             }
                         },
-                        error: function onEnrollStudentError(jqXHR, textStatus, errorThrown) {
-                            alert('AJAX error enrolling student: ' + textStatus);
+                        error   : function onEnrollStudentError( jqXHR, textStatus, errorThrown ) {
+                            alert( 'AJAX error enrolling student: ' + textStatus );
                         }
-                    });
+                    } );
 
                 } else {
-                    $.ajax({
-                        url: 'api/updateStudent',
-                        method: 'post',
-                        data: {
-                            'id': studentId,
-                            'familyName': $familyName.val(),
-                            'firstName': $firstName.val(),
-                            'enrolled': $isEnrolled.is(':checked'),
+                    $.ajax( {
+                        url     : 'api/updateStudent',
+                        method  : 'post',
+                        data    : {
+                            'id'         : studentId,
+                            'familyName' : $familyName.val(),
+                            'firstName'  : $firstName.val(),
+                            'enrolled'   : $isEnrolled.is( ':checked' ),
                             'classroomId': $classrooms.val(),
-                            'schedule': schedule,
-                            'startDate': $startDate.val(),
-                            'endDate': $endDate.val()
+                            'schedule'   : schedule,
+                            'startDate'  : $startDate.val(),
+                            'endDate'    : $endDate.val()
                         },
                         dataType: 'json',
-                        success: function updateStudentSuccess(json) {
-                            if (!json.success) {
-                                alert('Unable to update student: ' + json.message);
+                        success : function updateStudentSuccess( json ) {
+                            if ( !json.success ) {
+                                alert( 'Unable to update student: ' + json.message );
                             } else {
-                                json.student.schedules.forEach(function (schedule, i, schedules) {
+                                json.student.schedules.forEach( function ( schedule, i, schedules ) {
                                     // ref: http://stackoverflow.com/questions/3075577/convert-mysql-datetime-stamp-into-javascripts-date-format
-                                    var t = schedule.startDate.date.split(/[- :]/);
-                                    schedules[i].startDate = new Date(t[0], t[1] - 1, t[2], t[3], t[4], t[5]);
-                                });
-                                Students[json.student.id] = json.student;
-                                $studentList.updateStudent(json.student)
-                                    .val(json.student.id)
-                                    .updateStudentDetails(json.student.id);
-                                if ($button.attr('name') == $saveAndAnother.attr('name')) {
-                                    $newStudent.trigger('click');
-                                } else if ($button.attr('name') === $saveAndClose.attr('name')) {
-                                    $cancelStudent.trigger('click');
+                                    var t                    = schedule.startDate.date.split( /[- :]/ );
+                                    schedules[ i ].startDate = new Date( t[ 0 ], t[ 1 ] - 1, t[ 2 ], t[ 3 ], t[ 4 ], t[ 5 ] );
+                                } );
+                                Students[ json.student.id ] = json.student;
+                                $studentList.updateStudent( json.student )
+                                    .val( json.student.id )
+                                    .updateStudentDetails( json.student.id );
+                                if ( $button.attr( 'name' ) == $saveAndAnother.attr( 'name' ) ) {
+                                    $newStudent.trigger( 'click' );
+                                } else if ( $button.attr( 'name' ) === $saveAndClose.attr( 'name' ) ) {
+                                    $cancelStudent.trigger( 'click' );
                                 }
                             }
                         },
-                        error: function updateStudentError(jqXHR, textStatus, errorThrown) {
-                            alert('AJAX error updating student: ' + textStatus);
+                        error   : function updateStudentError( jqXHR, textStatus, errorThrown ) {
+                            alert( 'AJAX error updating student: ' + textStatus );
                         }
-                    });
+                    } );
                 }
-            });
+            } );
 
             // Cancel all modifications made so far
-            $cancelStudent.on('click', function () {
-                $studentList.val('');
+            $cancelStudent.on( 'click', function () {
+                $studentList.val( '' );
                 $studentList.resetStudentDetails();
-            })
+            } )
         }
 
 
@@ -1680,39 +1680,39 @@
             $studentList.empty();
         }
 
-        function addStudent(student) {
+        function addStudent( student ) {
             var source;
             var template;
             var html;
 
-            source = $('#enrollment-list-option-template').html();
-            template = Handlebars.compile(source);
-            html = template(student);
-            $studentList.append($(html));
+            source   = $( '#enrollment-list-option-template' ).html();
+            template = Handlebars.compile( source );
+            html     = template( student );
+            $studentList.append( $( html ) );
         }
 
         // Removes a student from the table (does not affect the database)
-        function removeStudent(studentId) {
-            $table.find('tr[data-student-id=' + studentId + ']').remove();
+        function removeStudent( studentId ) {
+            $table.find( 'tr[data-student-id=' + studentId + ']' ).remove();
         }
 
-        function addClassroom(classroom) {
-            if (undefined == classroom) throw 'Classroom definition required.';
+        function addClassroom( classroom ) {
+            if ( undefined == classroom ) throw 'Classroom definition required.';
 
-            [$classrooms, $classFilter].forEach(function (e, i, arr) {
+            [ $classrooms, $classFilter ].forEach( function ( e, i, arr ) {
                 var $opt;
-                $opt = $('<option>');
-                $opt.val(classroom.id).text(classroom.name);
-                $(e).append($opt);
-            });
+                $opt = $( '<option>' );
+                $opt.val( classroom.id ).text( classroom.name );
+                $( e ).append( $opt );
+            } );
         }
 
         publicApi = {
-            init: init,
-            clear: empty,
-            addStudent: addStudent,
+            init         : init,
+            clear        : empty,
+            addStudent   : addStudent,
             removeStudent: removeStudent,
-            addClassroom: addClassroom
+            addClassroom : addClassroom
         };
 
         return publicApi;
@@ -1725,57 +1725,57 @@
     var ClassroomPage = (function () {
         var $page, $list, $input, publicApi;
 
-        function init(selector) {
-            cacheDom(selector);
+        function init( selector ) {
+            cacheDom( selector );
             bindEvents();
         }
 
-        function cacheDom(selector) {
-            $page = $(selector);
-            $list = $page.find('select');
-            $input = $page.find('input[type=text]');
+        function cacheDom( selector ) {
+            $page  = $( selector );
+            $list  = $page.find( 'select' );
+            $input = $page.find( 'input[type=text]' );
         }
 
         function bindEvents() {
-            $page.on('show', function () {
+            $page.on( 'show', function () {
                 // TODO: ???
-            });
+            } );
 
-            $input.on('keypress', function (event) {
+            $input.on( 'keypress', function ( event ) {
                 var keyCode;
                 keyCode = event.keyCode || event.which;
-                if (13 === keyCode) {
-                    $.ajax({
-                        url: 'api/submitClassroom',
-                        method: 'post',
-                        data: {
+                if ( 13 === keyCode ) {
+                    $.ajax( {
+                        url     : 'api/submitClassroom',
+                        method  : 'post',
+                        data    : {
                             'name': $input.val()
                         },
                         dataType: 'json',
-                        success: function onSubmitClassroomSuccess(json) {
-                            if (false == json.success) {
-                                alert('Error submitting new class: ' + json.message);
+                        success : function onSubmitClassroomSuccess( json ) {
+                            if ( false == json.success ) {
+                                alert( 'Error submitting new class: ' + json.message );
                             } else {
-                                console.log(json.classroom);
+                                console.log( json.classroom );
                             }
                         },
-                        error: function onSubmitClassroomError(jqXHR, textStatus, errorThrown) {
-                            alert('AJAX error submiting new class: ' + textStatus);
+                        error   : function onSubmitClassroomError( jqXHR, textStatus, errorThrown ) {
+                            alert( 'AJAX error submiting new class: ' + textStatus );
                         }
-                    });
+                    } );
                 }
-            });
+            } );
         }
 
-        function addClassroom(classroom) {
+        function addClassroom( classroom ) {
             var $option;
-            $option = $('<option>').val(classroom.id).text(classroom.name);
-            $list.append($option);
+            $option = $( '<option>' ).val( classroom.id ).text( classroom.name );
+            $list.append( $option );
         }
 
 
         publicApi = {
-            init: init,
+            init        : init,
             addClassroom: addClassroom
         };
         return publicApi;
@@ -1789,40 +1789,40 @@
     // Return a new Date object for midnight of the current day
     function getToday() {
         var now = new Date();
-        return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        return new Date( now.getFullYear(), now.getMonth(), now.getDate() );
     }
 
-    function formatTime(date) {
+    function formatTime( date ) {
         var hh, mm, ss;
-        if (date == undefined) {
+        if ( date == undefined ) {
             return '';
         }
-        if (typeof date === 'number') {
-            date = new Date(date);
+        if ( typeof date === 'number' ) {
+            date = new Date( date );
         }
         hh = date.getHours();
         mm = date.getMinutes();
-        if (mm < 10) {
+        if ( mm < 10 ) {
             mm = '0' + mm;
         }
         ss = date.getSeconds();
-        if (ss < 10) {
+        if ( ss < 10 ) {
             ss = '0' + ss;
         }
         return (hh + ':' + mm + ':' + ss );
     }
 
-    function formatDate(date) {
-        if (date == undefined) {
+    function formatDate( date ) {
+        if ( date == undefined ) {
             return '';
         }
-        if (typeof date === 'number') {
-            date = new Date(date);
+        if ( typeof date === 'number' ) {
+            date = new Date( date );
         }
         return (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear();
     }
 
-    function attendanceSheetDate(date) {
+    function attendanceSheetDate( date ) {
         return 'spb';
     }
 
@@ -1830,49 +1830,49 @@
     /********************************************************************************
      * Document on-ready handler
      ********************************************************************************/
-    $(function () {
+    $( function () {
         // All of the tabs in the top-level menu, <a href="#target">
-        var $tabs = $('.tab');
+        var $tabs = $( '.tab' );
 
         // DOM elements identified by the href attributes in the $tabs
-        var targets = $tabs.map(function () {
+        var targets = $tabs.map( function () {
             return this.hash;   // Return the anchor part of the URL
-        }).get();
+        } ).get();
 
         //
-        var $panels = $(targets.join(','));
+        var $panels = $( targets.join( ',' ) );
 
-        function showPage(id) {
+        function showPage( id ) {
             // If no value was given, let's take the first panel
-            if (!id) id = targets[0];
-            else id = id.split('/')[0];
-            $tabs.removeClass('active').filter(function () {
+            if ( !id ) id = targets[ 0 ];
+            else id = id.split( '/' )[ 0 ];
+            $tabs.removeClass( 'active' ).filter( function () {
                 return (this.hash === id);
-            }).addClass('active');
+            } ).addClass( 'active' );
             $panels.hide();
-            var $panel = $panels.filter(id);
+            var $panel = $panels.filter( id );
             $panel.show();
         }
 
-        $(window).on('hashchange', function () {
-            showPage(location.hash);
-        });
+        $( window ).on( 'hashchange', function () {
+            showPage( location.hash );
+        } );
 
 
-        Handlebars.registerHelper('formatTime', formatTime);
-        Handlebars.registerHelper('formatDate', formatDate);
-        Handlebars.registerHelper('attendanceSheetDate', function (date) {
-            var days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            return new Handlebars.SafeString(days[date.getDay()] + '<br />' + date.getDate() + '-' + months[date.getMonth()]);
-        });
+        Handlebars.registerHelper( 'formatTime', formatTime );
+        Handlebars.registerHelper( 'formatDate', formatDate );
+        Handlebars.registerHelper( 'attendanceSheetDate', function ( date ) {
+            var days   = [ 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat' ];
+            var months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
+            return new Handlebars.SafeString( days[ date.getDay() ] + '<br />' + date.getDate() + '-' + months[ date.getMonth() ] );
+        } );
 
 
-        CheckinPage.init('#checkin-page');
-        AttendancePage.init('#attendance-page');
-        SigninPage.init('#signin-page');
-        ReportsPage.init('#reports');
-        EnrollmentPage.init('#enrollment-page');
+        CheckinPage.init( '#checkin-page' );
+        AttendancePage.init( '#attendance-page' );
+        SigninPage.init( '#signin-page' );
+        ReportsPage.init( '#reports' );
+        EnrollmentPage.init( '#enrollment-page' );
         //ClassroomPage.init('#classes-page');
 
         var wait = 2;
@@ -1880,14 +1880,14 @@
         Classrooms.init();
         Students.init();
 
-        ClassroomPanel.init('#classes-page');
-        StudentsPanel.init('#enrollment-page');
+        ClassroomPanel.init( '#classes-page' );
+        StudentsPanel.init( '#enrollment-page' );
 
         ClassroomController.load();
         StudentController.load();
 
-        showPage(targets.indexOf(location.hash) !== -1 ? location.hash : '');
-    });
+        showPage( targets.indexOf( location.hash ) !== -1 ? location.hash : '' );
+    } );
 
 
-})(this, jQuery);
+})( this, jQuery );
