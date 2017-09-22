@@ -56,4 +56,12 @@ class ClassroomRepo {
 
 		return $classrooms;
 	}
+
+	public function remove( $id ) {
+		$sth        = $this->pdo->prepare( 'delete from classrooms where id=:id' );
+		$rows       = $sth->execute( [ ':id' => $id ] );
+
+		return $id;
+
+	}
 }

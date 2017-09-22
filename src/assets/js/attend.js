@@ -27,8 +27,13 @@
         }
 
         function add(classroom) {
-            this.classrooms.push(classroom);
+            this.classrooms[parseInt(classroom.id)] = classroom;
             this.callbacks['add'].fire(classroom);
+        }
+
+        function remove(id) {
+            this.classrooms[parseInt(id)] = undefined;
+            this.callbacks['remove'].fire(id);
         }
 
 
@@ -36,7 +41,8 @@
             'init': init,
             'subscribe': subscribe,
             'load': load,
-            'add' : add
+            'add': add,
+            'remove': remove
         }
 
     })();
@@ -54,6 +60,7 @@
 
             Classrooms.subscribe('load', whenClassroomsLoaded);
             Classrooms.subscribe('add', whenClassroomAdded);
+            Classrooms.subscribe('remove', whenClassroomRemoved);
         }
 
         function cacheDom(selector) {
@@ -117,12 +124,8 @@
         function onClickDeleteClassroom() {
             var $tr = $(this).closest('tr');
             var id = $tr.data('classroomId');
-            var $input = $tr.find('td input');
-            console.log($input.val());
-            console.log('Delete classroom ' + id);
-            console.log(Classrooms.classrooms[id]);
             if (window.confirm('Are you sure you want to delete the ' + Classrooms.classrooms[id].name + ' classroom?')) {
-                alert("I'm sorry, Dave, I'm afraid I can't do that");
+                ClassroomController.remove(id);
             }
         }
 
@@ -155,8 +158,8 @@
                 '<button class="discard"><span class="glyphicon glyphicon-remove" /></button>'
             ]);
             table.draw();
-            $(api.node()).addClass( 'new-classroom' );
-            $(api.node()).find( 'input').focus();
+            $(api.node()).addClass('new-classroom');
+            $(api.node()).find('input').focus();
             $newButton.hide();
 
         }
@@ -187,8 +190,20 @@
                 '<button class="discard"><span class="glyphicon glyphicon-remove" /></button>'
             ]);
             table.draw();
-            $(api.node()).data( 'classroomId', classroom.id );
+            $(api.node()).data('classroomId', classroom.id);
             $newButton.show();
+        }
+
+        function whenClassroomRemoved(id) {
+            table.rows().nodes().each(function(e, i) {
+                var $tr = $(e);
+                var data = $tr.data('classroomId');
+                if ( data === id ) {
+                    $tr.remove();
+                    table.row(e).remove();
+                    return false;
+                }
+            });
         }
 
         return {
@@ -219,18 +234,34 @@
         'load': function () {
 
             $.ajax({
-                url: 'api/classrooms',
-                method: 'get',
+                'url': 'api/classrooms',
+                'method': 'get',
 
-                dataType: 'json',
-                success: function onFetchClassroomsSuccess(json) {
+                'dataType': 'json',
+                'success': function onFetchClassroomsSuccess(json) {
                     console.log(json);
                     Classrooms.load(json.data);
                 },
-                error: function onFetchClassroomsError(jqXHR, textStatus, errorThrown) {
+                'error': function onFetchClassroomsError(jqXHR, textStatus, errorThrown) {
                     alert("AJAX error fetching classes: " + textStatus);
                 }
             });
+        },
+        'remove': function (id) {
+            $.ajax({
+                'url': 'api/classrooms/' + id,
+                'method': 'delete',
+
+                'dataType': 'json',
+                'success': function (json) {
+                    console.log(json);
+                    Classrooms.remove(id);
+                },
+                'error': function (xhr) {
+                    console.log('error');
+                    console.log(xhr);
+                }
+            })
         }
     };
 

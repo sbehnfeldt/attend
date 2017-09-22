@@ -47,6 +47,10 @@ switch ( $_SERVER['REQUEST_METHOD'] ) {
 		$results = $repo->insert( $_POST );
 		break;
 
+	case 'DELETE' :
+		$results = $repo->remove( $resourceId );
+		break;
+
 	default :
 		die( 'Unknown request method' );
 
