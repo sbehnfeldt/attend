@@ -187,7 +187,7 @@
             var api = table.row.add([
                 '<input type="text" class="edit-classroom"  value="' + classroom.name + '"/>',
                 '<button class="submit disabled" disabled><span class="glyphicon glyphicon-ok" /></button>',
-                '<button class="discard"><span class="glyphicon glyphicon-remove" /></button>'
+                '<button class="delete"><span class="glyphicon glyphicon-remove" /></button>'
             ]);
             table.draw();
             $(api.node()).data('classroomId', classroom.id);
