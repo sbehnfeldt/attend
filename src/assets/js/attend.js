@@ -6,10 +6,10 @@
         function init() {
             this.classrooms = [];
             this.callbacks  = {
-                'load'  : $.Callbacks(),
-                'add'   : $.Callbacks(),
-                'remove': $.Callbacks(),
-                'update': $.Callbacks()
+                'load-records' : $.Callbacks(),
+                'insert-record': $.Callbacks(),
+                'remove-record': $.Callbacks(),
+                'update-record': $.Callbacks()
             }
         }
 
@@ -63,10 +63,10 @@
             cacheDom( selector );
             bindEvents();
 
-            Classrooms.subscribe( 'load', whenClassroomsLoaded );
-            Classrooms.subscribe( 'add', whenClassroomAdded );
-            Classrooms.subscribe( 'update', whenClassroomUpdated );
-            Classrooms.subscribe( 'remove', whenClassroomRemoved );
+            Classrooms.subscribe( 'load-records', whenClassroomsLoaded );
+            Classrooms.subscribe( 'insert-record', whenClassroomAdded );
+            Classrooms.subscribe( 'update-record', whenClassroomUpdated );
+            Classrooms.subscribe( 'remove-record', whenClassroomRemoved );
         }
 
         function cacheDom( selector ) {
