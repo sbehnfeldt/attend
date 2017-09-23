@@ -258,7 +258,6 @@
         }
     })();
 
-
     var ClassroomController = {
         'insert': function ( data ) {
             $.ajax( {
@@ -330,6 +329,7 @@
         }
     };
 
+
     var StudentsPanel = (function () {
         var $panel;
         var $table;
@@ -352,26 +352,42 @@
             table  = $table.DataTable( {} );
         }
 
+        ////////////////////////////////////////////////////////////////////////////////
+        // Event Handler Functions
+        ////////////////////////////////////////////////////////////////////////////////
+
+        ////////////////////////////////////////////////////////////////////////////////
+        // Callback Functions
+        ////////////////////////////////////////////////////////////////////////////////
+
         function whenStudentsLoaded( students ) {
+            console.log( 'students loaded' );
             for ( var i = 0; i < students.length; i++ ) {
                 var row = table.row.add( [
                     students[ i ].familyName,
                     students[ i ].firstName,
-                    Classrooms.records.length > 0 ?
-                        Classrooms.records[ students[ i ].classroomId ].name : students[ i ].classroomId,
+                    '<span class="classroom">' +
+                    (Classrooms.records.length > 0 ?
+                        Classrooms.records[ students[ i ].classroomId ].name : students[ i ].classroomId) +
+                    '</span>',
                     '<input type="checkbox" />',
                     '<button><span class="glyphicon glyphicon-edit" style="color: #080"/></button>',
                     '<button><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
                 ] );
-                $( row.node() ).data( students[ i ] );
+                $( row.node() ).data( 'studentId', students[ i ].id );
             }
             table.draw();
         }
 
+        // When the classrooms are loaded,
+        // replace the classroom ID in the Students table with the corresponding classroom name
         function whenClassroomsLoaded( classrooms ) {
             table.rows().nodes().each( function ( e, i, a ) {
-                var classroomId = $( e ).data( 'classroomId' );
-                $( e ).find( 'td' ).eq( 2 ).text( Classrooms.records[ classroomId ].name );
+                var studentId   = $( e ).data( 'studentId' );
+                var classroomId = Students.records[ studentId ].classroomId;
+                $( e ).find( 'span.classroom' ).text(
+                    (Classrooms.records.length > 0 ?
+                        Classrooms.records[ classroomId ].name : Students.records[ i ].classroomId) );
             } );
         }
 
