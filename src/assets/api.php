@@ -7,7 +7,7 @@ require "bootstrap.php";
 
 $uri = $_SERVER['REQUEST_URI'];
 $uri = substr( $uri, strlen( $webroot ) );
-list( $path, $qString ) = explode( '?', $uri );
+@list( $path, $qString ) = explode( '?', $uri );
 
 $paths = explode( '/', $path );
 array_shift( $paths );   // Drop the /api/ portion of the url
@@ -27,7 +27,7 @@ switch ( $resourceType ) {
 		break;
 
 	case 'students':
-		$repo = new StudentRepo( $pdo );
+		$repo = new \Repositories\StudentRepo( $pdo );
 		break;
 
 	default:

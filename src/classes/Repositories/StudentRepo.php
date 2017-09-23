@@ -1,19 +1,12 @@
 <?php
+namespace Repositories;
 
-use PDO;
 
-class StudentRepo {
-
-	/** @var  PDO */
-	private $pdo;
-
-	public function __construct( $pdo ) {
-		$this->pdo = $pdo;
-	}
+class StudentRepo extends Repository {
 
 	public function select() {
 		$students = [ ];
-		$rows     = $this->pdo->query( 'select id, family_name, first_name, enrolled, classroom_id from students' );
+		$rows     = $this->getPdo()->query( 'select id, family_name, first_name, enrolled, classroom_id from students' );
 		foreach ( $rows as $row ) {
 			$students[] = [
 				'id'          => $row['id'],
@@ -23,15 +16,16 @@ class StudentRepo {
 				'classroomId' => $row['classroom_id']
 			];
 		}
+
 		return $students;
 	}
 
 	public function selectOne( $id ) {
 		$students = [ ];
-		$sth      = $this->pdo->prepare( 'select id, family_name, first_name, enrolled, classroom_id from students where id = :id' );
+		$sth      = $this->getPdo()->prepare( 'select id, family_name, first_name, enrolled, classroom_id from students where id = :id' );
 		$rows     = $sth->execute( [ ':id' => $id ] );
 
-		while ( $row = $sth->fetch( )) {
+		while ( $row = $sth->fetch() ) {
 			$students[] = [
 				'id'          => $row['id'],
 				'familyName'  => $row['family_name'],
@@ -40,6 +34,7 @@ class StudentRepo {
 				'classroomId' => $row['classroom_id']
 			];
 		}
+
 		return $students;
 	}
 

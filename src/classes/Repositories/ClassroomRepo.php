@@ -1,31 +1,21 @@
 <?php
 namespace Repositories;
 
-use PDO;
 
-
-class ClassroomRepo {
-
-	/** @var  PDO */
-	private $pdo;
-
-	public function __construct( $pdo ) {
-		$this->pdo = $pdo;
-	}
-
+class ClassroomRepo extends Repository {
 
 	public function insert( $post ) {
 		$sql = 'insert into classrooms (name) values (:name)';
-		$sth = $this->pdo->prepare( $sql );
+		$sth = $this->getPdo()->prepare( $sql );
 		$sth->execute( [ ':name' => $post['name'] ] );
-		$id = $this->pdo->lastInsertId();
+		$id = $this->getPdo()->lastInsertId();
 
 		return $id;
 	}
 
 	public function select() {
 		$classrooms = [ ];
-		$rows       = $this->pdo->query( 'select * from classrooms' );
+		$rows       = $this->getPdo()->query( 'select * from classrooms' );
 		foreach ( $rows as $row ) {
 			$classrooms[] = [
 				'id'   => $row['id'],
@@ -39,7 +29,7 @@ class ClassroomRepo {
 
 	public function selectOne( $id ) {
 		$classrooms = [ ];
-		$sth        = $this->pdo->prepare( 'select * from classrooms where id=:id' );
+		$sth        = $this->getPdo()->prepare( 'select * from classrooms where id=:id' );
 		$rows       = $sth->execute( [ ':id' => $id ] );
 		while ( $row = $sth->fetch() ) {
 			$classrooms[] = [
@@ -61,14 +51,14 @@ class ClassroomRepo {
 		$cols   = implode( ', ', $cols );
 		$sql    = "update classrooms set $cols where id = ?";
 		$vals[] = $id;
-		$sth    = $this->pdo->prepare( $sql );
+		$sth    = $this->getPdo()->prepare( $sql );
 		$bool   = $sth->execute( $vals );
 
 		return $id;
 	}
 
 	public function remove( $id ) {
-		$sth = $this->pdo->prepare( 'delete from classrooms where id=:id' );
+		$sth = $this->getPdo()->prepare( 'delete from classrooms where id=:id' );
 		$sth->execute( [ ':id' => $id ] );
 
 		return $id;
