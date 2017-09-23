@@ -51,7 +51,7 @@
     })();
 
     var Classrooms = Object.create( Records );
-    var Students = Object.create( Records );
+    var Students   = Object.create( Records );
 
 
     var ClassroomPanel = (function () {
@@ -349,12 +349,12 @@
         function cacheDom( selector ) {
             $panel = $( selector );
             $table = $panel.find( 'table.students-table' );
-            table  = $table.DataTable();
+            table  = $table.DataTable( {} );
         }
 
         function whenStudentsLoaded( students ) {
             for ( var i = 0; i < students.length; i++ ) {
-                var api = table.row.add( [
+                var row = table.row.add( [
                     students[ i ].familyName,
                     students[ i ].firstName,
                     Classrooms.records.length > 0 ?
@@ -363,12 +363,16 @@
                     '<button><span class="glyphicon glyphicon-edit" style="color: #080"/></button>',
                     '<button><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
                 ] );
-                $( api.node() ).data( students[ i ] );
+                $( row.node() ).data( students[ i ] );
             }
             table.draw();
         }
 
         function whenClassroomsLoaded( classrooms ) {
+            table.rows().nodes().each( function ( e, i, a ) {
+                var classroomId = $( e ).data( 'classroomId' );
+                $( e ).find( 'td' ).eq( 2 ).text( Classrooms.records[ classroomId ].name );
+            } );
         }
 
         return {
