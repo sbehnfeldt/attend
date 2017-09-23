@@ -9,7 +9,7 @@
                 'load'  : $.Callbacks(),
                 'add'   : $.Callbacks(),
                 'remove': $.Callbacks(),
-                'edit'  : $.Callbacks()
+                'update': $.Callbacks()
             }
         }
 
@@ -31,6 +31,11 @@
             this.callbacks[ 'add' ].fire( classroom );
         }
 
+        function update( id, classroom ) {
+            this.classrooms[ parseInt( id ) ] = classroom;
+            this.callbacks[ 'update' ].fire( id, classroom );
+        }
+
         function remove( id ) {
             this.classrooms[ parseInt( id ) ] = undefined;
             this.callbacks[ 'remove' ].fire( id );
@@ -41,6 +46,7 @@
             'subscribe': subscribe,
             'load'     : load,
             'add'      : add,
+            'update'   : update,
             'remove'   : remove
         }
 
@@ -59,6 +65,7 @@
 
             Classrooms.subscribe( 'load', whenClassroomsLoaded );
             Classrooms.subscribe( 'add', whenClassroomAdded );
+            Classrooms.subscribe( 'update', whenClassroomUpdated );
             Classrooms.subscribe( 'remove', whenClassroomRemoved );
         }
 
@@ -203,6 +210,19 @@
             $newButton.show();
         }
 
+        function whenClassroomUpdated( id, classroom ) {
+            var rows = table.rows().nodes();
+            rows.each( function ( e, i ) {
+                var $tr  = $( e );
+                var data = $tr.data( 'classroomId' );
+                if ( data === id ) {
+                    $tr.find( 'input.edit-classroom.modified' ).removeClass( 'modified' );
+                    $tr.find( 'button.update' ).attr( 'disabled', true ).addClass( 'disabled' );
+                    return false;
+                }
+            } );
+        }
+
         // When a classroom is removed from the model,
         // remove the corresponding row from the Classrooms table
         function whenClassroomRemoved( id ) {
@@ -252,6 +272,7 @@
                 'dataType': 'json',
                 'success' : function ( json ) {
                     console.log( json );
+                    Classrooms.update( classroomId, params );
                 },
                 'error'   : function ( xhr ) {
                     console.log( xhr );
