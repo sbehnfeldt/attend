@@ -3,8 +3,8 @@
 
     var Records = (function () {
         function init() {
-            this.classrooms = [];
-            this.callbacks  = {
+            this.records   = [];
+            this.callbacks = {
                 'load-records' : $.Callbacks(),
                 'insert-record': $.Callbacks(),
                 'remove-record': $.Callbacks(),
@@ -16,27 +16,26 @@
             this.callbacks[ event ].add( fn );
         }
 
-        function load( classrooms ) {
-            this.classrooms = [];
-            for ( var i = 0; i < classrooms.length; i++ ) {
-                var c                               = classrooms[ i ];
-                this.classrooms[ parseInt( c.id ) ] = c;
+        function load( records ) {
+            this.records = [];
+            for ( var i = 0; i < records.length; i++ ) {
+                this.records[ parseInt( records[ i ].id ) ] = records[ i ];
             }
-            this.callbacks[ 'load-records' ].fire( classrooms );
+            this.callbacks[ 'load-records' ].fire( records );
         }
 
-        function add( classroom ) {
-            this.classrooms[ parseInt( classroom.id ) ] = classroom;
-            this.callbacks[ 'insert-record' ].fire( classroom );
+        function insert( record ) {
+            this.records[ parseInt( record.id ) ] = record;
+            this.callbacks[ 'insert-record' ].fire( record );
         }
 
-        function update( id, classroom ) {
-            this.classrooms[ parseInt( id ) ] = classroom;
-            this.callbacks[ 'update-record' ].fire( id, classroom );
+        function update( id, record ) {
+            this.records[ parseInt( id ) ] = record;
+            this.callbacks[ 'update-record' ].fire( id, record );
         }
 
         function remove( id ) {
-            this.classrooms[ parseInt( id ) ] = undefined;
+            this.records[ parseInt( id ) ] = undefined;
             this.callbacks[ 'remove-record' ].fire( id );
         }
 
@@ -44,7 +43,7 @@
             'init'     : init,
             'subscribe': subscribe,
             'load'     : load,
-            'add'      : add,
+            'insert'   : insert,
             'update'   : update,
             'remove'   : remove
         }
@@ -100,7 +99,7 @@
         function onKeyupEditClassroom() {
             var $tr     = $( this ).closest( 'tr' );
             var id      = $tr.data( 'classroomId' );
-            var current = Classrooms.classrooms[ id ];
+            var current = Classrooms.records[ id ];
             if ( current.name != $( this ).val() ) {
                 $( this ).addClass( 'modified' );
                 $tr.find( 'button.update' ).removeClass( 'disabled' ).attr( 'disabled', false );
@@ -138,7 +137,7 @@
             if ( window.confirm( 'Are you sure you want to discard the changes?' ) ) {
                 var $tr = $( this ).closest( 'tr' );
                 var id  = $tr.data( 'classroomId' );
-                $tr.find( 'input.edit-classroom' ).val( Classrooms.classrooms[ id ].name );
+                $tr.find( 'input.edit-classroom' ).val( Classrooms.records[ id ].name );
                 $tr.find( 'input.edit-classroom' ).removeClass( 'modified' );
                 $( this ).removeClass( 'undo' ).addClass( 'delete' );
             }
@@ -149,7 +148,7 @@
         function onClickDeleteClassroom() {
             var $tr = $( this ).closest( 'tr' );
             var id  = $tr.data( 'classroomId' );
-            if ( window.confirm( 'Are you sure you want to delete the ' + Classrooms.classrooms[ id ].name + ' classroom?' ) ) {
+            if ( window.confirm( 'Are you sure you want to delete the ' + Classrooms.records[ id ].name + ' classroom?' ) ) {
                 ClassroomController.remove( id );
             }
         }
@@ -269,7 +268,7 @@
                 'success' : function ( json ) {
                     console.log( json );
                     data.id = json.data;
-                    Classrooms.add( data );
+                    Classrooms.insert( data );
                 },
                 'error'   : function ( xhr ) {
                     console.log( 'AJAX error inserting new record' );
@@ -391,8 +390,8 @@
                 var api = table.row.add( [
                     students[ i ].familyName,
                     students[ i ].firstName,
-                    Classrooms.classrooms.length > 0 ?
-                        Classrooms.classrooms[ students[ i ].classroomId ].name : students[ i ].classroomId,
+                    Classrooms.records.length > 0 ?
+                        Classrooms.records[ students[ i ].classroomId ].name : students[ i ].classroomId,
                     '<input type="checkbox" />',
                     '<button><span class="glyphicon glyphicon-edit" style="color: #080"/></button>',
                     '<button><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
