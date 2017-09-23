@@ -232,6 +232,7 @@
                 if ( data === id ) {
                     $tr.find( 'input.edit-classroom.modified' ).removeClass( 'modified' );
                     $tr.find( 'button.update' ).attr( 'disabled', true ).addClass( 'disabled' );
+                    $tr.find( 'button.undo' ).removeClass( 'undo' ).addClass( 'delete' );
                     return false;
                 }
             } );
