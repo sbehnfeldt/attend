@@ -1,8 +1,7 @@
 ;(function () {
     'use strict';
 
-
-    var Classrooms = (function () {
+    var Records = (function () {
         function init() {
             this.classrooms = [];
             this.callbacks  = {
@@ -23,22 +22,22 @@
                 var c                               = classrooms[ i ];
                 this.classrooms[ parseInt( c.id ) ] = c;
             }
-            this.callbacks[ 'load' ].fire( classrooms );
+            this.callbacks[ 'load-records' ].fire( classrooms );
         }
 
         function add( classroom ) {
             this.classrooms[ parseInt( classroom.id ) ] = classroom;
-            this.callbacks[ 'add' ].fire( classroom );
+            this.callbacks[ 'insert-record' ].fire( classroom );
         }
 
         function update( id, classroom ) {
             this.classrooms[ parseInt( id ) ] = classroom;
-            this.callbacks[ 'update' ].fire( id, classroom );
+            this.callbacks[ 'update-record' ].fire( id, classroom );
         }
 
         function remove( id ) {
             this.classrooms[ parseInt( id ) ] = undefined;
-            this.callbacks[ 'remove' ].fire( id );
+            this.callbacks[ 'remove-record' ].fire( id );
         }
 
         return {
@@ -51,6 +50,8 @@
         }
 
     })();
+
+    var Classrooms = Object.create( Records );
 
 
     var ClassroomPanel = (function () {
@@ -373,7 +374,7 @@
             bindEvents();
 
             Students.subscribe( 'load', whenStudentsLoaded );
-            Classrooms.subscribe( 'load', whenClassroomsLoaded );
+            Classrooms.subscribe( 'load-records', whenClassroomsLoaded );
         }
 
         function bindEvents() {
