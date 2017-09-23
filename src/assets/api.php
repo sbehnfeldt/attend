@@ -23,7 +23,7 @@ $pdo    = new \PDO( "mysql:host=$host;dbname=$dbname", $uname, $pword );
 
 switch ( $resourceType ) {
 	case 'classrooms':
-		$repo = new ClassroomRepo( $pdo );
+		$repo = new \Repositories\ClassroomRepo( $pdo );
 		break;
 
 	case 'students':
