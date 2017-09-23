@@ -43,6 +43,7 @@ td {
 }
 
 button.discard span,
+button.undo span,
 button.delete span {
     color: #f00;
 }

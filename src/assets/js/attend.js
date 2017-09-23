@@ -84,6 +84,7 @@
             $table.on( 'keyup', 'input.edit-classroom', onKeyupEditClassroom );
             $table.on( 'keyup', 'input.new-classroom', onKeyupNewClassroom );
             $table.on( 'click', 'button.update', onClickUpdateClassroom );
+            $table.on( 'click', 'button.undo', onClickUndo );
             $table.on( 'click', 'button.delete', onClickDeleteClassroom );
             $table.on( 'click', 'button.submit', onClickSubmitClassroom );
             $table.on( 'click', 'button.discard', onClickDiscardClassroom );
@@ -102,9 +103,11 @@
             if ( current.name != $( this ).val() ) {
                 $( this ).addClass( 'modified' );
                 $tr.find( 'button.update' ).removeClass( 'disabled' ).attr( 'disabled', false );
+                $tr.find( 'button.delete' ).removeClass( 'delete' ).addClass( 'undo' );
             } else {
                 $( this ).removeClass( 'modified' );
                 $tr.find( 'button.update' ).addClass( 'disabled' ).attr( 'disabled', true );
+                $tr.find( 'button.undo' ).removeClass( 'undo' ).addClass( 'delete' );
             }
         }
 
@@ -128,6 +131,18 @@
             } );
         }
 
+        // When the 'Undo' button for an edited classroom is clicked,
+        // discard any edits that have been made
+        function onClickUndo() {
+            if ( window.confirm( 'Are you sure you want to discard the changes?' ) ) {
+                var $tr = $( this ).closest( 'tr' );
+                var id  = $tr.data( 'classroomId' );
+                $tr.find( 'input.edit-classroom' ).val( Classrooms.classrooms[ id ].name );
+                $tr.find( 'input.edit-classroom' ).removeClass( 'modified' );
+                $( this ).removeClass( 'undo' ).addClass( 'delete' );
+            }
+        }
+
         // When the 'Delete' button for an existing classroom is clicked,
         // delete the data from the database (via the controller)
         function onClickDeleteClassroom() {
@@ -137,7 +152,6 @@
                 ClassroomController.remove( id );
             }
         }
-
 
         // When the 'Submit' button for a new classroom is clicked,
         // insert the new data to the database (via the controller).
