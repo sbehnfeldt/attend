@@ -51,6 +51,7 @@
     })();
 
     var Classrooms = Object.create( Records );
+    var Students = Object.create( Records );
 
 
     var ClassroomPanel = (function () {
@@ -329,41 +330,6 @@
         }
     };
 
-
-    var Students = (function () {
-        function init() {
-            this.students  = [];
-            this.callbacks = {
-                'load'  : $.Callbacks(),
-                'add'   : $.Callbacks(),
-                'remove': $.Callbacks(),
-                'edit'  : $.Callbacks()
-            }
-        }
-
-        function subscribe( event, fn ) {
-            this.callbacks[ event ].add( fn );
-        }
-
-        function load( students ) {
-            this.classrooms = students;
-            this.callbacks[ 'load' ].fire( students );
-        }
-
-        function add( student ) {
-            this.classrooms.push( student );
-            this.callbacks[ 'add' ].fire( student );
-        }
-
-
-        return {
-            'init'     : init,
-            'subscribe': subscribe,
-            'load'     : load
-        }
-
-    })();
-
     var StudentsPanel = (function () {
         var $panel;
         var $table;
@@ -373,7 +339,7 @@
             cacheDom( selector );
             bindEvents();
 
-            Students.subscribe( 'load', whenStudentsLoaded );
+            Students.subscribe( 'load-records', whenStudentsLoaded );
             Classrooms.subscribe( 'load-records', whenClassroomsLoaded );
         }
 
@@ -1779,69 +1745,6 @@
             addClassroom : addClassroom
         };
 
-        return publicApi;
-    })();
-
-
-    /********************************************************************************
-     * Classroom Page
-     ********************************************************************************/
-    var ClassroomPage = (function () {
-        var $page, $list, $input, publicApi;
-
-        function init( selector ) {
-            cacheDom( selector );
-            bindEvents();
-        }
-
-        function cacheDom( selector ) {
-            $page  = $( selector );
-            $list  = $page.find( 'select' );
-            $input = $page.find( 'input[type=text]' );
-        }
-
-        function bindEvents() {
-            $page.on( 'show', function () {
-                // TODO: ???
-            } );
-
-            $input.on( 'keypress', function ( event ) {
-                var keyCode;
-                keyCode = event.keyCode || event.which;
-                if ( 13 === keyCode ) {
-                    $.ajax( {
-                        url     : 'api/submitClassroom',
-                        method  : 'post',
-                        data    : {
-                            'name': $input.val()
-                        },
-                        dataType: 'json',
-                        success : function onSubmitClassroomSuccess( json ) {
-                            if ( false == json.success ) {
-                                alert( 'Error submitting new class: ' + json.message );
-                            } else {
-                                console.log( json.classroom );
-                            }
-                        },
-                        error   : function onSubmitClassroomError( jqXHR, textStatus, errorThrown ) {
-                            alert( 'AJAX error submiting new class: ' + textStatus );
-                        }
-                    } );
-                }
-            } );
-        }
-
-        function addClassroom( classroom ) {
-            var $option;
-            $option = $( '<option>' ).val( classroom.id ).text( classroom.name );
-            $list.append( $option );
-        }
-
-
-        publicApi = {
-            init        : init,
-            addClassroom: addClassroom
-        };
         return publicApi;
     })();
 
