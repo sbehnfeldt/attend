@@ -47,6 +47,11 @@ switch ( $_SERVER['REQUEST_METHOD'] ) {
 		$results = $repo->insert( $_POST );
 		break;
 
+	case 'PUT' :
+		parse_str( file_get_contents('php://input'), $params );
+		$results = $repo->update( $resourceId, $params);
+		break;
+
 	case 'DELETE' :
 		$results = $repo->remove( $resourceId );
 		break;

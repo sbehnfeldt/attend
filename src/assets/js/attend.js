@@ -115,8 +115,10 @@
         // When the 'Update' button for an existing classroom is clicked,
         // update the database (via the controller) accordingly
         function onClickUpdateClassroom() {
-            // TODO: Save changes to classroom
-            console.log( 'TODO: Submit changes' );
+            var $tr = $( this ).closest( 'tr' );
+            ClassroomController.update( $tr.data( 'classroom-id' ), {
+                'name': $tr.find( 'input.edit-classroom' ).val()
+            } );
         }
 
         // When the 'Delete' button for an existing classroom is clicked,
@@ -236,6 +238,22 @@
                 },
                 'error'   : function ( xhr ) {
                     console.log( 'AJAX error inserting new record' );
+                    console.log( xhr );
+                }
+            } );
+        },
+
+        'update': function ( classroomId, params ) {
+            $.ajax( {
+                'url'   : 'api/classrooms/' + classroomId,
+                'method': 'put',
+                'data'  : params,
+
+                'dataType': 'json',
+                'success' : function ( json ) {
+                    console.log( json );
+                },
+                'error'   : function ( xhr ) {
                     console.log( xhr );
                 }
             } );

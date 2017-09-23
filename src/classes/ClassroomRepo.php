@@ -13,17 +13,10 @@ class ClassroomRepo {
 
 
 	public function insert( $post ) {
-		global $config;
-		$host   = $config['db']['host'];
-		$dbname = $config['db']['dbname'];
-		$uname  = $config['db']['uname'];
-		$pword  = $config['db']['pword'];
-		$pdo    = new \PDO( "mysql:host=$host;dbname=$dbname", $uname, $pword );
-
 		$sql = 'insert into classrooms (name) values (:name)';
-		$sth = $pdo->prepare( $sql );
+		$sth = $this->pdo->prepare( $sql );
 		$sth->execute( [ ':name' => $post['name'] ] );
-		$id = $pdo->lastInsertId();
+		$id = $this->pdo->lastInsertId();
 
 		return $id;
 	}
@@ -56,11 +49,26 @@ class ClassroomRepo {
 		return $classrooms;
 	}
 
-	public function remove( $id ) {
-		$sth  = $this->pdo->prepare( 'delete from classrooms where id=:id' );
-		$rows = $sth->execute( [ ':id' => $id ] );
+	public function update( $id, $params ) {
+		$cols = [ ];
+		$vals = [ ];
+		foreach ( $params as $k => $v ) {
+			$cols[] = "$k = ?";
+			$vals[] = $v;
+		}
+		$cols   = implode( ', ', $cols );
+		$sql    = "update classrooms set $cols where id = ?";
+		$vals[] = $id;
+		$sth    = $this->pdo->prepare( $sql );
+		$bool   = $sth->execute( $vals );
 
 		return $id;
+	}
 
+	public function remove( $id ) {
+		$sth = $this->pdo->prepare( 'delete from classrooms where id=:id' );
+		$sth->execute( [ ':id' => $id ] );
+
+		return $id;
 	}
 }
