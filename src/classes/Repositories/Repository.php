@@ -48,4 +48,17 @@ abstract class Repository {
 		return $resources;
 	}
 
+	public function selectOne( $id ) {
+		$resource = [ ];
+		$sql      = 'select ' . implode( ', ', $this->getColumnsNames() ) . ' from ' . $this->getTableName() . ' where id = :id';
+		$sth      = $this->getPdo()->prepare( $sql );
+		$rows     = $sth->execute( [ ':id' => $id ] );
+
+		while ( $row = $sth->fetch() ) {
+			$resources[] = $this->translateTableRow( $row );		}
+
+		return $resource;
+	}
+
+
 }

@@ -26,21 +26,6 @@ class ClassroomRepo extends Repository {
 		return $id;
 	}
 
-
-	public function selectOne( $id ) {
-		$classrooms = [ ];
-		$sth        = $this->getPdo()->prepare( 'select * from classrooms where id=:id' );
-		$rows       = $sth->execute( [ ':id' => $id ] );
-		while ( $row = $sth->fetch() ) {
-			$classrooms[] = [
-				'id'   => $row['id'],
-				'name' => $row['name']
-			];
-		}
-
-		return $classrooms;
-	}
-
 	public function update( $id, $params ) {
 		$cols = [ ];
 		$vals = [ ];
