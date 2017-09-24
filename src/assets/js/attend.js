@@ -342,8 +342,6 @@
             Students.subscribe( 'load-records', whenStudentsLoaded );
             Students.subscribe( 'remove-record', whenStudentRemoved );
             Classrooms.subscribe( 'load-records', whenClassroomsLoaded );
-
-
         }
 
         function cacheDom( selector ) {
@@ -357,7 +355,57 @@
             $table.on( 'click', 'button.edit', onClickEditStudent );
             $table.on( 'click', 'button.delete', onClickDeleteStudent );
             $table.on( 'click', 'button.undo', onClickUndoEdits );
+            $table.on('keyup', 'input.family-name', onKeyupEditStudentFamilyName );
+            $table.on('keyup', 'input.given-name', onKeyupEditStudentGivenName );
+            $table.on('change', 'select[name=classroom]', onChangeSelectClassroom );
         }
+
+        function onKeyupEditStudentFamilyName() {
+            var $tr     = $( this ).closest( 'tr' );
+            var id      = $tr.data( 'studentId' );
+            var current = Students.records[ id ];
+            if ( current.familyName != $( this ).val() ) {
+                $( this ).addClass( 'modified' );
+                $tr.find( 'button.update' ).removeClass( 'disabled' ).attr( 'disabled', false );
+                $tr.find( 'button.delete' ).removeClass( 'delete' ).addClass( 'undo' );
+            } else {
+                $( this ).removeClass( 'modified' );
+                $tr.find( 'button.update' ).addClass( 'disabled' ).attr( 'disabled', true );
+                $tr.find( 'button.undo' ).removeClass( 'undo' ).addClass( 'delete' );
+            }
+        }
+
+        function onKeyupEditStudentGivenName() {
+            var $tr     = $( this ).closest( 'tr' );
+            var id      = $tr.data( 'studentId' );
+            var current = Students.records[ id ];
+            if ( current.firstName != $( this ).val() ) {
+                $( this ).addClass( 'modified' );
+                $tr.find( 'button.update' ).removeClass( 'disabled' ).attr( 'disabled', false );
+                $tr.find( 'button.delete' ).removeClass( 'delete' ).addClass( 'undo' );
+            } else {
+                $( this ).removeClass( 'modified' );
+                $tr.find( 'button.update' ).addClass( 'disabled' ).attr( 'disabled', true );
+                $tr.find( 'button.undo' ).removeClass( 'undo' ).addClass( 'delete' );
+            }
+        }
+
+
+        function onChangeSelectClassroom() {
+            var $tr     = $( this ).closest( 'tr' );
+            var id      = $tr.data( 'studentId' );
+            var current = Students.records[ id ];
+            if ( current.classroomId != $( this ).val() ) {
+                $( this ).addClass( 'modified' );
+                $tr.find( 'button.update' ).removeClass( 'disabled' ).attr( 'disabled', false );
+                $tr.find( 'button.delete' ).removeClass( 'delete' ).addClass( 'undo' );
+            } else {
+                $( this ).removeClass( 'modified' );
+                $tr.find( 'button.update' ).addClass( 'disabled' ).attr( 'disabled', true );
+                $tr.find( 'button.undo' ).removeClass( 'undo' ).addClass( 'delete' );
+            }
+        }
+
 
 
         ////////////////////////////////////////////////////////////////////////////////
