@@ -343,36 +343,76 @@
             Classrooms.subscribe( 'load-records', whenClassroomsLoaded );
         }
 
-        function bindEvents() {
-        }
-
         function cacheDom( selector ) {
             $panel = $( selector );
             $table = $panel.find( 'table.students-table' );
             table  = $table.DataTable( {} );
         }
 
+
+        function bindEvents() {
+            $table.on( 'click', 'button.edit', onClickEditStudent );
+            $table.on( 'click', 'button.delete', onClickDeleteStudent );
+            $table.on( 'click', 'button.undo', onClickUndoEdits );
+        }
+
+
         ////////////////////////////////////////////////////////////////////////////////
         // Event Handler Functions
         ////////////////////////////////////////////////////////////////////////////////
+        function onClickEditStudent() {
+            var $tr       = $( this ).closest( 'tr' );
+            var studentId = $tr.data( 'student-id' );
+            var student   = Students.records[ studentId ];
+
+            if ( Classrooms.records.length > 0 ) {
+                var $select = '<select name="classroom">';
+                $select += '<option value=""></option>';
+                for ( var p in Classrooms.records ) {
+                    var temp = Classrooms.records[ p ];
+                    $select += '<option value="' + temp.id + '">' + temp.name + '</option>';
+                }
+                $select += '</select>';
+            }
+
+            var tr = table.row( $tr );
+            tr.data( [
+                '<input type="text" class="family-name" value="' + student.familyName + '" />',
+                '<input type="text" class="given-name" value="' + student.firstName + '" />',
+                $select,
+                '<input type="checkbox" name="enrolled" ' + ( student.enrolled ? ' checked' : '') + '/>',
+                '<button class="save"><span class="glyphicon glyphicon-ok" style="color: #080"/></button>',
+                '<button class="undo"><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
+            ] );
+            $tr.find( 'select' ).val( student.classroomId );
+        }
+
+        function onClickUndoEdits() {
+            if ( confirm( 'Are you sure you want to discard your changes?' ) ) {
+
+            }
+        }
+
+        function onClickDeleteStudent() {
+            console.log( 'Delete' );
+
+        }
 
         ////////////////////////////////////////////////////////////////////////////////
         // Callback Functions
         ////////////////////////////////////////////////////////////////////////////////
 
         function whenStudentsLoaded( students ) {
-            console.log( 'students loaded' );
             for ( var i = 0; i < students.length; i++ ) {
                 var row = table.row.add( [
                     students[ i ].familyName,
                     students[ i ].firstName,
-                    '<span class="classroom">' +
-                    (Classrooms.records.length > 0 ?
-                        Classrooms.records[ students[ i ].classroomId ].name : students[ i ].classroomId) +
-                    '</span>',
-                    '<input type="checkbox" />',
-                    '<button><span class="glyphicon glyphicon-edit" style="color: #080"/></button>',
-                    '<button><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
+                    (Classrooms.records.length == 0
+                        ? '<span class="classroom">' + students[ i ].classroomId + '</span>'
+                        : '<span class="classroom">' + Classrooms.records[ students[ i ].classroomId ].name + '</span>'),
+                    '<input type="checkbox" name="enrolled" disabled ' + ( students[ i ].enrolled ? ' checked' : '') + '/>',
+                    '<button class="edit"><span class="glyphicon glyphicon-edit" style="color: #080"/></button>',
+                    '<button class="delete"><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
                 ] );
                 $( row.node() ).data( 'studentId', students[ i ].id );
             }

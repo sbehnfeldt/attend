@@ -132,6 +132,10 @@ select.modified {
 .panel table {
     width: 100%;
 }
+table select,
+table input[type=text] {
+    width: 100%;
+}
 
 .report {
     display: none;
