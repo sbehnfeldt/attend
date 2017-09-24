@@ -384,8 +384,8 @@
                 '<input type="text" class="given-name" value="' + student.firstName + '" />',
                 $select,
                 '<input type="checkbox" name="enrolled" ' + ( student.enrolled ? ' checked' : '') + '/>',
-                '<button class="save"><span class="glyphicon glyphicon-ok" style="color: #080"/></button>',
-                '<button class="undo"><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
+                '<button class="save"><span class="glyphicon glyphicon-ok-circle" style="color: #080"/></button>',
+                '<button class="undo"><span class="glyphicon glyphicon-remove-circle" style="color: #f80"/></button>',
             ] );
             $tr.find( 'select' ).val( student.classroomId );
         }
