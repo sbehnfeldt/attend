@@ -38,4 +38,10 @@ class StudentRepo extends Repository {
 		return $students;
 	}
 
+	public function remove( $id ) {
+		$sth = $this->getPdo()->prepare( 'delete from students where id=:id' );
+		$sth->execute( [ ':id' => $id ] );
+
+		return $id;
+	}
 }

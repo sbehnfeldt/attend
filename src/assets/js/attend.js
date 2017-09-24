@@ -340,7 +340,10 @@
             bindEvents();
 
             Students.subscribe( 'load-records', whenStudentsLoaded );
+            Students.subscribe( 'remove-record', whenStudentRemoved );
             Classrooms.subscribe( 'load-records', whenClassroomsLoaded );
+
+
         }
 
         function cacheDom( selector ) {
@@ -407,9 +410,13 @@
         }
 
         function onClickDeleteStudent() {
-            console.log( 'Delete' );
-
+            if ( confirm( 'Are you sure you want to DELETE this student from the database?' ) ) {
+                var $tr = $( this ).closest( 'tr' );
+                var id  = $tr.data( 'studentId' );
+                StudentController.remove( id );
+            }
         }
+
 
         ////////////////////////////////////////////////////////////////////////////////
         // Callback Functions
@@ -430,6 +437,18 @@
                 $( row.node() ).data( 'studentId', students[ i ].id );
             }
             table.draw();
+        }
+
+        function whenStudentRemoved( id ) {
+            table.rows().nodes().each( function ( e, i ) {
+                var $tr  = $( e );
+                var data = $tr.data( 'studentId' );
+                if ( data === id ) {
+                    $tr.remove();
+                    e.remove();
+                    return false;
+                }
+            } );
         }
 
         // When the classrooms are loaded,
@@ -466,8 +485,24 @@
                     alert( "AJAX error fetching classes: " + textStatus );
                 }
             } );
-        }
+        },
 
+        'remove': function ( id ) {
+            $.ajax( {
+                'url'   : 'api/students/' + id,
+                'method': 'delete',
+
+                'dataType': 'json',
+                'success' : function ( json ) {
+                    console.log( json );
+                    Students.remove( id );
+                },
+                'error'   : function ( xhr ) {
+                    console.log( 'error' );
+                    console.log( xhr );
+                }
+            } );
+        }
     };
 
     var CallbackSelect = (function () {
