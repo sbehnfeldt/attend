@@ -167,8 +167,8 @@
         // Since this classroom has not yet been entered in to the model or database,
         // no call to the model or database (via the controller) is necessary.
         function onClickDiscardClassroom() {
-            var $tr = $( this ).closest( 'tr' );
             if ( confirm( 'Are you sure you want to discard this new classroom?' ) ) {
+                var $tr = $( this ).closest( 'tr' );
                 table.row( $tr ).remove();
                 $tr.remove();
                 $newButton.show();
@@ -334,6 +334,7 @@
         var $panel;
         var $table;
         var table;
+        var $newButton;
 
         function init( selector ) {
             cacheDom( selector );
@@ -345,9 +346,10 @@
         }
 
         function cacheDom( selector ) {
-            $panel = $( selector );
-            $table = $panel.find( 'table.students-table' );
-            table  = $table.DataTable( {} );
+            $panel     = $( selector );
+            $table     = $panel.find( 'table.students-table' );
+            table      = $table.DataTable( {} );
+            $newButton = $panel.find( 'button.new-record' );
         }
 
 
@@ -355,9 +357,12 @@
             $table.on( 'click', 'button.edit', onClickEditStudent );
             $table.on( 'click', 'button.delete', onClickDeleteStudent );
             $table.on( 'click', 'button.undo', onClickUndoEdits );
-            $table.on('keyup', 'input.family-name', onKeyupEditStudentFamilyName );
-            $table.on('keyup', 'input.given-name', onKeyupEditStudentGivenName );
-            $table.on('change', 'select[name=classroom]', onChangeSelectClassroom );
+            $table.on( 'click', 'button.discard', onClickDiscardNewStudent );
+            $table.on( 'keyup', 'input.family-name', onKeyupEditStudentFamilyName );
+            $table.on( 'keyup', 'input.given-name', onKeyupEditStudentGivenName );
+            $table.on( 'change', 'select[name=classroom]', onChangeSelectClassroom );
+
+            $newButton.on( 'click', onClickNewStudent );
         }
 
         function onKeyupEditStudentFamilyName() {
@@ -405,7 +410,6 @@
                 $tr.find( 'button.undo' ).removeClass( 'undo' ).addClass( 'delete' );
             }
         }
-
 
 
         ////////////////////////////////////////////////////////////////////////////////
@@ -457,12 +461,45 @@
             }
         }
 
+        function onClickDiscardNewStudent() {
+            if ( confirm( 'Are you sure you want to discard this new student?' )) {
+                var $tr = $( this ).closest( 'tr' );
+                table.row( $tr ).remove();
+                $tr.remove();
+                $newButton.show();
+            }
+        }
+
         function onClickDeleteStudent() {
             if ( confirm( 'Are you sure you want to DELETE this student from the database?' ) ) {
                 var $tr = $( this ).closest( 'tr' );
                 var id  = $tr.data( 'studentId' );
                 StudentController.remove( id );
             }
+        }
+
+        function onClickNewStudent() {
+            if ( Classrooms.records.length > 0 ) {
+                var $select = '<select name="edit-classroom">';
+                $select += '<option value=""></option>';
+                for ( var p in Classrooms.records ) {
+                    var temp = Classrooms.records[ p ];
+                    $select += '<option value="' + temp.id + '">' + temp.name + '</option>';
+                }
+                $select += '</select>';
+            }
+            var row = table.row.add( [
+                '<input type="text" class="edit-family-name" />',
+                '<input type="text" class="edit-given-name"  />',
+                $select,
+                '<input type="checkbox" name="enrolled" />',
+                '<button class="save"><span class="glyphicon glyphicon-ok" style="color: #080"/></button>',
+                '<button class="discard"><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
+            ] );
+            table.draw();
+            $( row.node() ).addClass( 'new-classroom' );
+            $( row.node() ).find( '.edit-family-name' ).focus();
+            $newButton.hide();
         }
 
 
