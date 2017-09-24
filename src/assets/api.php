@@ -19,7 +19,11 @@ $host   = $config['db']['host'];
 $dbname = $config['db']['dbname'];
 $uname  = $config['db']['uname'];
 $pword  = $config['db']['pword'];
-$pdo    = new \PDO( "mysql:host=$host;dbname=$dbname", $uname, $pword );
+$pdo    = new \PDO( "mysql:host=$host;dbname=$dbname", $uname, $pword, [
+	PDO::ATTR_PERSISTENT         => true,
+	PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+	PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+] );
 
 switch ( $resourceType ) {
 	case 'classrooms':
@@ -48,8 +52,8 @@ switch ( $_SERVER['REQUEST_METHOD'] ) {
 		break;
 
 	case 'PUT' :
-		parse_str( file_get_contents('php://input'), $params );
-		$results = $repo->update( $resourceId, $params);
+		parse_str( file_get_contents( 'php://input' ), $params );
+		$results = $repo->update( $resourceId, $params );
 		break;
 
 	case 'DELETE' :

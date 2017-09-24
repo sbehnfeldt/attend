@@ -20,7 +20,7 @@ abstract class Repository {
 	protected function getPdo() {
 		return $this->pdo;
 	}
-	
+
 	/**
 	 * @param PDO $pdo
 	 */
@@ -29,5 +29,23 @@ abstract class Repository {
 	}
 
 
+	abstract protected function getTableName();
+
+	abstract protected function getColumnsNames();
+
+	protected function translateTableRow( $row ) {
+		return $row;
+	}
+
+	public function select() {
+		$resources = [ ];
+		$sql       = 'select ' . implode( ', ', $this->getColumnsNames() ) . ' from ' . $this->getTableName();
+		$rows      = $this->getPdo()->query( $sql );
+		foreach ( $rows as $row ) {
+			$resources[] = $this->translateTableRow( $row );
+		}
+
+		return $resources;
+	}
 
 }

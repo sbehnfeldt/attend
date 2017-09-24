@@ -4,6 +4,19 @@ namespace Repositories;
 
 class ClassroomRepo extends Repository {
 
+	static private $tableName = 'classrooms';
+	static private $columnNames = [
+		'id', 'name'
+	];
+
+	protected function getTableName() {
+		return ClassroomRepo::$tableName;
+	}
+
+	protected function getColumnsNames() {
+		return ClassroomRepo::$columnNames;
+	}
+
 	public function insert( $post ) {
 		$sql = 'insert into classrooms (name) values (:name)';
 		$sth = $this->getPdo()->prepare( $sql );
@@ -11,19 +24,6 @@ class ClassroomRepo extends Repository {
 		$id = $this->getPdo()->lastInsertId();
 
 		return $id;
-	}
-
-	public function select() {
-		$classrooms = [ ];
-		$rows       = $this->getPdo()->query( 'select * from classrooms' );
-		foreach ( $rows as $row ) {
-			$classrooms[] = [
-				'id'   => $row['id'],
-				'name' => $row['name']
-			];
-		}
-
-		return $classrooms;
 	}
 
 
