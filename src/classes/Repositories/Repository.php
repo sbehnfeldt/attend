@@ -55,10 +55,16 @@ abstract class Repository {
 		$rows     = $sth->execute( [ ':id' => $id ] );
 
 		while ( $row = $sth->fetch() ) {
-			$resources[] = $this->translateTableRow( $row );		}
+			$resources[] = $this->translateTableRow( $row );
+		}
 
 		return $resource;
 	}
 
+	public function remove( $id ) {
+		$sth = $this->getPdo()->prepare( 'delete from ' . $this->getTableName() . ' where id=:id' );
+		$sth->execute( [ ':id' => $id ] );
 
+		return $id;
+	}
 }

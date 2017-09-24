@@ -6,7 +6,8 @@ class ClassroomRepo extends Repository {
 
 	static private $tableName = 'classrooms';
 	static private $columnNames = [
-		'id', 'name'
+		'id',
+		'name'
 	];
 
 	protected function getTableName() {
@@ -38,13 +39,6 @@ class ClassroomRepo extends Repository {
 		$vals[] = $id;
 		$sth    = $this->getPdo()->prepare( $sql );
 		$bool   = $sth->execute( $vals );
-
-		return $id;
-	}
-
-	public function remove( $id ) {
-		$sth = $this->getPdo()->prepare( 'delete from classrooms where id=:id' );
-		$sth->execute( [ ':id' => $id ] );
 
 		return $id;
 	}
