@@ -364,6 +364,7 @@
             var $tr       = $( this ).closest( 'tr' );
             var studentId = $tr.data( 'student-id' );
             var student   = Students.records[ studentId ];
+            var tr        = table.row( $tr );
 
             if ( Classrooms.records.length > 0 ) {
                 var $select = '<select name="classroom">';
@@ -375,7 +376,6 @@
                 $select += '</select>';
             }
 
-            var tr = table.row( $tr );
             tr.data( [
                 '<input type="text" class="family-name" value="' + student.familyName + '" />',
                 '<input type="text" class="given-name" value="' + student.firstName + '" />',
@@ -389,7 +389,20 @@
 
         function onClickUndoEdits() {
             if ( confirm( 'Are you sure you want to discard your changes?' ) ) {
-
+                var $tr       = $( this ).closest( 'tr' );
+                var row       = table.row( $tr );
+                var studentId = $tr.data( 'student-id' );
+                var student   = Students.records[ studentId ];
+                row.data( [
+                    student.familyName,
+                    student.firstName,
+                    (Classrooms.records.length == 0
+                        ? '<span class="classroom">' + student.classroomId + '</span>'
+                        : '<span class="classroom">' + Classrooms.records[ student.classroomId ].name + '</span>'),
+                    '<input type="checkbox" name="enrolled" disabled ' + ( student.enrolled ? ' checked' : '') + '/>',
+                    '<button class="edit"><span class="glyphicon glyphicon-edit" style="color: #080"/></button>',
+                    '<button class="delete"><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
+                ] );
             }
         }
 
