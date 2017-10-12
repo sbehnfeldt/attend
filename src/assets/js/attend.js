@@ -81,13 +81,13 @@
 
             table.addClassroom = function ( classroom ) {
                 var row = this.row.add( [
-                    '<input type="text" class="edit-classroom" value="' + classroom.name + '" />',
+                    '<input type="text" class="edit-classroom" value="' + (classroom && classroom.name ? classroom.name : '') + '" />',
                     '<button class="save disabled" disabled><span class="glyphicon glyphicon-ok-circle" /> Save</button>&nbsp;' +
                     '<button class="discard disabled" disabled><span class="glyphicon glyphicon-remove-circle" /> Discard</button>&nbsp;' +
                     '<button class="delete"><span class="glyphicon glyphicon-remove" /> Delete</button>'
                 ] );
-                $( row.node() ).data( 'classroomId', classroom.id );
-                return this;
+                $( row.node() ).data( 'classroomId', classroom ? classroom.id : '' );
+                return row;
             };
 
             $newButton = $panel.find( 'button.new-record' );
@@ -191,11 +191,7 @@
         // When the "New Classroom" button is clicked,
         // add an empty row to the end of the Classrooms table
         function onClickNewClassroom() {
-            var row = table.row.add( [
-                '<input type="text" class="new-classroom"  />',
-                '<button class="submit disabled" disabled><span class="glyphicon glyphicon-ok-circle" /> Save</button>' +
-                '<button class="discard"><span class="glyphicon glyphicon-remove-circle" /> Discard</button>'
-            ] );
+            var row = table.addClassroom( {} );
             table.draw();
             $( row.node() ).addClass( 'new-classroom' );
             $( row.node() ).find( 'input' ).focus();
@@ -221,7 +217,9 @@
             var row = table.row( '.new-classroom' );
             row.remove();
             $( row ).remove();
-            table.addClassroom( classroom ).draw();
+
+            table.addClassroom( classroom );
+            table.draw();
             $newButton.show();
         }
 
