@@ -49,6 +49,7 @@ button.delete span {
 }
 
 button.submit span,
+button.edit span,
 button.update span {
     color: #080;
 }

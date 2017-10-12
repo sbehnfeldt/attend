@@ -71,13 +71,25 @@
         }
 
         function cacheDom( selector ) {
-            $panel     = $( selector );
-            $table     = $panel.find( 'table' );
-            table      = $table.DataTable( {
+            $panel = $( selector );
+            $table = $panel.find( 'table' );
+            table  = $table.DataTable( {
                 'info'     : false,
                 'paging'   : false,
                 'searching': false
             } );
+
+            table.addClassroom = function ( classroom ) {
+                var row = this.row.add( [
+                    '<input type="text" class="edit-classroom" value="' + classroom.name + '" />',
+                    '<button class="save disabled" disabled><span class="glyphicon glyphicon-ok-circle" /> Save</button>&nbsp;' +
+                    '<button class="discard disabled" disabled><span class="glyphicon glyphicon-remove-circle" /> Discard</button>&nbsp;' +
+                    '<button class="delete"><span class="glyphicon glyphicon-remove" /> Delete</button>'
+                ] );
+                $( row.node() ).data( 'classroomId', classroom.id );
+                return this;
+            };
+
             $newButton = $panel.find( 'button.new-record' );
         }
 
@@ -181,8 +193,8 @@
         function onClickNewClassroom() {
             var row = table.row.add( [
                 '<input type="text" class="new-classroom"  />',
-                '<button class="submit disabled" disabled><span class="glyphicon glyphicon-ok" /></button>',
-                '<button class="discard"><span class="glyphicon glyphicon-remove" /></button>'
+                '<button class="submit disabled" disabled><span class="glyphicon glyphicon-ok-circle" /> Save</button>' +
+                '<button class="discard"><span class="glyphicon glyphicon-remove-circle" /> Discard</button>'
             ] );
             table.draw();
             $( row.node() ).addClass( 'new-classroom' );
@@ -198,12 +210,7 @@
         // populate the Classrooms table
         function whenClassroomsLoaded( classrooms ) {
             for ( var i = 0; i < classrooms.length; i++ ) {
-                var row = table.row.add( [
-                    '<input type="text" class="edit-classroom" value="' + classrooms[ i ].name + '" />',
-                    '<button class="update disabled" disabled><span class="glyphicon glyphicon-ok" /></button>',
-                    '<button class="delete"><span class="glyphicon glyphicon-remove" /></button>'
-                ] );
-                $( row.node() ).data( 'classroomId', classrooms[ i ].id );
+                table.addClassroom( classrooms[ i ] );
             }
             table.draw();
         }
@@ -214,14 +221,7 @@
             var row = table.row( '.new-classroom' );
             row.remove();
             $( row ).remove();
-
-            row = table.row.add( [
-                '<input type="text" class="edit-classroom"  value="' + classroom.name + '"/>',
-                '<button class="update disabled" disabled><span class="glyphicon glyphicon-ok" /></button>',
-                '<button class="delete"><span class="glyphicon glyphicon-remove" /></button>'
-            ] );
-            table.draw();
-            $( row.node() ).data( 'classroomId', classroom.id );
+            table.addClassroom( classroom ).draw();
             $newButton.show();
         }
 
@@ -436,8 +436,8 @@
                 '<input type="text" class="given-name" value="' + student.firstName + '" />',
                 $select,
                 '<input type="checkbox" name="enrolled" ' + ( student.enrolled ? ' checked' : '') + '/>',
-                '<button class="save"><span class="glyphicon glyphicon-ok-circle" style="color: #080"/></button>',
-                '<button class="undo"><span class="glyphicon glyphicon-remove-circle" style="color: #f80"/></button>',
+                '<button class="save"><span class="glyphicon glyphicon-ok-circle" /></button>',
+                '<button class="undo"><span class="glyphicon glyphicon-remove-circle" /></button>',
             ] );
             $tr.find( 'select' ).val( student.classroomId );
         }
@@ -455,14 +455,14 @@
                         ? '<span class="classroom">' + student.classroomId + '</span>'
                         : '<span class="classroom">' + Classrooms.records[ student.classroomId ].name + '</span>'),
                     '<input type="checkbox" name="enrolled" disabled ' + ( student.enrolled ? ' checked' : '') + '/>',
-                    '<button class="edit"><span class="glyphicon glyphicon-edit" style="color: #080"/></button>',
-                    '<button class="delete"><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
+                    '<button class="edit"><span class="glyphicon glyphicon-edit" /></button>',
+                    '<button class="delete"><span class="glyphicon glyphicon-remove" /></button>',
                 ] );
             }
         }
 
         function onClickDiscardNewStudent() {
-            if ( confirm( 'Are you sure you want to discard this new student?' )) {
+            if ( confirm( 'Are you sure you want to discard this new student?' ) ) {
                 var $tr = $( this ).closest( 'tr' );
                 table.row( $tr ).remove();
                 $tr.remove();
@@ -493,8 +493,8 @@
                 '<input type="text" class="edit-given-name"  />',
                 $select,
                 '<input type="checkbox" name="enrolled" />',
-                '<button class="save"><span class="glyphicon glyphicon-ok" style="color: #080"/></button>',
-                '<button class="discard"><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
+                '<button class="save"><span class="glyphicon glyphicon-ok-circle" /></button>',
+                '<button class="discard"><span class="glyphicon glyphicon-remove-circle" /></button>',
             ] );
             table.draw();
             $( row.node() ).addClass( 'new-classroom' );
@@ -516,8 +516,10 @@
                         ? '<span class="classroom">' + students[ i ].classroomId + '</span>'
                         : '<span class="classroom">' + Classrooms.records[ students[ i ].classroomId ].name + '</span>'),
                     '<input type="checkbox" name="enrolled" disabled ' + ( students[ i ].enrolled ? ' checked' : '') + '/>',
-                    '<button class="edit"><span class="glyphicon glyphicon-edit" style="color: #080"/></button>',
-                    '<button class="delete"><span class="glyphicon glyphicon-remove" style="color: #800"/></button>',
+                    '<button class="edit"><span class="glyphicon glyphicon-edit" /> Edit</button>&nbsp;' +
+                    '<button class="save disabled" disabled><span class="glyphicon glyphicon-ok-circle" /> Save</button>&nbsp;' +
+                    '<button class="discard disabled" disabled><span class="glyphicon glyphicon-remove-circle" /> Discard</button>&nbsp;' +
+                    '<button class="delete"><span class="glyphicon glyphicon-remove" /> Delete</button>',
                 ] );
                 $( row.node() ).data( 'studentId', students[ i ].id );
             }
