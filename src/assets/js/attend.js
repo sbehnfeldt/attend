@@ -1991,8 +1991,9 @@
      * Document on-ready handler
      ********************************************************************************/
     $( function () {
-        // All of the tabs in the top-level menu, <a href="#target">
-        var $tabs = $( '.tab' );
+        var $tabs   = $( '.tab' );  // All of the tabs in the top-level menu, <a href="#target">
+        var oldhash = '';           // Previous hash fragment in URL
+
 
         // DOM elements identified by the href attributes in the $tabs
         var targets = $tabs.map( function () {
@@ -2014,9 +2015,25 @@
             $panel.show();
         }
 
+        // Prevent user from leaving a panel with unsaved changes
         $( window ).on( 'hashchange', function () {
-            showPage( location.hash );
+            if ( ( $panels.filter( ':visible' ).find( '.modified' ).length ) && ( location.hash !== oldhash ) ) {
+                alert( "You have unsaved changes on this page" );
+                location.hash = oldhash;
+                return false;
+            } else {
+                oldhash = location.hash;
+                showPage( location.hash );
+            }
         } );
+
+        // Warn user  if they try to leave the page with unsaved changes
+        $( window ).on( 'beforeunload', function () {
+            if ( $panels.filter( ':visible' ).find( '.modified' ).length ) {
+                return 'Are you sure you want to leave?';
+            }
+        } );
+
 
 
         Handlebars.registerHelper( 'formatTime', formatTime );
@@ -2046,7 +2063,13 @@
         ClassroomController.load();
         StudentController.load();
 
-        showPage( targets.indexOf( location.hash ) !== -1 ? location.hash : '' );
+        if ( targets.indexOf( location.hash ) !== 1 ) {
+            oldhash = location.hash;
+            showPage( location.hash );
+        } else {
+            oldhash = '';
+            showPage( '' );
+        }
     } );
 
 
