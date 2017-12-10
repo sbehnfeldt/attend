@@ -5,6 +5,7 @@
         function init() {
             this.records   = [];
             this.callbacks = {
+                'empty-records': $.Callbacks(),
                 'load-records' : $.Callbacks(),
                 'insert-record': $.Callbacks(),
                 'remove-record': $.Callbacks(),
@@ -18,6 +19,7 @@
 
         function load( records ) {
             this.records = [];
+            this.callbacks[ 'empty-records' ].fire();
             for ( var i = 0; i < records.length; i++ ) {
                 this.records[ parseInt( records[ i ].id ) ] = records[ i ];
             }
@@ -81,7 +83,7 @@
 
             table.addClassroom = function ( classroom ) {
                 var row = this.row.add( [
-                    '<input type="text" class="edit-classroom" value="' + (classroom && classroom.name ? classroom.name : '') + '" />',
+                    '<input type="text" class="edit-classroom" value="' + (classroom && classroom.label ? classroom.label : '') + '" />',
                     '<button class="save disabled" disabled><span class="glyphicon glyphicon-ok-circle" /> Save</button>&nbsp;' +
                     '<button class="discard disabled" disabled><span class="glyphicon glyphicon-remove-circle" /> Discard</button>&nbsp;' +
                     '<button class="delete"><span class="glyphicon glyphicon-remove" /> Delete</button>'
@@ -259,7 +261,7 @@
     var ClassroomController = {
         'insert': function ( data ) {
             $.ajax( {
-                'url'   : 'api/classrooms',
+                'url'   : '/attend-api/classrooms',
                 'method': 'post',
                 'data'  : $.param( data ),
 
@@ -270,15 +272,19 @@
                     Classrooms.insert( data );
                 },
                 'error'   : function ( xhr ) {
-                    console.log( 'AJAX error inserting new record' );
                     console.log( xhr );
+                    if ( xhr.responseJSON ) {
+                        alert( xhr.responseJSON.message );
+                    } else {
+                        alert( "Unhandled error" );
+                    }
                 }
             } );
         },
 
         'update': function ( classroomId, params ) {
             $.ajax( {
-                'url'   : 'api/classrooms/' + classroomId,
+                'url'   : '/attend-api/classrooms/' + classroomId,
                 'method': 'put',
                 'data'  : params,
 
@@ -289,29 +295,39 @@
                 },
                 'error'   : function ( xhr ) {
                     console.log( xhr );
+                    if ( xhr.responseJSON ) {
+                        alert( xhr.responseJSON.message );
+                    } else {
+                        alert( "Unhandled error" );
+                    }
                 }
             } );
         },
 
         'load': function () {
             $.ajax( {
-                'url'   : 'api/classrooms',
+                'url'   : '/attend-api/classrooms',
                 'method': 'get',
 
                 'dataType': 'json',
-                'success' : function onFetchClassroomsSuccess( json ) {
+                'success' : function ( json ) {
                     console.log( json );
                     Classrooms.load( json.data );
                 },
-                'error'   : function onFetchClassroomsError( jqXHR, textStatus, errorThrown ) {
-                    alert( "AJAX error fetching classes: " + textStatus );
+                'error'   : function ( xhr ) {
+                    console.log( xhr );
+                    if ( xhr.responseJSON ) {
+                        alert( xhr.responseJSON.message );
+                    } else {
+                        alert( "Unhandled error" );
+                    }
                 }
             } );
         },
 
         'remove': function ( id ) {
             $.ajax( {
-                'url'   : 'api/classrooms/' + id,
+                'url'   : '/attend-api/classrooms/' + id,
                 'method': 'delete',
 
                 'dataType': 'json',
@@ -320,8 +336,12 @@
                     Classrooms.remove( id );
                 },
                 'error'   : function ( xhr ) {
-                    console.log( 'error' );
                     console.log( xhr );
+                    if ( xhr.responseJSON ) {
+                        alert( xhr.responseJSON.message );
+                    } else {
+                        alert( "Unhandled error" );
+                    }
                 }
             } )
         }
@@ -508,11 +528,12 @@
         function whenStudentsLoaded( students ) {
             for ( var i = 0; i < students.length; i++ ) {
                 var row = table.row.add( [
-                    students[ i ].familyName,
-                    students[ i ].firstName,
-                    (Classrooms.records.length == 0
-                        ? '<span class="classroom">' + students[ i ].classroomId + '</span>'
-                        : '<span class="classroom">' + Classrooms.records[ students[ i ].classroomId ].name + '</span>'),
+                    students[ i ].family_name,
+                    students[ i ].first_name,
+                    (students[ i ].classroom_id in Classrooms.records)
+                        ? '<span class="classroom">' + Classrooms.records[ students[ i ].classroom_id ].label + '</span>'
+                        : '<span class="classroom">' + students[ i ].classroom_id + '</span>',
+
                     '<input type="checkbox" name="enrolled" disabled ' + ( students[ i ].enrolled ? ' checked' : '') + '/>',
                     '<button class="edit"><span class="glyphicon glyphicon-edit" /> Edit</button>&nbsp;' +
                     '<button class="save disabled" disabled><span class="glyphicon glyphicon-ok-circle" /> Save</button>&nbsp;' +
@@ -539,12 +560,12 @@
         // When the classrooms are loaded,
         // replace the classroom ID in the Students table with the corresponding classroom name
         function whenClassroomsLoaded( classrooms ) {
-            table.rows().nodes().each( function ( e, i, a ) {
-                var studentId   = $( e ).data( 'studentId' );
+            table.rows().nodes().each( function ( tr, i, a ) {
+                var studentId   = $( tr ).data( 'studentId' );
                 var classroomId = Students.records[ studentId ].classroomId;
-                $( e ).find( 'span.classroom' ).text(
-                    (Classrooms.records.length > 0 ?
-                        Classrooms.records[ classroomId ].name : Students.records[ i ].classroomId) );
+                $( tr ).find( 'span.classroom' ).text(
+                    (classroomId in Classrooms.records) ?
+                        Classrooms.records[ classroomId ].name : Students.records[ studentId ].classroomId );
             } );
         }
 
@@ -556,9 +577,8 @@
 
     var StudentController = {
         'load': function () {
-
             $.ajax( {
-                url   : 'api/students',
+                url   : '/attend-api/students',
                 method: 'get',
 
                 dataType: 'json',
@@ -566,15 +586,20 @@
                     console.log( json );
                     Students.load( json.data );
                 },
-                error   : function onFetchClassroomsError( jqXHR, textStatus, errorThrown ) {
-                    alert( "AJAX error fetching classes: " + textStatus );
+                'error' : function ( xhr ) {
+                    console.log( xhr );
+                    if ( xhr.responseJSON ) {
+                        alert( xhr.responseJSON.message );
+                    } else {
+                        alert( "Unhandled error" );
+                    }
                 }
             } );
         },
 
         'remove': function ( id ) {
             $.ajax( {
-                'url'   : 'api/students/' + id,
+                'url'   : '/attend-api/students/' + id,
                 'method': 'delete',
 
                 'dataType': 'json',
@@ -583,8 +608,12 @@
                     Students.remove( id );
                 },
                 'error'   : function ( xhr ) {
-                    console.log( 'error' );
                     console.log( xhr );
+                    if ( xhr.responseJSON ) {
+                        alert( xhr.responseJSON.message );
+                    } else {
+                        alert( "Unhandled error" );
+                    }
                 }
             } );
         }
@@ -810,8 +839,13 @@
                             $button.closest( 'tr' ).find( 'td.check-out' ).text( '' );
                         }
                     },
-                    error   : function onCheckInError( jqXHR, textStatus, errorThrown ) {
-                        alert( 'AJAX error checking in student: ' + textStatus );
+                    'error' : function ( xhr ) {
+                        console.log( xhr );
+                        if ( xhr.responseJSON ) {
+                            alert( xhr.responseJSON.message );
+                        } else {
+                            alert( "Unhandled error" );
+                        }
                     }
                 } );
             } );
@@ -821,14 +855,14 @@
                 $button   = $( this );
                 studentId = $button.closest( 'tr' ).data( 'student-id' );
                 $.ajax( {
-                    url     : 'api/checkOut',
-                    method  : 'post',
-                    data    : {
+                    'url'     : 'api/checkOut',
+                    'method'  : 'post',
+                    'data'    : {
                         'studentId': studentId,
                         'time'     : Date.now() / 1000
                     },
-                    dataType: 'json',
-                    success : function onCheckOutSuccess( json ) {
+                    'dataType': 'json',
+                    'success' : function onCheckOutSuccess( json ) {
                         var att;
                         if ( !json.success ) {
                             alert( 'Error checking out student: ' + json.message );
@@ -856,8 +890,13 @@
                         $button.closest( 'tr' ).find( 'td.check-out' ).text( formatTime( checkOut ) );
 
                     },
-                    error   : function onCheckOutError( jqXHR, textStatus, errorThrown ) {
-                        alert( 'AJAX error checking out student: ' + textStatus );
+                    'error'   : function ( xhr ) {
+                        console.log( xhr );
+                        if ( xhr.responseJSON ) {
+                            alert( xhr.responseJSON.message );
+                        } else {
+                            alert( "Unhandled error" );
+                        }
                     }
                 } );
             } );
@@ -1635,8 +1674,13 @@
                                 }
                             }
                         },
-                        error   : function onDeleteStudentError( jqXHR, textStatus, errorThrown ) {
-                            alert( 'AJAX error deleting student: ' + textStatus );
+                        'error' : function ( xhr ) {
+                            console.log( xhr );
+                            if ( xhr.responseJSON ) {
+                                alert( xhr.responseJSON.message );
+                            } else {
+                                alert( "Unhandled error" );
+                            }
                         }
                     } );
                 }
@@ -1842,8 +1886,13 @@
                                 }
                             }
                         },
-                        error   : function onEnrollStudentError( jqXHR, textStatus, errorThrown ) {
-                            alert( 'AJAX error enrolling student: ' + textStatus );
+                        'error' : function ( xhr ) {
+                            console.log( xhr );
+                            if ( xhr.responseJSON ) {
+                                alert( xhr.responseJSON.message );
+                            } else {
+                                alert( "Unhandled error" );
+                            }
                         }
                     } );
 
@@ -1882,8 +1931,13 @@
                                 }
                             }
                         },
-                        error   : function updateStudentError( jqXHR, textStatus, errorThrown ) {
-                            alert( 'AJAX error updating student: ' + textStatus );
+                        'error' : function ( xhr ) {
+                            console.log( xhr );
+                            if ( xhr.responseJSON ) {
+                                alert( xhr.responseJSON.message );
+                            } else {
+                                alert( "Unhandled error" );
+                            }
                         }
                     } );
                 }
@@ -2033,7 +2087,6 @@
                 return 'Are you sure you want to leave?';
             }
         } );
-
 
 
         Handlebars.registerHelper( 'formatTime', formatTime );
