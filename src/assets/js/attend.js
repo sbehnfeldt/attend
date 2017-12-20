@@ -56,15 +56,23 @@
     var Students   = Object.create( Records );
 
 
-    var ClassroomPanel = (function () {
-        var $panel;
+    /****************************************************************************************************
+     * Classrooms Table
+     ****************************************************************************************************/
+    var ClassroomsTable = (function () {
         var $table;
         var table;
-        var $newButton;
 
         function init( selector ) {
-            cacheDom( selector );
-            bindEvents();
+            $table = $( selector );
+            table  = $table.DataTable( {
+                'info'     : false,
+                'paging'   : false,
+                'searching': false,
+                'ordering' : false
+            } );
+            $table.on( 'click', 'button.update', onClickUpdateClassroom );
+            $table.on( 'click', 'button.delete', onClickDeleteClassroom );
 
             Classrooms.subscribe( 'load-records', whenClassroomsLoaded );
             Classrooms.subscribe( 'insert-record', whenClassroomAdded );
@@ -72,90 +80,29 @@
             Classrooms.subscribe( 'remove-record', whenClassroomRemoved );
         }
 
-        function cacheDom( selector ) {
-            $panel = $( selector );
-            $table = $panel.find( 'table' );
-            table  = $table.DataTable( {
-                'info'     : false,
-                'paging'   : false,
-                'searching': false
-            } );
-
-            table.addClassroom = function ( classroom ) {
-                var row = this.row.add( [
-                    '<input type="text" class="edit-classroom" value="' + (classroom && classroom.label ? classroom.label : '') + '" />',
-                    '<button class="save disabled" disabled><span class="glyphicon glyphicon-ok-circle" /> Save</button>&nbsp;' +
-                    '<button class="discard disabled" disabled><span class="glyphicon glyphicon-remove-circle" /> Discard</button>&nbsp;' +
-                    '<button class="delete"><span class="glyphicon glyphicon-remove" /> Delete</button>'
-                ] );
-                $( row.node() ).data( 'classroomId', classroom ? classroom.id : '' );
-                return row;
-            };
-
-            $newButton = $panel.find( 'button.new-record' );
-        }
-
-        function bindEvents() {
-            $table.on( 'keyup', 'input.edit-classroom', onKeyupEditClassroom );
-            $table.on( 'keyup', 'input.new-classroom', onKeyupNewClassroom );
-            $table.on( 'click', 'button.update', onClickUpdateClassroom );
-            $table.on( 'click', 'button.undo', onClickUndo );
-            $table.on( 'click', 'button.delete', onClickDeleteClassroom );
-            $table.on( 'click', 'button.submit', onClickSubmitClassroom );
-            $table.on( 'click', 'button.discard', onClickDiscardClassroom );
-            $newButton.on( 'click', onClickNewClassroom );
+        // Add a new row to the classroom table
+        function addClassroom( classroom ) {
+            var row = table.row.add( [
+                classroom && classroom.label ? classroom.label : '',
+                '<button class="edit"><span class="glyphicon glyphicon-edit" /> </button>&nbsp;',
+                '<button class="delete"><span class="glyphicon glyphicon-remove" /> </button>'
+            ] );
+            $( row.node() ).data( 'classroomId', classroom ? classroom.id : '' );
+            return row;
         }
 
         ////////////////////////////////////////////////////////////////////////////////
-        // Event Handler Functions
+        // Internal Event Handlers
         ////////////////////////////////////////////////////////////////////////////////
-
-        // When the "Classroom" edit box is changed; ie, when the classroom is re-named
-        function onKeyupEditClassroom() {
-            var $tr     = $( this ).closest( 'tr' );
-            var id      = $tr.data( 'classroomId' );
-            var current = Classrooms.records[ id ];
-            if ( current.name != $( this ).val() ) {
-                $( this ).addClass( 'modified' );
-                $tr.find( 'button.update' ).removeClass( 'disabled' ).attr( 'disabled', false );
-                $tr.find( 'button.delete' ).removeClass( 'delete' ).addClass( 'undo' );
-            } else {
-                $( this ).removeClass( 'modified' );
-                $tr.find( 'button.update' ).addClass( 'disabled' ).attr( 'disabled', true );
-                $tr.find( 'button.undo' ).removeClass( 'undo' ).addClass( 'delete' );
-            }
-        }
-
-        // When a change is made to the name of a new classroom,
-        function onKeyupNewClassroom() {
-            if ( $( this ).val().length > 0 ) {
-                $( this ).addClass( 'modified' );
-                $( this ).closest( 'tr' ).find( 'button.submit' ).attr( 'disabled', false ).removeClass( 'disabled' );
-            } else {
-                $( this ).closest( 'tr' ).find( 'button.submit' ).attr( 'disabled', true ).addClass( 'disabled' );
-                $( this ).removeClass( 'modified' );
-            }
-        }
 
         // When the 'Update' button for an existing classroom is clicked,
-        // update the database (via the controller) accordingly
+        // open the Classroom Properties dialog
         function onClickUpdateClassroom() {
+            console.log( "update" );
             var $tr = $( this ).closest( 'tr' );
             ClassroomController.update( $tr.data( 'classroom-id' ), {
                 'name': $tr.find( 'input.edit-classroom' ).val()
             } );
-        }
-
-        // When the 'Undo' button for an edited classroom is clicked,
-        // discard any edits that have been made
-        function onClickUndo() {
-            if ( window.confirm( 'Are you sure you want to discard the changes?' ) ) {
-                var $tr = $( this ).closest( 'tr' );
-                var id  = $tr.data( 'classroomId' );
-                $tr.find( 'input.edit-classroom' ).val( Classrooms.records[ id ].name );
-                $tr.find( 'input.edit-classroom' ).removeClass( 'modified' );
-                $( this ).removeClass( 'undo' ).addClass( 'delete' );
-            }
         }
 
         // When the 'Delete' button for an existing classroom is clicked,
@@ -168,47 +115,17 @@
             }
         }
 
-        // When the 'Submit' button for a new classroom is clicked,
-        // insert the new data to the database (via the controller).
-        function onClickSubmitClassroom() {
-            ClassroomController.insert( {
-                'name': $( this ).closest( 'tr' ).find( 'td input' ).val()
-            } );
-        }
-
-        // When the 'Discard' button for a new classroom is clicked,
-        // discard the "New Classroom" row in the table.
-        // Since this classroom has not yet been entered in to the model or database,
-        // no call to the model or database (via the controller) is necessary.
-        function onClickDiscardClassroom() {
-            if ( confirm( 'Are you sure you want to discard this new classroom?' ) ) {
-                var $tr = $( this ).closest( 'tr' );
-                table.row( $tr ).remove();
-                $tr.remove();
-                $newButton.show();
-            }
-        }
-
-
-        // When the "New Classroom" button is clicked,
-        // add an empty row to the end of the Classrooms table
-        function onClickNewClassroom() {
-            var row = table.addClassroom( {} );
-            table.draw();
-            $( row.node() ).addClass( 'new-classroom' );
-            $( row.node() ).find( 'input' ).focus();
-            $newButton.hide();
-        }
-
         ////////////////////////////////////////////////////////////////////////////////
-        // Callback Functions
+        // External Event Callbacks
         ////////////////////////////////////////////////////////////////////////////////
 
         // When classrooms are loaded into the model,
         // populate the Classrooms table
         function whenClassroomsLoaded( classrooms ) {
             for ( var i = 0; i < classrooms.length; i++ ) {
-                table.addClassroom( classrooms[ i ] );
+                addClassroom( classrooms[ i ] );
+                table.draw();
+                console.log( classrooms[ i ]);
             }
             table.draw();
         }
@@ -225,6 +142,8 @@
             $newButton.show();
         }
 
+        // When a classroom is updated in the model,
+        // update the corresponding row in the table acordingly
         function whenClassroomUpdated( id, classroom ) {
             var rows = table.rows().nodes();
             rows.each( function ( e, i ) {
@@ -253,10 +172,128 @@
             } );
         }
 
+
+        return {
+            'init': init
+        };
+    })();
+
+    /****************************************************************************************************
+     * Classroom Properties Dialog
+     ****************************************************************************************************/
+    var ClassroomPropsDlg = (function () {
+        var $dialog;
+        var dialog;
+        var $label;
+        var $tips;
+
+        function init( selector ) {
+            $dialog = $( selector );
+            dialog  = $dialog.dialog( {
+                autoOpen: false,
+                modal   : true,
+                buttons : {
+                    "Submit": onClickSubmitClassroomForm,
+                    "Cancel": function () {
+                        dialog.dialog( "close" );
+                    }
+                },
+                "close" : function () {
+                    $dialog.find( 'form' )[ 0 ].reset();
+                }
+            } );
+            $label  = $dialog.find( 'input[name=label]' );
+            $tips   = $dialog.find( 'p.update-tips' );
+        }
+
+        function open( classroom ) {
+            // Clear form
+
+            if ( classroom ) {
+                // Initialize dialog fields
+            }
+
+            dialog.dialog( 'open' );
+        }
+
+        function checkLength( o, n, min, max ) {
+            if ( o.val().length > max || o.val().length < min ) {
+                o.addClass( "ui-state-error" );
+                updateTips( "Length of " + n + " must be between " +
+                    min + " and " + max + "." );
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        function updateTips( t ) {
+            $tips
+                .text( t )
+                .addClass( "ui-state-highlight" );
+            setTimeout( function () {
+                $tips.removeClass( "ui-state-highlight", 1500 );
+            }, 500 );
+        }
+
+
+        ////////////////////////////////////////////////////////////////////////////////
+        // Internal Event Handlers
+        ////////////////////////////////////////////////////////////////////////////////
+
+        // When the 'Submit' button on the classroom dialog form is clicked,
+        // enter the new classroom data into the database (via the controller)
+        function onClickSubmitClassroomForm() {
+            var valid = true;
+            valid     = valid && checkLength( $label, "label", 1, 55 );
+
+            if ( valid ) {
+                ClassroomController.insert( {
+                    'label': $label.val()
+                } );
+                dialog.dialog( "close" );
+            }
+            return valid;
+        }
+
+
+        return {
+            'init': init,
+            'open': open
+        };
+    })();
+
+
+    /****************************************************************************************************
+     * Classrooms Panel
+     ****************************************************************************************************/
+    var ClassroomsPanel = (function () {
+        var $panel;
+        var $newButton;
+
+        function init( selector ) {
+            $panel     = $( selector );
+            $newButton = $panel.find( 'button.new-record' );
+            $newButton.on( 'click', onClickNewClassroom );
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////
+        // Event Handler Functions
+        ////////////////////////////////////////////////////////////////////////////////
+
+
+        // When the "New Classroom" button is clicked,
+        // add an empty row to the end of the Classrooms table
+        function onClickNewClassroom() {
+            ClassroomPropsDlg.open();
+        }
+
         return {
             'init': init
         }
     })();
+
+
 
     var ClassroomController = {
         'insert': function ( data ) {
@@ -2110,8 +2147,12 @@
         Classrooms.init();
         Students.init();
 
-        ClassroomPanel.init( '#classes-page' );
+        ClassroomsPanel.init( '#classrooms-page' );
+        ClassroomsTable.init( '#classrooms-table' );
+        ClassroomPropsDlg.init( '#classroom-dlg' );
+
         StudentsPanel.init( '#enrollment-page' );
+
 
         ClassroomController.load();
         StudentController.load();
