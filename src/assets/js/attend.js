@@ -71,7 +71,7 @@
                 'searching': false,
                 'ordering' : false
             } );
-            $table.on( 'click', 'button.update', onClickUpdateClassroom );
+            $table.on( 'click', 'button.edit', onClickUpdateClassroom );
             $table.on( 'click', 'button.delete', onClickDeleteClassroom );
 
             Classrooms.subscribe( 'load-records', whenClassroomsLoaded );
@@ -99,20 +99,19 @@
         // open the Classroom Properties dialog
         function onClickUpdateClassroom() {
             console.log( "update" );
-            var $tr = $( this ).closest( 'tr' );
-            ClassroomController.update( $tr.data( 'classroom-id' ), {
-                'name': $tr.find( 'input.edit-classroom' ).val()
-            } );
+            var $tr         = $( this ).closest( 'tr' );
+            var classroomId = $tr.data( 'classroom-id' );
+            ClassroomPropsDlg.open( Classrooms.records[ classroomId ] );
         }
 
         // When the 'Delete' button for an existing classroom is clicked,
         // delete the data from the database (via the controller)
         function onClickDeleteClassroom() {
-            var $tr = $( this ).closest( 'tr' );
-            var id  = $tr.data( 'classroomId' );
-            if ( window.confirm( 'Are you sure you want to delete the ' + Classrooms.records[ id ].name + ' classroom?' ) ) {
-                ClassroomController.remove( id );
-            }
+            //var $tr = $( this ).closest( 'tr' );
+            //var id  = $tr.data( 'classroomId' );
+            //if ( window.confirm( 'Are you sure you want to delete the ' + Classrooms.records[ id ].name + ' classroom?' ) ) {
+            //    ClassroomController.remove( id );
+            //}
         }
 
         ////////////////////////////////////////////////////////////////////////////////
@@ -125,7 +124,6 @@
             for ( var i = 0; i < classrooms.length; i++ ) {
                 addClassroom( classrooms[ i ] );
                 table.draw();
-                console.log( classrooms[ i ]);
             }
             table.draw();
         }
@@ -184,8 +182,10 @@
     var ClassroomPropsDlg = (function () {
         var $dialog;
         var dialog;
+        var $id;
         var $label;
         var $tips;
+        var tipsTimer;
 
         function init( selector ) {
             $dialog = $( selector );
@@ -198,19 +198,34 @@
                         dialog.dialog( "close" );
                     }
                 },
-                "close" : function () {
-                    $dialog.find( 'form' )[ 0 ].reset();
-                }
+                "close" : clear
             } );
+            $id     = $dialog.find( 'input[name=id]' );
             $label  = $dialog.find( 'input[name=label]' );
             $tips   = $dialog.find( 'p.update-tips' );
+            tipsTimer = null;
+        }
+
+        function clear() {
+            $dialog.find( 'form' )[ 0 ].reset();
+            $tips
+                .text( '' )
+                .removeClass( "ui-state-highlight" );
+            if ( tipsTimer ) {
+                clearTimeout( tipsTimer );
+                tipsTimer = null;
+            }
+            $label
+                .text( '' )
+                .removeClass( 'ui-state-error' );
         }
 
         function open( classroom ) {
             // Clear form
-
             if ( classroom ) {
-                // Initialize dialog fields
+                console.log( classroom );
+                $id.val( classroom.id );
+                $label.val( classroom.label );
             }
 
             dialog.dialog( 'open' );
@@ -231,9 +246,9 @@
             $tips
                 .text( t )
                 .addClass( "ui-state-highlight" );
-            setTimeout( function () {
+            tipsTimer = setTimeout( function () {
                 $tips.removeClass( "ui-state-highlight", 1500 );
-            }, 500 );
+            }, 2500 );
         }
 
 
@@ -248,9 +263,10 @@
             valid     = valid && checkLength( $label, "label", 1, 55 );
 
             if ( valid ) {
-                ClassroomController.insert( {
-                    'label': $label.val()
-                } );
+                //ClassroomController.insert( {
+                //    'label': $label.val()
+                //} );
+                console.log( $id.val() );
                 dialog.dialog( "close" );
             }
             return valid;
@@ -292,7 +308,6 @@
             'init': init
         }
     })();
-
 
 
     var ClassroomController = {
