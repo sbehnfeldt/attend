@@ -137,19 +137,25 @@
     <!-- Enrollment Page -->
     <section class="page container" id="enrollment-page">
         <header>
-            <h2>Enrollment</h2>
+            <div class="row">
+                <div class="col-xs-12">
+                    <h2>Enrollment</h2>
+                </div>
+            </div>
         </header>
 
         <div class="row">
             <div class="col-xs-12">
-                <table class="students-table display row-border stripe compact hover" cellspacing="0">
+                <table class="students-table display row-border stripe compact hover" cellspacing="0"
+                       id="students-table">
                     <thead>
                     <tr>
                         <th>Family Name</th>
                         <th>First Name</th>
                         <th>Classroom</th>
                         <th>Enrolled</th>
-                        <th>Controls</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
                     </tr>
                     </thead>
                     <tbody></tbody>
@@ -157,128 +163,134 @@
                 <button class="new-record">New</button>
             </div>
         </div>
-        <hr>
 
-        <div class="row">
-            <div class="col-lg-2 student-list">
-                <div>
-                    <label for="classroom-filter">Classroom Filter</label>
-                    <select name="classroom-filter">
-                        <option value="">Show All</option>
-                        <option value="0">Unassigned</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="active-filter">Active Filter</label>
-                    <select name="active-filter">
-                        <option value="">Show All</option>
-                        <option value="true">Active Only</option>
-                        <option value="false">Inactive Only</option>
-                    </select>
-                </div>
+        <div id="student-dlg" title="Add/Edit Student">
+            <form action=""><p class="update-tips"></p>
+                <div class="row">
+                    <div class="col-lg-2 student-list">
+                        <div>
+                            <label for="classroom-filter">Classroom Filter</label>
+                            <select name="classroom-filter">
+                                <option value="">Show All</option>
+                                <option value="0">Unassigned</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="active-filter">Active Filter</label>
+                            <select name="active-filter">
+                                <option value="">Show All</option>
+                                <option value="true">Active Only</option>
+                                <option value="false">Inactive Only</option>
+                            </select>
+                        </div>
 
-                <label for="student-list">Student List</label>
-                <select name="student-list" size="10"></select>
-                <div class="container">
-                    <div class="btn-group" role="group">
-                        <button class="btn btn-default" name="new-student-button">New</button>
-                        <button disabled class="btn btn-default" name="delete-student-button">Delete</button>
+                        <label for="student-list">Student List</label>
+                        <select name="student-list" size="10"></select>
+                        <div class="container">
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-default" name="new-student-button">New</button>
+                                <button disabled class="btn btn-default" name="delete-student-button">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-10 student-detail">
+                        <div class="panel" id="student-personal">
+                            <h3>Personal Data</h3>
+                            <label for="familyName">Family Name: <input type="text" name="familyName" disabled/></label>
+                            <label for="firstName">First Name: <input type="text" name="firstName" disabled/></label>
+                            <label for="classrooms">Class:
+                                <select name="classrooms" disabled>
+                                    <option value="0">No class selected</option>
+                                </select>
+                            </label>
+                            <label for="enrolled">Active: <input type="checkbox" name="enrolled" disabled></label>
+                        </div>
+
+                        <div class="panel student-detail-panel">
+                            <h3>Schedule</h3>
+                            <select name="whichSchedule" disabled></select>
+                            <div>
+                                <button class="checkAll" disabled>Check All</button>
+                            </div>
+                            <table id="student-schedule-table">
+                                <thead>
+                                <tr>
+                                    <th>&nbsp;</th>
+                                    <th class="checkcontrol">
+                                        <button type="button" disabled>Monday</button>
+                                    </th>
+                                    <th class="checkcontrol">
+                                        <button type="button" disabled>Tuesday</button>
+                                    </th>
+                                    <th class="checkcontrol">
+                                        <button type="button" disabled>Wednesday</button>
+                                    </th>
+                                    <th class="checkcontrol">
+                                        <button type="button" disabled>Thursday</button>
+                                    </th>
+                                    <th class="checkcontrol">
+                                        <button type="button" disabled>Friday</button>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr data-day-part="Am">
+                                    <td class="checkcontrol">
+                                        <button type="button" disabled>AM</button>
+                                    </td>
+                                    <td><input type="checkbox" name="mon" disabled/></td>
+                                    <td><input type="checkbox" name="tue" disabled/></td>
+                                    <td><input type="checkbox" name="wed" disabled/></td>
+                                    <td><input type="checkbox" name="thu" disabled/></td>
+                                    <td><input type="checkbox" name="fri" disabled/></td>
+                                </tr>
+                                <tr data-day-part="Noon">
+                                    <td class="checkcontrol">
+                                        <button type="button" disabled>Lunch</button>
+                                    </td>
+                                    <td><input type="checkbox" name="mon" disabled/></td>
+                                    <td><input type="checkbox" name="tue" disabled/></td>
+                                    <td><input type="checkbox" name="wed" disabled/></td>
+                                    <td><input type="checkbox" name="thu" disabled/></td>
+                                    <td><input type="checkbox" name="fri" disabled/></td>
+                                </tr>
+                                <tr data-day-part="Pm">
+                                    <td class="checkcontrol">
+                                        <button type="button" disabled>PM</button>
+                                    </td>
+                                    <td><input type="checkbox" name="mon" disabled/></td>
+                                    <td><input type="checkbox" name="tue" disabled/></td>
+                                    <td><input type="checkbox" name="wed" disabled/></td>
+                                    <td><input type="checkbox" name="thu" disabled/></td>
+                                    <td><input type="checkbox" name="fri" disabled/></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            Start on: <input type="text" name="startDate" class="datepicker" disabled size="30">
+                            End on: <input type="text" name="endDate" class="datepicker" disabled size="30">
+                        </div>
+
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-default btn-save" name="save-and-another" disabled>Save and
+                                New
+                            </button>
+                            <button type="button" class="btn btn-default btn-save" name="save-and-close" disabled>Save and
+                                Close
+                            </button>
+
+                            <button type="button" class="btn btn-default" name="cancel-student-button" disabled>Cancel</button>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-lg-10 student-detail">
-                <div class="panel" id="student-personal">
-                    <h3>Personal Data</h3>
-                    <label for="familyName">Family Name: <input type="text" name="familyName" disabled/></label>
-                    <label for="firstName">First Name: <input type="text" name="firstName" disabled/></label>
-                    <label for="classrooms">Class:
-                        <select name="classrooms" disabled>
-                            <option value="0">No class selected</option>
-                        </select>
-                    </label>
-                    <label for="enrolled">Active: <input type="checkbox" name="enrolled" disabled></label>
-                </div>
-
-                <div class="panel student-detail-panel">
-                    <h3>Schedule</h3>
-                    <select name="whichSchedule" disabled></select>
-                    <div>
-                        <button class="checkAll" disabled>Check All</button>
-                    </div>
-                    <table id="student-schedule-table">
-                        <thead>
-                        <tr>
-                            <th>&nbsp;</th>
-                            <th class="checkcontrol">
-                                <button type="button" disabled>Monday</button>
-                            </th>
-                            <th class="checkcontrol">
-                                <button type="button" disabled>Tuesday</button>
-                            </th>
-                            <th class="checkcontrol">
-                                <button type="button" disabled>Wednesday</button>
-                            </th>
-                            <th class="checkcontrol">
-                                <button type="button" disabled>Thursday</button>
-                            </th>
-                            <th class="checkcontrol">
-                                <button type="button" disabled>Friday</button>
-                            </th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr data-day-part="Am">
-                            <td class="checkcontrol">
-                                <button type="button" disabled>AM</button>
-                            </td>
-                            <td><input type="checkbox" name="mon" disabled/></td>
-                            <td><input type="checkbox" name="tue" disabled/></td>
-                            <td><input type="checkbox" name="wed" disabled/></td>
-                            <td><input type="checkbox" name="thu" disabled/></td>
-                            <td><input type="checkbox" name="fri" disabled/></td>
-                        </tr>
-                        <tr data-day-part="Noon">
-                            <td class="checkcontrol">
-                                <button type="button" disabled>Lunch</button>
-                            </td>
-                            <td><input type="checkbox" name="mon" disabled/></td>
-                            <td><input type="checkbox" name="tue" disabled/></td>
-                            <td><input type="checkbox" name="wed" disabled/></td>
-                            <td><input type="checkbox" name="thu" disabled/></td>
-                            <td><input type="checkbox" name="fri" disabled/></td>
-                        </tr>
-                        <tr data-day-part="Pm">
-                            <td class="checkcontrol">
-                                <button type="button" disabled>PM</button>
-                            </td>
-                            <td><input type="checkbox" name="mon" disabled/></td>
-                            <td><input type="checkbox" name="tue" disabled/></td>
-                            <td><input type="checkbox" name="wed" disabled/></td>
-                            <td><input type="checkbox" name="thu" disabled/></td>
-                            <td><input type="checkbox" name="fri" disabled/></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    Start on: <input type="text" name="startDate" class="datepicker" disabled size="30">
-                    End on: <input type="text" name="endDate" class="datepicker" disabled size="30">
-                </div>
-
-                <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-default btn-save" name="save-and-another" disabled>Save and
-                        New
-                    </button>
-                    <button type="button" class="btn btn-default btn-save" name="save-and-close" disabled>Save and
-                        Close
-                    </button>
-
-                    <button type="button" class="btn btn-default" name="cancel-student-button" disabled>Cancel</button>
-                </div>
-            </div>
-
+            </form>
         </div>
+
+
     </section>
 
+    <!-- Classrooms Page -->
     <section class="page container" id="classrooms-page">
         <header>
             <div class="row">
@@ -290,7 +302,8 @@
 
         <div class="row">
             <div class="col-xs-6">
-                <table id="classrooms-table">
+                <table class="classrooms-table display row-border stripe compact hover" cellspacing="0"
+                       id="classrooms-table">
                     <thead>
                     <tr>
                         <th>Classroom</th>
@@ -314,6 +327,7 @@
         </div>
     </section>
 
+    <!-- Teachers Page -->
     <section class="page" id="teachers">
         Define Teachers
     </section>
@@ -355,15 +369,20 @@
             <tr>
                 <td class="attendance-schedule-name">{{firstName}} {{familyName}}</td>
                 <td
-                {{#unless schedule.mon}} class='absent'{{/unless}}>&nbsp;</td>
+                        {{#unless schedule.mon}} class='absent' {{
+                /unless}}>&nbsp;</td>
                 <td
-                {{#unless schedule.tue}} class='absent'{{/unless}}>&nbsp;</td>
+                        {{#unless schedule.tue}} class='absent' {{
+                /unless}}>&nbsp;</td>
                 <td
-                {{#unless schedule.wed}} class='absent'{{/unless}}>&nbsp;</td>
+                        {{#unless schedule.wed}} class='absent' {{
+                /unless}}>&nbsp;</td>
                 <td
-                {{#unless schedule.thu}} class='absent'{{/unless}}>&nbsp;</td>
+                        {{#unless schedule.thu}} class='absent' {{
+                /unless}}>&nbsp;</td>
                 <td
-                {{#unless schedule.fri}} class='absent'{{/unless}}>&nbsp;</td>
+                        {{#unless schedule.fri}} class='absent' {{
+                /unless}}>&nbsp;</td>
                 <td class="attendance-schedule-notes">{{notes}}</td>
             </tr>
             {{/each}}
@@ -436,43 +455,53 @@
             <td>{{ firstName }}</td>
             <td>{{ familyName }}</td>
             <td
-            {{#unless schedule.mon}} class='absent'{{/unless}}>
+                    {{#unless schedule.mon}} class='absent' {{
+            /unless}}>
             <div class="in-out">&nbsp;</div>
             &nbsp;</td>
             <td
-            {{#unless schedule.mon}} class='absent'{{/unless}}>
+                    {{#unless schedule.mon}} class='absent' {{
+            /unless}}>
             <div class="in-out">&nbsp;</div>
             &nbsp;</td>
             <td
-            {{#unless schedule.tue}} class='absent'{{/unless}}>
+                    {{#unless schedule.tue}} class='absent' {{
+            /unless}}>
             <div class="in-out">&nbsp;</div>
             &nbsp;</td>
             <td
-            {{#unless schedule.tue}} class='absent'{{/unless}}>
+                    {{#unless schedule.tue}} class='absent' {{
+            /unless}}>
             <div class="in-out">&nbsp;</div>
             &nbsp;</td>
             <td
-            {{#unless schedule.wed}} class='absent'{{/unless}}>
+                    {{#unless schedule.wed}} class='absent' {{
+            /unless}}>
             <div class="in-out">&nbsp;</div>
             &nbsp;</td>
             <td
-            {{#unless schedule.wed}} class='absent'{{/unless}}>
+                    {{#unless schedule.wed}} class='absent' {{
+            /unless}}>
             <div class="in-out">&nbsp;</div>
             &nbsp;</td>
             <td
-            {{#unless schedule.thu}} class='absent'{{/unless}}>
+                    {{#unless schedule.thu}} class='absent' {{
+            /unless}}>
             <div class="in-out">&nbsp;</div>
             &nbsp;</td>
             <td
-            {{#unless schedule.thu}} class='absent'{{/unless}}>
+                    {{#unless schedule.thu}} class='absent' {{
+            /unless}}>
             <div class="in-out">&nbsp;</div>
             &nbsp;</td>
             <td
-            {{#unless schedule.fri}} class='absent'{{/unless}}>
+                    {{#unless schedule.fri}} class='absent' {{
+            /unless}}>
             <div class="in-out">&nbsp;</div>
             &nbsp;</td>
             <td
-            {{#unless schedule.fri}} class='absent'{{/unless}}>
+                    {{#unless schedule.fri}} class='absent' {{
+            /unless}}>
             <div class="in-out">&nbsp;</div>
             &nbsp;</td>
         </tr>
