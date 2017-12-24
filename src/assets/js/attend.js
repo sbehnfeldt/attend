@@ -108,11 +108,11 @@
         // When the 'Delete' button for an existing classroom is clicked,
         // delete the data from the database (via the controller)
         function onClickDeleteClassroom() {
-            //var $tr = $( this ).closest( 'tr' );
-            //var id  = $tr.data( 'classroomId' );
-            //if ( window.confirm( 'Are you sure you want to delete the ' + Classrooms.records[ id ].name + ' classroom?' ) ) {
-            //    ClassroomController.remove( id );
-            //}
+            var $tr = $( this ).closest( 'tr' );
+            var id  = $tr.data( 'classroomId' );
+            if ( window.confirm( 'Are you sure you want to delete the ' + Classrooms.records[ id ].name + ' classroom?' ) ) {
+                ClassroomController.remove( id );
+            }
         }
 
         ////////////////////////////////////////////////////////////////////////////////
