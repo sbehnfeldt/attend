@@ -31,9 +31,11 @@
             this.callbacks[ 'insert-record' ].fire( record );
         }
 
-        function update( id, record ) {
-            this.records[ parseInt( id ) ] = record;
-            this.callbacks[ 'update-record' ].fire( id, record );
+        function update( id, updates ) {
+            for ( var p in updates ) {
+                this.records[ parseInt( id ) ][ p ] = updates[ p ];
+            }
+            this.callbacks[ 'update-record' ].fire( id, this.records[ parseInt( id ) ] );
         }
 
         function remove( id ) {
@@ -98,9 +100,8 @@
         // When the 'Update' button for an existing classroom is clicked,
         // open the Classroom Properties dialog
         function onClickUpdateClassroom() {
-            console.log( "update" );
             var $tr         = $( this ).closest( 'tr' );
-            var classroomId = $tr.data( 'classroom-id' );
+            var classroomId = $tr.data( 'classroomId' );
             ClassroomPropsDlg.open( Classrooms.records[ classroomId ] );
         }
 
@@ -148,9 +149,14 @@
                 var $tr  = $( e );
                 var data = $tr.data( 'classroomId' );
                 if ( data === id ) {
-                    $tr.find( 'input.edit-classroom.modified' ).removeClass( 'modified' );
-                    $tr.find( 'button.update' ).attr( 'disabled', true ).addClass( 'disabled' );
-                    $tr.find( 'button.undo' ).removeClass( 'undo' ).addClass( 'delete' );
+                    var row = table.row( $tr );
+                    row.data( [
+                        classroom && classroom.label ? classroom.label : '',
+                        '<button class="edit"><span class="glyphicon glyphicon-edit" /> </button>&nbsp;',
+                        '<button class="delete"><span class="glyphicon glyphicon-remove" /> </button>'
+                    ] );
+                    $( row.node() ).data( 'classroomId', id );
+                    row.draw();
                     return false;
                 }
             } );
@@ -188,8 +194,8 @@
         var tipsTimer;
 
         function init( selector ) {
-            $dialog = $( selector );
-            dialog  = $dialog.dialog( {
+            $dialog   = $( selector );
+            dialog    = $dialog.dialog( {
                 autoOpen: false,
                 modal   : true,
                 buttons : {
@@ -200,9 +206,9 @@
                 },
                 "close" : clear
             } );
-            $id     = $dialog.find( 'input[name=id]' );
-            $label  = $dialog.find( 'input[name=label]' );
-            $tips   = $dialog.find( 'p.update-tips' );
+            $id       = $dialog.find( 'input[name=id]' );
+            $label    = $dialog.find( 'input[name=label]' );
+            $tips     = $dialog.find( 'p.update-tips' );
             tipsTimer = null;
         }
 
@@ -221,9 +227,7 @@
         }
 
         function open( classroom ) {
-            // Clear form
             if ( classroom ) {
-                console.log( classroom );
                 $id.val( classroom.id );
                 $label.val( classroom.label );
             }
@@ -263,10 +267,15 @@
             valid     = valid && checkLength( $label, "label", 1, 55 );
 
             if ( valid ) {
-                //ClassroomController.insert( {
-                //    'label': $label.val()
-                //} );
-                console.log( $id.val() );
+                if ( $id.val() ) {
+                    ClassroomController.update( $id.val(), {
+                        'label': $label.val()
+                    } );
+                } else {
+                    ClassroomController.insert( {
+                        'label': $label.val()
+                    } );
+                }
                 dialog.dialog( "close" );
             }
             return valid;
