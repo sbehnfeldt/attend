@@ -561,7 +561,7 @@
                 "close" : clear
             } );
             form        = $dialog.find( 'form[name=studentData]' );
-            $id         = form.find( 'input[name=id]' );
+            $id         = $dialog.find( 'input[name=id]' );
             $tips       = form.find( 'p.update-tips' );
             $familyName = form.find( 'input[name=family_name]' );
             $firstName  = form.find( 'input[name=first_name]' );
@@ -595,7 +595,6 @@
 
         function open( student ) {
             if ( student ) {
-                console.log( student );
                 $id.val( student.id );
                 $familyName.val( student.family_name );
                 $firstName.val( student.first_name );
@@ -631,15 +630,11 @@
         ////////////////////////////////////////////////////////////////////////////////
 
         function onClickSubmiStudentForm() {
-            console.log( 'on click submit student form' );
-            console.log( form.serialize() );
-            var data = '';
-
-            data = 'family_name=' + $familyName.val() +
-                '&first_name=' + $firstName.val() +
-                '&classroom_id=' + $classrooms.val() +
-                '&enrolled=' + $active.val();
-            //console.log( data );
+            if ( $id.val()) {
+                StudentController.update( $id.val(), form.serialize());
+            } else {
+                StudentController.submit( form.serialize());
+            }
 
             //$scheds.filter( ':checked' ).each( function(i, e ) {
             //    console.log( $(e ).val());
@@ -834,6 +829,13 @@
                     }
                 }
             } );
+        },
+        'submit' : function( data ) {
+            console.log( 'submit: ' + data );
+        },
+
+        'update' : function( studentId, data ) {
+            console.log( 'update ' + studentId + ': ' + data );
         },
 
         'remove': function ( id ) {
