@@ -28,7 +28,7 @@
 
         function insert( record ) {
             this.records[ parseInt( record.id ) ] = record;
-            this.callbacks[ 'insert-record' ].fire( record );
+            this.callbacks[ 'insert-record' ].fire( record.id );
         }
 
         function update( id, updates ) {
@@ -473,7 +473,7 @@
             if ( confirm( 'Are you sure you want to DELETE this student from the database?' ) ) {
                 var $tr = $( this ).closest( 'tr' );
                 var id  = $tr.data( 'studentId' );
-                StudentController.remove(id);
+                StudentController.remove( id );
             }
         }
 
@@ -491,7 +491,9 @@
         }
 
         function whenStudentAdded( studentId ) {
-            console.log( studentId );
+            var row = table.row.add( toArray( Students.records[ studentId ] ) );
+            $( row.node() ).data( 'studentId', Students.records[ studentId ].id );
+            row.draw();
         }
 
         function whenStudentUpdated( studentId, student ) {
@@ -504,11 +506,11 @@
                 var $tr  = $( e );
                 var data = $tr.data( 'studentId' );
                 if ( data === id ) {
-                    $tr.remove();
-                    e.remove();
+                    table.row( $tr ).remove();
                     return false;
                 }
             } );
+            table.draw();
         }
 
         // When the classrooms are loaded,
@@ -852,18 +854,17 @@
             } );
         },
         'submit': function ( data ) {
-            console.log( data );
-            $.ajax({
-                'url' : '/attend-api/students',
-                'method' : 'post',
-                'data' : data,
+            $.ajax( {
+                'url'   : '/attend-api/students',
+                'method': 'post',
+                'data'  : data,
 
-                'dataType' : 'json',
-                'success' : function(json) {
+                'dataType': 'json',
+                'success' : function ( json ) {
                     console.log( json );
-                    //Students.insert( json.resource )
+                    Students.insert( json.resource )
                 },
-                'error' : function( xhr ) {
+                'error'   : function ( xhr ) {
                     console.log( xhr );
                     if ( xhr.responseJSON ) {
                         alert( xhr.responseJSON.message );
@@ -871,7 +872,7 @@
                         alert( "Unhandled error" );
                     }
                 }
-            });
+            } );
         },
 
         'update': function ( studentId, data ) {
