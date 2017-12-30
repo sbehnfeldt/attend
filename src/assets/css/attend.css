@@ -37,6 +37,10 @@ th {
     text-align: center;
 }
 
+th.button-column {
+    width: 75px;
+}
+
 td {
     margin: auto;
     text-align: center;
@@ -48,9 +52,8 @@ button.delete span {
     color: #f00;
 }
 
-button.submit span,
 button.edit span,
-button.update span {
+button.schedules span {
     color: #080;
 }
 
@@ -217,6 +220,9 @@ span.clock {
     }
 }
 
+.ui-dialog-content button {
+    font-size: 70%;
+}
 .ui-dialog-content input[type=text] {
     width: 100%;
 }

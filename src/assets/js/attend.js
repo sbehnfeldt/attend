@@ -56,6 +56,7 @@
 
     var Classrooms = Object.create( Records );
     var Students   = Object.create( Records );
+    var Schedules  = Object.create( Records );
 
 
     /****************************************************************************************************
@@ -92,7 +93,7 @@
 
         // Add a new row to the classroom table
         function addClassroom( classroom ) {
-            var row = table.row.add( toArray( classroom ));
+            var row = table.row.add( toArray( classroom ) );
             $( row.node() ).data( 'classroomId', classroom ? classroom.id : '' );
             return row;
         }
@@ -423,26 +424,16 @@
         function init( selector ) {
             $table = $( selector );
             table  = $table.DataTable( {} );
-            //$table.on( 'click', 'button.edit', onClickEditStudent );
-            //$table.on( 'click', 'button.delete', onClickDeleteStudent );
-            //$table.on( 'click', 'button.undo', onClickUndoEdits );
-            //$table.on( 'click', 'button.discard', onClickDiscardNewStudent );
-            //$table.on( 'keyup', 'input.family-name', onKeyupEditStudentFamilyName );
-            //$table.on( 'keyup', 'input.given-name', onKeyupEditStudentGivenName );
-            //$table.on( 'change', 'select[name=classroom]', onChangeSelectClassroom );
-
-            //Students.subscribe( 'load-records', whenStudentsLoaded );
-            //Students.subscribe( 'remove-record', whenStudentRemoved );
-
-
-            //$table.on( 'click', 'button.edit', onClickUpdateClassroom );
-            //$table.on( 'click', 'button.delete', onClickDeleteClassroom );
+            $table.on( 'click', 'button.edit', onClickEditStudent );
+            $table.on( 'click', 'button.schedules', onClickEditSchedules );
+            $table.on( 'click', 'button.delete', onClickDeleteStudent );
 
             Classrooms.subscribe( 'load-records', whenClassroomsLoaded );
+
             Students.subscribe( 'load-records', whenStudentsLoaded );
-            //Students.subscribe( 'insert-record', whenStudentsAdded );
-            //Students.subscribe( 'update-record', whenStudentsUpdated );
             Students.subscribe( 'remove-record', whenStudentRemoved );
+            Students.subscribe( 'insert-record', whenStudentAdded );
+            Students.subscribe( 'update-record', whenStudentUpdated );
         }
 
         function toArray( student ) {
@@ -455,6 +446,7 @@
 
                 '<input type="checkbox" name="enrolled" disabled ' + ( student.enrolled ? ' checked' : '') + '/>',
                 '<button class="edit"><span class="glyphicon glyphicon-edit" /> </button>',
+                '<button class="schedules"><span class="glyphicon glyphicon-time" /> </button>',
                 '<button class="delete"><span class="glyphicon glyphicon-remove" /> </button>'
             ];
         }
@@ -464,13 +456,27 @@
         // Internal Event Handler Functions
         ////////////////////////////////////////////////////////////////////////////////
 
+        function onClickEditStudent() {
+            var $tr = $( this ).closest( 'tr' );
+            var id  = $tr.data( 'studentId' );
+            StudentPropsDlg.open( Students.records[ id ] );
+        }
+
+        function onClickEditSchedules() {
+            var $tr = $( this ).closest( 'tr' );
+            var id  = $tr.data( 'studentId' );
+            ScheduleDlg.open( Students.records[ id ] );
+        }
+
+
         function onClickDeleteStudent() {
             if ( confirm( 'Are you sure you want to DELETE this student from the database?' ) ) {
                 var $tr = $( this ).closest( 'tr' );
                 var id  = $tr.data( 'studentId' );
-                StudentController.remove( id );
+                alert( "Delete Student " + id );
             }
         }
+
 
         ////////////////////////////////////////////////////////////////////////////////
         // External Event Callback Functions
@@ -478,11 +484,20 @@
 
         function whenStudentsLoaded( students ) {
             for ( var i = 0; i < students.length; i++ ) {
-                var row = table.row.add( toArray(students[i]) );
+                var row = table.row.add( toArray( students[ i ] ) );
                 $( row.node() ).data( 'studentId', students[ i ].id );
             }
             table.draw();
         }
+
+        function whenStudentAdded( studentId ) {
+            console.log( studentId );
+        }
+
+        function whenStudentUpdated( studentId, student ) {
+            console.log( student );
+        }
+
 
         function whenStudentRemoved( id ) {
             table.rows().nodes().each( function ( e, i ) {
@@ -501,10 +516,11 @@
         function whenClassroomsLoaded( classrooms ) {
             table.rows().nodes().each( function ( tr, i, a ) {
                 var studentId   = $( tr ).data( 'studentId' );
-                var classroomId = Students.records[ studentId ].classroomId;
+                var classroomId = Students.records[ studentId ].classroom_id;
                 $( tr ).find( 'span.classroom' ).text(
                     (classroomId in Classrooms.records) ?
-                        Classrooms.records[ classroomId ].name : Students.records[ studentId ].classroomId );
+                        Classrooms.records[ classroomId ].label :
+                        Students.records[ studentId ].classroom_id );
             } );
         }
 
@@ -521,38 +537,58 @@
         var $dialog;
         var dialog;
 
-        function init(selector) {
-            $dialog = $(selector);
-            dialog    = $dialog.dialog( {
+        var dataForm;
+        var $id;
+        var $tips;
+        var $familyName;
+        var $firstName;
+        var $classroom;
+        var $active;
+
+        var tipsTimer;
+
+        function init( selector ) {
+            $dialog     = $( selector );
+            dialog      = $dialog.dialog( {
                 autoOpen: false,
                 modal   : true,
+                width   : '50%',
                 buttons : {
                     "Submit": onClickSubmiStudentForm,
-                    "Cancel": function () {
+                    "Close" : function () {
                         dialog.dialog( "close" );
                     }
                 },
                 "close" : clear
             } );
+            dataForm    = $dialog.find( 'form[name=studentData]' );
+            $id         = $dialog.find( 'input[name=id]' );
+            $tips       = $dialog.find( 'p.update-tips' );
+            $familyName = $dialog.find( 'input[name=family_name]' );
+            $firstName  = $dialog.find( 'input[name=first_name]' );
+            $classroom  = $dialog.find( 'select[name=classroom_id]' );
+            $active     = $dialog.find( 'input[name=enrolled]' );
+
+            tipsTimer = null;
         }
+
         function clear() {
             $dialog.find( 'form' )[ 0 ].reset();
             $tips
                 .text( '' )
                 .removeClass( "ui-state-highlight" );
+
             if ( tipsTimer ) {
                 clearTimeout( tipsTimer );
                 tipsTimer = null;
             }
-            $label
-                .text( '' )
-                .removeClass( 'ui-state-error' );
         }
 
-        function open( classroom ) {
-            if ( classroom ) {
-                $id.val( classroom.id );
-                $label.val( classroom.label );
+        function open( student ) {
+            if ( student ) {
+                $id.val( student.id );
+                $familyName.val( student.family_name );
+                $firstName.val( student.first_name );
             }
 
             dialog.dialog( 'open' );
@@ -578,7 +614,25 @@
             }, 2500 );
         }
 
-        function onClickSubmiStudentForm() {}
+        ////////////////////////////////////////////////////////////////////////////////
+        // Internal Event Handler Functions
+        ////////////////////////////////////////////////////////////////////////////////
+
+        function onClickSubmiStudentForm() {
+            console.log( 'on click submit student form' );
+            console.log( dataForm.serialize() );
+            var data = '';
+
+            data = 'family_name=' + $familyName.val() +
+                '&first_name=' + $firstName.val() +
+                '&classroom_id=' + $classroom.val() +
+                '&enrolled=' + $active.val();
+            //console.log( data );
+
+            //$scheds.filter( ':checked' ).each( function(i, e ) {
+            //    console.log( $(e ).val());
+            //});
+        }
 
 
         function onKeyupEditStudentFamilyName() {
@@ -627,10 +681,75 @@
             }
         }
 
+        ////////////////////////////////////////////////////////////////////////////////
+        // External Event Callback Functions
+        ////////////////////////////////////////////////////////////////////////////////
+
 
         return {
-            'init': init
+            'init': init,
+            'open': open
         };
+    })();
+
+
+    /****************************************************************************************************
+     * Student Schedule Dialog
+     ****************************************************************************************************/
+    var ScheduleDlg = (function () {
+        var $dialog;
+        var dialog;
+
+        var form;
+        var $scheds;
+
+        function init( selector ) {
+            $dialog = $( selector );
+            dialog  = $dialog.dialog( {
+                autoOpen: false,
+                modal   : true,
+                width   : '50%',
+                buttons : {
+                    "Submit": onClickSubmitSchedule,
+                    "Close" : function () {
+                        dialog.dialog( "close" );
+                    }
+                },
+                "close" : clear
+            } );
+            form    = $dialog.find( 'form[name=schedules]' );
+            $scheds = $dialog.find( 'input.scheds' );
+        }
+
+        function clear() {
+            $dialog.find( 'form' )[ 0 ].reset();
+            $tips
+                .text( '' )
+                .removeClass( "ui-state-highlight" );
+
+            if ( tipsTimer ) {
+                clearTimeout( tipsTimer );
+                tipsTimer = null;
+            }
+        }
+
+        function open( studentId ) {
+            if ( studentId ) {
+                //$studentId.val( studentId );
+                console.log( studentId );
+            }
+            dialog.dialog( 'open' );
+        }
+
+        function onClickSubmitSchedule( ) {
+            alert( "Submit schedule" );
+        }
+
+        return {
+            'init': init,
+            'open' : open
+        }
+
     })();
 
 
@@ -652,58 +771,9 @@
         ////////////////////////////////////////////////////////////////////////////////
         // Event Handler Functions
         ////////////////////////////////////////////////////////////////////////////////
-        function onClickEditStudent() {
-            var $tr       = $( this ).closest( 'tr' );
-            var studentId = $tr.data( 'student-id' );
-            var student   = Students.records[ studentId ];
-            var tr        = table.row( $tr );
-
-            if ( Classrooms.records.length > 0 ) {
-                var $select = '<select name="classroom">';
-                $select += '<option value=""></option>';
-                for ( var p in Classrooms.records ) {
-                    var temp = Classrooms.records[ p ];
-                    $select += '<option value="' + temp.id + '">' + temp.name + '</option>';
-                }
-                $select += '</select>';
-            }
-
-            tr.data( [
-                '<input type="text" class="family-name" value="' + student.familyName + '" />',
-                '<input type="text" class="given-name" value="' + student.firstName + '" />',
-                $select,
-                '<input type="checkbox" name="enrolled" ' + ( student.enrolled ? ' checked' : '') + '/>',
-                '<button class="save"><span class="glyphicon glyphicon-ok-circle" /></button>',
-                '<button class="undo"><span class="glyphicon glyphicon-remove-circle" /></button>',
-            ] );
-            $tr.find( 'select' ).val( student.classroomId );
-        }
-
-
         function onClickNewStudent() {
-            if ( Classrooms.records.length > 0 ) {
-                var $select = '<select name="edit-classroom">';
-                $select += '<option value=""></option>';
-                for ( var p in Classrooms.records ) {
-                    var temp = Classrooms.records[ p ];
-                    $select += '<option value="' + temp.id + '">' + temp.name + '</option>';
-                }
-                $select += '</select>';
-            }
-            var row = table.row.add( [
-                '<input type="text" class="edit-family-name" />',
-                '<input type="text" class="edit-given-name"  />',
-                $select,
-                '<input type="checkbox" name="enrolled" />',
-                '<button class="save"><span class="glyphicon glyphicon-ok-circle" /></button>',
-                '<button class="discard"><span class="glyphicon glyphicon-remove-circle" /></button>',
-            ] );
-            table.draw();
-            $( row.node() ).addClass( 'new-classroom' );
-            $( row.node() ).find( '.edit-family-name' ).focus();
-            $newButton.hide();
+            StudentPropsDlg.open();
         }
-
 
         return {
             'init': init
@@ -711,6 +781,9 @@
     })();
 
 
+    /****************************************************************************************************
+     * Students Controller
+     ****************************************************************************************************/
     var StudentController = {
         'load': function () {
             $.ajax( {
@@ -754,6 +827,35 @@
             } );
         }
     };
+
+
+    /****************************************************************************************************
+     * Students Controller
+     ****************************************************************************************************/
+    var SchedulesController = {
+        'load' : function() {
+            $.ajax( {
+                url: '/attend-api/schedules',
+                method: 'get',
+
+                'dataType' : 'json',
+                'success' : function onFetchSchedulesSuccess( json ) {
+                    console.log( json );
+                    Schedules.load( json.data );
+                },
+                'error' : function(xhr ) {
+                    console.log( xhr );
+                    if ( xhr.responseJSON ) {
+                        alert( xhr.responseJSON.message );
+                    } else {
+                        alert( "Unhandled error" );
+                    }
+                }
+            })
+        }
+    };
+
+
 
     var CallbackSelect = (function () {
         var $select, publicApi, callback;
@@ -2245,6 +2347,7 @@
 
         Classrooms.init();
         Students.init();
+        Schedules.init();
 
         ClassroomsPanel.init( '#classrooms-page' );
         ClassroomsTable.init( '#classrooms-table' );
@@ -2254,8 +2357,11 @@
         StudentsTable.init( '#students-table' );
         StudentPropsDlg.init( '#student-dlg' );
 
+        ScheduleDlg.init( '#schedule-dlg' );
+
         ClassroomController.load();
         StudentController.load();
+        SchedulesController.load();
 
         if ( targets.indexOf( location.hash ) !== 1 ) {
             oldhash = location.hash;

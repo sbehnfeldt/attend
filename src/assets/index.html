@@ -154,8 +154,9 @@
                         <th>First Name</th>
                         <th>Classroom</th>
                         <th>Enrolled</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
+                        <th class="button-column">Edit</th>
+                        <th class="button-column">Schedule</th>
+                        <th class="button-column">Delete</th>
                     </tr>
                     </thead>
                     <tbody></tbody>
@@ -164,8 +165,7 @@
             </div>
         </div>
 
-        <div id="student-dlg" title="Add/Edit Student">
-            <form action=""><p class="update-tips"></p>
+        <!--
                 <div class="row">
                     <div class="col-lg-2 student-list">
                         <div>
@@ -193,101 +193,135 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-lg-10 student-detail">
-                        <div class="panel" id="student-personal">
+                </div>
+        -->
+        <div id="student-dlg" title="Student Data">
+            <form action="" name="studentData">
+                <p class="update-tips"></p>
+                <input type="hidden" name="id">
+                <div class="row">
+                    <div class="col-sm-12 student-detail">
+                        <div class="panel">
                             <h3>Personal Data</h3>
-                            <label for="familyName">Family Name: <input type="text" name="familyName" disabled/></label>
-                            <label for="firstName">First Name: <input type="text" name="firstName" disabled/></label>
-                            <label for="classrooms">Class:
-                                <select name="classrooms" disabled>
-                                    <option value="0">No class selected</option>
-                                </select>
-                            </label>
-                            <label for="enrolled">Active: <input type="checkbox" name="enrolled" disabled></label>
-                        </div>
-
-                        <div class="panel student-detail-panel">
-                            <h3>Schedule</h3>
-                            <select name="whichSchedule" disabled></select>
-                            <div>
-                                <button class="checkAll" disabled>Check All</button>
+                            <div class="row">
+                                <div class="col-xs-3"><label class="pull-right">Family Name: </label></div>
+                                <div class="col-xs-9"><input type="text" name="family_name"/></div>
                             </div>
-                            <table id="student-schedule-table">
-                                <thead>
-                                <tr>
-                                    <th>&nbsp;</th>
-                                    <th class="checkcontrol">
-                                        <button type="button" disabled>Monday</button>
-                                    </th>
-                                    <th class="checkcontrol">
-                                        <button type="button" disabled>Tuesday</button>
-                                    </th>
-                                    <th class="checkcontrol">
-                                        <button type="button" disabled>Wednesday</button>
-                                    </th>
-                                    <th class="checkcontrol">
-                                        <button type="button" disabled>Thursday</button>
-                                    </th>
-                                    <th class="checkcontrol">
-                                        <button type="button" disabled>Friday</button>
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr data-day-part="Am">
-                                    <td class="checkcontrol">
-                                        <button type="button" disabled>AM</button>
-                                    </td>
-                                    <td><input type="checkbox" name="mon" disabled/></td>
-                                    <td><input type="checkbox" name="tue" disabled/></td>
-                                    <td><input type="checkbox" name="wed" disabled/></td>
-                                    <td><input type="checkbox" name="thu" disabled/></td>
-                                    <td><input type="checkbox" name="fri" disabled/></td>
-                                </tr>
-                                <tr data-day-part="Noon">
-                                    <td class="checkcontrol">
-                                        <button type="button" disabled>Lunch</button>
-                                    </td>
-                                    <td><input type="checkbox" name="mon" disabled/></td>
-                                    <td><input type="checkbox" name="tue" disabled/></td>
-                                    <td><input type="checkbox" name="wed" disabled/></td>
-                                    <td><input type="checkbox" name="thu" disabled/></td>
-                                    <td><input type="checkbox" name="fri" disabled/></td>
-                                </tr>
-                                <tr data-day-part="Pm">
-                                    <td class="checkcontrol">
-                                        <button type="button" disabled>PM</button>
-                                    </td>
-                                    <td><input type="checkbox" name="mon" disabled/></td>
-                                    <td><input type="checkbox" name="tue" disabled/></td>
-                                    <td><input type="checkbox" name="wed" disabled/></td>
-                                    <td><input type="checkbox" name="thu" disabled/></td>
-                                    <td><input type="checkbox" name="fri" disabled/></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            Start on: <input type="text" name="startDate" class="datepicker" disabled size="30">
-                            End on: <input type="text" name="endDate" class="datepicker" disabled size="30">
-                        </div>
-
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-default btn-save" name="save-and-another" disabled>Save and
-                                New
-                            </button>
-                            <button type="button" class="btn btn-default btn-save" name="save-and-close" disabled>Save and
-                                Close
-                            </button>
-
-                            <button type="button" class="btn btn-default" name="cancel-student-button" disabled>Cancel</button>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <label class="pull-right">First Name: </label>
+                                </div>
+                                <div class="col-xs-9"><input type="text" name="first_name"/></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <label class="pull-right">Class:</label>
+                                </div>
+                                <div class="col-xs-9">
+                                    <select name="classroom_id">
+                                        <option value="0">No class selected</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <label class="pull-right">Active: </label>
+                                </div>
+                                <div class="col-xs-9">
+                                    <input type="checkbox" name="enrolled">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
             </form>
         </div>
 
+        <div id="schedule-dlg" title="Student Schedule">
+            <form action="" name="schedules">
+                <div class="panel student-detail-panel">
+                    <h3>Schedule</h3>
+                    <select name="whichSchedule"></select>
+                    <div>
+                        <button class="checkAll">Check All</button>
+                    </div>
+                    <table id="student-schedule-table">
+                        <thead>
+                        <tr>
+                            <th>&nbsp;</th>
+                            <th class="checkcontrol">
+                                <button type="button">Monday</button>
+                            </th>
+                            <th class="checkcontrol">
+                                <button type="button">Tuesday</button>
+                            </th>
+                            <th class="checkcontrol">
+                                <button type="button">Wednesday</button>
+                            </th>
+                            <th class="checkcontrol">
+                                <button type="button">Thursday</button>
+                            </th>
+                            <th class="checkcontrol">
+                                <button type="button">Friday</button>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr data-day-part="Am">
+                            <td class="checkcontrol">
+                                <button type="button" disabled>AM</button>
+                            </td>
+                            <td><input class="scheds" type="checkbox" name="mon_am" value="1"/></td>
+                            <td><input class="scheds" type="checkbox" name="tue_am" value="2"/></td>
+                            <td><input class="scheds" type="checkbox" name="wed_am" value="4"/></td>
+                            <td><input class="scheds" type="checkbox" name="thu_am" value="8"/></td>
+                            <td><input class="scheds" type="checkbox" name="fri_am" value="16"/></td>
+                        </tr>
+                        <tr data-day-part="Noon">
+                            <td class="checkcontrol">
+                                <button type="button">Lunch</button>
+                            </td>
+                            <td><input class="scheds" type="checkbox" name="mon_noon" value="32"/></td>
+                            <td><input class="scheds" type="checkbox" name="tue_noon" value="64"/></td>
+                            <td><input class="scheds" type="checkbox" name="wed_noon" value="128"/></td>
+                            <td><input class="scheds" type="checkbox" name="thu_noon" value="256"/></td>
+                            <td><input class="scheds" type="checkbox" name="fri_noon" value="512"/></td>
+                        </tr>
+                        <tr data-day-part="Pm">
+                            <td class="checkcontrol">
+                                <button type="button">PM</button>
+                            </td>
+                            <td><input class="scheds" type="checkbox" name="mon_pm" value="1024"/></td>
+                            <td><input class="scheds" type="checkbox" name="tue_pm" value="2048"/></td>
+                            <td><input class="scheds" type="checkbox" name="wed_pm" value="4096"/></td>
+                            <td><input class="scheds" type="checkbox" name="thu_pm" value="8192"/></td>
+                            <td><input class="scheds" type="checkbox" name="fri_pm" value="16384"/></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-xs-2">
+                            <label class="pull-right">Start on:</label>
+                        </div>
+                        <div class="col-xs-4">
+                            <input type="text" name="startDate" class="datepicker">
+                        </div>
 
+                        <div class="col-xs-2">
+                            <label class="pull-right">End on:</label>
+                        </div>
+                        <div class="col-xs-4">
+                            <input type="text" name="endDate" class="datepicker">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        </div>
+
+        </div>
+        </form>
+        </div>
     </section>
 
     <!-- Classrooms Page -->
