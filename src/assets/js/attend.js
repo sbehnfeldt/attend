@@ -773,7 +773,10 @@
             $scheds      = form.find( 'input.scheds' );
 
             $schedList.on( 'change', function () {
-                console.log( Schedules.records[ $( this ).val() ]);
+                var $list = $( this );
+                $scheds.each( function ( i, e ) {
+                    $( e ).prop( 'checked', ($( e ).val() & Schedules.records[ $list.val() ].schedule) );
+                } );
             } );
         }
 
@@ -796,6 +799,7 @@
                         $schedList.append( $opt );
                     }
                 }
+                $schedList.trigger( 'change' );
             }
             dialog.dialog( 'open' );
         }
