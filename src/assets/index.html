@@ -196,13 +196,13 @@
                 </div>
         -->
         <div id="student-dlg" title="Student Data">
+            <h3>Personal Data</h3>
             <input type="hidden" name="id">
-            <form action="" name="studentData">
-                <p class="update-tips"></p>
+            <p class="update-tips"></p>
+            <form name="studentData">
                 <div class="row">
                     <div class="col-sm-12 student-detail">
                         <div class="panel">
-                            <h3>Personal Data</h3>
                             <div class="row">
                                 <div class="col-xs-3"><label class="pull-right">Family Name: </label></div>
                                 <div class="col-xs-9"><input type="text" name="family_name"/></div>
@@ -238,9 +238,12 @@
         </div>
 
         <div id="schedule-dlg" title="Student Schedule">
-            <form action="" name="schedules">
+            <h3>Schedule</h3>
+            <p class="student-name"></p>
+            <p class="update-tips"></p>
+            <form name="schedules">
+                <input type="hidden" name="student_id">
                 <div class="panel student-detail-panel">
-                    <h3>Schedule</h3>
                     <select name="whichSchedule"></select>
                     <div>
                         <button class="checkAll">Check All</button>
@@ -250,19 +253,19 @@
                         <tr>
                             <th>&nbsp;</th>
                             <th class="checkcontrol">
-                                <button type="button">Monday</button>
+                                <button type="button">Mon</button>
                             </th>
                             <th class="checkcontrol">
-                                <button type="button">Tuesday</button>
+                                <button type="button">Tue</button>
                             </th>
                             <th class="checkcontrol">
-                                <button type="button">Wednesday</button>
+                                <button type="button">Wed</button>
                             </th>
                             <th class="checkcontrol">
-                                <button type="button">Thursday</button>
+                                <button type="button">Thu</button>
                             </th>
                             <th class="checkcontrol">
-                                <button type="button">Friday</button>
+                                <button type="button">Fri</button>
                             </th>
                         </tr>
                         </thead>

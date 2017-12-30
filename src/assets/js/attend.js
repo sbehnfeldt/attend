@@ -465,7 +465,7 @@
         function onClickEditSchedules() {
             var $tr = $( this ).closest( 'tr' );
             var id  = $tr.data( 'studentId' );
-            ScheduleDlg.open( Students.records[ id ] );
+            ScheduleDlg.open( id );
         }
 
 
@@ -565,7 +565,7 @@
             } );
             form        = $dialog.find( 'form[name=studentData]' );
             $id         = $dialog.find( 'input[name=id]' );
-            $tips       = form.find( 'p.update-tips' );
+            $tips       = $dialog.find( 'p.update-tips' );
             $familyName = form.find( 'input[name=family_name]' );
             $firstName  = form.find( 'input[name=first_name]' );
             $classrooms = form.find( 'select[name=classroom_id]' );
@@ -743,13 +743,16 @@
     var ScheduleDlg = (function () {
         var $dialog;
         var dialog;
+        var $studentName;
+        var $tips;
 
         var form;
+        var $studentId;
         var $scheds;
 
         function init( selector ) {
-            $dialog = $( selector );
-            dialog  = $dialog.dialog( {
+            $dialog      = $( selector );
+            dialog       = $dialog.dialog( {
                 autoOpen: false,
                 modal   : true,
                 width   : '50%',
@@ -761,8 +764,11 @@
                 },
                 "close" : clear
             } );
-            form    = $dialog.find( 'form[name=schedules]' );
-            $scheds = $dialog.find( 'input.scheds' );
+            $studentName = $dialog.find( 'p.student-name' );
+            $tips        = $dialog.find( 'p.update-tips' );
+            form         = $dialog.find( 'form[name=schedules]' );
+            $studentId   = form.find( 'input[name=student_id]' );
+            $scheds      = form.find( 'input.scheds' );
         }
 
         function clear() {
@@ -770,17 +776,14 @@
             $tips
                 .text( '' )
                 .removeClass( "ui-state-highlight" );
-
-            if ( tipsTimer ) {
-                clearTimeout( tipsTimer );
-                tipsTimer = null;
-            }
         }
 
         function open( studentId ) {
             if ( studentId ) {
-                //$studentId.val( studentId );
                 console.log( studentId );
+                console.log( Students.records[ studentId ] );
+                $studentName.text( Students.records[ studentId ].first_name + ' ' + Students.records[ studentId ].family_name );
+                $studentId.val( studentId );
             }
             dialog.dialog( 'open' );
         }
