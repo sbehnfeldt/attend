@@ -748,6 +748,7 @@
 
         var form;
         var $studentId;
+        var $schedList;
         var $scheds;
 
         function init( selector ) {
@@ -768,7 +769,12 @@
             $tips        = $dialog.find( 'p.update-tips' );
             form         = $dialog.find( 'form[name=schedules]' );
             $studentId   = form.find( 'input[name=student_id]' );
+            $schedList   = form.find( 'select[name=id]' );
             $scheds      = form.find( 'input.scheds' );
+
+            $schedList.on( 'change', function () {
+                console.log( Schedules.records[ $( this ).val() ]);
+            } );
         }
 
         function clear() {
@@ -780,10 +786,16 @@
 
         function open( studentId ) {
             if ( studentId ) {
-                console.log( studentId );
-                console.log( Students.records[ studentId ] );
                 $studentName.text( Students.records[ studentId ].first_name + ' ' + Students.records[ studentId ].family_name );
                 $studentId.val( studentId );
+                $schedList.empty();
+
+                for ( var p in Schedules.records ) {
+                    if ( studentId === Schedules.records[ p ].student_id ) {
+                        var $opt = $( '<option>' ).val( p ).text( Schedules.records[ p ].start_date );
+                        $schedList.append( $opt );
+                    }
+                }
             }
             dialog.dialog( 'open' );
         }
