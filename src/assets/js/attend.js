@@ -473,7 +473,7 @@
             if ( confirm( 'Are you sure you want to DELETE this student from the database?' ) ) {
                 var $tr = $( this ).closest( 'tr' );
                 var id  = $tr.data( 'studentId' );
-                alert( "Delete Student " + id );
+                StudentController.remove(id);
             }
         }
 
@@ -852,7 +852,25 @@
             } );
         },
         'submit': function ( data ) {
-            console.log( 'submit: ' + data );
+            $.ajax({
+                'url' : '/attend-api/students',
+                'method' : 'post',
+                'data' : data,
+
+                'dataType' : 'json',
+                'success' : function(json) {
+                    alert( "Success" );
+                    console.log( json );
+                },
+                'error' : function( xhr ) {
+                    console.log( xhr );
+                    if ( xhr.responseJSON ) {
+                        alert( xhr.responseJSON.message );
+                    } else {
+                        alert( "Unhandled error" );
+                    }
+                }
+            });
         },
 
         'update': function ( studentId, data ) {
