@@ -582,6 +582,7 @@
 
         function clear() {
             $dialog.find( 'form' )[ 0 ].reset();
+            $id.val( '' );
             $tips
                 .text( '' )
                 .removeClass( "ui-state-highlight" );
@@ -594,9 +595,12 @@
 
         function open( student ) {
             if ( student ) {
+                console.log( student );
                 $id.val( student.id );
                 $familyName.val( student.family_name );
                 $firstName.val( student.first_name );
+                $classrooms.val( student.classroom_id );
+                $active.prop( 'checked', (student.enrolled === "1") );
             }
 
             dialog.dialog( 'open' );
@@ -693,9 +697,8 @@
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         function whenClassroomsLoaded() {
             var $opt;
-            console.log( "Student properties classrooms loaded callback" );
             for ( var id in Classrooms.records ) {
-                $opt = $('<option>' ).text( Classrooms.records[id ].label ).val( id );
+                $opt = $( '<option>' ).text( Classrooms.records[ id ].label ).val( id );
                 $classrooms.append( $opt );
             }
         }
