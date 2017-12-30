@@ -444,7 +444,7 @@
                     ? '<span class="classroom">' + Classrooms.records[ student.classroom_id ].label + '</span>'
                     : '<span class="classroom">' + student.classroom_id + '</span>',
 
-                '<input type="checkbox" name="enrolled" disabled ' + ( student.enrolled ? ' checked' : '') + '/>',
+                '<input type="checkbox" name="enrolled" disabled ' + (( "1" === student.enrolled ) ? ' checked' : '') + '/>',
                 '<button class="edit"><span class="glyphicon glyphicon-edit" /> </button>',
                 '<button class="schedules"><span class="glyphicon glyphicon-time" /> </button>',
                 '<button class="delete"><span class="glyphicon glyphicon-remove" /> </button>'
@@ -852,6 +852,7 @@
             } );
         },
         'submit': function ( data ) {
+            console.log( data );
             $.ajax({
                 'url' : '/attend-api/students',
                 'method' : 'post',
@@ -859,8 +860,8 @@
 
                 'dataType' : 'json',
                 'success' : function(json) {
-                    alert( "Success" );
                     console.log( json );
+                    //Students.insert( json.resource )
                 },
                 'error' : function( xhr ) {
                     console.log( xhr );
