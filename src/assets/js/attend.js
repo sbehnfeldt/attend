@@ -23,7 +23,7 @@
             for ( var i = 0; i < records.length; i++ ) {
                 this.records[ parseInt( records[ i ].id ) ] = records[ i ];
             }
-            this.callbacks[ 'load-records' ].fire( records );
+            this.callbacks[ 'load-records' ].fire();
         }
 
         function insert( record ) {
@@ -126,10 +126,9 @@
 
         // When classrooms are loaded into the model,
         // populate the Classrooms table
-        function whenClassroomsLoaded( classrooms ) {
-            for ( var i = 0; i < classrooms.length; i++ ) {
-                addClassroom( classrooms[ i ] );
-                table.draw();
+        function whenClassroomsLoaded() {
+            for ( var id in Classrooms.records ) {
+                addClassroom( Classrooms.records[ id ] );
             }
             table.draw();
         }
@@ -482,10 +481,10 @@
         // External Event Callback Functions
         ////////////////////////////////////////////////////////////////////////////////
 
-        function whenStudentsLoaded( students ) {
-            for ( var i = 0; i < students.length; i++ ) {
-                var row = table.row.add( toArray( students[ i ] ) );
-                $( row.node() ).data( 'studentId', students[ i ].id );
+        function whenStudentsLoaded() {
+            for ( var id in Students.records ) {
+                var row = table.row.add( toArray( Students.records[ id ] ) );
+                $( row.node() ).data( 'studentId', Students.records[ id ].id );
             }
             table.draw();
         }
@@ -513,7 +512,7 @@
 
         // When the classrooms are loaded,
         // replace the classroom ID in the Students table with the corresponding classroom name
-        function whenClassroomsLoaded( classrooms ) {
+        function whenClassroomsLoaded() {
             table.rows().nodes().each( function ( tr, i, a ) {
                 var studentId   = $( tr ).data( 'studentId' );
                 var classroomId = Students.records[ studentId ].classroom_id;
@@ -537,12 +536,12 @@
         var $dialog;
         var dialog;
 
-        var dataForm;
+        var form;
         var $id;
         var $tips;
         var $familyName;
         var $firstName;
-        var $classroom;
+        var $classrooms;
         var $active;
 
         var tipsTimer;
@@ -561,15 +560,24 @@
                 },
                 "close" : clear
             } );
-            dataForm    = $dialog.find( 'form[name=studentData]' );
-            $id         = $dialog.find( 'input[name=id]' );
-            $tips       = $dialog.find( 'p.update-tips' );
-            $familyName = $dialog.find( 'input[name=family_name]' );
-            $firstName  = $dialog.find( 'input[name=first_name]' );
-            $classroom  = $dialog.find( 'select[name=classroom_id]' );
-            $active     = $dialog.find( 'input[name=enrolled]' );
+            form        = $dialog.find( 'form[name=studentData]' );
+            $id         = form.find( 'input[name=id]' );
+            $tips       = form.find( 'p.update-tips' );
+            $familyName = form.find( 'input[name=family_name]' );
+            $firstName  = form.find( 'input[name=first_name]' );
+            $classrooms = form.find( 'select[name=classroom_id]' );
+            for ( var p in Classrooms.records ) {
+                console.log( p );
+                var $opt = $( 'option' ).text( p ).val( p );
+                $classrooms.append( $opt );
+            }
+            $active = $dialog.find( 'input[name=enrolled]' );
 
             tipsTimer = null;
+
+            Classrooms.subscribe( 'load-records', whenClassroomsLoaded );
+            Classrooms.subscribe( 'insert-record', whenClassroomAdded );
+            Classrooms.subscribe( 'update-record', whenClassroomUpdated );
         }
 
         function clear() {
@@ -620,12 +628,12 @@
 
         function onClickSubmiStudentForm() {
             console.log( 'on click submit student form' );
-            console.log( dataForm.serialize() );
+            console.log( form.serialize() );
             var data = '';
 
             data = 'family_name=' + $familyName.val() +
                 '&first_name=' + $firstName.val() +
-                '&classroom_id=' + $classroom.val() +
+                '&classroom_id=' + $classrooms.val() +
                 '&enrolled=' + $active.val();
             //console.log( data );
 
@@ -665,7 +673,6 @@
             }
         }
 
-
         function onChangeSelectClassroom() {
             var $tr     = $( this ).closest( 'tr' );
             var id      = $tr.data( 'studentId' );
@@ -681,9 +688,25 @@
             }
         }
 
-        ////////////////////////////////////////////////////////////////////////////////
-        // External Event Callback Functions
-        ////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        // External Event Callbacks
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        function whenClassroomsLoaded() {
+            var $opt;
+            console.log( "Student properties classrooms loaded callback" );
+            for ( var id in Classrooms.records ) {
+                $opt = $('<option>' ).text( Classrooms.records[id ].label ).val( id );
+                $classrooms.append( $opt );
+            }
+        }
+
+        function whenClassroomAdded( classroom ) {
+
+        }
+
+        function whenClassroomUpdated( classroomId, updates ) {
+
+        }
 
 
         return {
@@ -741,13 +764,17 @@
             dialog.dialog( 'open' );
         }
 
-        function onClickSubmitSchedule( ) {
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Internal Event Handlers
+        ////////////////////////////////////////////////////////////////////////////////////////////////////
+        function onClickSubmitSchedule() {
             alert( "Submit schedule" );
         }
 
+
         return {
             'init': init,
-            'open' : open
+            'open': open
         }
 
     })();
@@ -830,20 +857,20 @@
 
 
     /****************************************************************************************************
-     * Students Controller
+     * Schedules Controller
      ****************************************************************************************************/
     var SchedulesController = {
-        'load' : function() {
+        'load': function () {
             $.ajax( {
-                url: '/attend-api/schedules',
+                url   : '/attend-api/schedules',
                 method: 'get',
 
-                'dataType' : 'json',
+                'dataType': 'json',
                 'success' : function onFetchSchedulesSuccess( json ) {
                     console.log( json );
                     Schedules.load( json.data );
                 },
-                'error' : function(xhr ) {
+                'error'   : function ( xhr ) {
                     console.log( xhr );
                     if ( xhr.responseJSON ) {
                         alert( xhr.responseJSON.message );
@@ -851,46 +878,45 @@
                         alert( "Unhandled error" );
                     }
                 }
-            })
+            } )
         }
     };
 
 
-
-    var CallbackSelect = (function () {
-        var $select, publicApi, callback;
-
-        function init( $el, cb ) {
-            $select  = $el;
-            callback = cb;
-            $select.on( 'change', callback );
-        }
-
-        function addOption( label, val ) {
-            var $option;
-            $option = $( '<option>' );
-            $option.val( val ).text( label );
-            $select.append( $option );
-        }
-
-        function empty() {
-            $select.empty();
-        }
-
-        function val() {
-            return $select.val();
-        }
-
-        callback = null;
-
-        publicApi = {
-            init     : init,
-            empty    : empty,
-            val      : val,
-            addOption: addOption
-        };
-        return publicApi;
-    })();
+    //var CallbackSelect = (function () {
+    //    var $select, publicApi, callback;
+    //
+    //    function init( $el, cb ) {
+    //        $select  = $el;
+    //        callback = cb;
+    //        $select.on( 'change', callback );
+    //    }
+    //
+    //    function addOption( label, val ) {
+    //        var $option;
+    //        $option = $( '<option>' );
+    //        $option.val( val ).text( label );
+    //        $select.append( $option );
+    //    }
+    //
+    //    function empty() {
+    //        $select.empty();
+    //    }
+    //
+    //    function val() {
+    //        return $select.val();
+    //    }
+    //
+    //    callback = null;
+    //
+    //    publicApi = {
+    //        init     : init,
+    //        empty    : empty,
+    //        val      : val,
+    //        addOption: addOption
+    //    };
+    //    return publicApi;
+    //})();
 
 
     // Return a Date object set to Monday of the week of the input date.
@@ -987,10 +1013,10 @@
 
             $checkInReport = $page.find( 'div.attendance-checkin' );
             $filterButtons = $page.find( '.btn-group-toggle button' );
-            $classFilter   = Object.create( CallbackSelect );
-            $classFilter.init( $page.find( 'select.filter-select' ), function filterByClassroom( event ) {
-                $tbody.filter();
-            } );
+            //$classFilter   = Object.create( CallbackSelect );
+            //$classFilter.init( $page.find( 'select.filter-select' ), function filterByClassroom( event ) {
+            //    $tbody.filter();
+            //} );
             $checkinTable = $page.find( 'table#attendance-checkin-table' );
             $tbody        = $checkinTable.find( 'tbody' );
         }
@@ -2340,7 +2366,7 @@
         AttendancePage.init( '#attendance-page' );
         SigninPage.init( '#signin-page' );
         ReportsPage.init( '#reports' );
-        EnrollmentPage.init( '#enrollment-page' );
+        //EnrollmentPage.init( '#enrollment-page' );
         //ClassroomPage.init('#classes-page');
 
         var wait = 2;
