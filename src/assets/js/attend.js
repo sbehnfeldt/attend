@@ -263,6 +263,7 @@
         // When the 'Submit' button on the classroom dialog form is clicked,
         // enter the new classroom data into the database (via the controller)
         function onClickSubmitClassroomForm() {
+            $tips.text( '' ).removeClass( 'ui-state-highlight' );
             var valid = true;
             valid     = valid && checkLength( $label, "label", 1, 55 );
 
@@ -586,7 +587,6 @@
             $tips
                 .text( '' )
                 .removeClass( "ui-state-highlight" );
-
             if ( tipsTimer ) {
                 clearTimeout( tipsTimer );
                 tipsTimer = null;
@@ -611,9 +611,19 @@
                 updateTips( "Length of " + n + " must be between " +
                     min + " and " + max + "." );
                 return false;
-            } else {
-                return true;
             }
+            o.removeClass( "ui-state-error" );
+            return true;
+        }
+
+        function checkSelected( o, n ) {
+            if ( !parseInt( o.val() ) ) {
+                o.addClass( 'ui-state-error' );
+                updateTips( "Selection is required from " + n );
+                return false;
+            }
+            o.removeClass( 'ui-state-error' );
+            return true;
         }
 
         function updateTips( t ) {
@@ -630,12 +640,23 @@
         ////////////////////////////////////////////////////////////////////////////////
 
         function onClickSubmiStudentForm() {
-            if ( $id.val()) {
-                StudentController.update( $id.val(), form.serialize());
-            } else {
-                StudentController.submit( form.serialize());
+            $tips.text( '' ).removeClass( 'ui-state-highlight' );
+            if ( tipsTimer ) {
+                clearTimeout( tipsTimer );
+                tipsTimer = null;
             }
-
+            var valid = true;
+            valid     = valid && checkLength( $familyName, "family name", 1, 55 );
+            valid     = valid && checkLength( $firstName, "first name", 1, 55 );
+            valid     = valid && checkSelected( $classrooms, "classroom" );
+            if ( valid ) {
+                if ( $id.val() ) {
+                    StudentController.update( $id.val(), form.serialize() );
+                } else {
+                    StudentController.submit( form.serialize() );
+                }
+                dialog.dialog( "close" );
+            }
             //$scheds.filter( ':checked' ).each( function(i, e ) {
             //    console.log( $(e ).val());
             //});
@@ -810,7 +831,7 @@
      * Students Controller
      ****************************************************************************************************/
     var StudentController = {
-        'load': function () {
+        'load'  : function () {
             $.ajax( {
                 url   : '/attend-api/students',
                 method: 'get',
@@ -830,11 +851,11 @@
                 }
             } );
         },
-        'submit' : function( data ) {
+        'submit': function ( data ) {
             console.log( 'submit: ' + data );
         },
 
-        'update' : function( studentId, data ) {
+        'update': function ( studentId, data ) {
             console.log( 'update ' + studentId + ': ' + data );
         },
 
