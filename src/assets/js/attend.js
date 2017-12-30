@@ -750,6 +750,7 @@
         var $studentId;
         var $schedList;
         var $scheds;
+        var $startDate;
 
         function init( selector ) {
             $dialog      = $( selector );
@@ -771,12 +772,16 @@
             $studentId   = form.find( 'input[name=student_id]' );
             $schedList   = form.find( 'select[name=id]' );
             $scheds      = form.find( 'input.scheds' );
+            $startDate   = form.find( 'input[name=start_date]' );
+            $startDate.datepicker();
 
             $schedList.on( 'change', function () {
                 var $list = $( this );
+                console.log( Schedules.records[ $list.val() ] );
                 $scheds.each( function ( i, e ) {
                     $( e ).prop( 'checked', ($( e ).val() & Schedules.records[ $list.val() ].schedule) );
                 } );
+                $startDate.val( Schedules.records[ $list.val() ].start_date );
             } );
         }
 
@@ -793,12 +798,24 @@
                 $studentId.val( studentId );
                 $schedList.empty();
 
+                var temp = [];
                 for ( var p in Schedules.records ) {
                     if ( studentId === Schedules.records[ p ].student_id ) {
-                        var $opt = $( '<option>' ).val( p ).text( Schedules.records[ p ].start_date );
-                        $schedList.append( $opt );
+                        temp.push( p );
                     }
                 }
+
+                temp.sort( function ( a, b ) {
+                    if ( Schedules.records[ a ].id < Schedules.records[ b ].id ) return 1;
+                    if ( Schedules.records[ a ].id > Schedules.records[ b ].id ) return -1;
+                    return 0;
+                } );
+
+                for ( var i = 0; i < temp.length; i++ ) {
+                    var $opt = $( '<option>' ).val( temp[ i ] ).text( Schedules.records[ temp[ i ] ].start_date );
+                    $schedList.append( $opt );
+                }
+
                 $schedList.trigger( 'change' );
             }
             dialog.dialog( 'open' );
