@@ -775,14 +775,11 @@
             $startDate   = form.find( 'input[name=start_date]' );
             $startDate.datepicker();
 
-            $schedList.on( 'change', function () {
-                var $list = $( this );
-                console.log( Schedules.records[ $list.val() ] );
-                $scheds.each( function ( i, e ) {
-                    $( e ).prop( 'checked', ($( e ).val() & Schedules.records[ $list.val() ].schedule) );
-                } );
-                $startDate.val( Schedules.records[ $list.val() ].start_date );
-            } );
+
+            $schedList.on( 'change', onChangeSchedList );
+
+
+            $scheds.on( 'click', onClickScheds );
         }
 
         function clear() {
@@ -805,25 +802,69 @@
                     }
                 }
 
-                temp.sort( function ( a, b ) {
-                    if ( Schedules.records[ a ].id < Schedules.records[ b ].id ) return 1;
-                    if ( Schedules.records[ a ].id > Schedules.records[ b ].id ) return -1;
-                    return 0;
-                } );
+                if ( temp.length ) {
+                    temp.sort( function ( a, b ) {
+                        if ( Schedules.records[ a ].id < Schedules.records[ b ].id ) return 1;
+                        if ( Schedules.records[ a ].id > Schedules.records[ b ].id ) return -1;
+                        return 0;
+                    } );
 
-                for ( var i = 0; i < temp.length; i++ ) {
-                    var $opt = $( '<option>' ).val( temp[ i ] ).text( Schedules.records[ temp[ i ] ].start_date );
+                    for ( var i = 0; i < temp.length; i++ ) {
+                        var $opt = $( '<option>' ).val( temp[ i ] ).text( Schedules.records[ temp[ i ] ].start_date );
+                        $schedList.append( $opt );
+                    }
+                } else {
+                    var now = new Date();
+                    $startDate.datepicker( 'setDate', now );
+
+                    var $opt = $( '<option>' ).val( '' ).text( ( 1 + now.getMonth()) + '/' + now.getDate() + '/' + (1900 + now.getYear()) );
                     $schedList.append( $opt );
                 }
 
                 $schedList.trigger( 'change' );
+                dialog.dialog( 'open' );
             }
-            dialog.dialog( 'open' );
         }
+
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         // Internal Event Handlers
         ////////////////////////////////////////////////////////////////////////////////////////////////////
+        function onChangeSchedList() {
+            var $list = $( this );
+            if ( $list.val() ) {
+                $scheds.each( function ( i, e ) {
+                    $( e ).prop( 'checked', ($( e ).val() & Schedules.records[ $list.val() ].schedule) );
+                    $( e ).data( 'data', ($( e ).val() & Schedules.records[ $list.val() ].schedule) );
+                } );
+                $startDate.val( Schedules.records[ $list.val() ].start_date );
+            } else {
+                $scheds.each( function ( i, e ) {
+                    $( e ).prop( 'checked', false );
+                    $( e ).data( 'data', 0 );
+                } );
+            }
+
+        }
+
+
+        function onClickScheds() {
+            if ( $( this ).is( ':checked' ) ) {
+                if ( $( this ).data( 'data' ) ) {
+                    $( this ).parent().removeClass( 'modified' );
+                } else {
+                    $( this ).parent().addClass( 'modified' );
+                }
+            } else {
+                if ( $( this ).data( 'data' ) ) {
+                    $( this ).parent().addClass( 'modified' );
+                } else {
+                    $( this ).parent().removeClass( 'modified' );
+                }
+            }
+        }
+
+
         function onClickSubmitSchedule() {
             alert( "Submit schedule" );
         }
