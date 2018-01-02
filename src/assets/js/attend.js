@@ -750,6 +750,7 @@
         var $studentId;
         var $schedList;
         var $scheds;
+        var $schedGroups;
         var $startDate;
 
         function init( selector ) {
@@ -772,14 +773,14 @@
             $studentId   = form.find( 'input[name=student_id]' );
             $schedList   = form.find( 'select[name=id]' );
             $scheds      = form.find( 'input.scheds' );
+            $schedGroups = form.find( 'button.sched-group' );
             $startDate   = form.find( 'input[name=start_date]' );
             $startDate.datepicker();
 
 
             $schedList.on( 'change', onChangeSchedList );
-
-
             $scheds.on( 'click', onClickScheds );
+            $schedGroups.on( 'click', onClickSchedGroup );
         }
 
         function clear() {
@@ -848,6 +849,8 @@
         }
 
 
+        // When one of the shceduling check boxes in the scheduling dialog is clicked,
+        // reverse its state.  If no longer in its original state, add "modified" class to parent.
         function onClickScheds() {
             if ( $( this ).is( ':checked' ) ) {
                 if ( $( this ).data( 'data' ) ) {
@@ -864,7 +867,16 @@
             }
         }
 
-
+        // Programmatically 'click' all the scheduling checkboxes in the corresponding row or column
+        function onClickSchedGroup() {
+            var self = this;
+            $scheds.each( function () {
+                if ( $( self ).val() & $( this ).val() ) {
+                    $( this ).trigger( 'click' );
+                }
+            } );
+        }
+        
         function onClickSubmitSchedule() {
             alert( "Submit schedule" );
         }
