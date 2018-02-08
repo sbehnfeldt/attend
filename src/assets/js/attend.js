@@ -15,32 +15,40 @@
 
         function subscribe( event, fn ) {
             this.callbacks[ event ].add( fn );
+            return this;
+        }
+
+        function empty() {
+            this.records = [];
+            this.callbacks[ 'empty-records' ].fire();
         }
 
         function load( records ) {
-            this.records = [];
-            this.callbacks[ 'empty-records' ].fire();
             for ( var i = 0; i < records.length; i++ ) {
                 this.records[ parseInt( records[ i ].id ) ] = records[ i ];
             }
-            this.callbacks[ 'load-records' ].fire();
+            this.callbacks[ 'load-records' ].fire( records );
+            return this;
         }
 
         function insert( record ) {
             this.records[ parseInt( record.id ) ] = record;
             this.callbacks[ 'insert-record' ].fire( record.id );
+            return this;
         }
 
         function update( id, updates ) {
             for ( var p in updates ) {
                 this.records[ parseInt( id ) ][ p ] = updates[ p ];
             }
-            this.callbacks[ 'update-record' ].fire( id, this.records[ parseInt( id ) ] );
+            this.callbacks[ 'update-record' ].fire( id, this.records[ parseInt( id ), updates ] );
+            return this;
         }
 
         function remove( id ) {
             this.records[ parseInt( id ) ] = undefined;
             this.callbacks[ 'remove-record' ].fire( id );
+            return this;
         }
 
         return {
@@ -126,9 +134,9 @@
 
         // When classrooms are loaded into the model,
         // populate the Classrooms table
-        function whenClassroomsLoaded() {
-            for ( var id in Classrooms.records ) {
-                addClassroom( Classrooms.records[ id ] );
+        function whenClassroomsLoaded(records) {
+            for ( var id in records ) {
+                addClassroom( records[ id ] );
             }
             table.draw();
         }
@@ -482,10 +490,10 @@
         // External Event Callback Functions
         ////////////////////////////////////////////////////////////////////////////////
 
-        function whenStudentsLoaded() {
-            for ( var id in Students.records ) {
-                var row = table.row.add( toArray( Students.records[ id ] ) );
-                $( row.node() ).data( 'studentId', Students.records[ id ].id );
+        function whenStudentsLoaded(records) {
+            for ( var id in records ) {
+                var row = table.row.add( toArray( records[ id ] ) );
+                $( row.node() ).data( 'studentId', records[ id ].id );
             }
             table.draw();
         }
@@ -713,10 +721,10 @@
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         // External Event Callbacks
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        function whenClassroomsLoaded() {
+        function whenClassroomsLoaded(records) {
             var $opt;
-            for ( var id in Classrooms.records ) {
-                $opt = $( '<option>' ).text( Classrooms.records[ id ].label ).val( id );
+            for ( var id in records ) {
+                $opt = $( '<option>' ).text( records[ id ].label ).val( id );
                 $classrooms.append( $opt );
             }
         }
@@ -786,7 +794,7 @@
 
         function clear() {
             //$dialog.find( 'form' )[ 0 ].reset();
-            form[0].reset();
+            form[ 0 ].reset();
             form.find( '.modified' ).removeClass( 'modified' );
             $tips
                 .text( '' )
@@ -797,11 +805,11 @@
             var $modified = $scheds.closest( 'td' ).filter( '.modified' );
             if ( $modified.length > 0 ) {
                 if ( confirm( 'Are you sure you want to discard your changes?' ) ) {
-                    $modified.each( function( i, e ) {
-                        var $input = $(e ).find('input');
-                        $input.prop( 'checked', $input.data('data') );
-                        $(e).removeClass( 'modified' );
-                    });
+                    $modified.each( function ( i, e ) {
+                        var $input = $( e ).find( 'input' );
+                        $input.prop( 'checked', $input.data( 'data' ) );
+                        $( e ).removeClass( 'modified' );
+                    } );
                 }
             }
         }
