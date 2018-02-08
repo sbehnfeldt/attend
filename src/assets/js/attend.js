@@ -54,6 +54,7 @@
         return {
             'init'     : init,
             'subscribe': subscribe,
+            'empty'    : empty,
             'load'     : load,
             'insert'   : insert,
             'update'   : update,
@@ -85,6 +86,7 @@
             $table.on( 'click', 'button.edit', onClickUpdateClassroom );
             $table.on( 'click', 'button.delete', onClickDeleteClassroom );
 
+            Classrooms.subscribe( 'empty-records', whenClassroomsEmptied );
             Classrooms.subscribe( 'load-records', whenClassroomsLoaded );
             Classrooms.subscribe( 'insert-record', whenClassroomAdded );
             Classrooms.subscribe( 'update-record', whenClassroomUpdated );
@@ -132,9 +134,15 @@
         // External Event Callbacks
         ////////////////////////////////////////////////////////////////////////////////
 
+        // WHen classroom model is cleared of all records,
+        // empty the Classrooms table
+        function whenClassroomsEmptied() {
+            table.clear().draw();
+        }
+
         // When classrooms are loaded into the model,
         // populate the Classrooms table
-        function whenClassroomsLoaded(records) {
+        function whenClassroomsLoaded( records ) {
             for ( var id in records ) {
                 addClassroom( records[ id ] );
             }
@@ -304,11 +312,14 @@
     var ClassroomsPanel = (function () {
         var $panel;
         var $newButton;
+        var $refreshButton;
 
         function init( selector ) {
-            $panel     = $( selector );
-            $newButton = $panel.find( 'button.new-record' );
+            $panel         = $( selector );
+            $newButton     = $panel.find( 'button.new-record' );
+            $refreshButton = $panel.find( 'button.refresh-records' );
             $newButton.on( 'click', onClickNewClassroom );
+            $refreshButton.on( 'click', onRefreshClassrooms );
         }
 
         ////////////////////////////////////////////////////////////////////////////////
@@ -320,6 +331,11 @@
         // add an empty row to the end of the Classrooms table
         function onClickNewClassroom() {
             ClassroomPropsDlg.open();
+        }
+
+        function onRefreshClassrooms() {
+            Classrooms.empty();
+            ClassroomController.load();
         }
 
         return {
@@ -438,6 +454,7 @@
 
             Classrooms.subscribe( 'load-records', whenClassroomsLoaded );
 
+            Students.subscribe( 'empty-records', whenStudentsEmptied );
             Students.subscribe( 'load-records', whenStudentsLoaded );
             Students.subscribe( 'remove-record', whenStudentRemoved );
             Students.subscribe( 'insert-record', whenStudentAdded );
@@ -490,7 +507,11 @@
         // External Event Callback Functions
         ////////////////////////////////////////////////////////////////////////////////
 
-        function whenStudentsLoaded(records) {
+        function whenStudentsEmptied() {
+            table.clear().draw();
+        }
+
+        function whenStudentsLoaded( records ) {
             for ( var id in records ) {
                 var row = table.row.add( toArray( records[ id ] ) );
                 $( row.node() ).data( 'studentId', records[ id ].id );
@@ -721,7 +742,7 @@
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         // External Event Callbacks
         ////////////////////////////////////////////////////////////////////////////////////////////////////
-        function whenClassroomsLoaded(records) {
+        function whenClassroomsLoaded( records ) {
             var $opt;
             for ( var id in records ) {
                 $opt = $( '<option>' ).text( records[ id ].label ).val( id );
@@ -921,12 +942,15 @@
     var StudentsPanel = (function () {
         var $panel;
         var $newButton;
+        var $refreshButton;
 
         function init( selector ) {
             $panel     = $( selector );
             $newButton = $panel.find( 'button.new-record' );
+            $refreshButton = $panel.find( 'button.refresh-records' );
 
             $newButton.on( 'click', onClickNewStudent );
+            $refreshButton.on( 'click', onClickRefreshStudents );
         }
 
 
@@ -936,6 +960,12 @@
         function onClickNewStudent() {
             StudentPropsDlg.open();
         }
+
+        function onClickRefreshStudents() {
+            Students.empty();
+            StudentController.load();
+        }
+
 
         return {
             'init': init

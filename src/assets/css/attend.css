@@ -2,7 +2,6 @@ body {
     margin-bottom: 50px;
 }
 
-
 header {
     margin: 0;
     border-bottom: none;
@@ -61,7 +60,6 @@ button.disabled span {
     color: #aaa;
 }
 
-
 div.in-out {
     border-bottom: 1px dashed black;
 }
@@ -70,7 +68,7 @@ tr.half-row {
     border-bottom: 2px dashed dimgray;
 }
 
-tr.full-row  {
+tr.full-row {
     border-bottom: 5px double black;
 }
 
@@ -78,11 +76,11 @@ div.print-header {
     display: none;
 }
 
-
 div.time-date {
     border-bottom: 3px solid #eaeaea;
     margin-bottom: 10px;
 }
+
 td.row-header {
     background-color: #eee;
 }
@@ -131,11 +129,13 @@ select.modified {
     background-color: #eeeeee;
 }
 
-.panel header {}
+.panel header {
+}
 
 .panel table {
     width: 100%;
 }
+
 table select,
 table input[type=text] {
     width: 100%;
@@ -167,10 +167,10 @@ span.clock {
     background-color: #bdbdbd;
 }
 
-
 #attendance-page .attendance-report {
     display: none;
 }
+
 #attendance-page .attendance-schedule th {
     text-align: center;
 }
@@ -178,9 +178,11 @@ span.clock {
 #attendance-page td {
     width: 5%;
 }
+
 #attendance-page td.attendance-schedule-name {
     width: 25%;
 }
+
 #attendance-page td.attendance-schedule-notes {
     text-align: left;
     width: 25%;
@@ -198,7 +200,7 @@ span.clock {
     text-align: center;
 }
 
-#signin-page  .signin-page-contents table {
+#signin-page .signin-page-contents table {
     width: 100%;
 }
 
@@ -206,7 +208,7 @@ span.clock {
     width: 100%;
 }
 
-.checkcontrol  {
+.checkcontrol {
     text-align: center;
 }
 
@@ -223,6 +225,18 @@ span.clock {
 .ui-dialog-content button {
     font-size: 70%;
 }
+
 .ui-dialog-content input[type=text] {
     width: 100%;
+}
+
+span.glyphicon span {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+span.glyphicon-plus {
+    color: #0000cc;
+}
+
+span.glyphicon-refresh {
+    color: #0000cc;
 }
