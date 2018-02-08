@@ -763,7 +763,8 @@
                     "Submit": onClickSubmitSchedule,
                     "Close" : function () {
                         dialog.dialog( "close" );
-                    }
+                    },
+                    "Reset" : reset
                 },
                 "close" : clear
             } );
@@ -784,10 +785,25 @@
         }
 
         function clear() {
-            $dialog.find( 'form' )[ 0 ].reset();
+            //$dialog.find( 'form' )[ 0 ].reset();
+            form[0].reset();
+            form.find( '.modified' ).removeClass( 'modified' );
             $tips
                 .text( '' )
                 .removeClass( "ui-state-highlight" );
+        }
+
+        function reset() {
+            var $modified = $scheds.closest( 'td' ).filter( '.modified' );
+            if ( $modified.length > 0 ) {
+                if ( confirm( 'Are you sure you want to discard your changes?' ) ) {
+                    $modified.each( function( i, e ) {
+                        var $input = $(e ).find('input');
+                        $input.prop( 'checked', $input.data('data') );
+                        $(e).removeClass( 'modified' );
+                    });
+                }
+            }
         }
 
         function open( studentId ) {
@@ -876,7 +892,8 @@
                 }
             } );
         }
-        
+
+
         function onClickSubmitSchedule() {
             alert( "Submit schedule" );
         }
