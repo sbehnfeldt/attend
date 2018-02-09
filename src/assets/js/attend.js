@@ -1,6 +1,7 @@
 ;(function () {
     'use strict';
 
+    // Model, container of individual records
     var Records = (function () {
         function init() {
             this.records   = {};
@@ -19,7 +20,7 @@
         }
 
         function empty() {
-            this.records = [];
+            this.records = {};
             this.callbacks['empty-records'].fire();
         }
 
@@ -42,7 +43,7 @@
             for (var p in updates) {
                 this.records[parseInt(id)][p] = updates[p];
             }
-            this.callbacks['update-record'].fire(id, this.records[parseInt(id), updates]);
+            this.callbacks['update-record'].fire(id, updates);
             return this;
         }
 
@@ -60,7 +61,7 @@
             'insert'   : insert,
             'update'   : update,
             'remove'   : remove
-        }
+        };
 
     })();
 
@@ -68,6 +69,7 @@
     var Students   = Object.create(Records);
     var Schedules  = Object.create(Records);
 
+    // Communicator between front and back ends
     function Uhura(url, model) {
         this.url   = url;
         this.model = model;
@@ -121,7 +123,7 @@
             $.ajax({
                 'url'   : this.url + '/' + id,
                 'method': 'put',
-                'data'  : params,
+                'data'  : $.param(params),
 
                 'dataType': 'json',
                 'success' : function (json) {
@@ -261,14 +263,14 @@
 
         // When a classroom is updated in the model,
         // update the corresponding row in the table acordingly
-        function whenClassroomUpdated(id, classroom) {
+        function whenClassroomUpdated(id, updates) {
             var rows = table.rows().nodes();
             rows.each(function (e, i) {
                 var $tr  = $(e);
                 var data = $tr.data('classroomId');
                 if (data === id) {
                     var row = table.row($tr);
-                    row.data(toArray(classroom));
+                    row.data(toArray(Classrooms.records[id]));
                     $(row.node()).data('classroomId', id);
                     row.draw();
                     return false;
@@ -530,8 +532,20 @@
             row.draw();
         }
 
-        function whenStudentUpdated(studentId, student) {
-            console.log(student);
+        function whenStudentUpdated(id, updates) {
+            var rows = table.rows().nodes();
+            rows.each(function (e, i) {
+                var $tr  = $(e);
+                var data = $tr.data('studentId');
+                if (data === id) {
+                    var row = table.row($tr);
+                    row.data(toArray(Students.records[id]));
+                    $(row.node()).data('studentId', id);
+                    row.draw();
+                    return false;
+                }
+            });
+
         }
 
 
@@ -687,9 +701,21 @@
             valid     = valid && checkSelected($classrooms, "classroom");
             if (valid) {
                 if ($id.val()) {
-                    StudentController.update($id.val(), form.serialize());
+                    //StudentController.update($id.val(), form.serialize());
+                    StudentController.update($id.val(), {
+                        'family_name' : $familyName.val(),
+                        'first_name'  : $firstName.val(),
+                        'enrolled'    : $active.is(':checked') ? 1 : 0,
+                        'classroom_id': $classrooms.val()
+                    });
                 } else {
-                    StudentController.submit(form.serialize());
+                    //StudentController.submit(form.serialize());
+                    StudentController.submit({
+                        'family_name' : $familyName.val(),
+                        'first_name'  : $firstName.val(),
+                        'enrolled'    : $active.is(':checked') ? 1 : 0,
+                        'classroom_id': $classrooms.val()
+                    });
                 }
                 dialog.dialog("close");
             }
