@@ -303,15 +303,17 @@
      ****************************************************************************************************/
     var ClassroomPropsDlg = (function () {
         var $dialog;
-        var dialog;
         var $id;
-        var $label;
         var $tips;
+        var $label;
+
+        var $allFields;
         var tipsTimer;
+        var dialog;
 
         function init(selector) {
-            $dialog   = $(selector);
-            dialog    = $dialog.dialog({
+            $dialog    = $(selector);
+            dialog     = $dialog.dialog({
                 autoOpen: false,
                 modal   : true,
                 buttons : {
@@ -322,10 +324,13 @@
                 },
                 "close" : clear
             });
-            $id       = $dialog.find('input[name=id]');
-            $label    = $dialog.find('input[name=label]');
-            $tips     = $dialog.find('p.update-tips');
-            tipsTimer = null;
+            $id        = $dialog.find('input[name=id]');
+            $tips      = $dialog.find('p.update-tips');
+            $label     = $dialog.find('input[name=label]');
+            $allFields = $dialog.find('input');
+            tipsTimer  = null;
+
+            $allFields.on('change', onChangeAllFields);
         }
 
         function clear() {
@@ -342,10 +347,15 @@
                 .removeClass('ui-state-error');
         }
 
+        function populate(classroom) {
+            $id.val(classroom.id);
+            $label.val(classroom.label);
+            $label.data('db-val', classroom.label);
+        }
+
         function open(classroom) {
             if (classroom) {
-                $id.val(classroom.id);
-                $label.val(classroom.label);
+                populate(classroom);
             }
 
             dialog.dialog('open');
@@ -396,6 +406,14 @@
                 dialog.dialog("close");
             }
             return valid;
+        }
+
+        function onChangeAllFields() {
+            if ($(this).val() != $(this).data('db-val')) {
+                $(this).addClass('modified');
+            } else {
+                $(this).removeClass('modified');
+            }
         }
 
 
@@ -1003,42 +1021,6 @@
             'init': init
         };
     })();
-
-
-    //var CallbackSelect = (function () {
-    //    var $select, publicApi, callback;
-    //
-    //    function init( $el, cb ) {
-    //        $select  = $el;
-    //        callback = cb;
-    //        $select.on( 'change', callback );
-    //    }
-    //
-    //    function addOption( label, val ) {
-    //        var $option;
-    //        $option = $( '<option>' );
-    //        $option.val( val ).text( label );
-    //        $select.append( $option );
-    //    }
-    //
-    //    function empty() {
-    //        $select.empty();
-    //    }
-    //
-    //    function val() {
-    //        return $select.val();
-    //    }
-    //
-    //    callback = null;
-    //
-    //    publicApi = {
-    //        init     : init,
-    //        empty    : empty,
-    //        val      : val,
-    //        addOption: addOption
-    //    };
-    //    return publicApi;
-    //})();
 
 
     // Return a Date object set to Monday of the week of the input date.
