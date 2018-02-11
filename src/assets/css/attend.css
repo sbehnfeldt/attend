@@ -125,14 +125,8 @@ select.modified {
     display: none;
 }
 
-.panel {
-    background-color: #eeeeee;
-}
 
-.panel header {
-}
-
-.panel table {
+form table {
     width: 100%;
 }
 

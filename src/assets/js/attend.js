@@ -352,9 +352,8 @@
                 clearTimeout(tipsTimer);
                 tipsTimer = null;
             }
-            $allFields
-                .removeClass('modified')
-                .removeClass('ui-state-error');
+            $('.modified').removeClass('modified');
+            $('.ui-state-error').removeClass('ui-state-error');
         }
 
         function populate(classroom) {
@@ -568,7 +567,7 @@
                 var data = $tr.data('studentId');
                 if (data === id) {
                     var row = table.row($tr);
-                    console.log( Students.records[ id] );
+                    console.log(Students.records[id]);
                     row.data(toArray(Students.records[id]));
                     $(row.node()).data('studentId', id);
                     row.draw();
@@ -643,7 +642,6 @@
             $active    = $dialog.find('input[name=enrolled]');
             $allFields = $form.find('input').add($form.find('select'));
 
-
             dialog = $dialog.dialog({
                 autoOpen: false,
                 modal   : true,
@@ -682,9 +680,8 @@
                 clearTimeout(tipsTimer);
                 tipsTimer = null;
             }
-            $allFields
-                .removeClass('modified')
-                .removeClass('ui-state-error');
+            $('.modified').removeClass('modified');
+            $('.ui-state-error').removeClass('ui-state-error');
         }
 
         function open(student) {
@@ -787,11 +784,9 @@
         }
 
         function whenClassroomAdded(classroom) {
-
         }
 
         function whenClassroomUpdated(classroomId, updates) {
-
         }
 
 
@@ -807,42 +802,54 @@
      ****************************************************************************************************/
     var ScheduleDlg = (function () {
         var $dialog;
-        var dialog;
         var $studentName;
         var $tips;
-
-        var form;
+        var $form;
         var $studentId;
         var $schedList;
         var $scheds;
         var $schedGroups;
         var $startDate;
+        var $allFields;
+
+        var dialog;
+        var tipsTimer;
+
 
         function init(selector) {
             $dialog      = $(selector);
-            dialog       = $dialog.dialog({
+            $studentName = $dialog.find('p.student-name');
+            $tips        = $dialog.find('p.update-tips');
+            $form        = $dialog.find('form[name=schedules]');
+            $studentId   = $form.find('input[name=student_id]');
+            $schedList   = $form.find('select[name=id]');
+            $scheds      = $form.find('input.scheds');
+            $schedGroups = $form.find('button.sched-group');
+            $startDate   = $form.find('input[name=start_date]');
+            $allFields   = $form.find('input');
+
+            $startDate.datepicker();
+
+            dialog    = $dialog.dialog({
                 autoOpen: false,
                 modal   : true,
                 width   : '50%',
                 buttons : {
                     "Submit": onClickSubmitSchedule,
-                    "Close" : function () {
-                        dialog.dialog("close");
+                    "Cancel": function () {
+                        var $modified = $dialog.find('.modified');
+                        if ($modified.length) {
+                            if (confirm("Are you sure you want to discard your changes?")) {
+                                dialog.dialog('close');
+                            }
+                        } else {
+                            dialog.dialog("close");
+                        }
                     },
-                    "Reset" : reset
                 },
                 "close" : clear
             });
-            $studentName = $dialog.find('p.student-name');
-            $tips        = $dialog.find('p.update-tips');
-            form         = $dialog.find('form[name=schedules]');
-            $studentId   = form.find('input[name=student_id]');
-            $schedList   = form.find('select[name=id]');
-            $scheds      = form.find('input.scheds');
-            $schedGroups = form.find('button.sched-group');
-            $startDate   = form.find('input[name=start_date]');
-            $startDate.datepicker();
-
+            tipsTimer = null;
 
             $schedList.on('change', onChangeSchedList);
             $scheds.on('click', onClickScheds);
@@ -850,68 +857,64 @@
         }
 
         function clear() {
-            //$dialog.find( 'form' )[ 0 ].reset();
-            form[0].reset();
-            form.find('.modified').removeClass('modified');
+            $form[0].reset();
+            $schedList.empty();
             $tips
                 .text('')
                 .removeClass("ui-state-highlight");
+            if (tipsTimer) {
+                clearTimeout(tipsTimer);
+                tipsTimer = null;
+            }
+            $('.modified').removeClass('modified');
+            $('.ui-state-error').removeClass('ui-state-error');
         }
 
-        function reset() {
-            var $modified = $scheds.closest('td').filter('.modified');
-            if ($modified.length > 0) {
-                if (confirm('Are you sure you want to discard your changes?')) {
-                    $modified.each(function (i, e) {
-                        var $input = $(e).find('input');
-                        $input.prop('checked', $input.data('data'));
-                        $(e).removeClass('modified');
-                    });
+        function populate(studentId) {
+            $studentName.text(Students.records[studentId].first_name + ' ' + Students.records[studentId].family_name);
+            $studentId.val(studentId);
+
+            var scheds = [];
+            for (var p in Schedules.records) {
+                if (studentId === Schedules.records[p].student_id) {
+                    scheds.push(p);
                 }
             }
+
+            if (scheds.length) {
+                scheds.sort(function (a, b) {
+                    if (Schedules.records[a].id < Schedules.records[b].id) return 1;
+                    if (Schedules.records[a].id > Schedules.records[b].id) return -1;
+                    return 0;
+                });
+                for (var i = 0; i < scheds.length; i++) {
+                    var $opt = $('<option>').val(scheds[i]).text(Schedules.records[scheds[i]].start_date);
+                    $schedList.append($opt);
+                }
+
+            } else {
+                var now = new Date();
+                $startDate.datepicker('setDate', now);
+                var $opt = $('<option>').val('').text(( 1 + now.getMonth()) + '/' + now.getDate() + '/' + (1900 + now.getYear()));
+                $schedList.append($opt);
+            }
+
+            $schedList.trigger('change');   // Act as though we just picked date from drop-down; so to populate schedule table
         }
 
         function open(studentId) {
             if (studentId) {
-                $studentName.text(Students.records[studentId].first_name + ' ' + Students.records[studentId].family_name);
-                $studentId.val(studentId);
-                $schedList.empty();
-
-                var temp = [];
-                for (var p in Schedules.records) {
-                    if (studentId === Schedules.records[p].student_id) {
-                        temp.push(p);
-                    }
-                }
-
-                if (temp.length) {
-                    temp.sort(function (a, b) {
-                        if (Schedules.records[a].id < Schedules.records[b].id) return 1;
-                        if (Schedules.records[a].id > Schedules.records[b].id) return -1;
-                        return 0;
-                    });
-
-                    for (var i = 0; i < temp.length; i++) {
-                        var $opt = $('<option>').val(temp[i]).text(Schedules.records[temp[i]].start_date);
-                        $schedList.append($opt);
-                    }
-                } else {
-                    var now = new Date();
-                    $startDate.datepicker('setDate', now);
-
-                    var $opt = $('<option>').val('').text(( 1 + now.getMonth()) + '/' + now.getDate() + '/' + (1900 + now.getYear()));
-                    $schedList.append($opt);
-                }
-
-                $schedList.trigger('change');
-                dialog.dialog('open');
+                populate(studentId);
             }
+            dialog.dialog('open');
         }
 
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         // Internal Event Handlers
         ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        // When a new schedule is selected, update the schedule table
         function onChangeSchedList() {
             var $list = $(this);
             if ($list.val()) {
@@ -930,7 +933,7 @@
         }
 
 
-        // When one of the shceduling check boxes in the scheduling dialog is clicked,
+        // When one of the scheduling check boxes in the scheduling dialog is clicked,
         // reverse its state.  If no longer in its original state, add "modified" class to parent.
         function onClickScheds() {
             if ($(this).is(':checked')) {
@@ -1084,13 +1087,13 @@
             $checkinTable,
             $tbody,
             publicApi;
-        var source, template;
+        //var source, template;
 
         function init(selector) {
             cacheDom(selector);
             bindEvents();
-            source   = $('#attendance-checkin-row-template').html();
-            template = Handlebars.compile(source);
+            //source   = $('#attendance-checkin-row-template').html();
+            //template = Handlebars.compile(source);
 
             today = new Date();
             tick();
@@ -2443,13 +2446,13 @@
         });
 
 
-        Handlebars.registerHelper('formatTime', formatTime);
-        Handlebars.registerHelper('formatDate', formatDate);
-        Handlebars.registerHelper('attendanceSheetDate', function (date) {
-            var days   = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-            var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            return new Handlebars.SafeString(days[date.getDay()] + '<br />' + date.getDate() + '-' + months[date.getMonth()]);
-        });
+        //Handlebars.registerHelper('formatTime', formatTime);
+        //Handlebars.registerHelper('formatDate', formatDate);
+        //Handlebars.registerHelper('attendanceSheetDate', function (date) {
+        //    var days   = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        //    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        //    return new Handlebars.SafeString(days[date.getDay()] + '<br />' + date.getDate() + '-' + months[date.getMonth()]);
+        //});
 
 
         CheckinPage.init('#checkin-page');
