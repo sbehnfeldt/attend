@@ -825,7 +825,6 @@
             $scheds      = $form.find('input.scheds');
             $schedGroups = $form.find('button.sched-group');
             $startDate   = $form.find('input[name=start_date]');
-            $allFields   = $form.find('input');
 
             $startDate.datepicker({
                 dateFormat: 'yy-mm-dd'
@@ -869,6 +868,7 @@
             }
             $('.modified').removeClass('modified');
             $('.ui-state-error').removeClass('ui-state-error');
+            $startDate.attr('disabled', true);
         }
 
         function populate(studentId) {
@@ -893,11 +893,11 @@
                     $schedList.append($opt);
                 }
 
-            } else {
-                var now = new Date();
-                $startDate.datepicker('setDate', now);
-                var $opt = $('<option>').val('').text(( 1 + now.getMonth()) + '/' + now.getDate() + '/' + (1900 + now.getYear()));
-                $schedList.append($opt);
+                //} else {
+                //    var now = new Date();
+                //    $startDate.datepicker('setDate', now);
+                //    var $opt = $('<option>').val('').text(( 1 + now.getMonth()) + '/' + now.getDate() + '/' + (1900 + now.getYear()));
+                //    $schedList.append($opt);
             }
 
             $schedList.trigger('change');   // Act as though we just picked date from drop-down; so to populate schedule table
@@ -914,6 +914,19 @@
             return true;
         }
 
+        function checkModified() {
+            var $modified = $form.find('.modified');
+            if ($modified.length > 0) {
+                var d = new Date();
+                $startDate.attr('disabled', false);
+                $startDate.val(d);
+                $startDate.datepicker('option', 'dateFormat', 'yy-mm-dd');
+            } else {
+                $startDate.attr('disabled', true);
+                $startDate.val('');
+            }
+        }
+
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         // Internal Event Handlers
@@ -927,7 +940,6 @@
                     $(e).prop('checked', ($(e).val() & Schedules.records[$list.val()].schedule));
                     $(e).data('data', ($(e).val() & Schedules.records[$list.val()].schedule));
                 });
-                $startDate.val(Schedules.records[$list.val()].start_date);
             } else {
                 $scheds.each(function (i, e) {
                     $(e).prop('checked', false);
@@ -954,6 +966,7 @@
                     $(this).parent().removeClass('modified');
                 }
             }
+            checkModified();
         }
 
         // Programmatically 'click' all the scheduling checkboxes in the corresponding row or column
@@ -964,20 +977,18 @@
                     $(this).trigger('click');
                 }
             });
+            checkModified();
         }
 
 
         function onClickSubmitSchedule() {
             if (validate()) {
-
                 var schedule = 0;
                 $scheds.each(function (i, e) {
                     if ($(e).is(':checked')) {
                         schedule |= $(e).val();
                     }
                 });
-                console.log(schedule);
-                console.log($startDate.val());
                 if ($schedList.val()) {
                     SchedulesController.update($schedList.val(), {
                         'student_id': $studentId.val(),
