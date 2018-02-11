@@ -989,7 +989,7 @@
                         schedule |= $(e).val();
                     }
                 });
-                if ($schedList.val()) {
+                if ($schedList.val() && ( $startDate.val() == $schedList.find(':selected').text())) {
                     SchedulesController.update($schedList.val(), {
                         'student_id': $studentId.val(),
                         'schedule'  : schedule,
