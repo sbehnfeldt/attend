@@ -303,17 +303,24 @@
      ****************************************************************************************************/
     var ClassroomPropsDlg = (function () {
         var $dialog;
+        var $form;
         var $id;
         var $tips;
         var $label;
-
         var $allFields;
-        var tipsTimer;
+
         var dialog;
+        var tipsTimer;
 
         function init(selector) {
             $dialog    = $(selector);
-            dialog     = $dialog.dialog({
+            $form      = $dialog.find('form');
+            $id        = $form.find('input[name=id]');
+            $tips      = $form.find('p.update-tips');
+            $label     = $form.find('input[name=label]');
+            $allFields = $form.find('input');
+
+            dialog    = $dialog.dialog({
                 autoOpen: false,
                 modal   : true,
                 buttons : {
@@ -324,17 +331,13 @@
                 },
                 "close" : clear
             });
-            $id        = $dialog.find('input[name=id]');
-            $tips      = $dialog.find('p.update-tips');
-            $label     = $dialog.find('input[name=label]');
-            $allFields = $dialog.find('input');
-            tipsTimer  = null;
+            tipsTimer = null;
 
             $allFields.on('change', onChangeAllFields);
         }
 
         function clear() {
-            $dialog.find('form')[0].reset();
+            $form[0].reset();
             $tips
                 .text('')
                 .removeClass("ui-state-highlight");
@@ -342,8 +345,8 @@
                 clearTimeout(tipsTimer);
                 tipsTimer = null;
             }
-            $label
-                .text('')
+            $allFields
+                .removeClass('modified')
                 .removeClass('ui-state-error');
         }
 
@@ -354,6 +357,7 @@
         }
 
         function open(classroom) {
+            clear();
             if (classroom) {
                 populate(classroom);
             }
@@ -603,21 +607,36 @@
      ****************************************************************************************************/
     var StudentPropsDlg = (function () {
         var $dialog;
-        var dialog;
 
-        var form;
+        var $form;
         var $id;
         var $tips;
         var $familyName;
         var $firstName;
         var $classrooms;
         var $active;
+        var $allFields;
 
+        var dialog;
         var tipsTimer;
 
         function init(selector) {
             $dialog     = $(selector);
-            dialog      = $dialog.dialog({
+            $form       = $dialog.find('form[name=studentData]');
+            $id         = $dialog.find('input[name=id]');
+            $tips       = $dialog.find('p.update-tips');
+            $familyName = $form.find('input[name=family_name]');
+            $firstName  = $form.find('input[name=first_name]');
+            $classrooms = $form.find('select[name=classroom_id]');
+            for (var p in Classrooms.records) {
+                var $opt = $('option').text(p).val(p);
+                $classrooms.append($opt);
+            }
+            $active    = $dialog.find('input[name=enrolled]');
+            $allFields = $form.find('input').add($form.find('select'));
+
+
+            dialog = $dialog.dialog({
                 autoOpen: false,
                 modal   : true,
                 width   : '50%',
@@ -629,20 +648,10 @@
                 },
                 "close" : clear
             });
-            form        = $dialog.find('form[name=studentData]');
-            $id         = $dialog.find('input[name=id]');
-            $tips       = $dialog.find('p.update-tips');
-            $familyName = form.find('input[name=family_name]');
-            $firstName  = form.find('input[name=first_name]');
-            $classrooms = form.find('select[name=classroom_id]');
-            for (var p in Classrooms.records) {
-                console.log(p);
-                var $opt = $('option').text(p).val(p);
-                $classrooms.append($opt);
-            }
-            $active = $dialog.find('input[name=enrolled]');
 
             tipsTimer = null;
+
+            $allFields.on('change', onChangeAllFields);
 
             Classrooms.subscribe('load-records', whenClassroomsLoaded);
             Classrooms.subscribe('insert-record', whenClassroomAdded);
@@ -650,8 +659,7 @@
         }
 
         function clear() {
-            $dialog.find('form')[0].reset();
-            $id.val('');
+            $form[0].reset();
             $tips
                 .text('')
                 .removeClass("ui-state-highlight");
@@ -659,6 +667,9 @@
                 clearTimeout(tipsTimer);
                 tipsTimer = null;
             }
+            $allFields
+                .removeClass('modified')
+                .removeClass('ui-state-error');
         }
 
         function open(student) {
@@ -719,7 +730,6 @@
             valid     = valid && checkSelected($classrooms, "classroom");
             if (valid) {
                 if ($id.val()) {
-                    //StudentController.update($id.val(), form.serialize());
                     StudentController.update($id.val(), {
                         'family_name' : $familyName.val(),
                         'first_name'  : $firstName.val(),
@@ -727,7 +737,6 @@
                         'classroom_id': $classrooms.val()
                     });
                 } else {
-                    //StudentController.submit(form.serialize());
                     StudentController.submit({
                         'family_name' : $familyName.val(),
                         'first_name'  : $firstName.val(),
@@ -742,49 +751,11 @@
             //});
         }
 
-
-        function onKeyupEditStudentFamilyName() {
-            var $tr     = $(this).closest('tr');
-            var id      = $tr.data('studentId');
-            var current = Students.records[id];
-            if (current.familyName != $(this).val()) {
+        function onChangeAllFields() {
+            if ($(this).val() != $(this).data('db-val')) {
                 $(this).addClass('modified');
-                $tr.find('button.update').removeClass('disabled').attr('disabled', false);
-                $tr.find('button.delete').removeClass('delete').addClass('undo');
             } else {
                 $(this).removeClass('modified');
-                $tr.find('button.update').addClass('disabled').attr('disabled', true);
-                $tr.find('button.undo').removeClass('undo').addClass('delete');
-            }
-        }
-
-        function onKeyupEditStudentGivenName() {
-            var $tr     = $(this).closest('tr');
-            var id      = $tr.data('studentId');
-            var current = Students.records[id];
-            if (current.firstName != $(this).val()) {
-                $(this).addClass('modified');
-                $tr.find('button.update').removeClass('disabled').attr('disabled', false);
-                $tr.find('button.delete').removeClass('delete').addClass('undo');
-            } else {
-                $(this).removeClass('modified');
-                $tr.find('button.update').addClass('disabled').attr('disabled', true);
-                $tr.find('button.undo').removeClass('undo').addClass('delete');
-            }
-        }
-
-        function onChangeSelectClassroom() {
-            var $tr     = $(this).closest('tr');
-            var id      = $tr.data('studentId');
-            var current = Students.records[id];
-            if (current.classroomId != $(this).val()) {
-                $(this).addClass('modified');
-                $tr.find('button.update').removeClass('disabled').attr('disabled', false);
-                $tr.find('button.delete').removeClass('delete').addClass('undo');
-            } else {
-                $(this).removeClass('modified');
-                $tr.find('button.update').addClass('disabled').attr('disabled', true);
-                $tr.find('button.undo').removeClass('undo').addClass('delete');
             }
         }
 
