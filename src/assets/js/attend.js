@@ -505,7 +505,7 @@
                     ? '<span class="classroom">' + Classrooms.records[student.classroom_id].label + '</span>'
                     : '<span class="classroom">' + student.classroom_id + '</span>',
 
-                '<input type="checkbox" name="enrolled" disabled ' + (( "1" === student.enrolled ) ? ' checked' : '') + '/>',
+                '<input type="checkbox" name="enrolled" disabled ' + (( "1" == student.enrolled ) ? ' checked' : '') + '/>',
                 '<button class="edit"><span class="glyphicon glyphicon-edit" /> </button>',
                 '<button class="schedules"><span class="glyphicon glyphicon-time" /> </button>',
                 '<button class="delete"><span class="glyphicon glyphicon-remove" /> </button>'
@@ -568,6 +568,7 @@
                 var data = $tr.data('studentId');
                 if (data === id) {
                     var row = table.row($tr);
+                    console.log( Students.records[ id] );
                     row.data(toArray(Students.records[id]));
                     $(row.node()).data('studentId', id);
                     row.draw();
@@ -649,8 +650,15 @@
                 width   : '50%',
                 buttons : {
                     "Submit": onClickSubmiStudentForm,
-                    "Close" : function () {
-                        dialog.dialog("close");
+                    "Cancel": function () {
+                        var $modified = $dialog.find('.modified');
+                        if ($modified.length) {
+                            if (confirm("Are you sure you want to discard your changes?")) {
+                                dialog.dialog('close');
+                            }
+                        } else {
+                            dialog.dialog("close");
+                        }
                     }
                 },
                 "close" : clear
