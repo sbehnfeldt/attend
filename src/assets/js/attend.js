@@ -326,7 +326,14 @@
                 buttons : {
                     "Submit": onClickSubmitClassroomForm,
                     "Cancel": function () {
-                        dialog.dialog("close");
+                        var $modified = $dialog.find('.modified');
+                        if ($modified.length) {
+                            if (confirm("Are you sure you want to discard your changes?")) {
+                                dialog.dialog('close');
+                            }
+                        } else {
+                            dialog.dialog("close");
+                        }
                     }
                 },
                 "close" : clear
