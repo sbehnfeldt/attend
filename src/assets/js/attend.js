@@ -34,6 +34,7 @@
         }
 
         function insert(record) {
+            console.log( record );
             this.records[parseInt(record.id)] = record;
             this.callbacks['insert-record'].fire(record.id);
             return this;
@@ -105,8 +106,7 @@
                 'dataType': 'json',
                 'success' : function (json) {
                     console.log(json);
-                    data.id = json.data;
-                    self.model.insert(json.data)
+                    self.model.insert(json.resource)
                 },
                 'error'   : function (xhr) {
                     console.log(xhr);
@@ -749,7 +749,7 @@
                         'classroom_id': $classrooms.val()
                     });
                 } else {
-                    StudentController.submit({
+                    StudentController.insert({
                         'family_name' : $familyName.val(),
                         'first_name'  : $firstName.val(),
                         'enrolled'    : $active.is(':checked') ? 1 : 0,
