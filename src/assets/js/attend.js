@@ -34,7 +34,6 @@
         }
 
         function insert(record) {
-            console.log( record );
             this.records[parseInt(record.id)] = record;
             this.callbacks['insert-record'].fire(record.id);
             return this;
@@ -805,11 +804,11 @@
         var $studentName;
         var $tips;
         var $form;
-        var $studentId;
-        var $schedList;
-        var $scheds;
-        var $schedGroups;
-        var $startDate;
+        var $studentId;   // Value
+        var $schedList;   // Value: Drop-down list of schedules
+        var $scheds;      // Value: Checkboxes
+        var $schedGroups; // Control: select/de-select row/column of checkboxes at once
+        var $startDate;   // Value
         var $allFields;
 
         var dialog;
@@ -828,7 +827,9 @@
             $startDate   = $form.find('input[name=start_date]');
             $allFields   = $form.find('input');
 
-            $startDate.datepicker();
+            $startDate.datepicker({
+                dateFormat: 'yy-mm-dd'
+            });
 
             dialog    = $dialog.dialog({
                 autoOpen: false,
@@ -845,7 +846,7 @@
                         } else {
                             dialog.dialog("close");
                         }
-                    },
+                    }
                 },
                 "close" : clear
             });
@@ -909,6 +910,10 @@
             dialog.dialog('open');
         }
 
+        function validate() {
+            return true;
+        }
+
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////
         // Internal Event Handlers
@@ -963,7 +968,31 @@
 
 
         function onClickSubmitSchedule() {
-            alert("Submit schedule");
+            if (validate()) {
+
+                var schedule = 0;
+                $scheds.each(function (i, e) {
+                    if ($(e).is(':checked')) {
+                        schedule |= $(e).val();
+                    }
+                });
+                console.log(schedule);
+                console.log($startDate.val());
+                if ($schedList.val()) {
+                    SchedulesController.update($schedList.val(), {
+                        'student_id': $studentId.val(),
+                        'schedule'  : schedule,
+                        'start_date': $startDate.val()
+                    });
+                } else {
+                    SchedulesController.insert({
+                        'student_id': $studentId.val(),
+                        'schedule'  : schedule,
+                        'start_date': $startDate.val()
+                    });
+                }
+                dialog.dialog('close');
+            }
         }
 
 
