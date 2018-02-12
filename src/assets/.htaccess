@@ -1,5 +1,5 @@
 <IfModule mod_rewrite.c>
-RewriteEngine On
+RewriteEngine Off
 RewriteBase /attend
 
 #RewriteRule ^api/(.*) api.php [L]

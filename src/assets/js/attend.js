@@ -809,7 +809,6 @@
         var $scheds;      // Value: Checkboxes
         var $schedGroups; // Control: select/de-select row/column of checkboxes at once
         var $startDate;   // Value
-        var $allFields;
 
         var dialog;
         var tipsTimer;
@@ -892,14 +891,7 @@
                     var $opt = $('<option>').val(scheds[i]).text(Schedules.records[scheds[i]].start_date);
                     $schedList.append($opt);
                 }
-
-                //} else {
-                //    var now = new Date();
-                //    $startDate.datepicker('setDate', now);
-                //    var $opt = $('<option>').val('').text(( 1 + now.getMonth()) + '/' + now.getDate() + '/' + (1900 + now.getYear()));
-                //    $schedList.append($opt);
             }
-
             $schedList.trigger('change');   // Act as though we just picked date from drop-down; so to populate schedule table
         }
 
@@ -1363,7 +1355,7 @@
      ********************************************************************************/
     var AttendancePage = (function () {
         var $page,
-            $attendanceSchedules,
+            $schedules,
             weekOf,   // Monday of the week to display; default to this week
             $weekOf,  // Control to specify weekOf
             publicApi;
@@ -1378,14 +1370,14 @@
             $weekOf.datepicker();
             $weekOf.datepicker('option', 'showAnim', 'slideDown');
             $weekOf.datepicker('setDate', weekOf);
-            $('#pdf-attendance').attr('href', 'pdf/attendance?week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate());
+            $('#pdf-attendance').attr('href', 'pdf.php?attendance&week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate());
         }
 
 
         function cacheDom(selector) {
-            $page                = $(selector);
-            $weekOf              = $page.find('input[name=week-of]');
-            $attendanceSchedules = $page.find('div.attendance-page-schedules');
+            $page      = $(selector);
+            $weekOf    = $page.find('input[name=week-of]');
+            $schedules = $page.find('div.attendance-page-schedules');
         }
 
 
@@ -1394,7 +1386,7 @@
             var source;     // Source for the Handlebars template
             var template;   // The compiled template
 
-            $attendanceSchedules.empty();
+            $schedules.empty();
             source   = $('#attendance-schedule-class-template').html();
             template = Handlebars.compile(source);
             Classrooms.classrooms.forEach(function (classroom) {
@@ -1478,35 +1470,145 @@
                     });
                 });
                 html = template(context);
-                $attendanceSchedules.append($(html));
+                $schedules.append($(html));
             });
 
         }
 
 
         function bindEvents() {
-            $page.on('show', generateAttendanceSheets);
-            $weekOf.on('change', function onWeekOfChange() {
-                weekOf = $weekOf.datepicker('getDate');
-                weekOf = normalizeDateToMonday(weekOf);
-                $weekOf.datepicker('setDate', weekOf).blur();
-                generateAttendanceSheets();
-                $('#pdf-attendance').attr('href', 'pdf/attendance?week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate());
-            });
+            //$page.on('show', generateAttendanceSheets);
+            $weekOf.on('change', onChangeWeekOf);
+
+            Classrooms.subscribe('load-records', whenClassroomsLoaded);
+            Students.subscribe('load-records', whenStudentsLoaded);
+            Schedules.subscribe('load-records', whenSchedulesLoaded);
+        }
+
+        function onChangeWeekOf() {
+            weekOf = $weekOf.datepicker('getDate');
+            weekOf = normalizeDateToMonday(weekOf);
+            $weekOf.datepicker('setDate', weekOf).blur();
+            //generateAttendanceSheets();
+            $('#pdf-attendance').attr('href', 'pdf.php?attendance&week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate());
+        }
+
+        function whenClassroomsLoaded() {
+            for (var classroomId in Classrooms.records) {
+                var classroom = Classrooms.records[classroomId];
+                var $table    = $('<table>');
+                var $thead    = $('<thead>');
+                var $tr;
+                var $th;
+
+                $tr = $('<tr>');
+                $th = $('<th colspan="7">').text('Attendance');
+                $tr.append($th);
+                $thead.append($tr);
+                $table.append($thead);
+
+                $tr = $('<tr>');
+                $th = $('<th colspan="7">')
+                    .append($('<span class="classroom pull-left">Classroom</span>'))
+                    .append($('<span class="week-of pull-right">Week Of</span>'));
+                $tr.append($th);
+                $tr.append($th);
+                $table.append($tr);
+
+                $tr = $('<tr>');
+                $tr.append($('<th>').addClass('attendance-schedule-name').text('Student'));
+                $tr.append($('<th>').addClass('foopy').text('Mon'));
+                $tr.append($('<th>').addClass('foopy').text('Tue'));
+                $tr.append($('<th>').addClass('foopy').text('Wed'));
+                $tr.append($('<th>').addClass('foopy').text('Thu'));
+                $tr.append($('<th>').addClass('foopy').text('Fri'));
+                $tr.append($('<th>').addClass('.attendance-schedule-notes').text('Notes'));
+                $table.append($tr);
+                $table.attr('data-classroom-id', classroomId);
+                $schedules.append($table);
+            }
+            whenStudentsLoaded();
         }
 
 
-        function sort(key) {
-            var $rows = $tbody.children('tr[data-student-id]');
-            $rows.sort(function (a, b) {
-                var id1, id2, key1, key2;
-                id1  = $(a).attr('data-student-id');
-                id2  = $(b).attr('data-student-id');
-                key1 = Students[id1][key];
-                key2 = Students[id2][key];
-                return (key1 > key2) ? 1 : (key2 > key1) ? -1 : 0;
-            });
-            $rows.detach().prependTo($tbody);
+        function whenStudentsLoaded() {
+            var $tables = $schedules.find('table');
+            if (0 == $tables.length) {
+                return;
+            }
+
+            // Initialize "Students by Classroom" container
+            var studentsByClassroom = {};
+            for (var i = 0; i < $tables.length; i++) {
+                var $table                       = $tables.eq(i);
+                var classroomId                  = $table.attr('data-classroom-id');
+                studentsByClassroom[classroomId] = [];
+            }
+
+            // Group all enrolled students (by ID) in the proper classroom
+            for (var studentId in Students.records) {
+                var student = Students.records[studentId];
+                if (!student.enrolled) {
+                    continue;
+                }
+                if (!( student.classroom_id in studentsByClassroom )) {
+                    throw 'Unknown classroom ID ' + student.classroom_id;
+                }
+                studentsByClassroom[student.classroom_id].push(student.id);
+            }
+
+            // Sort the student IDs by the corresponding students' names
+            for (var p in studentsByClassroom) {
+                studentsByClassroom[p].sort(function (a, b) {
+                    var student1 = Students.records[a];
+                    var student2 = Students.records[b];
+                    if (student1.family_name > student2.family_name) return 1;
+                    if (student1.family_name < student2.family_name) return -1;
+                    if (student1.first_name > student2.first_name) return 1;
+                    if (student1.first_name < student2.first_name) return -1;
+                    return 0;
+                });
+            }
+
+            // Draw the tables
+            for (i = 0; i < $tables.length; i++) {
+                var classroomId = $tables.eq(i).attr('data-classroom-id');
+                for (var j in studentsByClassroom[classroomId]) {
+                    var studentId = studentsByClassroom[classroomId][j]
+                    var $td       = $('<td>').text(Students.records[studentId].first_name + ' ' + Students.records[studentId].family_name);
+                    var $tr       = $('<tr>');
+                    $tr.append($td);
+                    $tr.append($('<td>'))
+                        .append($('<td>'))
+                        .append($('<td>'))
+                        .append($('<td>'))
+                        .append($('<td>'))
+                        .append($('<td>'));
+                    $tr.data( 'student-id', studentId );
+                    $tables.eq(i).append($tr);
+                }
+            }
+
+            whenSchedulesLoaded();
+        }
+
+
+        function whenSchedulesLoaded() {
+
+            var $tables = $schedules.find('table');
+            if (0 == $tables.length) {
+                return;
+            }
+            for ( var i = 0; i < $tables.length; i++ ) {
+                var $table = $tables.eq(i);
+
+                var $tr = $table.find('tbody tr');
+                for ( var j = 0; j < $tr.length; j++ ) {
+                    var studentId = $tr.data( 'student-id' );
+                    var student = Students.records[ studentId ];
+
+                }
+            }
         }
 
 
@@ -1536,7 +1638,7 @@
             $weekOf.datepicker();
             $weekOf.datepicker('option', 'showAnim', 'slideDown');
             $weekOf.datepicker('setDate', weekOf);
-            $('#pdf-signin').attr('href', 'pdf/signin?week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate());
+            $('#pdf-signin').attr('href', 'pdf.php?signin&week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate());
         }
 
         function cacheDom(selector) {
@@ -1603,14 +1705,12 @@
         }
 
         function bindEvents() {
-            $page.on('show', generateSigninSheets);
-
             $weekOf.on('change', function onWeekOfChange() {
                 weekOf = $weekOf.datepicker('getDate');
                 weekOf = normalizeDateToMonday(weekOf);
                 $weekOf.datepicker('setDate', weekOf).blur();
-                generateSigninSheets();
-                $('#pdf-signin').attr('href', 'pdf/signin?week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate());
+                //generateSigninSheets();
+                $('#pdf-signin').attr('href', 'pdf.php?signin&week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate());
             });
         }
 
@@ -2495,10 +2595,8 @@
         //});
 
 
-        CheckinPage.init('#checkin-page');
-        AttendancePage.init('#attendance-page');
-        SigninPage.init('#signin-page');
-        ReportsPage.init('#reports');
+        //CheckinPage.init('#checkin-page');
+        //ReportsPage.init('#reports');
         //EnrollmentPage.init( '#enrollment-page' );
         //ClassroomPage.init('#classes-page');
 
@@ -2521,6 +2619,9 @@
         ClassroomController.load();
         StudentController.load();
         SchedulesController.load();
+
+        AttendancePage.init('#attendance-page');
+        SigninPage.init('#signin-page');
 
         if (targets.indexOf(location.hash) !== 1) {
             oldhash = location.hash;

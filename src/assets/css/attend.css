@@ -156,6 +156,7 @@ span.clock {
     border-top: 2px solid #e0e0e0;
 }
 
+
 #attendance-page td.absent,
 #signin-page td.absent {
     background-color: #bdbdbd;
@@ -169,17 +170,14 @@ span.clock {
     text-align: center;
 }
 
-#attendance-page td {
-    width: 5%;
+
+#attendance-page th.attendance-schedule-name {
+    width: 20%;
 }
 
-#attendance-page td.attendance-schedule-name {
-    width: 25%;
-}
-
-#attendance-page td.attendance-schedule-notes {
+#attendance-page th.attendance-schedule-notes {
     text-align: left;
-    width: 25%;
+    width: 35%;
 }
 
 #attendance-page .attendance-schedule td:first-child {
@@ -194,8 +192,10 @@ span.clock {
     text-align: center;
 }
 
+#attendance-page .attendance-page-schedules table,
 #signin-page .signin-page-contents table {
     width: 100%;
+    margin-bottom: 2em;
 }
 
 #enrollment-page .student-list select {
