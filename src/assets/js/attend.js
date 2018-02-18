@@ -27,7 +27,7 @@
         function load(records) {
             for (var i = 0; i < records.length; i++) {
                 var r                        = records[i];
-                this.records[parseInt(r.id)] = r;
+                this.records[parseInt(r.id)] = r;   // TODO: Why parse the ID? Won't the ID work as a string?
             }
             this.callbacks['load-records'].fire(records);
             return this;
@@ -68,6 +68,49 @@
     var Classrooms = Object.create(Records);
     var Students   = Object.create(Records);
     var Schedules  = Object.create(Records);
+
+
+    /**
+     * Apart from being stored by ID, schedules must at the same time be grouped by students, for easier access later
+     * on. Therefore, many of the methods of the base object "Records" must be overridden.
+     */
+    Schedules.init = function () {
+        this.records   = {};
+        this.callbacks = {
+            'empty-records': $.Callbacks(),
+            'load-records' : $.Callbacks(),
+            'insert-record': $.Callbacks(),
+            'remove-record': $.Callbacks(),
+            'update-record': $.Callbacks()
+        };
+        this.students  = {};
+    };
+
+    Schedules.load = function (records) {
+        var nStudents = 0;
+        for (var i = 0; i < records.length; i++) {
+            var schedule = records[i];
+
+            this.records[parseInt(schedule.id)] = schedule;
+
+            var studentId = parseInt(schedule.student_id);
+            if (!( studentId in this.students )) {
+                this.students[studentId] = [];
+                nStudents++;
+            }
+            this.students[studentId].push(schedule);
+        }
+        for (studentId in this.students) {
+            var arr = this.students[studentId];
+            arr.sort(function (a, b) {
+                if (a.start_date > b.start_date) return 1;
+                if (a.start_date < b.start_date) return -1;
+                return 0;
+            });
+        }
+        this.callbacks['load-records'].fire(records);
+        return this;
+    };
 
     // Communicator between front and back ends
     function Uhura(url, model) {
@@ -1008,7 +1051,7 @@
 
 
     /****************************************************************************************************
-     * Students Panel
+     * Students Panel - aka, the Enrollment Page
      ****************************************************************************************************/
     var StudentsPanel = (function () {
         var $panel;
@@ -1351,11 +1394,12 @@
 
 
     /********************************************************************************
-     * Table showing attendance schedules
+     * Page showing attendance sheets for the week
+     * Includes a link to generate attendance sheets in PDF form
      ********************************************************************************/
     var AttendancePage = (function () {
         var $page,
-            $schedules,
+            $schedTables,
             weekOf,   // Monday of the week to display; default to this week
             $weekOf,  // Control to specify weekOf
             publicApi;
@@ -1375,9 +1419,9 @@
 
 
         function cacheDom(selector) {
-            $page      = $(selector);
-            $weekOf    = $page.find('input[name=week-of]');
-            $schedules = $page.find('div.attendance-page-schedules');
+            $page        = $(selector);
+            $weekOf      = $page.find('input[name=week-of]');
+            $schedTables = $page.find('div.attendance-page-schedules');
         }
 
 
@@ -1386,7 +1430,7 @@
             var source;     // Source for the Handlebars template
             var template;   // The compiled template
 
-            $schedules.empty();
+            $schedTables.empty();
             source   = $('#attendance-schedule-class-template').html();
             template = Handlebars.compile(source);
             Classrooms.classrooms.forEach(function (classroom) {
@@ -1470,7 +1514,7 @@
                     });
                 });
                 html = template(context);
-                $schedules.append($(html));
+                $schedTables.append($(html));
             });
 
         }
@@ -1498,6 +1542,7 @@
                 var classroom = Classrooms.records[classroomId];
                 var $table    = $('<table>');
                 var $thead    = $('<thead>');
+                var $tbody    = $('<tbody>');
                 var $tr;
                 var $th;
 
@@ -1505,7 +1550,6 @@
                 $th = $('<th colspan="7">').text('Attendance');
                 $tr.append($th);
                 $thead.append($tr);
-                $table.append($thead);
 
                 $tr = $('<tr>');
                 $th = $('<th colspan="7">')
@@ -1513,7 +1557,7 @@
                     .append($('<span class="week-of pull-right">Week Of</span>'));
                 $tr.append($th);
                 $tr.append($th);
-                $table.append($tr);
+                $thead.append($tr);
 
                 $tr = $('<tr>');
                 $tr.append($('<th>').addClass('attendance-schedule-name').text('Student'));
@@ -1523,16 +1567,20 @@
                 $tr.append($('<th>').addClass('foopy').text('Thu'));
                 $tr.append($('<th>').addClass('foopy').text('Fri'));
                 $tr.append($('<th>').addClass('.attendance-schedule-notes').text('Notes'));
-                $table.append($tr);
+
+                $thead.append($tr);
                 $table.attr('data-classroom-id', classroomId);
-                $schedules.append($table);
+                $schedTables.append($table);
+
+                $table.append($thead);
+                $table.append($tbody);
             }
             whenStudentsLoaded();
         }
 
 
         function whenStudentsLoaded() {
-            var $tables = $schedules.find('table');
+            var $tables = $schedTables.find('table');
             if (0 == $tables.length) {
                 return;
             }
@@ -1578,36 +1626,122 @@
                     var $td       = $('<td>').text(Students.records[studentId].first_name + ' ' + Students.records[studentId].family_name);
                     var $tr       = $('<tr>');
                     $tr.append($td);
-                    $tr.append($('<td>'))
-                        .append($('<td>'))
-                        .append($('<td>'))
-                        .append($('<td>'))
-                        .append($('<td>'))
-                        .append($('<td>'));
-                    $tr.data( 'student-id', studentId );
+                    $tr.data('student-id', studentId);
                     $tables.eq(i).append($tr);
                 }
             }
-
             whenSchedulesLoaded();
         }
 
 
         function whenSchedulesLoaded() {
 
-            var $tables = $schedules.find('table');
+            function compareDates(a, b) {
+                if (a.getFullYear() < b.getFullYear()) return -1;
+                if (a.getFullYear() > b.getFullYear()) return 1;
+                if (a.getMonth() < b.getMonth()) return -1;
+                if (a.getMonth() > b.getMonth()) return 1;
+                if (a.getDate() < b.getDate()) return -1;
+                if (a.getDate() > b.getDate()) return 1;
+                return 0;
+            }
+
+            function drawStudentRow($tr) {
+                var decoder   = [
+                    [0x0001, 0x0020, 0x0400],
+                    [0x0002, 0x0040, 0x0800],
+                    [0x0004, 0x0080, 0x1000],
+                    [0x0008, 0x0100, 0x2000],
+                    [0x0010, 0x0200, 0x4000]
+                ];
+                var studentId = $tr.data('student-id');
+                var student   = Students.records[studentId];
+                var schedules = Schedules.students[studentId];
+                if (undefined === schedules) {
+                    return;
+                }
+                var j = 0;
+
+                var thisWeek = new Date($weekOf.val());
+                var today    = new Date(schedules[j].start_date);
+                var notes    = {
+                    'FD' : 0,
+                    'HD' : 0,
+                    'HDL': 0
+                };
+                for (var i = 0; i < 5; i++) {
+
+                    while ((j + 1) < schedules.length) {
+                        var next = new Date(schedules[j + 1].start_date);
+                        if (compareDates(next, thisWeek) > 1) {
+                            break;
+                        }
+                        today = next;
+                        j++;
+                    }
+
+                    var s = {
+                        'am'   : false,
+                        'pm'   : false,
+                        'lunch': false
+                    };
+
+                    if (0 != ( parseInt(schedules[j].schedule) & decoder[i][0])) {
+                        s.am = true;
+                    }
+                    if (schedules[j].schedule & decoder[i][1]) {
+                        s.lunch = true;
+                    }
+                    if (schedules[j].schedule & decoder[i][2]) {
+                        s.pm = true;
+                    }
+                    if (s.am && s.pm) {
+                        $tr.append($('<td>'));
+                        notes.FD++;
+                    } else if (s.am) {
+                        $tr.append($('<td>'));
+                        if (s.lunch) {
+                            notes.HDL++;
+                        } else {
+                            notes.HD++;
+                        }
+                    } else if (s.pm) {
+                        $tr.append($('<td>'));
+                        if (s.lunch) {
+                            notes.HDL++;
+                        } else {
+                            notes.HD++;
+                        }
+                    } else {
+                        $tr.append($('<td class="absent">'));
+                    }
+                    thisWeek.setDate(thisWeek.getDate() + 1);
+                    today.setDate(today.getDate() + 1);
+                }
+                var text = '';
+                if (notes.FD) {
+                    text = notes.FD + 'FD';
+                } else if (notes.HD) {
+                    text = notes.HD + 'HD';
+                } else if (notes.HDL) {
+                    text = notes.HDL + 'HDL';
+                }
+                $tr.append($('<td>').text(text));
+            }
+
+            function drawTable($table) {
+                var $tr = $table.find('tbody tr');
+                for (var i = 0; i < $tr.length; i++) {
+                    drawStudentRow($tr.eq(i));
+                }
+            }
+
+            var $tables = $schedTables.find('table');
             if (0 == $tables.length) {
                 return;
             }
-            for ( var i = 0; i < $tables.length; i++ ) {
-                var $table = $tables.eq(i);
-
-                var $tr = $table.find('tbody tr');
-                for ( var j = 0; j < $tr.length; j++ ) {
-                    var studentId = $tr.data( 'student-id' );
-                    var student = Students.records[ studentId ];
-
-                }
+            for (var i = 0; i < $tables.length; i++) {
+                drawTable($tables.eq(i));
             }
         }
 
