@@ -1538,6 +1538,9 @@
         }
 
         function whenClassroomsLoaded() {
+            var MoAbbrvs = [
+                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+            ];
             for (var classroomId in Classrooms.records) {
                 var classroom = Classrooms.records[classroomId];
                 var $table    = $('<table>');
@@ -1559,14 +1562,19 @@
                 $tr.append($th);
                 $thead.append($tr);
 
-                $tr = $('<tr>');
+                var weekOf = $weekOf.datepicker('getDate');
+                $tr        = $('<tr>');
                 $tr.append($('<th>').addClass('attendance-schedule-name').text('Student'));
-                $tr.append($('<th>').addClass('foopy').text('Mon'));
-                $tr.append($('<th>').addClass('foopy').text('Tue'));
-                $tr.append($('<th>').addClass('foopy').text('Wed'));
-                $tr.append($('<th>').addClass('foopy').text('Thu'));
-                $tr.append($('<th>').addClass('foopy').text('Fri'));
-                $tr.append($('<th>').addClass('.attendance-schedule-notes').text('Notes'));
+                $tr.append($('<th>').addClass('foopy').html('Mon<br>' + weekOf.getDate() + '-' + MoAbbrvs[weekOf.getMonth()]));
+                weekOf.setDate(weekOf.getDate() + 1);
+                $tr.append($('<th>').addClass('foopy').html('Tue<br>' + weekOf.getDate() + '-' + MoAbbrvs[weekOf.getMonth()]));
+                weekOf.setDate(weekOf.getDate() + 1);
+                $tr.append($('<th>').addClass('foopy').html('Wed<br>' + weekOf.getDate() + '-' + MoAbbrvs[weekOf.getMonth()]));
+                weekOf.setDate(weekOf.getDate() + 1);
+                $tr.append($('<th>').addClass('foopy').html('Thu<br>' + weekOf.getDate() + '-' + MoAbbrvs[weekOf.getMonth()]));
+                weekOf.setDate(weekOf.getDate() + 1);
+                $tr.append($('<th>').addClass('foopy').html('Fri<br>' + weekOf.getDate() + '-' + MoAbbrvs[weekOf.getMonth()]));
+                $tr.append($('<th>').addClass('attendance-schedule-notes').text('Notes'));
 
                 $thead.append($tr);
                 $table.attr('data-classroom-id', classroomId);
@@ -1622,8 +1630,8 @@
             for (i = 0; i < $tables.length; i++) {
                 var classroomId = $tables.eq(i).attr('data-classroom-id');
                 for (var j in studentsByClassroom[classroomId]) {
-                    var studentId = studentsByClassroom[classroomId][j]
-                    var $td       = $('<td>').text(Students.records[studentId].first_name + ' ' + Students.records[studentId].family_name);
+                    var studentId = studentsByClassroom[classroomId][j];
+                    var $td       = $('<td class="attendance-schedule-name">').text(Students.records[studentId].first_name + ' ' + Students.records[studentId].family_name);
                     var $tr       = $('<tr>');
                     $tr.append($td);
                     $tr.data('student-id', studentId);
@@ -1726,7 +1734,7 @@
                 } else if (notes.HDL) {
                     text = notes.HDL + 'HDL';
                 }
-                $tr.append($('<td>').text(text));
+                $tr.append($('<td class="attendance-schedule-notes">').text(text));
             }
 
             function drawTable($table) {

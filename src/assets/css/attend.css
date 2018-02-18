@@ -175,12 +175,12 @@ span.clock {
     width: 20%;
 }
 
-#attendance-page th.attendance-schedule-notes {
+#attendance-page td.attendance-schedule-notes {
     text-align: left;
     width: 35%;
 }
 
-#attendance-page .attendance-schedule td:first-child {
+#attendance-page td.attendance-schedule-name {
     text-align: left;
 }
 
