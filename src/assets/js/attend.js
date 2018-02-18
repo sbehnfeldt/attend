@@ -70,6 +70,46 @@
     var Schedules  = Object.create(Records);
 
 
+    Students.init = function () {
+        this.records    = {};
+        this.callbacks  = {
+            'empty-records': $.Callbacks(),
+            'load-records' : $.Callbacks(),
+            'insert-record': $.Callbacks(),
+            'remove-record': $.Callbacks(),
+            'update-record': $.Callbacks()
+        };
+        this.classrooms = {};
+    };
+
+    Students.load = function (records) {
+        for (var i = 0; i < records.length; i++) {
+            var student = records[i];
+
+            this.records[parseInt(student.id)] = student;
+
+            var classroomId = parseInt(student.classroom_id);
+            if (!( classroomId in this.classrooms)) {
+                this.classrooms[classroomId] = [];
+            }
+            this.classrooms[classroomId].push(student);
+        }
+        for (classroomId in this.classrooms) {
+            var arr = this.classrooms[classroomId];
+            arr.sort(function (a, b) {
+                if (a.family_name < b.family_name) return -1;
+                if (a.family_name > b.family_name) return 1;
+                if (a.first_name < b.first_name) return -1;
+                if (a.first_name > b.first_name) return 1;
+                return 0;
+            });
+        }
+
+        this.callbacks['load-records'].fire(records);
+        return this;
+    };
+
+
     /**
      * Apart from being stored by ID, schedules must at the same time be grouped by students, for easier access later
      * on. Therefore, many of the methods of the base object "Records" must be overridden.
@@ -1557,7 +1597,7 @@
                 $tr = $('<tr>');
                 $th = $('<th colspan="7">')
                     .append($('<span class="classroom pull-left">' + classroom.label + '</span>'))
-                    .append($('<span class="week-of pull-right">Week Of ' + MoAbbrvs[ $weekOf.datepicker( 'getDate' ).getMonth()] + ' ' + $weekOf.datepicker( 'getDate' ).getDate() + ', ' + (1900 + $weekOf.datepicker( 'getDate').getYear()) + '</span>'));
+                    .append($('<span class="week-of pull-right">Week Of ' + MoAbbrvs[$weekOf.datepicker('getDate').getMonth()] + ' ' + $weekOf.datepicker('getDate').getDate() + ', ' + (1900 + $weekOf.datepicker('getDate').getYear()) + '</span>'));
                 $tr.append($th);
                 $tr.append($th);
                 $thead.append($tr);
