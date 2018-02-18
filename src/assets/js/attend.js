@@ -1556,8 +1556,8 @@
 
                 $tr = $('<tr>');
                 $th = $('<th colspan="7">')
-                    .append($('<span class="classroom pull-left">Classroom</span>'))
-                    .append($('<span class="week-of pull-right">Week Of</span>'));
+                    .append($('<span class="classroom pull-left">' + classroom.label + '</span>'))
+                    .append($('<span class="week-of pull-right">Week Of ' + MoAbbrvs[ $weekOf.datepicker( 'getDate' ).getMonth()] + ' ' + $weekOf.datepicker( 'getDate' ).getDate() + ', ' + (1900 + $weekOf.datepicker( 'getDate').getYear()) + '</span>'));
                 $tr.append($th);
                 $tr.append($th);
                 $thead.append($tr);
