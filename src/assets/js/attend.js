@@ -1465,224 +1465,85 @@
         }
 
 
-        // Generate the attendance sheets
-        function generateAttendanceSheets() {
-            var source;     // Source for the Handlebars template
-            var template;   // The compiled template
-
-            $schedTables.empty();
-            source   = $('#attendance-schedule-class-template').html();
-            template = Handlebars.compile(source);
-            Classrooms.classrooms.forEach(function (classroom) {
-                var context,   // The runtime data to pass to Handlebars
-                    html;
-                context = {
-                    classroom: classroom,
-                    weekOf   : weekOf.toDateString(),
-                    dates    : [
-                        weekOf,
-                        new Date(weekOf.getFullYear(), weekOf.getMonth(), weekOf.getDate() + 1),
-                        new Date(weekOf.getFullYear(), weekOf.getMonth(), weekOf.getDate() + 2),
-                        new Date(weekOf.getFullYear(), weekOf.getMonth(), weekOf.getDate() + 3),
-                        new Date(weekOf.getFullYear(), weekOf.getMonth(), weekOf.getDate() + 4),
-                    ],
-
-                    students: Students.filter(function (e, i, arr) {
-                        return ((e.classroomId == classroom.id) && (true == e.enrolled));
-                    }).sort(function (a, b) {
-                        return (a.familyName < b.familyName) ? -1 :
-                            (a.familyName > b.familyName) ? 1 :
-                                (a.firstName < b.firstName) ? -1 :
-                                    (a.firstName > b.firstName) ? 1 :
-                                        a.id < b.id ? -1 : 1;
-                    }),
-                    totals  : {
-                        'mon': 0,
-                        'tue': 0,
-                        'wed': 0,
-                        'thu': 0,
-                        'fri': 0
-                    }
-                };
-
-                context.students.forEach(function (student, i, arr) {
-                    var composite;
-                    var notes;
-                    composite        = getCompositeSchedule(student, weekOf);
-                    student.schedule = {};
-                    notes            = {
-                        'HD' : 0,
-                        'HDL': 0,
-                        'FD' : 0
-                    };
-                    for (var day in composite) {
-                        if (null == composite[day]) {
-                            student.schedule[day] = false;
-                        } else {
-                            student.schedule[day] = [];
-                            if (composite[day]['Am']) student.schedule[day].push('A');
-                            if (composite[day]['Noon']) student.schedule[day].push('L');
-                            if (composite[day]['Pm']) student.schedule[day].push('P');
-                            student.schedule[day] = student.schedule[day].join('/');
-                            if (student.schedule[day]) context.totals[day]++;
-
-                            if (( composite[day]['Am']) && ( composite[day]['Pm'])) {
-                                notes['FD']++;
-                            } else if (( composite[day]['Am']) || ( composite[day]['Pm'])) {
-                                if (composite[day]['Noon']) {
-                                    notes['HDL']++;
-                                } else {
-                                    notes['HD']++;
-                                }
-                            }
-                        }
-                    }
-                    student.notes = [];
-                    if (notes['FD']) student.notes.push(notes['FD'] + 'FD');
-                    if (notes['HD']) student.notes.push(notes['HD'] + 'HD');
-                    if (notes['HDL']) student.notes.push(notes['HDL'] + 'HDL');
-                    student.notes = student.notes.join(',');
-                });
-
-                // Append 3 blank entries to end of each class list
-                [1, 2, 3].forEach(function () {
-                    context.students.push({
-                        firstName : '',
-                        familyName: '',
-                        schedule  : { 'mon': {}, 'tue': {}, 'wed': {}, 'thu': {}, 'fri': {} },
-                        notes     : ''
-                    });
-                });
-                html = template(context);
-                $schedTables.append($(html));
-            });
-
-        }
-
-
         function bindEvents() {
-            //$page.on('show', generateAttendanceSheets);
             $weekOf.on('change', onChangeWeekOf);
-
             Classrooms.subscribe('load-records', whenClassroomsLoaded);
             Students.subscribe('load-records', whenStudentsLoaded);
             Schedules.subscribe('load-records', whenSchedulesLoaded);
         }
 
-        function onChangeWeekOf() {
-            weekOf = $weekOf.datepicker('getDate');
-            weekOf = normalizeDateToMonday(weekOf);
-            $weekOf.datepicker('setDate', weekOf).blur();
-            //generateAttendanceSheets();
-            $('#pdf-attendance').attr('href', 'pdf.php?attendance&week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate());
+
+        function generateAttendanceSheets() {
+            if (!generateAttendanceSheets.hasClassrooms) return;
+            if (!generateAttendanceSheets.hasStudents) return;
+            if (!generateAttendanceSheets.hasSchedules) return;
+            for (var classroomId in Classrooms.records) {
+                $schedTables.append(generateClassroomTable(classroomId));
+            }
         }
 
-        function whenClassroomsLoaded() {
+        generateAttendanceSheets.hasClassrooms = false;
+        generateAttendanceSheets.hasStudents   = false;
+        generateAttendanceSheets.hasSchedules  = false;
+
+
+        function generateClassroomTable(classroomId) {
+
             var MoAbbrvs = [
                 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
             ];
-            for (var classroomId in Classrooms.records) {
-                var classroom = Classrooms.records[classroomId];
-                var $table    = $('<table>');
-                var $thead    = $('<thead>');
-                var $tbody    = $('<tbody>');
-                var $tr;
-                var $th;
+            var classroom,
+                $table,
+                $thead,
+                $tbody,
+                $tr,
+                $th;
 
-                $tr = $('<tr>');
-                $th = $('<th colspan="7">').text('Attendance');
-                $tr.append($th);
-                $thead.append($tr);
+            classroom = Classrooms.records[classroomId];
+            $table    = $('<table>');
+            $thead    = $('<thead>');
+            $tr       = $('<tr>');
+            $th       = $('<th colspan="7">').text('Attendance');
+            $tr.append($th);
+            $thead.append($tr);
 
-                $tr = $('<tr>');
-                $th = $('<th colspan="7">')
-                    .append($('<span class="classroom pull-left">' + classroom.label + '</span>'))
-                    .append($('<span class="week-of pull-right">Week Of ' + MoAbbrvs[$weekOf.datepicker('getDate').getMonth()] + ' ' + $weekOf.datepicker('getDate').getDate() + ', ' + (1900 + $weekOf.datepicker('getDate').getYear()) + '</span>'));
-                $tr.append($th);
-                $tr.append($th);
-                $thead.append($tr);
+            $tr = $('<tr>');
+            $th = $('<th colspan="7">')
+                .append($('<span class="classroom pull-left">' + classroom.label + '</span>'))
+                .append($('<span class="week-of pull-right">Week Of ' + MoAbbrvs[$weekOf.datepicker('getDate').getMonth()] + ' ' + $weekOf.datepicker('getDate').getDate() + ', ' + (1900 + $weekOf.datepicker('getDate').getYear()) + '</span>'));
+            $tr.append($th);
+            $tr.append($th);
+            $thead.append($tr);
 
-                var weekOf = $weekOf.datepicker('getDate');
-                $tr        = $('<tr>');
-                $tr.append($('<th>').addClass('attendance-schedule-name').text('Student'));
-                $tr.append($('<th>').addClass('foopy').html('Mon<br>' + weekOf.getDate() + '-' + MoAbbrvs[weekOf.getMonth()]));
-                weekOf.setDate(weekOf.getDate() + 1);
-                $tr.append($('<th>').addClass('foopy').html('Tue<br>' + weekOf.getDate() + '-' + MoAbbrvs[weekOf.getMonth()]));
-                weekOf.setDate(weekOf.getDate() + 1);
-                $tr.append($('<th>').addClass('foopy').html('Wed<br>' + weekOf.getDate() + '-' + MoAbbrvs[weekOf.getMonth()]));
-                weekOf.setDate(weekOf.getDate() + 1);
-                $tr.append($('<th>').addClass('foopy').html('Thu<br>' + weekOf.getDate() + '-' + MoAbbrvs[weekOf.getMonth()]));
-                weekOf.setDate(weekOf.getDate() + 1);
-                $tr.append($('<th>').addClass('foopy').html('Fri<br>' + weekOf.getDate() + '-' + MoAbbrvs[weekOf.getMonth()]));
-                $tr.append($('<th>').addClass('attendance-schedule-notes').text('Notes'));
+            var weekOf = $weekOf.datepicker('getDate');
+            $tr        = $('<tr>');
+            $tr.append($('<th>').addClass('attendance-schedule-name').text('Student'));
+            $tr.append($('<th>').addClass('foopy').html('Mon<br>' + weekOf.getDate() + '-' + MoAbbrvs[weekOf.getMonth()]));
+            weekOf.setDate(weekOf.getDate() + 1);
+            $tr.append($('<th>').addClass('foopy').html('Tue<br>' + weekOf.getDate() + '-' + MoAbbrvs[weekOf.getMonth()]));
+            weekOf.setDate(weekOf.getDate() + 1);
+            $tr.append($('<th>').addClass('foopy').html('Wed<br>' + weekOf.getDate() + '-' + MoAbbrvs[weekOf.getMonth()]));
+            weekOf.setDate(weekOf.getDate() + 1);
+            $tr.append($('<th>').addClass('foopy').html('Thu<br>' + weekOf.getDate() + '-' + MoAbbrvs[weekOf.getMonth()]));
+            weekOf.setDate(weekOf.getDate() + 1);
+            $tr.append($('<th>').addClass('foopy').html('Fri<br>' + weekOf.getDate() + '-' + MoAbbrvs[weekOf.getMonth()]));
+            $tr.append($('<th>').addClass('attendance-schedule-notes').text('Notes'));
 
-                $thead.append($tr);
-                $table.attr('data-classroom-id', classroomId);
-                $schedTables.append($table);
+            $thead.append($tr);
+            $table.attr('data-classroom-id', classroomId);
 
-                $table.append($thead);
-                $table.append($tbody);
+            $tbody = $('<tbody>');
+            if (Students.classrooms[classroomId]) {
+                for (var i = 0; i < Students.classrooms[classroomId].length; i++) {
+                    $tbody.append(generateStudentRow(Students.classrooms[classroomId][i].id));
+                }
             }
-            whenStudentsLoaded();
+            $table.append($thead);
+            $table.append($tbody);
+            return $table;
         }
 
-
-        function whenStudentsLoaded() {
-            var $tables = $schedTables.find('table');
-            if (0 == $tables.length) {
-                return;
-            }
-
-            // Initialize "Students by Classroom" container
-            var studentsByClassroom = {};
-            for (var i = 0; i < $tables.length; i++) {
-                var $table                       = $tables.eq(i);
-                var classroomId                  = $table.attr('data-classroom-id');
-                studentsByClassroom[classroomId] = [];
-            }
-
-            // Group all enrolled students (by ID) in the proper classroom
-            for (var studentId in Students.records) {
-                var student = Students.records[studentId];
-                if (!student.enrolled) {
-                    continue;
-                }
-                if (!( student.classroom_id in studentsByClassroom )) {
-                    throw 'Unknown classroom ID ' + student.classroom_id;
-                }
-                studentsByClassroom[student.classroom_id].push(student.id);
-            }
-
-            // Sort the student IDs by the corresponding students' names
-            for (var p in studentsByClassroom) {
-                studentsByClassroom[p].sort(function (a, b) {
-                    var student1 = Students.records[a];
-                    var student2 = Students.records[b];
-                    if (student1.family_name > student2.family_name) return 1;
-                    if (student1.family_name < student2.family_name) return -1;
-                    if (student1.first_name > student2.first_name) return 1;
-                    if (student1.first_name < student2.first_name) return -1;
-                    return 0;
-                });
-            }
-
-            // Draw the tables
-            for (i = 0; i < $tables.length; i++) {
-                var classroomId = $tables.eq(i).attr('data-classroom-id');
-                for (var j in studentsByClassroom[classroomId]) {
-                    var studentId = studentsByClassroom[classroomId][j];
-                    var $td       = $('<td class="attendance-schedule-name">').text(Students.records[studentId].first_name + ' ' + Students.records[studentId].family_name);
-                    var $tr       = $('<tr>');
-                    $tr.append($td);
-                    $tr.data('student-id', studentId);
-                    $tables.eq(i).append($tr);
-                }
-            }
-            whenSchedulesLoaded();
-        }
-
-
-        function whenSchedulesLoaded() {
+        function generateStudentRow(studentId) {
 
             function compareDates(a, b) {
                 if (a.getFullYear() < b.getFullYear()) return -1;
@@ -1694,103 +1555,106 @@
                 return 0;
             }
 
-            function drawStudentRow($tr) {
-                var decoder   = [
-                    [0x0001, 0x0020, 0x0400],
-                    [0x0002, 0x0040, 0x0800],
-                    [0x0004, 0x0080, 0x1000],
-                    [0x0008, 0x0100, 0x2000],
-                    [0x0010, 0x0200, 0x4000]
-                ];
-                var studentId = $tr.data('student-id');
-                var student   = Students.records[studentId];
-                var schedules = Schedules.students[studentId];
-                if (undefined === schedules) {
-                    return;
-                }
-                var j = 0;
+            var decoder = [
+                [0x0001, 0x0020, 0x0400],
+                [0x0002, 0x0040, 0x0800],
+                [0x0004, 0x0080, 0x1000],
+                [0x0008, 0x0100, 0x2000],
+                [0x0010, 0x0200, 0x4000]
+            ];
 
-                var thisWeek = new Date($weekOf.val());
-                var today    = new Date(schedules[j].start_date);
-                var notes    = {
-                    'FD' : 0,
-                    'HD' : 0,
-                    'HDL': 0
-                };
-                for (var i = 0; i < 5; i++) {
-
-                    while ((j + 1) < schedules.length) {
-                        var next = new Date(schedules[j + 1].start_date);
-                        if (compareDates(next, thisWeek) > 1) {
-                            break;
-                        }
-                        today = next;
-                        j++;
-                    }
-
-                    var s = {
-                        'am'   : false,
-                        'pm'   : false,
-                        'lunch': false
-                    };
-
-                    if (0 != ( parseInt(schedules[j].schedule) & decoder[i][0])) {
-                        s.am = true;
-                    }
-                    if (schedules[j].schedule & decoder[i][1]) {
-                        s.lunch = true;
-                    }
-                    if (schedules[j].schedule & decoder[i][2]) {
-                        s.pm = true;
-                    }
-                    if (s.am && s.pm) {
-                        $tr.append($('<td>'));
-                        notes.FD++;
-                    } else if (s.am) {
-                        $tr.append($('<td>'));
-                        if (s.lunch) {
-                            notes.HDL++;
-                        } else {
-                            notes.HD++;
-                        }
-                    } else if (s.pm) {
-                        $tr.append($('<td>'));
-                        if (s.lunch) {
-                            notes.HDL++;
-                        } else {
-                            notes.HD++;
-                        }
-                    } else {
-                        $tr.append($('<td class="absent">'));
-                    }
-                    thisWeek.setDate(thisWeek.getDate() + 1);
-                    today.setDate(today.getDate() + 1);
-                }
-                var text = '';
-                if (notes.FD) {
-                    text = notes.FD + 'FD';
-                } else if (notes.HD) {
-                    text = notes.HD + 'HD';
-                } else if (notes.HDL) {
-                    text = notes.HDL + 'HDL';
-                }
-                $tr.append($('<td class="attendance-schedule-notes">').text(text));
-            }
-
-            function drawTable($table) {
-                var $tr = $table.find('tbody tr');
-                for (var i = 0; i < $tr.length; i++) {
-                    drawStudentRow($tr.eq(i));
-                }
-            }
-
-            var $tables = $schedTables.find('table');
-            if (0 == $tables.length) {
+            var student   = Students.records[studentId];
+            var schedules = Schedules.students[studentId];
+            if (undefined === schedules) {
                 return;
             }
-            for (var i = 0; i < $tables.length; i++) {
-                drawTable($tables.eq(i));
+            var $tr = $('<tr class="student-row">');
+            var $td = $('<td class="attendance-schedule-name">').text(Students.records[studentId].first_name + ' ' + Students.records[studentId].family_name);
+            $tr.append($td);
+            $tr.data('student-id', studentId);
+
+            var j        = 0;
+            var thisWeek = new Date($weekOf.val());
+            var today    = new Date(schedules[j].start_date);
+            var notes    = {
+                'FD' : 0,
+                'HD' : 0,
+                'HDL': 0
+            };
+
+            for (var i = 0; i < 5; i++) {
+                while ((j + 1) < schedules.length) {
+                    var next = new Date(schedules[j + 1].start_date);
+                    if (compareDates(next, thisWeek) > 1) break;
+                    today = next;
+                    j++;
+                }
+
+                var s = { 'am': false, 'pm': false, 'lunch': false };
+                if (0 != ( parseInt(schedules[j].schedule) & decoder[i][0])) s.am = true;
+                if (schedules[j].schedule & decoder[i][1]) s.lunch = true;
+                if (schedules[j].schedule & decoder[i][2]) s.pm = true;
+                if (s.am && s.pm) {
+                    $tr.append($('<td>'));
+                    notes.FD++;
+                } else if (s.am) {
+                    $tr.append($('<td>'));
+                    if (s.lunch) {
+                        notes.HDL++;
+                    } else {
+                        notes.HD++;
+                    }
+                } else if (s.pm) {
+                    $tr.append($('<td>'));
+                    if (s.lunch) {
+                        notes.HDL++;
+                    } else {
+                        notes.HD++;
+                    }
+                } else {
+                    $tr.append($('<td class="absent">'));
+                }
+                thisWeek.setDate(thisWeek.getDate() + 1);
+                today.setDate(today.getDate() + 1);
             }
+            var text = '';
+            if (notes.FD) {
+                text = notes.FD + 'FD';
+            } else if (notes.HD) {
+                text = notes.HD + 'HD';
+            } else if (notes.HDL) {
+                text = notes.HDL + 'HDL';
+            }
+
+            $tr.append($('<td class="attendance-schedule-notes">').text(text));
+
+
+            return $tr;
+        }
+
+        function onChangeWeekOf() {
+            weekOf = $weekOf.datepicker('getDate');
+            weekOf = normalizeDateToMonday(weekOf);
+            $weekOf.datepicker('setDate', weekOf).blur();
+            generateAttendanceSheets();
+            $('#pdf-attendance').attr('href', 'pdf.php?attendance&week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate());
+        }
+
+        function whenClassroomsLoaded() {
+            generateAttendanceSheets.hasClassrooms = true;
+            generateAttendanceSheets();
+        }
+
+
+        function whenStudentsLoaded() {
+            generateAttendanceSheets.hasStudents = true;
+            generateAttendanceSheets();
+        }
+
+
+        function whenSchedulesLoaded() {
+            generateAttendanceSheets.hasSchedules = true;
+            generateAttendanceSheets();
         }
 
 
