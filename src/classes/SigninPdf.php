@@ -4,9 +4,9 @@
 class SigninPdf extends AttendPdf
 {
 
-    public function __construct($api = null)
+    public function __construct()
     {
-        parent::__construct($api);
+        parent::__construct();
         $this->setRowHeight(15);
     }
 
@@ -73,20 +73,31 @@ class SigninPdf extends AttendPdf
 
     public function Output()
     {
-        $students = $this->getApi()->fetchStudents();
-        usort($students, function($a, $b) {
-            if ($a['familyName'] > $b[ 'familyName' ]) {
+//        $students = $this->getApi()->fetchStudents();
+        $url      = 'http://' . $_SERVER[ 'HTTP_HOST' ] . '/attend-api/students';
+        $students = file_get_contents($url);
+        $students = json_decode($students, true);
+        $students = $students['data'];
+        usort($students, function ($a, $b) {
+            if ($a[ 'family_name' ] > $b[ 'family_name' ]) {
                 return 1;
-            } else if ( $a[ 'familyName' ] < $b[ 'familyName' ]) {
-                return -1;
-            } else if ( $a[ 'firstName' ] > $b[ 'firstName' ]) {
-                return 1;
-            } else if ( $a[ 'firstName' ] < $b[ 'firstName' ]) {
+            }
+            if ($a[ 'family_name' ] < $b[ 'family_name' ]) {
                 return -1;
             }
+            if ($a[ 'first_name' ] > $b[ 'first_name' ]) {
+                return 1;
+            }
+            if ($a[ 'first_name' ] < $b[ 'first_name' ]) {
+                return -1;
+            }
+
             return 0;
         });
-        $classes = $this->getApi()->fetchClassrooms();
+
+        $classes = file_get_contents($url);
+        $classes = json_decode($classes, true);
+        $classes = $classes['data'];
         $this->AliasNbPages();
         $this->colWidths = [55, 45, 45, 45, 45, 45];
         foreach ( $classes as $class ) {

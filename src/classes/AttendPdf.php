@@ -7,9 +7,6 @@ class AttendPdf extends FPDF
     /** @var  array */
     protected static $dayAbbrevs = ['mon', 'tue', 'wed', 'thu', 'fri' ];
 
-    /** @var Api */
-    protected $api;
-
     /** @var array */
     protected $theClassroom;
 
@@ -25,31 +22,14 @@ class AttendPdf extends FPDF
     /** @var  DateTime */
     protected $weekOf;
 
-    public function __construct($api, $orientation = 'P', $unit = 'mm', $size = 'A4')
+    public function __construct($orientation = 'P', $unit = 'mm', $size = 'A4')
     {
-        $this->api = $api;
         $this->theClassroom = null;
         $this->colWidths = [];
         $this->headerHeight = 5;
         $this->rowHeight = 10;
         $this->weekOf = new DateTime();
         parent::__construct($orientation, $unit, $size);
-    }
-
-    /**
-     * @return Api
-     */
-    public function getApi()
-    {
-        return $this->api;
-    }
-
-    /**
-     * @param Api $api
-     */
-    public function setApi($api)
-    {
-        $this->api = $api;
     }
 
     /**
@@ -151,11 +131,16 @@ class AttendPdf extends FPDF
     {
 
         // Find which of the student's schedules is in effect on $startDate.
-        $schedules = $this->getApi()->fetchSchedules($student['id']);
+//        $schedules = $this->getApi()->fetchSchedules($student['id']);
+        $url      = 'http://' . $_SERVER[ 'HTTP_HOST' ] . '/attend-api/schedules?filters=student_id::' . $student['id'];
+        $schedules = file_get_contents($url);
+        $schedules = json_decode($schedules, true);
+        $schedules = $schedules['data'];
+
         $sched = null;
         $index = 0;
         while ( $index < count($schedules)) {
-            if ( $schedules[$index]['startDate'] > $startDate ) {
+            if ( $schedules[$index]['start_date'] > $startDate ) {
                 break;
             }
             $sched = $schedules[$index];
