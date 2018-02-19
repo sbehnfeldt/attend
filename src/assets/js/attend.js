@@ -1477,6 +1477,7 @@
             if (!generateAttendanceSheets.hasClassrooms) return;
             if (!generateAttendanceSheets.hasStudents) return;
             if (!generateAttendanceSheets.hasSchedules) return;
+            $schedTables.empty();
             for (var classroomId in Classrooms.records) {
                 $schedTables.append(generateClassroomTable(classroomId));
             }
