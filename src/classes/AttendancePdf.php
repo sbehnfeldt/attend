@@ -92,9 +92,6 @@ class AttendancePdf extends AttendPdf
 
 
         foreach ($this->students as $studentId => &$student) {
-            if ('1' !== $student[ 'enrolled' ]) {
-                continue;
-            }
             $student[ 'schedules' ]                        = [];
             $classroomId                                   = $student[ 'classroom_id' ];
             $this->classes[ $classroomId ][ 'students' ][] = $studentId;
@@ -103,7 +100,7 @@ class AttendancePdf extends AttendPdf
 
         foreach ($this->schedules as $scheduleId => &$schedule) {
             $studentId                                     = $schedule[ 'student_id' ];
-            $this->students[ $studentId ][ 'schedules' ][] = $schedule;
+            $this->students[ $studentId ][ 'schedules' ][] = $scheduleId;
         }
         unset($schedule);
 
@@ -125,6 +122,7 @@ class AttendancePdf extends AttendPdf
                 if ($this->students[ $id1 ][ 'first_name' ] < $this->students[ $id2 ][ 'first_name' ]) {
                     return -1;
                 }
+
                 return 0;
             });
             $this->outputClassroom($class);
@@ -139,63 +137,103 @@ class AttendancePdf extends AttendPdf
         $this->AddPage('P');
         $totals = [];
         foreach ($classroom[ 'students' ] as $studentId) {
-            $student               = $this->students[ $studentId ];
-            $schedule              = $student[ 'schedules' ][ 0 ];
-            $student[ 'schedule' ] = [];
-            $notes                 = [
-                'HD'  => 0,
-                'HDL' => 0,
-                'FD'  => 0
-            ];
-            $i                     = 0;
-            $this->Cell($this->colWidths[ $i++ ], $this->rowHeight,
-                $student[ 'family_name' ] . ', ' . $student[ 'first_name' ], 1, 0);
-
-            /*
-            foreach (self::getDayAbbrevs() as $day) {
-                if (null == $schedule[ $day ]) {
-                    $student[ 'schedule' ][ $day ] = false;
-                } else {
-                    $student[ 'schedule' ][ $day ] = [];
-                    if ($schedule[ $day ][ 'Am' ]) {
-                        array_push($student[ 'schedule' ][ $day ], 'A');
-                    }
-                    if ($schedule[ $day ][ 'Noon' ]) {
-                        array_push($student[ 'schedule' ][ $day ], 'L');
-                    }
-                    if ($schedule[ $day ][ 'Pm' ]) {
-                        array_push($student[ 'schedule' ][ $day ], 'P');
-                    }
-                    $student[ 'schedule' ][ $day ] = implode('/', $student[ 'schedule' ][ $day ]);
-                    if ($student[ 'schedule' ][ $day ]) {
-                        $totals[ $day ]++;
-                    }
-
-                    if (($schedule[ $day ][ 'Am' ]) && ($schedule[ $day ][ 'Pm' ])) {
-                        $notes[ 'FD' ]++;
-                    } else if (($schedule[ $day ][ 'Am' ]) || ($schedule[ $day ][ 'Pm' ])) {
-                        if ($schedule[ $day ][ 'Noon' ]) {
-                            $notes[ 'HDL' ]++;
-                        } else {
-                            $notes[ 'HD' ]++;
-                        }
-                    }
-                }
-                $shade = ! ($schedule[ $day ][ 'Am' ] || $schedule[ $day ][ 'Noon' ] || $schedule[ $day ][ 'Pm' ]);
-                $this->Cell($this->colWidths[ $i++ ], $this->rowHeight, '', 1, 0, 'C', $shade);
-            }
-            */
-            foreach (['HD', 'HDL', 'FD'] as $k) {
-                if ($notes[ $k ] == 0) {
-                    unset ($notes[ $k ]);
-                } else {
-                    $notes[ $k ] = $notes[ $k ] . $k;
-                }
-            }
-            $this->Cell($this->colWidths[ $i++ ], $this->rowHeight, implode(',', $notes), 1);
-            $this->ln();
+            $this->outputStudent($studentId);
         }
     }
 
+    private function outputStudent($studentId)
+    {
+        static $decoder = [
+            [0x0001, 0x0020, 0x0400],
+            [0x0002, 0x0040, 0x0800],
+            [0x0004, 0x0080, 0x1000],
+            [0x0008, 0x0100, 0x2000],
+            [0x0010, 0x0200, 0x4000]
+        ];
 
+        $student = $this->students[ $studentId ];
+        if ('1' !== $student[ 'enrolled' ]) {
+            return;
+        }
+        usort($student[ 'schedules' ], function ($id1, $id2) {
+            $date1 = DateTime::createFromFormat('Y-m-d', $this->schedules[ $id1 ][ 'start_date' ]);
+            $date2 = DateTime::createFromFormat('Y-m-d', $this->schedules[ $id2 ][ 'start_date' ]);
+            if ($date1 < $date2) {
+                return -1;
+            }
+            if ($date1 > $date2) {
+                return 1;
+            }
+
+            return 0;
+        });
+
+        $this->Cell($this->colWidths[ 0 ], $this->rowHeight,
+            $student[ 'family_name' ] . ', ' . $student[ 'first_name' ], 1, 0);
+
+        $j        = 0;
+        $thisWeek = $this->getWeekOf();
+        $today    = DateTime::createFromFormat('Y-m-d',
+            $this->schedules[ $student[ 'schedules' ][ $j ] ][ 'start_date' ]);
+        $notes    = [
+            'HD'  => 0,
+            'HDL' => 0,
+            'FD'  => 0
+        ];
+        for ($i = 0; $i < 5; $i++) {
+            while (($j + 1) < count($student[ 'schedules' ])) {
+                $next = DateTime::createFromFormat('Y-m-d',
+                    $this->schedules[ $student[ 'schedules' ][ $j + 1 ] ][ 'start_date' ]);
+                if ($next > $thisWeek) {
+                    break;
+                }
+                $today = $next;
+                $j++;
+            }
+            $s    = [
+                'am'    => false,
+                'pm'    => false,
+                'lunch' => false
+            ];
+            $temp = $this->schedules[ $student[ 'schedules' ][ $j ] ][ 'schedule' ];
+            if (0 != ($temp & $decoder[ $i ][ 0 ])) {
+                $s[ 'am' ] = true;
+            }
+            if (0 != ($temp & $decoder[ $i ][ 1 ])) {
+                $s[ 'lunch' ] = true;
+            }
+            if (0 != ($temp & $decoder[ $i ][ 2 ])) {
+                $s[ 'pm' ] = true;
+            }
+            if ($s[ 'am' ] && $s[ 'pm' ]) {
+                $notes[ 'FD' ]++;
+            } else if ($s[ 'am' ]) {
+                if ($s[ 'lunch' ]) {
+                    $notes[ 'HDL' ]++;
+                } else {
+                    $notes[ 'HD' ]++;
+                }
+            } else if ($s[ 'pm' ]) {
+                if ($s[ 'lunch' ]) {
+                    $notes[ 'HDL' ]++;
+                } else {
+                    $notes[ 'HD' ]++;
+                }
+            }
+            $shade = ! ($s[ 'am' ] || $s[ 'lunch' ] || $s[ 'pm' ]);
+            $this->Cell($this->colWidths[ $i + 1 ], $this->rowHeight, '', 1, 0, 'C', $shade);
+            $thisWeek->modify('+1 day');
+            $today->modify('+1 day');
+        }
+
+        foreach (['HD', 'HDL', 'FD'] as $k) {
+            if ($notes[ $k ] == 0) {
+                unset ($notes[ $k ]);
+            } else {
+                $notes[ $k ] = $notes[ $k ] . $k;
+            }
+        }
+        $this->Cell($this->colWidths[ 6 ], $this->rowHeight, implode(',', $notes), 1);
+        $this->ln();
+    }
 }

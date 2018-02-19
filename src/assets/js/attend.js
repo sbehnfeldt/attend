@@ -1564,7 +1564,10 @@
                 [0x0010, 0x0200, 0x4000]
             ];
 
-            var student   = Students.records[studentId];
+            var student = Students.records[studentId];
+            if (1 != student.enrolled) {
+                return;
+            }
             var schedules = Schedules.students[studentId];
             if (undefined === schedules) {
                 return;
@@ -1574,15 +1577,15 @@
             $tr.append($td);
             $tr.data('student-id', studentId);
 
-            var j        = 0;
             var thisWeek = new Date($weekOf.val());
-            var today    = new Date(schedules[j].start_date);
+            var today    = new Date(schedules[0].start_date);
             var notes    = {
                 'FD' : 0,
                 'HD' : 0,
                 'HDL': 0
             };
 
+            var j = 0;
             for (var i = 0; i < 5; i++) {
                 while ((j + 1) < schedules.length) {
                     var next = new Date(schedules[j + 1].start_date);
