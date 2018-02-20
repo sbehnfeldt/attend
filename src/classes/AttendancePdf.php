@@ -98,14 +98,22 @@ class AttendancePdf extends AttendPdf
     {
         $this->setTheClassroom($classroom);
         $this->AddPage('P');
-        $totals = [];
+        $totals = [0, 0, 0, 0, 0];
         foreach ($classroom[ 'students' ] as $studentId) {
-            $this->outputStudent($studentId);
+            $subtotals = $this->outputStudent($studentId);
+
+            for ($i = 0; $i < count($subtotals); $i++) {
+                if ($subtotals[ $i ]) {
+                    $totals[ $i ]++;
+                }
+            }
         }
+        $this->outputStudentCount($totals);
     }
 
     private function outputStudent($studentId)
     {
+        $attendance = [false, false, false, false, false];
         static $decoder = [
             [0x0001, 0x0020, 0x0400],
             [0x0002, 0x0040, 0x0800],
@@ -160,13 +168,16 @@ class AttendancePdf extends AttendPdf
             ];
             $temp = $this->schedules[ $student[ 'schedules' ][ $j ] ][ 'schedule' ];
             if (0 != ($temp & $decoder[ $i ][ 0 ])) {
-                $s[ 'am' ] = true;
+                $s[ 'am' ]        = true;
+                $attendance[ $i ] = true;
             }
             if (0 != ($temp & $decoder[ $i ][ 1 ])) {
-                $s[ 'lunch' ] = true;
+                $s[ 'lunch' ]     = true;
+                $attendance[ $i ] = true;
             }
             if (0 != ($temp & $decoder[ $i ][ 2 ])) {
-                $s[ 'pm' ] = true;
+                $s[ 'pm' ]        = true;
+                $attendance[ $i ] = true;
             }
             if ($s[ 'am' ] && $s[ 'pm' ]) {
                 $notes[ 'FD' ]++;
@@ -197,6 +208,18 @@ class AttendancePdf extends AttendPdf
             }
         }
         $this->Cell($this->colWidths[ 6 ], $this->rowHeight, implode(',', $notes), 1);
+        $this->ln();
+
+        return $attendance;
+    }
+
+    private function outputStudentCount($counts)
+    {
+        $this->Cell($this->colWidths[ 0 ], $this->rowHeight, 'Totals:', 1, 0);
+        for ($i = 0; $i < count($counts); $i++) {
+            $this->Cell($this->colWidths[ $i + 1 ], $this->rowHeight, $counts[ $i ], 1, 0);
+        }
+        $this->Cell($this->colWidths[ 6 ], $this->rowHeight, '', 1, 0);
         $this->ln();
     }
 }

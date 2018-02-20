@@ -9,7 +9,7 @@ class AttendPdf extends FPDF
     protected $schedules;
 
     /** @var  array */
-    protected static $dayAbbrevs = ['mon', 'tue', 'wed', 'thu', 'fri' ];
+    protected static $dayAbbrevs = ['mon', 'tue', 'wed', 'thu', 'fri'];
 
     /** @var array */
     protected $theClassroom;
@@ -29,10 +29,10 @@ class AttendPdf extends FPDF
     public function __construct($orientation = 'P', $unit = 'mm', $size = 'A4')
     {
         $this->theClassroom = null;
-        $this->colWidths = [];
+        $this->colWidths    = [];
         $this->headerHeight = 5;
-        $this->rowHeight = 10;
-        $this->weekOf = new DateTime();
+        $this->rowHeight    = 10;
+        $this->weekOf       = new DateTime();
         parent::__construct($orientation, $unit, $size);
     }
 
@@ -136,18 +136,18 @@ class AttendPdf extends FPDF
 
         // Find which of the student's schedules is in effect on $startDate.
 //        $schedules = $this->getApi()->fetchSchedules($student['id']);
-        $url      = 'http://' . $_SERVER[ 'HTTP_HOST' ] . '/attend-api/schedules?filters=student_id::' . $student['id'];
+        $url       = 'http://' . $_SERVER[ 'HTTP_HOST' ] . '/attend-api/schedules?filters=student_id::' . $student[ 'id' ];
         $schedules = file_get_contents($url);
         $schedules = json_decode($schedules, true);
-        $schedules = $schedules['data'];
+        $schedules = $schedules[ 'data' ];
 
         $sched = null;
         $index = 0;
-        while ( $index < count($schedules)) {
-            if ( $schedules[$index]['start_date'] > $startDate ) {
+        while ($index < count($schedules)) {
+            if ($schedules[ $index ][ 'start_date' ] > $startDate) {
                 break;
             }
-            $sched = $schedules[$index];
+            $sched = $schedules[ $index ];
             $index++;
         }
 
@@ -155,23 +155,23 @@ class AttendPdf extends FPDF
         // starts at some point in the future of $startDate.  This is needed so that users may enroll students
         // in advance.
         $composite = null;
-        $cur = new DateTime( $this->getWeekOf()->format('Y-m-d'));
-        foreach ( $this->getDayAbbrevs() as $i => $day ) {
-            if ( null == $sched ) {
-                $composite[$day] = null;
-            } else if ( $cur->format('w') -$i >= 2 ) {
+        $cur       = new DateTime($this->getWeekOf()->format('Y-m-d'));
+        foreach ($this->getDayAbbrevs() as $i => $day) {
+            if (null == $sched) {
+                $composite[ $day ] = null;
+            } else if ($cur->format('w') - $i >= 2) {
                 // If some clown passes in a $startDate in the middle of the week, the effective
                 // schedule for all days prior to the start date should be null
-                $composite[$day] = null;
+                $composite[ $day ] = null;
             } else {
-                $composite[$day] = $sched[$day];
+                $composite[ $day ] = $sched[ $day ];
             }
 
             // Prepare for the next day: see if the student's next schedule goes into effect
             $cur->add(new DateInterval('P1D'));
-            if ( $index < count($schedules)) {
-                if ( $cur >= $schedules[$index]['startDate']) {
-                    $sched = $schedules[$index];
+            if ($index < count($schedules)) {
+                if ($cur >= $schedules[ $index ][ 'startDate' ]) {
+                    $sched = $schedules[ $index ];
                     $index++;
                 }
             }
@@ -184,6 +184,7 @@ class AttendPdf extends FPDF
 
     protected function fetch($url)
     {
+        error_log($url);
         $contents = file_get_contents($url);
         $json     = json_decode($contents, true);
         $records  = $json[ 'data' ];
