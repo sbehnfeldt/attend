@@ -1149,52 +1149,6 @@
         return date;
     }
 
-    // From all of a student's schedules, build a composite schedule effective the week of startDate
-    function getCompositeSchedule(student, startDate) {
-        var composite,   // Return value
-            cur,         // Current date within the
-            sched,       // Current student's schedule
-            index;       // Index into student's schedules for NEXT schedule
-
-        // Find which student's schedule is in effect on "startDate", or null if his first schedule
-        // does not take effect until some point in the future.  This way, users can enroll students
-        // in advance.
-        sched = null;
-        index = 0;
-        while (index < student.schedules.length) {
-            if (student.schedules[index].startDate > startDate) {
-                break;
-            }
-            sched = student.schedules[index];
-            index++;
-        }
-        // "sched" is now the schedule in effect on "startDate" (or null), and "index" points to
-        // the NEXT schedule.
-        composite = {};
-        cur       = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-        ['mon', 'tue', 'wed', 'thu', 'fri'].forEach(function (day, i, arr) {
-            if (sched == null) {
-                composite[day] = null;
-            } else if (cur.getDay() - i >= 2) {
-                // If some clown passes in a startDate in the middle  of the week, the effective
-                // schedule for all days prior to the start date should be null.
-                composite[day] = null;
-            } else {
-                composite[day] = sched[day];
-            }
-
-            // Prepare for the next day: see if the student's next schedule goes into effect
-            cur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() + 1);
-            if (index < student.schedules.length) {
-                if (cur >= student.schedules[index].startDate) {
-                    sched = student.schedules[index];
-                    index++;
-                }
-            }
-        });
-        return composite;
-    }
-
 
     /********************************************************************************
      * Page showing attendance sheets for the week
@@ -1358,7 +1312,7 @@
                 }
 
                 var s = { 'am': false, 'pm': false, 'lunch': false };
-                if (0 != ( parseInt(schedules[j].schedule) & decoder[i][0])) s.am = true;
+                if (schedules[j].schedule & decoder[i][0]) s.am = true;
                 if (schedules[j].schedule & decoder[i][1]) s.lunch = true;
                 if (schedules[j].schedule & decoder[i][2]) s.pm = true;
                 if (s.am && s.pm) {
@@ -1433,7 +1387,7 @@
 
 
     /********************************************************************************
-     * Table showing signin schedules
+     * Table showing sign-in schedules
      ********************************************************************************/
     var SigninPage = (function () {
         var $page,
@@ -1461,14 +1415,185 @@
         }
 
         function bindEvents() {
-            $weekOf.on('change', function onWeekOfChange() {
-                weekOf = $weekOf.datepicker('getDate');
-                weekOf = normalizeDateToMonday(weekOf);
-                $weekOf.datepicker('setDate', weekOf).blur();
-                //generateSigninSheets();
-                $('#pdf-signin').attr('href', 'pdf.php?signin&week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate());
-            });
+            $weekOf.on('change', onChangeWeekOf);
+            Classrooms.subscribe('load-records', whenClassroomsLoaded);
+            Students.subscribe('load-records', whenStudentsLoaded);
+            Schedules.subscribe('load-records', whenSchedulesLoaded);
         }
+
+        function generateSigninSheets() {
+            if (!generateSigninSheets.hasClassrooms) return;
+            if (!generateSigninSheets.hasStudents) return;
+            if (!generateSigninSheets.hasSchedules) return;
+            $contents.empty();
+            for (var classroomId in Classrooms.records) {
+                $contents.append(generateClassroomTable(classroomId));
+            }
+        }
+
+        generateSigninSheets.hasClassrooms = false;
+        generateSigninSheets.hasStudents   = false;
+        generateSigninSheets.hasSchedules  = false;
+
+        function generateClassroomTable(classroomId) {
+            var MoAbbrvs = [
+                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+            ];
+            var classroom,
+                $table,
+                $thead,
+                $tbody,
+                $tr,
+                $th;
+
+            classroom = Classrooms.records[classroomId];
+            $table    = $('<table>');
+            $thead    = $('<thead>');
+            $tr       = $('<tr>');
+
+            $th = $('<th colspan="11">').text('Signin');
+            $tr.append($th);
+            $thead.append($tr);
+
+            $tr = $('<tr>');
+            $th = $('<th colspan="11">')
+                .append($('<span class="classroom pull-left">' + classroom.label + '</span>'))
+                .append($('<span class="week-of pull-right">Week Of ' + MoAbbrvs[$weekOf.datepicker('getDate').getMonth()] + ' ' + $weekOf.datepicker('getDate').getDate() + ', ' + (1900 + $weekOf.datepicker('getDate').getYear()) + '</span>'));
+            $tr.append($th);
+            $thead.append($tr);
+
+            $tr = $('<tr>');
+            $tr.append($('<th rowspan="3">').text('Student'));
+            $tr.append($('<th colspan="2">').text('Mon'));
+            $tr.append($('<th colspan="2">').text('Tue'));
+            $tr.append($('<th colspan="2">').text('Wed'));
+            $tr.append($('<th colspan="2">').text('Thu'));
+            $tr.append($('<th colspan="2">').text('Fri'));
+            $thead.append($tr);
+
+            $tr = $('<tr>');
+            $tr.append($('<th>').text("In"));
+            $tr.append($('<th rowspan="2">').text("Initial"));
+            $tr.append($('<th>').text("In"));
+            $tr.append($('<th rowspan="2">').text("Initial"));
+            $tr.append($('<th>').text("In"));
+            $tr.append($('<th rowspan="2">').text("Initial"));
+            $tr.append($('<th>').text("In"));
+            $tr.append($('<th rowspan="2">').text("Initial"));
+            $tr.append($('<th>').text("In"));
+            $tr.append($('<th rowspan="2">').text("Initial"));
+            $thead.append($tr);
+
+            $tr = $('<tr>');
+            $tr.append($('<th>').text("Out"));
+            $tr.append($('<th>').text("Out"));
+            $tr.append($('<th>').text("Out"));
+            $tr.append($('<th>').text("Out"));
+            $tr.append($('<th>').text("Out"));
+            $thead.append($tr);
+
+            $tr = $('<tr>');
+            $tr.append($('<th>').addClass('signin-schedule-name').text('Student'));
+
+            $table.attr('data-classroom-id', classroomId);
+            $tbody = $('<tbody>');
+            if (Students.classrooms[classroomId]) {
+                for (var i = 0; i < Students.classrooms[classroomId].length; i++) {
+                    $tbody.append(generateStudentRow(Students.classrooms[classroomId][i].id));
+                }
+            }
+            $table.append($thead);
+            $table.append($tbody);
+            return $table;
+        }
+
+        function generateStudentRow(studentId) {
+            function compareDates(a, b) {
+                if (a.getFullYear() < b.getFullYear()) return -1;
+                if (a.getFullYear() > b.getFullYear()) return 1;
+                if (a.getMonth() < b.getMonth()) return -1;
+                if (a.getMonth() > b.getMonth()) return 1;
+                if (a.getDate() < b.getDate()) return -1;
+                if (a.getDate() > b.getDate()) return 1;
+                return 0;
+            }
+
+            var decoder = [
+                [0x0001, 0x0020, 0x0400],
+                [0x0002, 0x0040, 0x0800],
+                [0x0004, 0x0080, 0x1000],
+                [0x0008, 0x0100, 0x2000],
+                [0x0010, 0x0200, 0x4000]
+            ];
+            var student = Students.records[studentId];
+            if (1 != student.enrolled) {
+                return;
+            }
+
+
+            var schedules = Schedules.students[studentId];
+            if (undefined === schedules) {
+                return;
+            }
+            var $tr = $('<tr class="student-row">');
+            var $td = $('<td class="signin-schedule-name">').text(Students.records[studentId].first_name + ' ' + Students.records[studentId].family_name);
+            $tr.append($td);
+
+            var thisWeek = new Date($weekOf.val());
+            var today    = new Date(schedules[0].start_date);
+
+            var j = 0;
+            for (var i = 0; i < 10; i++) {
+                while ((j + 1) < schedules.length) {
+                    var next = new Date(schedules[j + 1].start_date);
+                    if (compareDates(next, thisWeek) > 1) break;
+                    today = next;
+                    j++;
+                }
+                /*
+                 if ((schedules[j].schedule & decoder[i][0])
+                 || (schedules[j].schedule & decoder[i][1])
+                 || (schedules[j].schedule & decoder[i][2])) {
+                 }
+
+                 */
+                var $div = $('<div class="in-out">').html('&nbsp;');
+                var $td = $('<td>');
+                $td.append( $div).append( '&nbsp;');
+
+                $tr.append( $td );
+            }
+
+
+            $tr.data('student-id', studentId);
+            return $tr;
+        }
+
+
+        function onChangeWeekOf() {
+            weekOf = $weekOf.datepicker('getDate');
+            weekOf = normalizeDateToMonday(weekOf);
+            $weekOf.datepicker('setDate', weekOf).blur();
+            $('#pdf-signin').attr('href', 'pdf.php?signin&week=' + (weekOf.getFullYear()) + '-' + (weekOf.getMonth() + 1) + '-' + weekOf.getDate());
+        }
+
+        function whenClassroomsLoaded() {
+            generateSigninSheets.hasClassrooms = true;
+            generateSigninSheets();
+        }
+
+
+        function whenStudentsLoaded() {
+            generateSigninSheets.hasStudents = true;
+            generateSigninSheets();
+        }
+
+
+        function whenSchedulesLoaded() {
+            generateSigninSheets.hasSchedules = true;
+            generateSigninSheets();
+        }
+
 
         publicApi = {
             init: init
@@ -1536,16 +1661,13 @@
         EnrollmentPage.init('#enrollment-page');
         EnrollmentTable.init('#students-table');
         StudentPropsDlg.init('#student-dlg');
-
         ScheduleDlg.init('#schedule-dlg');
+        SigninPage.init('#signin-page');
+        AttendancePage.init('#attendance-page');
 
         ClassroomController.load();
         StudentController.load();
         SchedulesController.load();
-
-        AttendancePage.init('#attendance-page');
-        SigninPage.init('#signin-page');
-
         if (targets.indexOf(location.hash) !== 1) {
             oldhash = location.hash;
             showPage(location.hash);
