@@ -4,6 +4,10 @@
 class AttendPdf extends FPDF
 {
 
+    protected $classes;
+    protected $students;
+    protected $schedules;
+
     /** @var  array */
     protected static $dayAbbrevs = ['mon', 'tue', 'wed', 'thu', 'fri' ];
 
@@ -177,4 +181,44 @@ class AttendPdf extends FPDF
 
         return $composite;
     }
+
+    protected function fetch($url)
+    {
+        $contents = file_get_contents($url);
+        $json     = json_decode($contents, true);
+        $records  = $json[ 'data' ];
+        $return   = [];
+        foreach ($records as $record) {
+            $return[ $record[ 'id' ] ] = $record;
+        }
+
+        return $return;
+    }
+
+    protected function prepare()
+    {
+        $this->classes   = $this->fetch('http://' . $_SERVER[ 'HTTP_HOST' ] . '/attend-api/classrooms');
+        $this->students  = $this->fetch('http://' . $_SERVER[ 'HTTP_HOST' ] . '/attend-api/students');
+        $this->schedules = $this->fetch('http://' . $_SERVER[ 'HTTP_HOST' ] . '/attend-api/schedules');
+
+        foreach ($this->classes as $classroomId => &$class) {
+            $class[ 'students' ] = [];
+        }
+        unset($class);
+
+
+        foreach ($this->students as $studentId => &$student) {
+            $student[ 'schedules' ]                        = [];
+            $classroomId                                   = $student[ 'classroom_id' ];
+            $this->classes[ $classroomId ][ 'students' ][] = $studentId;
+        }
+        unset($student);
+
+        foreach ($this->schedules as $scheduleId => &$schedule) {
+            $studentId                                     = $schedule[ 'student_id' ];
+            $this->students[ $studentId ][ 'schedules' ][] = $scheduleId;
+        }
+        unset($schedule);
+    }
+
 }

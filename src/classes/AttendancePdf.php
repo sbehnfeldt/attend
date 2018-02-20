@@ -4,9 +4,6 @@
 class AttendancePdf extends AttendPdf
 {
 
-    private $classes;
-    private $students;
-    private $schedules;
 
     public function __construct()
     {
@@ -66,43 +63,9 @@ class AttendancePdf extends AttendPdf
     }
 
 
-    protected function foo($url)
-    {
-        $contents = file_get_contents($url);
-        $json     = json_decode($contents, true);
-        $records  = $json[ 'data' ];
-        $return   = [];
-        foreach ($records as $record) {
-            $return[ $record[ 'id' ] ] = $record;
-        }
-
-        return $return;
-    }
-
     public function Output()
     {
-        $this->classes   = $this->foo('http://' . $_SERVER[ 'HTTP_HOST' ] . '/attend-api/classrooms');
-        $this->students  = $this->foo('http://' . $_SERVER[ 'HTTP_HOST' ] . '/attend-api/students');
-        $this->schedules = $this->foo('http://' . $_SERVER[ 'HTTP_HOST' ] . '/attend-api/schedules');
-
-        foreach ($this->classes as $classroomId => &$class) {
-            $class[ 'students' ] = [];
-        }
-        unset($class);
-
-
-        foreach ($this->students as $studentId => &$student) {
-            $student[ 'schedules' ]                        = [];
-            $classroomId                                   = $student[ 'classroom_id' ];
-            $this->classes[ $classroomId ][ 'students' ][] = $studentId;
-        }
-        unset($student);
-
-        foreach ($this->schedules as $scheduleId => &$schedule) {
-            $studentId                                     = $schedule[ 'student_id' ];
-            $this->students[ $studentId ][ 'schedules' ][] = $scheduleId;
-        }
-        unset($schedule);
+        $this->prepare();
 
 
         $this->AliasNbPages();
