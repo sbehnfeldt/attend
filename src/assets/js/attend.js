@@ -1668,7 +1668,7 @@
         ClassroomController.load();
         StudentController.load();
         SchedulesController.load();
-        if (targets.indexOf(location.hash) !== 1) {
+        if (targets.indexOf(location.hash) !== -1) {
             oldhash = location.hash;
             showPage(location.hash);
         } else {
