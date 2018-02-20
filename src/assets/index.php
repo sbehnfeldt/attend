@@ -1,8 +1,9 @@
 <?php
 
-function my_autoload($className) {
+function my_autoload($className)
+{
 
-    $slash = "\\";
+    $slash     = "\\";
     $className = ltrim($className, $slash);
     $fileName  = '';
     $namespace = '';
@@ -22,15 +23,15 @@ function my_autoload($className) {
  * Main Script
  ********************************************************************************/
 
-define( 'INSTALL', dirname( __DIR__ ));
+define('INSTALL', dirname(__DIR__));
 
-ini_set( 'error_log', INSTALL . '/logs/php_errors.log' );
-$config = parse_ini_file('../config.ini', true);
-$webroot = $config['app']['root'];
+ini_set('error_log', INSTALL . '/logs/php_errors.log');
+$config  = parse_ini_file('../config.ini', true);
+$webroot = $config[ 'app' ][ 'root' ];
 
-spl_autoload_register( 'my_autoload' );
-session_save_path( INSTALL . '/sessions');
-session_start( );
+spl_autoload_register('my_autoload');
+session_save_path(INSTALL . '/sessions');
+session_start();
 ?>
 <!doctype html>
 <html lang="en">
@@ -374,225 +375,7 @@ session_start( );
 <script type="application/javascript" src="js/jquery-ui.js"></script>
 <script type="application/javascript" src="js/jquery.dataTables.min.js"></script>
 <script type="application/javascript" src="js/bootstrap.min.js"></script>
-<!--<script type="application/javascript" src="js/underscore.js"></script>-->
-<!--<script type="application/javascript" src="js/handlebars-v3.0.3.js"></script>-->
 <script type="application/javascript" src="js/attend.js"></script>
-
-<script type="text/x-handlebars-template" id="attendance-schedule-class-template">
-    <div class="panel">
-        <header>
-            <h4 class="text-center">Attendance</h4>
-            <p class="classroom clearfix">
-                <span>{{ classroom.name }}</span>
-                <span class="pull-right text-right">Week of {{ weekOf }}</span>
-            </p>
-        </header>
-
-        <table class="attendance-schedule">
-            <thead>
-            <tr>
-                <th>Student</th>
-                <th>{{attendanceSheetDate dates.[0]}}</th>
-                <th>{{attendanceSheetDate dates.[1]}}</th>
-                <th>{{attendanceSheetDate dates.[2]}}</th>
-                <th>{{attendanceSheetDate dates.[3]}}</th>
-                <th>{{attendanceSheetDate dates.[4]}}</th>
-                <th>Notes</th>
-            </tr>
-            </thead>
-            <tbody>
-
-            {{#each students}}
-            <tr>
-                <td class="attendance-schedule-name">{{firstName}} {{familyName}}</td>
-                <td
-                    {{#unless schedule.mon}} class='absent' {{
-                /unless}}>&nbsp;</td>
-                <td
-                    {{#unless schedule.tue}} class='absent' {{
-                /unless}}>&nbsp;</td>
-                <td
-                    {{#unless schedule.wed}} class='absent' {{
-                /unless}}>&nbsp;</td>
-                <td
-                    {{#unless schedule.thu}} class='absent' {{
-                /unless}}>&nbsp;</td>
-                <td
-                    {{#unless schedule.fri}} class='absent' {{
-                /unless}}>&nbsp;</td>
-                <td class="attendance-schedule-notes">{{notes}}</td>
-            </tr>
-            {{/each}}
-
-            <tr>
-                <td>Totals:</td>
-                <td>{{totals.mon}}</td>
-                <td>{{totals.tue}}</td>
-                <td>{{totals.wed}}</td>
-                <td>{{totals.thu}}</td>
-                <td>{{totals.fri}}</td>
-                <td>&nbsp;</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</script>
-
-<script type="text/x-handlebars-template" id="attendance-signin-class-template">
-    <h4 class="text-center">Sign-In</h4>
-    <p class="classroom clearfix">
-        <span>{{ classroom }}</span>
-        <span class="pull-right text-right">Week of {{ weekOf }}</span>
-    </p>
-
-    <table>
-        <thead>
-        <tr>
-            <th></th>
-            <th></th>
-            <th colspan="2">Monday</th>
-            <th colspan="2">Tuesday</th>
-            <th colspan="2">Wednesday</th>
-            <th colspan="2">Thursday</th>
-            <th colspan="2">Friday</th>
-        </tr>
-        <tr>
-            <th>Name</th>
-            <th>&nbsp;</th>
-            <th>
-                <div class="in-out">In</div>
-                Out
-            </th>
-            <th>Initial</th>
-            <th>
-                <div class="in-out">In</div>
-                Out
-            </th>
-            <th>Initial</th>
-            <th>
-                <div class="in-out">In</div>
-                Out
-            </th>
-            <th>Initial</th>
-            <th>
-                <div class="in-out">In</div>
-                Out
-            </th>
-            <th>Initial</th>
-            <th>
-                <div class="in-out">In</div>
-                Out
-            </th>
-            <th>Initial</th>
-        </tr>
-        </thead>
-        <tbody>
-        {{#each students}}
-        <tr>
-            <td>{{ firstName }}</td>
-            <td>{{ familyName }}</td>
-            <td
-                {{#unless schedule.mon}} class='absent' {{
-            /unless}}>
-            <div class="in-out">&nbsp;</div>
-            &nbsp;</td>
-            <td
-                {{#unless schedule.mon}} class='absent' {{
-            /unless}}>
-            <div class="in-out">&nbsp;</div>
-            &nbsp;</td>
-            <td
-                {{#unless schedule.tue}} class='absent' {{
-            /unless}}>
-            <div class="in-out">&nbsp;</div>
-            &nbsp;</td>
-            <td
-                {{#unless schedule.tue}} class='absent' {{
-            /unless}}>
-            <div class="in-out">&nbsp;</div>
-            &nbsp;</td>
-            <td
-                {{#unless schedule.wed}} class='absent' {{
-            /unless}}>
-            <div class="in-out">&nbsp;</div>
-            &nbsp;</td>
-            <td
-                {{#unless schedule.wed}} class='absent' {{
-            /unless}}>
-            <div class="in-out">&nbsp;</div>
-            &nbsp;</td>
-            <td
-                {{#unless schedule.thu}} class='absent' {{
-            /unless}}>
-            <div class="in-out">&nbsp;</div>
-            &nbsp;</td>
-            <td
-                {{#unless schedule.thu}} class='absent' {{
-            /unless}}>
-            <div class="in-out">&nbsp;</div>
-            &nbsp;</td>
-            <td
-                {{#unless schedule.fri}} class='absent' {{
-            /unless}}>
-            <div class="in-out">&nbsp;</div>
-            &nbsp;</td>
-            <td
-                {{#unless schedule.fri}} class='absent' {{
-            /unless}}>
-            <div class="in-out">&nbsp;</div>
-            &nbsp;</td>
-        </tr>
-        {{/each}}
-
-        </tbody>
-    </table>
-</script>
-
-
-<!-- A single row in the Check-In Report -->
-<script type="text/x-handlebars-template" id="attendance-checkin-row-template">
-    <tr class="data" data-student-id="{{ id }}">
-        <td>
-            <div class="btn-tolbar" role="toolbar">
-                <div class="btn-group btn-group-sm" role="group">
-                    <button class="btn btn-default check-in" type="button">Check In</button>
-                    <button class="btn btn-default check-out" type="button">Check Out</button>
-                </div>
-            </div>
-        </td>
-        <td>{{#if checkedIn}}<span class="glyphicon glyphicon-ok"></span>{{/if}}
-            {{ familyName }}, {{ firstName }}
-        </td>
-        <td class="check-in">{{formatTime checkedIn }}</td>
-        <td class="check-out">{{formatTime checkedOut}}</td>
-    </tr>
-</script>
-
-<!-- Single student in the Student List selection box -->
-<script type="text/x-handlebars-template" id="enrollment-list-option-template">
-    <option value="{{ id }}" data-classroom="{{ classroom }}">{{ familyName }}, {{ firstName }}</option>
-</script>
-
-<script type="x-handlebars-template" id="enrollment-list-template">
-    {{#each student}}
-    {{> stdent}}
-    {{/each}}
-</script>
-
-<!-- Single Row in the Student Attendance Record -->
-<script type="text/x-handlebars-template" id="student-attendance-table-row-template">
-    <tr>
-        <td>{{#if checkedIn }}{{ formatDate checkedIn }}{{ else }}{{ formatDate checkedOut }}{{/if }}</td>
-        <td>{{formatTime checkedIn }}</td>
-        <td>{{formatTime checkedOut }}</td>
-        <td>(Notes)</td>
-    </tr>
-</script>
-<script type="x-handlebars-template" id="student-attendance-table-template">
-    {{#each student}}
-    {{> stdent}}
-    {{/each}}
-</script>
 
 </body>
 </html>
