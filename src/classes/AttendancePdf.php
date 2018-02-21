@@ -114,15 +114,7 @@ class AttendancePdf extends AttendPdf
     private function outputStudent($studentId)
     {
         $attendance = [false, false, false, false, false];
-        static $decoder = [
-            [0x0001, 0x0020, 0x0400],
-            [0x0002, 0x0040, 0x0800],
-            [0x0004, 0x0080, 0x1000],
-            [0x0008, 0x0100, 0x2000],
-            [0x0010, 0x0200, 0x4000]
-        ];
-
-        $student = $this->students[ $studentId ];
+        $student    = $this->students[ $studentId ];
         if ('1' !== $student[ 'enrolled' ]) {
             return;
         }
@@ -142,7 +134,6 @@ class AttendancePdf extends AttendPdf
         $this->Cell($this->colWidths[ 0 ], $this->rowHeight,
             $student[ 'family_name' ] . ', ' . $student[ 'first_name' ], 1, 0);
 
-        $j        = 0;
         $thisWeek = $this->getWeekOf();
         $today    = DateTime::createFromFormat('Y-m-d',
             $this->schedules[ $student[ 'schedules' ][ $j ] ][ 'start_date' ]);
@@ -151,6 +142,7 @@ class AttendancePdf extends AttendPdf
             'HDL' => 0,
             'FD'  => 0
         ];
+        $j        = 0;
         for ($i = 0; $i < 5; $i++) {
             while (($j + 1) < count($student[ 'schedules' ])) {
                 $next = DateTime::createFromFormat('Y-m-d',
@@ -167,15 +159,15 @@ class AttendancePdf extends AttendPdf
                 'lunch' => false
             ];
             $temp = $this->schedules[ $student[ 'schedules' ][ $j ] ][ 'schedule' ];
-            if (0 != ($temp & $decoder[ $i ][ 0 ])) {
+            if (0 != ($temp & self::$decoder[ $i ][ 0 ])) {
                 $s[ 'am' ]        = true;
                 $attendance[ $i ] = true;
             }
-            if (0 != ($temp & $decoder[ $i ][ 1 ])) {
+            if (0 != ($temp & self::$decoder[ $i ][ 1 ])) {
                 $s[ 'lunch' ]     = true;
                 $attendance[ $i ] = true;
             }
-            if (0 != ($temp & $decoder[ $i ][ 2 ])) {
+            if (0 != ($temp & self::$decoder[ $i ][ 2 ])) {
                 $s[ 'pm' ]        = true;
                 $attendance[ $i ] = true;
             }
