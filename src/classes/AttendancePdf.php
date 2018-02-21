@@ -136,7 +136,7 @@ class AttendancePdf extends AttendPdf
 
         $thisWeek = $this->getWeekOf();
         $today    = DateTime::createFromFormat('Y-m-d',
-            $this->schedules[ $student[ 'schedules' ][ $j ] ][ 'start_date' ]);
+            $this->schedules[ $student[ 'schedules' ][ 0 ] ][ 'start_date' ]);
         $notes    = [
             'HD'  => 0,
             'HDL' => 0,

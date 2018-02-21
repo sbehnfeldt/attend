@@ -250,7 +250,7 @@ session_start();
                 <input type="hidden" name="student_id">
                 <select name="id"></select>
                 <div>
-                    <button class="checkAll">Check All</button>
+                    <button type="button" class="checkAll">Check All</button>
                 </div>
                 <table id="student-schedule-table">
                     <thead>

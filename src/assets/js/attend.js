@@ -614,7 +614,6 @@
             ScheduleDlg.open(id);
         }
 
-
         function onClickDeleteStudent() {
             var $tr, id, student;
             $tr     = $(this).closest('tr');
@@ -625,7 +624,6 @@
                 StudentController.remove(id);
             }
         }
-
 
         ////////////////////////////////////////////////////////////////////////////////
         // External Event Callback Functions
@@ -667,7 +665,6 @@
             });
 
         }
-
 
         function whenStudentRemoved(id) {
             table.rows().nodes().each(function (e, i) {
@@ -904,6 +901,7 @@
         var $studentId;   // Value
         var $schedList;   // Value: Drop-down list of schedules
         var $scheds;      // Value: Checkboxes
+        var $checkAll;    // Control: select/de-select all checkboxes at once
         var $schedGroups; // Control: select/de-select row/column of checkboxes at once
         var $startDate;   // Value
 
@@ -919,6 +917,7 @@
             $studentId   = $form.find('input[name=student_id]');
             $schedList   = $form.find('select[name=id]');
             $scheds      = $form.find('input.scheds');
+            $checkAll    = $form.find('button.checkAll');
             $schedGroups = $form.find('button.sched-group');
             $startDate   = $form.find('input[name=start_date]');
 
@@ -949,6 +948,7 @@
 
             $schedList.on('change', onChangeSchedList);
             $scheds.on('click', onClickScheds);
+            $checkAll.on('click', onClickCheckAll);
             $schedGroups.on('click', onClickSchedGroup);
         }
 
@@ -1007,9 +1007,13 @@
             var $modified = $form.find('.modified');
             if ($modified.length > 0) {
                 var d = new Date();
+                var yy = 1900 + d.getYear();
+                var mm = d.getMonth() + 1;
+                if ( mm < 10 ) mm = '0' + mm;
+                var dd = d.getDate();
+
                 $startDate.attr('disabled', false);
-                $startDate.val(d);
-                $startDate.datepicker('option', 'dateFormat', 'yy-mm-dd');
+                $startDate.val(yy + '-' + mm + '-' + dd);
             } else {
                 $startDate.attr('disabled', true);
                 $startDate.val('');
@@ -1064,6 +1068,32 @@
             $scheds.each(function () {
                 if ($(self).val() & $(this).val()) {
                     $(this).trigger('click');
+                }
+            });
+            checkModified();
+        }
+
+        function onClickCheckAll() {
+            if ($scheds.length !== $scheds.filter(':checked').length) {
+                console.log("Click all");
+                $scheds.prop('checked', true);
+            } else {
+                console.log("Clear all");
+                $scheds.prop('checked', false);
+            }
+            $scheds.each(function() {
+                if ($(this).is(':checked')) {
+                    if ($(this).data('data')) {
+                        $(this).parent().removeClass('modified');
+                    } else {
+                        $(this).parent().addClass('modified');
+                    }
+                } else {
+                    if ($(this).data('data')) {
+                        $(this).parent().addClass('modified');
+                    } else {
+                        $(this).parent().removeClass('modified');
+                    }
                 }
             });
             checkModified();
