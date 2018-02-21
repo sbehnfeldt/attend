@@ -647,6 +647,8 @@
             var row = table.row.add(toArray(Students.records[studentId]));
             $(row.node()).data('studentId', Students.records[studentId].id);
             row.draw();
+
+            ScheduleDlg.open(studentId);
         }
 
         function whenStudentUpdated(id, updates) {
