@@ -616,9 +616,12 @@
 
 
         function onClickDeleteStudent() {
-            if (confirm('Are you sure you want to DELETE this student from the database?')) {
-                var $tr = $(this).closest('tr');
-                var id  = $tr.data('studentId');
+            var $tr, id, student;
+            $tr     = $(this).closest('tr');
+            id      = $tr.data('studentId');
+            student = Students.records[id];
+            console.log(student);
+            if (confirm('Are you sure you want to DELETE ' + student.first_name + ' ' + student.family_name + ' from the database?')) {
                 StudentController.remove(id);
             }
         }
@@ -813,11 +816,7 @@
             }, 2500);
         }
 
-        ////////////////////////////////////////////////////////////////////////////////
-        // Internal Event Handler Functions
-        ////////////////////////////////////////////////////////////////////////////////
-
-        function onClickSubmiStudentForm() {
+        function submit() {
             $tips.text('').removeClass('ui-state-highlight');
             if (tipsTimer) {
                 clearTimeout(tipsTimer);
@@ -843,11 +842,18 @@
                         'classroom_id': $classrooms.val()
                     });
                 }
+            }
+            return valid;
+        }
+
+        ////////////////////////////////////////////////////////////////////////////////
+        // Internal Event Handler Functions
+        ////////////////////////////////////////////////////////////////////////////////
+
+        function onClickSubmiStudentForm() {
+            if (submit()) {
                 dialog.dialog("close");
             }
-            //$scheds.filter( ':checked' ).each( function(i, e ) {
-            //    console.log( $(e ).val());
-            //});
         }
 
         function onChangeAllFields() {
@@ -1558,10 +1564,10 @@
 
                  */
                 var $div = $('<div class="in-out">').html('&nbsp;');
-                var $td = $('<td>');
-                $td.append( $div).append( '&nbsp;');
+                var $td  = $('<td>');
+                $td.append($div).append('&nbsp;');
 
-                $tr.append( $td );
+                $tr.append($td);
             }
 
 
