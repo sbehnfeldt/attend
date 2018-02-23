@@ -95,8 +95,7 @@
             this.classrooms[classroomId].push(student);
         }
         for (classroomId in this.classrooms) {
-            var arr = this.classrooms[classroomId];
-            arr.sort(function (a, b) {
+            this.classrooms[classroomId].sort(function (a, b) {
                 if (a.family_name < b.family_name) return -1;
                 if (a.family_name > b.family_name) return 1;
                 if (a.first_name < b.first_name) return -1;
@@ -106,6 +105,34 @@
         }
 
         this.callbacks['load-records'].fire(records);
+        return this;
+    };
+
+
+    Students.update = function (id, updates) {
+        var student = this.records[id];
+        console.log(student);
+        if ('classroom_id' in updates) {
+            if (updates.classroom_id != student.classroom_id) {
+                var idx = this.classrooms[parseInt(student.classroom_id)].indexOf(id);
+                if (undefined != idx) {
+                    this.classrooms[student.classroom_id].splice(idx, 1);
+                }
+
+                this.classrooms[updates.classroom_id].push(student);
+                this.classrooms[updates.classroom_id].sort(function (a, b) {
+                    if (a.family_name < b.family_name) return -1;
+                    if (a.family_name > b.family_name) return 1;
+                    if (a.first_name < b.first_name) return -1;
+                    if (a.first_name > b.first_name) return 1;
+                    return 0;
+                });
+            }
+        }
+        for (var p in updates) {
+            this.records[id][p] = updates[p];
+        }
+        this.callbacks['update-record'].fire(id, updates);
         return this;
     };
 
@@ -1006,10 +1033,10 @@
         function checkModified() {
             var $modified = $form.find('.modified');
             if ($modified.length > 0) {
-                var d = new Date();
+                var d  = new Date();
                 var yy = 1900 + d.getYear();
                 var mm = d.getMonth() + 1;
-                if ( mm < 10 ) mm = '0' + mm;
+                if (mm < 10) mm = '0' + mm;
                 var dd = d.getDate();
 
                 $startDate.attr('disabled', false);
@@ -1081,7 +1108,7 @@
                 console.log("Clear all");
                 $scheds.prop('checked', false);
             }
-            $scheds.each(function() {
+            $scheds.each(function () {
                 if ($(this).is(':checked')) {
                     if ($(this).data('data')) {
                         $(this).parent().removeClass('modified');
@@ -1225,6 +1252,10 @@
             Classrooms.subscribe('load-records', whenClassroomsLoaded);
             Students.subscribe('load-records', whenStudentsLoaded);
             Schedules.subscribe('load-records', whenSchedulesLoaded);
+
+            Students.subscribe('insert-record', generateAttendanceSheets);
+            Students.subscribe('update-record', generateAttendanceSheets);
+            Students.subscribe('remove-record', generateAttendanceSheets);
         }
 
 
@@ -1409,7 +1440,6 @@
             generateAttendanceSheets.hasStudents = true;
             generateAttendanceSheets();
         }
-
 
         function whenSchedulesLoaded() {
             generateAttendanceSheets.hasSchedules = true;
