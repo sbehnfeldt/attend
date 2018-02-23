@@ -71,14 +71,16 @@
 
 
     Students.init = function () {
-        this.records    = {};
-        this.callbacks  = {
+        this.records   = {};
+        this.callbacks = {
             'empty-records': $.Callbacks(),
             'load-records' : $.Callbacks(),
             'insert-record': $.Callbacks(),
             'remove-record': $.Callbacks(),
             'update-record': $.Callbacks()
         };
+
+        // object mapping classroom ID to list of associated student IDs
         this.classrooms = {};
     };
 
@@ -86,20 +88,27 @@
         for (var i = 0; i < records.length; i++) {
             var student = records[i];
 
+
+            // Store student in records object by student ID
             this.records[parseInt(student.id)] = student;
+
 
             var classroomId = parseInt(student.classroom_id);
             if (!( classroomId in this.classrooms)) {
                 this.classrooms[classroomId] = [];
             }
-            this.classrooms[classroomId].push(student);
+            this.classrooms[classroomId].push(student.id);
         }
+
+        // Now that all students are loaded, sort the classrooms by student name (NOT id)
         for (classroomId in this.classrooms) {
-            this.classrooms[classroomId].sort(function (a, b) {
-                if (a.family_name < b.family_name) return -1;
-                if (a.family_name > b.family_name) return 1;
-                if (a.first_name < b.first_name) return -1;
-                if (a.first_name > b.first_name) return 1;
+            this.classrooms[classroomId].sort(function (id1, id2) {
+                var student1 = Students.records[id1];
+                var student2 = Students.records[id2];
+                if (student1.family_name < student2.family_name) return -1;
+                if (student1.family_name > student2.family_name) return 1;
+                if (student1.first_name < student2.first_name) return -1;
+                if (student1.first_name > student2.first_name) return 1;
                 return 0;
             });
         }
@@ -112,22 +121,25 @@
     Students.update = function (id, updates) {
         var student = this.records[id];
         console.log(student);
-        if ('classroom_id' in updates) {
-            if (updates.classroom_id != student.classroom_id) {
-                var idx = this.classrooms[parseInt(student.classroom_id)].indexOf(id);
-                if (undefined != idx) {
-                    this.classrooms[student.classroom_id].splice(idx, 1);
-                }
+        if (('classroom_id' in updates) && (updates.classroom_id != student.classroom_id)) {
 
-                this.classrooms[updates.classroom_id].push(student);
-                this.classrooms[updates.classroom_id].sort(function (a, b) {
-                    if (a.family_name < b.family_name) return -1;
-                    if (a.family_name > b.family_name) return 1;
-                    if (a.first_name < b.first_name) return -1;
-                    if (a.first_name > b.first_name) return 1;
-                    return 0;
-                });
+            // Student classroom has been changed.  Remove student from old classroom
+            var idx = this.classrooms[parseInt(student.classroom_id)].indexOf(id);
+            if (undefined != idx) {
+                this.classrooms[student.classroom_id].splice(idx, 1);
             }
+
+            // Push student to new classroom
+            this.classrooms[updates.classroom_id].push(student);
+            this.classrooms[updates.classroom_id].sort(function (id1, id2) {
+                var student1 = Students.records[id1];
+                var student2 = Students.records[id2];
+                if (student1.family_name < student2.family_name) return -1;
+                if (student1.family_name > student2.family_name) return 1;
+                if (student1.first_name < student2.first_name) return -1;
+                if (student1.first_name > student2.first_name) return 1;
+                return 0;
+            });
         }
         for (var p in updates) {
             this.records[id][p] = updates[p];
@@ -1322,7 +1334,7 @@
             $tbody = $('<tbody>');
             if (Students.classrooms[classroomId]) {
                 for (var i = 0; i < Students.classrooms[classroomId].length; i++) {
-                    $tbody.append(generateStudentRow(Students.classrooms[classroomId][i].id));
+                    $tbody.append(generateStudentRow(Students.classrooms[classroomId][i]));
                 }
             }
             $table.append($thead);
@@ -1567,7 +1579,7 @@
             $tbody = $('<tbody>');
             if (Students.classrooms[classroomId]) {
                 for (var i = 0; i < Students.classrooms[classroomId].length; i++) {
-                    $tbody.append(generateStudentRow(Students.classrooms[classroomId][i].id));
+                    $tbody.append(generateStudentRow(Students.classrooms[classroomId][i]));
                 }
             }
             $table.append($thead);
