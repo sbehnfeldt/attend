@@ -40,6 +40,7 @@
         }
 
         function update(id, updates) {
+            console.log(updates);
             for (var p in updates) {
                 this.records[parseInt(id)][p] = updates[p];
             }
@@ -120,7 +121,6 @@
 
     Students.update = function (id, updates) {
         var student = this.records[id];
-        console.log(student);
         if (('classroom_id' in updates) && (updates.classroom_id != student.classroom_id)) {
 
             // Student classroom has been changed.  Remove student from old classroom
@@ -130,7 +130,7 @@
             }
 
             // Push student to new classroom
-            this.classrooms[updates.classroom_id].push(student);
+            this.classrooms[updates.classroom_id].push(id);
             this.classrooms[updates.classroom_id].sort(function (id1, id2) {
                 var student1 = Students.records[id1];
                 var student2 = Students.records[id2];
@@ -695,7 +695,6 @@
                 var data = $tr.data('studentId');
                 if (data === id) {
                     var row = table.row($tr);
-                    console.log(Students.records[id]);
                     row.data(toArray(Students.records[id]));
                     $(row.node()).data('studentId', id);
                     row.draw();
@@ -869,14 +868,14 @@
                     StudentController.update($id.val(), {
                         'family_name' : $familyName.val(),
                         'first_name'  : $firstName.val(),
-                        'enrolled'    : $active.is(':checked') ? 1 : 0,
+                        'enrolled'    : $active.is(':checked') ? "1" : "0",
                         'classroom_id': $classrooms.val()
                     });
                 } else {
                     StudentController.insert({
                         'family_name' : $familyName.val(),
                         'first_name'  : $firstName.val(),
-                        'enrolled'    : $active.is(':checked') ? 1 : 0,
+                        'enrolled'    : $active.is(':checked') ? "1" : "0",
                         'classroom_id': $classrooms.val()
                     });
                 }
