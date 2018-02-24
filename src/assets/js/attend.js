@@ -118,6 +118,27 @@
         return this;
     };
 
+    Students.insert = function (record) {
+        this.records[parseInt(record.id)] = record;
+
+        var classroomId = parseInt(record.classroom_id);
+        if (!( classroomId in this.classrooms)) {
+            this.classrooms[classroomId] = [];
+        }
+        this.classrooms[classroomId].push(record.id);
+        this.classrooms[classroomId].sort(function (id1, id2) {
+            var student1 = Students.records[id1];
+            var student2 = Students.records[id2];
+            if (student1.family_name < student2.family_name) return -1;
+            if (student1.family_name > student2.family_name) return 1;
+            if (student1.first_name < student2.first_name) return -1;
+            if (student1.first_name > student2.first_name) return 1;
+            return 0;
+        });
+
+        this.callbacks['insert-record'].fire(record.id);
+        return this;
+    };
 
     Students.update = function (id, updates) {
         var student = this.records[id];
@@ -178,7 +199,6 @@
     };
 
     Schedules.load = function (records) {
-        var nStudents = 0;
         for (var i = 0; i < records.length; i++) {
             var schedule = records[i];
 
@@ -187,7 +207,6 @@
             var studentId = parseInt(schedule.student_id);
             if (!( studentId in this.students )) {
                 this.students[studentId] = [];
-                nStudents++;
             }
             this.students[studentId].push(schedule);
         }
@@ -200,6 +219,23 @@
             });
         }
         this.callbacks['load-records'].fire(records);
+        return this;
+    };
+
+    Schedules.insert = function (schedule) {
+        this.records[parseInt(schedule.id)] = schedule;
+
+        var studentId = parseInt(schedule.student_id);
+        if (!( studentId in this.students )) {
+            this.students[studentId] = [];
+        }
+        this.students[studentId].push(schedule);
+        this.students[studentId].sort(function (a, b) {
+            if (a.start_date > b.start_date) return 1;
+            if (a.start_date < b.start_date) return -1;
+            return 0;
+        });
+        this.callbacks['insert-record'].fire(schedule.id);
         return this;
     };
 
@@ -1279,6 +1315,10 @@
             Students.subscribe('insert-record', generateAttendanceSheets);
             Students.subscribe('update-record', generateAttendanceSheets);
             Students.subscribe('remove-record', generateAttendanceSheets);
+
+            Schedules.subscribe('insert-record', generateAttendanceSheets);
+            Schedules.subscribe('update-record', generateAttendanceSheets);
+            Schedules.subscribe('remove-record', generateAttendanceSheets);
         }
 
 
