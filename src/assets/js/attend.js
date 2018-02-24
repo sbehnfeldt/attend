@@ -148,6 +148,18 @@
         return this;
     };
 
+    Students.remove = function (id) {
+        var student = Students.records[id];
+        var idx     = this.classrooms[parseInt(student.classroom_id)].indexOf(id);
+        if (undefined != idx) {
+            this.classrooms[student.classroom_id].splice(idx, 1);
+        }
+
+        this.records[parseInt(id)] = undefined;
+        this.callbacks['remove-record'].fire(id);
+        return this;
+    };
+
 
     /**
      * Apart from being stored by ID, schedules must at the same time be grouped by students, for easier access later
@@ -1498,6 +1510,14 @@
             Classrooms.subscribe('load-records', whenClassroomsLoaded);
             Students.subscribe('load-records', whenStudentsLoaded);
             Schedules.subscribe('load-records', whenSchedulesLoaded);
+
+            Students.subscribe('insert-record', generateSigninSheets);
+            Students.subscribe('update-record', generateSigninSheets);
+            Students.subscribe('remove-record', generateSigninSheets);
+
+            Schedules.subscribe('insert-record', generateSigninSheets);
+            Schedules.subscribe('update-record', generateSigninSheets);
+            Schedules.subscribe('remove-record', generateSigninSheets);
         }
 
         function generateSigninSheets() {
