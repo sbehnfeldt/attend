@@ -1,11 +1,13 @@
 {
   "name": "smidgen/attend",
-  "require": {},
-  "autoload" : {
-    "" : "classes/"
+  "require": {
+    "twig/twig":"^2.0"
+  },
+  "autoload": {
+    "": "classes/"
   },
   "require-dev": {
-    "phing/phing" : "@stable",
+    "phing/phing": "@stable",
     "phpunit/phpunit": "3.7.*",
     "phake/phake": "@stable"
   }
