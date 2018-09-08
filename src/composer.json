@@ -1,6 +1,9 @@
 {
   "name": "smidgen/attend",
   "require": {},
+  "autoload" : {
+    "" : "classes/"
+  },
   "require-dev": {
     "phing/phing" : "@stable",
     "phpunit/phpunit": "3.7.*",
