@@ -61,6 +61,29 @@
             "modal"   : true,
             "buttons" : {
                 "Submit": function () {
+                    id    = $self.find( '[name=id]' ).val();
+                    label = $self.find( '[name=label]' ).val();
+                    if ( !id ) {
+                        $.ajax( {
+                            "url"   : "api/classrooms",
+                            "method": "post",
+                            "data"  : {
+                                "label": label
+                            },
+
+                            "dataType": "json",
+                            "success" : function ( json ) {
+                                console.log( json );
+                                alert( "Success" );
+                            },
+                            "error"   : function ( xhr ) {
+                                console.log( xhr );
+                                alert( "Error" );
+                            }
+                        } )
+                    } else {
+                        // update
+                    }
                     ClassroomPropsDlg.close();
                 },
                 "Cancel": function () {

@@ -42,4 +42,20 @@ $app->get('/api/classrooms', function (Request $request, Response $response, arr
     return $response;
 });
 
+$app->post('/api/classrooms', function (Request $request, Response $response, array $args) {
+    $parsedBody = $request->getParsedBody();
+
+    $pdo = $this->get('pdo');
+    $sql = 'INSERT INTO classrooms(label) VALUES(?)';
+    $sth = $pdo->prepare($sql);
+    $b   = $sth->execute([$parsedBody[ 'label' ]]);
+
+    $id = $pdo->lastInsertId();
+
+    $response->getBody()->write(json_encode([
+        'status' => 'success',
+        'id'     => $id
+    ]));
+});
+
 $app->run();
