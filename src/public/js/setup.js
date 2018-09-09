@@ -6,8 +6,8 @@
         var $tab  = $( '#classrooms' );
         var table = $tab.find( 'table' ).DataTable( {
             "ajax"     : {
-                "url" : "api/classrooms",
-                "dataSrc" : "data"
+                "url"    : "api/classrooms",
+                "dataSrc": "data"
             },
             "paging"   : false,
             "searching": false,
@@ -22,13 +22,13 @@
             buttons: [ {
                 "text"  : "New",
                 "action": function () {
-                    alert( "New Classroom" );
+                    dialog.dialog( 'open' )
                 }
             }, {
                 "extend": "selected",
                 "text"  : "Edit",
                 "action": function () {
-                    alert( "Edit Classroom" );
+                    dialog.dialog( 'open' )
                 }
             }, {
                 "extend": "selected",
@@ -39,6 +39,24 @@
             } ]
         } );
         b0.dom.container.eq( 0 ).appendTo( $tab.find( '.run-buttons' ) );
+
+        var $classroomPropsDlg = $( '#classroom-props-dlg' );
+        var $form              = $classroomPropsDlg.find( 'form' );
+
+        var dialog = $classroomPropsDlg.dialog( {
+            "autoOpen": false,
+            "modal"   : true,
+            "buttons" : {
+                "Submit": function () {
+                    dialog.dialog( 'close' );
+
+                },
+                "Cancel": function () {
+                    dialog.dialog( 'close' );
+
+                }
+            }
+        } )
 
     } );
 
