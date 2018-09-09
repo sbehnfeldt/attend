@@ -1,31 +1,38 @@
 ;(function ( global, $ ) {
 
-    var ClassroomPropsDlg = {
-        "init": function ( selector ) {
-            this.$dialog = $( selector );
-            this.$form   = this.$dialog.find( 'form' );
-            this.dialog  = this.$dialog.dialog( {
-                "autoOpen": false,
-                "modal"   : true,
-                "buttons" : {
-                    "Submit": function () {
-                        ClassroomPropsDlg.close();
-                    },
-                    "Cancel": function () {
-                        ClassroomPropsDlg.close();
-                    }
+    var ClassroomPropsDlg = (function ( selector ) {
+        var $self,
+            $form,
+            dialog;
+
+        $self  = $( selector );
+        $form  = $self.find( 'form' );
+        dialog = $self.dialog( {
+            "autoOpen": false,
+            "modal"   : true,
+            "buttons" : {
+                "Submit": function () {
+                    ClassroomPropsDlg.close();
+                },
+                "Cancel": function () {
+                    ClassroomPropsDlg.close();
                 }
-            } );
-        },
+            }
+        } );
 
-        "open": function () {
-            this.dialog.dialog( 'open' );
-        },
-
-        "close": function () {
-            this.dialog.dialog( 'close' );
+        function open() {
+            dialog.dialog( 'open' );
         }
-    };
+
+        function close() {
+            dialog.dialog( 'close' );
+        }
+
+        return {
+            'open' : open,
+            'close': close
+        };
+    })( '#classroom-props-dlg' );
 
 
     $( function () {
@@ -68,7 +75,6 @@
         } );
         b0.dom.container.eq( 0 ).appendTo( $tab.find( '.run-buttons' ) );
 
-        ClassroomPropsDlg.init( '#classroom-props-dlg' );
     } );
 
 })( this, jQuery );
