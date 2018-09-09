@@ -57,9 +57,9 @@ body {
     /*color: #080;*/
 /*}*/
 
-/*button.disabled span {*/
-    /*color: #aaa;*/
-/*}*/
+button.disabled span {
+    color: #aaa;
+}
 
 /*div.in-out {*/
     /*border-bottom: 1px dashed black;*/

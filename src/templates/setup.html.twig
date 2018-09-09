@@ -9,18 +9,37 @@
 
 
 {% block main %}
+    <h1>Setup</h1>
+
     <div id="tabs">
         <ul>
             <li><a href="#classrooms">Classrooms</a></li>
             <li><a href="#teachers">Teachers</a></li>
         </ul>
 
-        <div id="classrooms">
+        <section id="classrooms">
             <h2>Classrooms</h2>
-        </div>
+            <table class="display compact">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Label</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr><td>1</td><td>123s</td></tr>
+                <tr><td>2</td><td>ABC Jrs</td></tr>
+                <tr><td>3</td><td>ABCs</td></tr>
+                <tr><td>4</td><td>Pre-K</td></tr>
+                <tr><td>5</td><td>Kindergarten</td></tr>
+                </tbody>
+            </table>
 
-        <div id="teachers">
+            <div class="run-buttons"></div>
+        </section>
+
+        <section id="teachers">
             <h2>Teachers</h2>
-        </div>
+        </section>
     </div>
 {% endblock %}
