@@ -2,7 +2,25 @@
 
 {% block title %}Setup{% endblock %}
 
+{% block scripts %}
+{{ parent() }}
+    <script src="js/setup.js"></script>
+{% endblock %}
+
+
 {% block main %}
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut beatae obcaecati quia ratione vero! Laboriosam maiores
-    pariatur quis ratione similique sunt? Accusantium debitis impedit nulla odit quam ratione sed ullam?</p>
+    <div id="tabs">
+        <ul>
+            <li><a href="#classrooms">Classrooms</a></li>
+            <li><a href="#teachers">Teachers</a></li>
+        </ul>
+
+        <div id="classrooms">
+            <h2>Classrooms</h2>
+        </div>
+
+        <div id="teachers">
+            <h2>Teachers</h2>
+        </div>
+    </div>
 {% endblock %}

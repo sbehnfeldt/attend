@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     {% block styles %}
-    <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
-    <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css">
 
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css">
-    {#<link rel="stylesheet" type="text/css" href="css/attend.css">#}
-    <link rel="stylesheet" type="text/css" media="print" href="css/print.css">
+        <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+        <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css">
+        <link rel="stylesheet" type="text/css" href="css/attend.css">
+        {#<link rel="stylesheet" type="text/css" media="print" href="css/print.css">#}
     {% endblock %}
+
     <title>{% block title %}Insert Title Block{% endblock %}</title>
 </head>
 
@@ -43,14 +44,14 @@
     </div>
 </nav>
 
-<main>{% block main %}Insert Content Here{% endblock %}</main>
+<main class="container">{% block main %}Insert Content Here{% endblock %}</main>
 
 {% block scripts %}
-<script type="application/javascript" src="js/jquery-1.11.0.min.js"></script>
-<script type="application/javascript" src="js/jquery-ui.js"></script>
-<script type="application/javascript" src="js/jquery.dataTables.min.js"></script>
-<script type="application/javascript" src="js/bootstrap.min.js"></script>
-{#<script type="application/javascript" src="js/attend.js"></script>#}
+    <script type="application/javascript" src="js/jquery-1.11.0.min.js"></script>
+    <script type="application/javascript" src="js/jquery-ui.js"></script>
+    <script type="application/javascript" src="js/jquery.dataTables.min.js"></script>
+    <script type="application/javascript" src="js/bootstrap.min.js"></script>
+    {#<script type="application/javascript" src="js/attend.js"></script>#}
 {% endblock %}
 </body>
 </html>
