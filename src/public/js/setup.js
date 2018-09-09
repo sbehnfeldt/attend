@@ -1,5 +1,33 @@
 ;(function ( global, $ ) {
 
+    var ClassroomPropsDlg = {
+        "init": function ( selector ) {
+            this.$dialog = $( selector );
+            this.$form   = this.$dialog.find( 'form' );
+            this.dialog  = this.$dialog.dialog( {
+                "autoOpen": false,
+                "modal"   : true,
+                "buttons" : {
+                    "Submit": function () {
+                        ClassroomPropsDlg.close();
+                    },
+                    "Cancel": function () {
+                        ClassroomPropsDlg.close();
+                    }
+                }
+            } );
+        },
+
+        "open": function () {
+            this.dialog.dialog( 'open' );
+        },
+
+        "close": function () {
+            this.dialog.dialog( 'close' );
+        }
+    };
+
+
     $( function () {
         $( '#tabs' ).tabs();
 
@@ -15,20 +43,20 @@
             "columns"  : [
                 { "data": "id" },
                 { "data": "label" }
-            ],
+            ]
         } );
 
         var b0 = new $.fn.dataTable.Buttons( table, {
             buttons: [ {
                 "text"  : "New",
                 "action": function () {
-                    dialog.dialog( 'open' )
+                    ClassroomPropsDlg.open();
                 }
             }, {
                 "extend": "selected",
                 "text"  : "Edit",
                 "action": function () {
-                    dialog.dialog( 'open' )
+                    ClassroomPropsDlg.open();
                 }
             }, {
                 "extend": "selected",
@@ -40,24 +68,7 @@
         } );
         b0.dom.container.eq( 0 ).appendTo( $tab.find( '.run-buttons' ) );
 
-        var $classroomPropsDlg = $( '#classroom-props-dlg' );
-        var $form              = $classroomPropsDlg.find( 'form' );
-
-        var dialog = $classroomPropsDlg.dialog( {
-            "autoOpen": false,
-            "modal"   : true,
-            "buttons" : {
-                "Submit": function () {
-                    dialog.dialog( 'close' );
-
-                },
-                "Cancel": function () {
-                    dialog.dialog( 'close' );
-
-                }
-            }
-        } )
-
+        ClassroomPropsDlg.init( '#classroom-props-dlg' );
     } );
 
 })( this, jQuery );
