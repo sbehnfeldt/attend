@@ -28,8 +28,13 @@
             }, {
                 "extend": "selected",
                 "text"  : "Edit",
-                "action": function () {
-                    ClassroomPropsDlg.open();
+                "action": function ( e, dt, button, config ) {
+                    var selected = dt.rows( { selected: true } ).indexes();
+                    if ( 1 < selected.length ) {
+                        alert( "Can edit only 1 record at a time" );
+                    } else {
+                        ClassroomPropsDlg.open( dt.rows( selected[ 0 ] ).data()[ 0 ] );
+                    }
                 }
             }, {
                 "extend": "selected",
@@ -64,12 +69,26 @@
             }
         } );
 
-        function open() {
+        function open( classroom ) {
+            clear();
+            console.log( $form.find( '[name=id]' ).val() );
+            if ( classroom ) {
+                populate( classroom );
+            }
             dialog.dialog( 'open' );
         }
 
         function close() {
             dialog.dialog( 'close' );
+        }
+
+        function populate( classroom ) {
+            $form.find( '[name=id]' ).val( classroom.id );
+            $form.find( '[name=label]' ).val( classroom.label );
+        }
+
+        function clear() {
+            $form[ 0 ].reset();
         }
 
         return {

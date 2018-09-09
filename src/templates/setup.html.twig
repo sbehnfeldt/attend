@@ -3,7 +3,7 @@
 {% block title %}Setup{% endblock %}
 
 {% block scripts %}
-{{ parent() }}
+    {{ parent() }}
     <script src="js/setup.js"></script>
 {% endblock %}
 
@@ -21,10 +21,10 @@
             <h2>Classrooms</h2>
             <table class="display compact">
                 <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Label</th>
-                    </tr>
+                <tr>
+                    <th>ID</th>
+                    <th>Label</th>
+                </tr>
                 </thead>
                 <tbody></tbody>
             </table>
@@ -34,7 +34,7 @@
             <div id="classroom-props-dlg" title="Add/Edit Classroom">
                 <form>
                     <p class="update-tips"></p>
-                    <input type="hidden" name="id">
+                    <input class="hidden" name="id">
                     <label>Classroom Name</label>
                     <input type="text" name="label">
                 </form>

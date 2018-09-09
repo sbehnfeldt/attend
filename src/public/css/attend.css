@@ -61,6 +61,10 @@ button.disabled span {
     color: #aaa;
 }
 
+.hidden {
+    display: none;
+}
+
 /*div.in-out {*/
     /*border-bottom: 1px dashed black;*/
 /*}*/
