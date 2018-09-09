@@ -5,9 +5,17 @@
 
         var $tab  = $( '#classrooms' );
         var table = $tab.find( 'table' ).DataTable( {
+            "ajax"     : {
+                "url" : "api/classrooms",
+                "dataSrc" : "data"
+            },
             "paging"   : false,
             "searching": false,
-            "select"   : true
+            "select"   : true,
+            "columns"  : [
+                { "data": "id" },
+                { "data": "label" }
+            ],
         } );
 
         var b0 = new $.fn.dataTable.Buttons( table, {
