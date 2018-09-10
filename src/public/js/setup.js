@@ -80,9 +80,25 @@
                                 console.log( xhr );
                                 alert( "Error" );
                             }
-                        } )
+                        } );
                     } else {
-                        // update
+                        $.ajax( {
+                            "url"   : "api/classrooms/" + id,
+                            "method": "put",
+                            "data"  : {
+                                "label": label
+                            },
+
+                            "dataType": "json",
+                            "success" : function ( json ) {
+                                console.log( json );
+                                alert( "Success" );
+                            },
+                            "error"   : function ( xhr ) {
+                                console.log( xhr );
+                                alert( "Error" );
+                            }
+                        } );
                     }
                     ClassroomPropsDlg.close();
                 },
