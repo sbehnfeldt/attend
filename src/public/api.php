@@ -71,4 +71,17 @@ $app->put('/api/classrooms/{id}', function (Request $request, Response $response
     ]));
 });
 
+$app->delete('/api/classrooms/{id}', function (Request $request, Response $response, array $args) {
+    $parsedBody = $request->getParsedBody();
+
+    $pdo = $this->get('pdo');
+    $sql = 'DELETE FROM classrooms WHERE id=?';
+    $sth = $pdo->prepare($sql);
+    $b   = $sth->execute([$args[ 'id' ]]);
+
+    $response->getBody()->write(json_encode([
+        'status' => 'success'
+    ]));
+});
+
 $app->run();

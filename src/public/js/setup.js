@@ -39,8 +39,25 @@
             }, {
                 "extend": "selected",
                 "text"  : "Delete",
-                "action": function () {
-                    alert( "Delete Classroom" );
+                "action": function ( e, dt ) {
+                    var selected = dt.rows( { selected: true } ).indexes();
+                    var msg      = (1 === selected.length) ? 'Are you sure you want to delete this record?' : 'Are you sure you want to delete these ' + selected.length + ' records?';
+                    if ( confirm( msg ) ) {
+                        for ( var i = 0; i < selected.length; i++ ) {
+                            console.log( dt.rows( selected[ i ] ).data()[ 0 ] );
+                            $.ajax( {
+                                "url"   : "api/classrooms/" + dt.rows( selected[ i ] ).data()[ 0 ][ 'id' ],
+                                "method": "delete",
+
+                                "success": function ( json ) {
+                                    alert( "Deleted" );
+                                },
+                                "error"  : function () {
+                                    alert( "Error" );
+                                }
+                            } );
+                        }
+                    }
                 }
             } ]
         } );
