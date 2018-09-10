@@ -4,7 +4,6 @@
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-
 include '../lib/bootstrap.php';
 
 $app                = new \Slim\App(['settings' => $config]);
@@ -20,6 +19,12 @@ $container[ 'pdo' ] = function ($c) {
     return $pdo;
 };
 
+$container[ 'repo' ] = function ($c) {
+    $repo = new \Attend\Repository($c);
+
+    return $repo;
+};
+
 
 $app->get('/api/', function (Request $request, Response $response, array $args) {
     $response->getBody()->write('OK');
@@ -27,17 +32,11 @@ $app->get('/api/', function (Request $request, Response $response, array $args) 
 
 
 $app->get('/api/classrooms', function (Request $request, Response $response, array $args) {
-    $pdo     = $this->get('pdo');
-    $sql     = 'SELECT * FROM classrooms';
-    $sth     = $pdo->prepare($sql);
-    $b       = $sth->execute();
-    $results = $sth->fetchAll();
-
-
+    $repo    = $this->get('repo');
+    $results = $repo->select();
     $response->getBody()->write(json_encode([
         'data' => $results
     ]));
-
 
     return $response;
 });

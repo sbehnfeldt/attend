@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Setup{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script src="js/enrollment.js"></script>
+{% endblock %}
+
+
+{% block main %}
+    <h1>Enrollment</h1>
+
+    <div id="tabs">
+        <ul>
+            <li><a href="#enrollment-tab">Enrollment</a></li>
+        </ul>
+
+        <section id="enrollment-tab">
+            <h2>Enrollment</h2>
+            <table class="display compact">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Family Name</th>
+                    <th>First Name</th>
+                    <th>Enrolled</th>
+                    <th>Classroom</th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <div class="row">
+                <div class="col-xs-6 record-buttons"></div>
+                <div class="col-xs-6 table-buttons"><span class="pull-right"></span></div>
+
+            </div>
+
+            <div id="student-props-dlg" title="Add/Edit Student">
+                <form>
+                    <p class="update-tips"></p>
+                    <input class="hidden" name="id">
+                    <label>Family Name</label>
+                    <input type="text" name="label">
+                    <label>First Name</label>
+                    <input type="text" name="label">
+                </form>
+            </div>
+        </section>
+
+    </div>
+{% endblock %}
