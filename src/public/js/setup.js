@@ -61,7 +61,17 @@
                 }
             } ]
         } );
-        b0.dom.container.eq( 0 ).appendTo( $self.find( '.run-buttons' ) );
+        b0.dom.container.eq( 0 ).appendTo( $self.find( '.record-buttons' ) );
+
+        var b1 = new $.fn.dataTable.Buttons( table, {
+            "buttons": [ {
+                "text"  : "Reload",
+                "action": function ( e, dt ) {
+                    dt.ajax.reload();
+                }
+            } ]
+        } );
+        b1.dom.container.eq( 0 ).appendTo( $self.find( '.table-buttons span' ) );
 
         return {};
     })( '#classrooms-tab' );
@@ -127,7 +137,6 @@
 
         function open( classroom ) {
             clear();
-            console.log( $form.find( '[name=id]' ).val() );
             if ( classroom ) {
                 populate( classroom );
             }
