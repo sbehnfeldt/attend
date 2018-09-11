@@ -60,12 +60,40 @@ class Repository
 
     public function select()
     {
-        $pdo     = $this->container->get('pdo');
         $sql     = 'SELECT * FROM classrooms';
-        $sth     = $pdo->prepare($sql);
+        $sth     = $this->getPdo()->prepare($sql);
         $b       = $sth->execute();
         $results = $sth->fetchAll();
 
         return $results;
+    }
+
+    public function insert($parsedBody)
+    {
+        $sql = 'INSERT INTO classrooms(label) VALUES(?)';
+        $sth = $this->getPdo()->prepare($sql);
+        $b   = $sth->execute([$parsedBody[ 'label' ]]);
+
+        $id = $this->getPdo()->lastInsertId();
+
+        return $id;
+    }
+
+    public function updateOne($id, $updates)
+    {
+        $sql = 'UPDATE classrooms SET label=? WHERE id=?';
+        $sth = $this->getPdo()->prepare($sql);
+        $b   = $sth->execute([$updates[ 'label' ], $id]);
+
+        return;
+    }
+
+    public function deleteOne($id)
+    {
+        $sql = 'DELETE FROM classrooms WHERE id=?';
+        $sth = $this->getPdo()->prepare($sql);
+        $b   = $sth->execute([$id]);
+
+        return;
     }
 }

@@ -32,6 +32,7 @@ $app->get('/api/', function (Request $request, Response $response, array $args) 
 
 
 $app->get('/api/classrooms', function (Request $request, Response $response, array $args) {
+    /** @var \Attend\Repository $repo */
     $repo    = $this->get('repo');
     $results = $repo->select();
     $response->getBody()->write(json_encode([
@@ -42,14 +43,9 @@ $app->get('/api/classrooms', function (Request $request, Response $response, arr
 });
 
 $app->post('/api/classrooms', function (Request $request, Response $response, array $args) {
-    $parsedBody = $request->getParsedBody();
-
-    $pdo = $this->get('pdo');
-    $sql = 'INSERT INTO classrooms(label) VALUES(?)';
-    $sth = $pdo->prepare($sql);
-    $b   = $sth->execute([$parsedBody[ 'label' ]]);
-
-    $id = $pdo->lastInsertId();
+    /** @var \Attend\Repository $repo */
+    $repo = $this->get('repo');
+    $id   = $repo->insert($request->getParsedBody());
 
     $response->getBody()->write(json_encode([
         'status' => 'success',
@@ -59,11 +55,9 @@ $app->post('/api/classrooms', function (Request $request, Response $response, ar
 
 $app->put('/api/classrooms/{id}', function (Request $request, Response $response, array $args) {
     $parsedBody = $request->getParsedBody();
-
-    $pdo = $this->get('pdo');
-    $sql = 'UPDATE classrooms SET label=? WHERE id=?';
-    $sth = $pdo->prepare($sql);
-    $b   = $sth->execute([$parsedBody[ 'label' ], $args[ 'id' ]]);
+    /** @var \Attend\Repository $repo */
+    $repo = $this->get('repo');
+    $repo->updateOne($args[ 'id' ], $parsedBody);
 
     $response->getBody()->write(json_encode([
         'status' => 'success'
@@ -71,13 +65,10 @@ $app->put('/api/classrooms/{id}', function (Request $request, Response $response
 });
 
 $app->delete('/api/classrooms/{id}', function (Request $request, Response $response, array $args) {
-    $parsedBody = $request->getParsedBody();
 
-    $pdo = $this->get('pdo');
-    $sql = 'DELETE FROM classrooms WHERE id=?';
-    $sth = $pdo->prepare($sql);
-    $b   = $sth->execute([$args[ 'id' ]]);
-
+    /** @var \Attend\Repository $repo */
+    $repo = $this->get('repo');
+    $repo->deleteOne($args[ 'id' ]);
     $response->getBody()->write(json_encode([
         'status' => 'success'
     ]));
