@@ -2,6 +2,7 @@
 
 namespace Attend;
 
+use PDO;
 use Psr\Container\ContainerInterface as Container;
 
 
@@ -14,7 +15,7 @@ class Repository
     private $pdo;
 
 
-    public function __construct(Container $container, $pdo = null)
+    public function __construct(Container $container, PDO $pdo = null)
     {
         $this->container = $container;
         $this->pdo       = $pdo;
@@ -31,7 +32,7 @@ class Repository
     /**
      * @param Container $container
      */
-    public function setContainer($container)
+    public function setContainer(Container $container)
     {
         $this->container = $container;
         $this->pdo       = null;
@@ -53,10 +54,11 @@ class Repository
     /**
      * @param PDO $pdo
      */
-    public function setPdo($pdo)
+    public function setPdo(PDO $pdo)
     {
         $this->pdo = $pdo;
     }
+
 
     public function select()
     {
