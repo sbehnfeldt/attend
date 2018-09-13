@@ -62,6 +62,19 @@ abstract class Repository implements iRepository
         return $results;
     }
 
+    public function selectOne($id)
+    {
+        $sql     = sprintf("SELECT %s FROM %s where %s = ?",
+            implode(', ', $this->getColumns('select')),
+            $this->getTableName(),
+            $this->getPrimaryKey());
+        $sth     = $this->pdo->prepare($sql);
+        $b       = $sth->execute([$id]);
+        $results = $sth->fetchAll();
+
+        return $results;
+    }
+
     public function insert($parsedBody)
     {
         $cols = $this->getColumns('insert');

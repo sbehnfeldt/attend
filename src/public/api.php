@@ -30,6 +30,15 @@ $app->get('/api/', function (Request $request, Response $response, array $args) 
 });
 
 
+$app->get('/api/classrooms/{id}', function (Request $request, Response $response, array $args) {
+    $results = $this->get('repo')->selectOne($args[ 'id' ]);
+    $response->getBody()->write(json_encode([
+        'data' => $results
+    ]));
+
+    return $response;
+});
+
 $app->get('/api/classrooms', function (Request $request, Response $response, array $args) {
     $results = $this->get('repo')->select();
     $response->getBody()->write(json_encode([
