@@ -6,12 +6,13 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 include '../lib/bootstrap.php';
 
-$app                = new \Slim\App(['settings' => $config]);
-$container          = $app->getContainer();
-$container[ 'pdo' ] = function ($c) {
-    $db  = $c[ 'settings' ][ 'db' ];
-    $pdo = new PDO('mysql:host=' . $db[ 'host' ] . ';dbname=' . $db[ 'dbname' ] . ';charset=' . $db[ 'charset' ],
-        $db[ 'uname' ], $db[ 'pword' ], [
+$app       = new \Slim\App(['settings' => $config]);
+$container = $app->getContainer();
+
+$container[ 'db' ] = function ($c) {
+    $settings = $c[ 'settings' ][ 'db' ];
+    $pdo      = new PDO('mysql:host=' . $settings[ 'host' ] . ';dbname=' . $settings[ 'dbname' ] . ';charset=' . $settings[ 'charset' ],
+        $settings[ 'uname' ], $settings[ 'pword' ], [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         ]);
@@ -20,9 +21,7 @@ $container[ 'pdo' ] = function ($c) {
 };
 
 $container[ 'repo' ] = function ($c) {
-    $repo = new \Attend\Repository($c);
-
-    return $repo;
+    return new \Attend\ClassroomsRepository($c->get('db'));
 };
 
 
@@ -32,9 +31,7 @@ $app->get('/api/', function (Request $request, Response $response, array $args) 
 
 
 $app->get('/api/classrooms', function (Request $request, Response $response, array $args) {
-    /** @var \Attend\Repository $repo */
-    $repo    = $this->get('repo');
-    $results = $repo->select();
+    $results = $this->get('repo')->select();
     $response->getBody()->write(json_encode([
         'data' => $results
     ]));
@@ -43,10 +40,7 @@ $app->get('/api/classrooms', function (Request $request, Response $response, arr
 });
 
 $app->post('/api/classrooms', function (Request $request, Response $response, array $args) {
-    /** @var \Attend\Repository $repo */
-    $repo = $this->get('repo');
-    $id   = $repo->insert($request->getParsedBody());
-
+    $id = $this->get('repo')->insert($request->getParsedBody());
     $response->getBody()->write(json_encode([
         'status' => 'success',
         'id'     => $id
@@ -54,21 +48,14 @@ $app->post('/api/classrooms', function (Request $request, Response $response, ar
 });
 
 $app->put('/api/classrooms/{id}', function (Request $request, Response $response, array $args) {
-    $parsedBody = $request->getParsedBody();
-    /** @var \Attend\Repository $repo */
-    $repo = $this->get('repo');
-    $repo->updateOne($args[ 'id' ], $parsedBody);
-
+    $this->get('repo')->updateOne($args[ 'id' ], $request->getParsedBody());
     $response->getBody()->write(json_encode([
         'status' => 'success'
     ]));
 });
 
 $app->delete('/api/classrooms/{id}', function (Request $request, Response $response, array $args) {
-
-    /** @var \Attend\Repository $repo */
-    $repo = $this->get('repo');
-    $repo->deleteOne($args[ 'id' ]);
+    $this->get('repo')->deleteOne($args[ 'id' ]);
     $response->getBody()->write(json_encode([
         'status' => 'success'
     ]));

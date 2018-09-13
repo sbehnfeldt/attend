@@ -3,52 +3,17 @@
 namespace Attend;
 
 use PDO;
-use Psr\Container\ContainerInterface as Container;
 
 
-class Repository
+abstract class Repository implements iRepository
 {
-    /** @var Container $container */
-    private $container;
-
     /** @var  PDO $pdo */
     private $pdo;
 
 
-    public function __construct(Container $container, PDO $pdo = null)
+    public function __construct(PDO $pdo)
     {
-        $this->container = $container;
-        $this->pdo       = $pdo;
-    }
-
-    /**
-     * @return Container
-     */
-    public function getContainer()
-    {
-        return $this->container;
-    }
-
-    /**
-     * @param Container $container
-     */
-    public function setContainer(Container $container)
-    {
-        $this->container = $container;
-        $this->pdo       = null;
-    }
-
-
-    /**
-     * @return PDO
-     */
-    public function getPdo()
-    {
-        if (null == $this->pdo) {
-            $this->pdo = $this->container[ 'pdo' ];
-        }
-
-        return $this->pdo;
+        $this->pdo = $pdo;
     }
 
     /**
@@ -59,11 +24,38 @@ class Repository
         $this->pdo = $pdo;
     }
 
+    /**
+     * @return PDO
+     */
+    public function getPdo()
+    {
+        return $this->pdo;
+    }
+
+    public function getPrimaryKey()
+    {
+        return 'id';
+    }
+
+    public function getColumns($op)
+    {
+        $columns = [];
+        foreach (static::getColumnNames() as $k => $v) {
+            if ($v[ $op ]) {
+                $columns[] = $k;
+            }
+        }
+
+        return $columns;
+    }
+
 
     public function select()
     {
-        $sql     = 'SELECT * FROM classrooms';
-        $sth     = $this->getPdo()->prepare($sql);
+        $sql     = sprintf("SELECT %s FROM %s",
+            implode(', ', $this->getColumns('select')),
+            $this->getTableName());
+        $sth     = $this->pdo->prepare($sql);
         $b       = $sth->execute();
         $results = $sth->fetchAll();
 
@@ -72,19 +64,29 @@ class Repository
 
     public function insert($parsedBody)
     {
-        $sql = 'INSERT INTO classrooms(label) VALUES(?)';
-        $sth = $this->getPdo()->prepare($sql);
-        $b   = $sth->execute([$parsedBody[ 'label' ]]);
+        $cols = $this->getColumns('insert');
+        $vals = [];
+        for ($i = 0; $i < count($cols); $i++) {
+            $vals[] = $parsedBody[ $cols[ $i ] ];
+        }
 
-        $id = $this->getPdo()->lastInsertId();
+        $sql = sprintf("INSERT INTO %s (%s) VALUES(%s)",
+            $this->getTableName(),
+            implode(', ', $cols),
+            implode(', ', array_fill(0, count($cols), '?'))
+        );
+        $sth = $this->pdo->prepare($sql);
+        $b   = $sth->execute($vals);
+
+        $id = $this->pdo->lastInsertId();
 
         return $id;
     }
 
     public function updateOne($id, $updates)
     {
-        $sql = 'UPDATE classrooms SET label=? WHERE id=?';
-        $sth = $this->getPdo()->prepare($sql);
+        $sql = sprintf("UPDATE %s SET label=? WHERE id=?", $this->getTableName());
+        $sth = $this->pdo->prepare($sql);
         $b   = $sth->execute([$updates[ 'label' ], $id]);
 
         return;
@@ -92,8 +94,8 @@ class Repository
 
     public function deleteOne($id)
     {
-        $sql = 'DELETE FROM classrooms WHERE id=?';
-        $sth = $this->getPdo()->prepare($sql);
+        $sql = sprintf("DELETE FROM %s WHERE id=?", $this->getTableName());
+        $sth = $this->pdo->prepare($sql);
         $b   = $sth->execute([$id]);
 
         return;
