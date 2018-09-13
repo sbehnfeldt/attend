@@ -6,16 +6,22 @@
 
         $self = $( selector );
         table = $self.find( 'table' ).DataTable( {
-            "ajax"     : {
+            "ajax"   : {
                 "url"    : "api/students",
                 "dataSrc": "data"
             },
-            "paging"   : false,
-            "searching": false,
-            "select"   : true,
-            "columns"  : [
+            "select" : true,
+            "columns": [
                 { "data": "id" },
-                { "data": "label" }
+                { "data": "family_name" },
+                { "data": "first_name" },
+                {
+                    "data"  : "enrolled",
+                    "render": function ( data ) {
+                        return '<input type=checkbox ' + (1 == data ? 'checked ' : '') + ' disabled />';
+                    }
+                },
+                { "data": "classroom_id" }
             ]
         } );
 
