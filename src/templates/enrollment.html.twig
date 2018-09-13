@@ -34,17 +34,39 @@
             <div class="row">
                 <div class="col-xs-6 record-buttons"></div>
                 <div class="col-xs-6 table-buttons"><span class="pull-right"></span></div>
-
             </div>
 
             <div id="student-props-dlg" title="Add/Edit Student">
                 <form>
                     <p class="update-tips"></p>
-                    <input class="hidden" name="id">
-                    <label>Family Name</label>
-                    <input type="text" name="label">
-                    <label>First Name</label>
-                    <input type="text" name="label">
+                    <div>
+                        <input class="hidden" name="id">
+                    </div>
+                    <div>
+                        <label>Family Name</label>
+                        <input type="text" name="family_name">
+                    </div>
+
+                    <div>
+                        <label>First Name</label>
+                        <input type="text" name="first_name">
+                    </div>
+
+                    <div>
+                        <label for="">Classroom</label>
+                        <select name="classroom_id" id="classroom_id">
+                            <option value="">Select a classroom</option>
+                            {% for classroom in classrooms %}
+                                <option value="{{ classroom.id }}">{{ classroom.label }}</option>
+                            {% endfor %}
+
+                        </select>
+                    </div>
+
+                    <div>
+                        <label> Enrolled</label>
+                        <input type="checkbox" name="enrolled♠">
+                    </div>
                 </form>
             </div>
         </section>

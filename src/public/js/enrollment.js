@@ -141,10 +141,10 @@
             }
         } );
 
-        function open( classroom ) {
+        function open( student ) {
             clear();
-            if ( classroom ) {
-                populate( classroom );
+            if ( student ) {
+                populate( student );
             }
             dialog.dialog( 'open' );
         }
@@ -153,9 +153,13 @@
             dialog.dialog( 'close' );
         }
 
-        function populate( classroom ) {
-            $form.find( '[name=id]' ).val( classroom.id );
-            $form.find( '[name=label]' ).val( classroom.label );
+        function populate( student ) {
+            console.log( student );
+            $form.find( '[name=id]' ).val( student.id );
+            $form.find( '[name=family_name]' ).val( student.family_name );
+            $form.find( '[name=first_name]' ).val( student.first_name );
+            $form.find( '[name=classroom_id]' ).val( student.classroom_id );
+            $form.find( '[name=enrolled]' ).prop( 'checked', (1 == student.enrolled) );
         }
 
         function clear() {
