@@ -65,6 +65,9 @@ button.disabled span {
     display: none;
 }
 
+.ui-dialog {
+    display: none;
+}
 /*div.in-out {*/
     /*border-bottom: 1px dashed black;*/
 /*}*/
