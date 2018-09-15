@@ -36,6 +36,7 @@ $app->get('/api/', function (Request $request, Response $response, array $args) 
 
 $app->get('/api/classrooms/{id}', function (Request $request, Response $response, array $args) {
     $results = $this->get('classroomsRepo')->selectOne($args[ 'id' ]);
+    header('Content-Type: application/json');
     $response->getBody()->write(json_encode([
         'data' => $results
     ]));
@@ -45,6 +46,7 @@ $app->get('/api/classrooms/{id}', function (Request $request, Response $response
 
 $app->get('/api/classrooms', function (Request $request, Response $response, array $args) {
     $results = $this->get('classroomsRepo')->select();
+    header('Content-Type: application/json');
     $response->getBody()->write(json_encode([
         'data' => $results
     ]));
@@ -54,6 +56,7 @@ $app->get('/api/classrooms', function (Request $request, Response $response, arr
 
 $app->post('/api/classrooms', function (Request $request, Response $response, array $args) {
     $id = $this->get('classroomsRepo')->insert($request->getParsedBody());
+    header('Content-Type: application/json');
     $response->getBody()->write(json_encode([
         'status' => 'success',
         'id'     => $id
@@ -62,6 +65,7 @@ $app->post('/api/classrooms', function (Request $request, Response $response, ar
 
 $app->put('/api/classrooms/{id}', function (Request $request, Response $response, array $args) {
     $this->get('classroomsRepo')->updateOne($args[ 'id' ], $request->getParsedBody());
+    header('Content-Type: application/json');
     $response->getBody()->write(json_encode([
         'status' => 'success'
     ]));
@@ -69,6 +73,7 @@ $app->put('/api/classrooms/{id}', function (Request $request, Response $response
 
 $app->delete('/api/classrooms/{id}', function (Request $request, Response $response, array $args) {
     $this->get('classroomsRepo')->deleteOne($args[ 'id' ]);
+    header('Content-Type: application/json');
     $response->getBody()->write(json_encode([
         'status' => 'success'
     ]));
@@ -76,24 +81,25 @@ $app->delete('/api/classrooms/{id}', function (Request $request, Response $respo
 
 $app->get('/api/students/{id}', function (Request $request, Response $response, array $args) {
     $results = $this->get('studentsRepo')->selectOne($args[ 'id' ]);
+    header('Content-Type: application/json');
     $response->getBody()->write(json_encode([
         'data' => $results
     ]));
-
     return $response;
 });
 
 $app->get('/api/students', function (Request $request, Response $response, array $args) {
     $results = $this->get('studentsRepo')->select();
+    header('Content-Type: application/json');
     $response->getBody()->write(json_encode([
         'data' => $results
     ]));
-
     return $response;
 });
 
 $app->post('/api/students', function (Request $request, Response $response, array $args) {
     $id = $this->get('studentsRepo')->insert($request->getParsedBody());
+    header('Content-Type: application/json');
     $response->getBody()->write(json_encode([
         'status' => 'success',
         'id'     => $id
@@ -102,6 +108,7 @@ $app->post('/api/students', function (Request $request, Response $response, arra
 
 $app->put('/api/students/{id}', function (Request $request, Response $response, array $args) {
     $this->get('studentsRepo')->updateOne($args[ 'id' ], $request->getParsedBody());
+    header('Content-Type: application/json');
     $response->getBody()->write(json_encode([
         'status' => 'success'
     ]));
@@ -109,6 +116,7 @@ $app->put('/api/students/{id}', function (Request $request, Response $response, 
 
 $app->delete('/api/students/{id}', function (Request $request, Response $response, array $args) {
     $this->get('studentsRepo')->deleteOne($args[ 'id' ]);
+    header('Content-Type: application/json');
     $response->getBody()->write(json_encode([
         'status' => 'success'
     ]));
