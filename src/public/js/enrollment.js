@@ -1,28 +1,78 @@
 ;(function ( global, $ ) {
 
+    function checkClassrooms() {
+        if ( 0 === Classrooms.records.length ) {
+            return;
+        }
+        if ( EnrollmentTab.isEmpty() ) {
+            return;
+        }
+        EnrollmentTab.drawTable();
+    }
+
+
+    var Classrooms = (function () {
+        var records = [];
+
+        function load( classrooms ) {
+            for ( var i = 0; i < classrooms.length; i++ ) {
+                var c          = classrooms[ i ];
+                var idx        = c.id;
+                records[ idx ] = c;
+            }
+        }
+
+        return {
+            'records': records,
+            'load'   : load
+        };
+    })();
+
+
     var EnrollmentTab = (function ( selector ) {
         var $self,
             table;
 
+        function isEmpty() {
+            return ( 0 === table.rows().count() );
+        }
+
+        // Convert classroom IDs in table to classroom names
+        function draw() {
+            table.rows().every( function ( /* rowIdx, tableLoop, rowLoop */ ) {
+                this.data( this.data() );   // Forces row to redraw
+            } );
+        }
+
         $self = $( selector );
         table = $self.find( 'table' ).DataTable( {
-            "ajax"   : {
+            "ajax"        : {
                 "url"    : "api/students",
                 "dataSrc": "data"
             },
-            "select" : true,
-            "columns": [
+            "select"      : true,
+            "columns"     : [
                 { "data": "id" },
                 { "data": "family_name" },
-                { "data": "first_name" },
-                {
+                { "data": "first_name" }, {
                     "data"  : "enrolled",
                     "render": function ( data ) {
                         return '<input type=checkbox ' + (1 == data ? 'checked ' : '') + ' disabled />';
                     }
-                },
-                { "data": "classroom_id" }
-            ]
+                }, {
+                    "data"  : "classroom_id",
+                    "render": function ( data ) {
+                        if ( data ) {
+                            if ( Classrooms.records[ data ] ) {
+                                return Classrooms.records[ data ].label;
+                            }
+                            return data;
+                        }
+                        return '';
+                    }
+                }
+            ],
+            "initComplete": checkClassrooms
         } );
 
         var b0 = new $.fn.dataTable.Buttons( table, {
@@ -79,8 +129,12 @@
         } );
         b1.dom.container.eq( 0 ).appendTo( $self.find( '.table-buttons span' ) );
 
-        return {};
+        return {
+            "isEmpty"  : isEmpty,
+            "drawTable": draw
+        };
     })( '#enrollment-tab' );
+
 
     var StudentPropsDlg = (function ( selector ) {
         var $self,
@@ -174,6 +228,20 @@
 
     $( function () {
         $( '#tabs' ).tabs();
+
+        $.ajax( {
+            'url'   : 'api/classrooms',
+            'method': 'get',
+
+            'dataType': 'json',
+            'success' : function ( json ) {
+                Classrooms.load( json.data );
+                checkClassrooms();
+            },
+            'error'   : function ( xhr ) {
+                console.log( xhr );
+            }
+        } );
     } );
 
 })( this, jQuery );
