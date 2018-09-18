@@ -96,14 +96,35 @@ abstract class Repository implements iRepository
         return $id;
     }
 
+
+    // Break the update data associative arrays into 2 parallel indexed arrays
+    static protected function preProcessUpdates($updates)
+    {
+        $params = $values = [];
+        foreach ($updates as $k => $v) {
+            $params[] = $k;
+            $values[] = $v;
+        }
+
+        return [$params, $values];
+    }
+
+
     public function updateOne($id, $updates)
     {
-        $sql = sprintf("UPDATE %s SET label=? WHERE id=?", $this->getTableName());
-        $sth = $this->pdo->prepare($sql);
-        $b   = $sth->execute([$updates[ 'label' ], $id]);
+        list($params, $values) = static::preProcessUpdates($updates);
+        $values[] = $id;
+        for ($i = 0; $i < count($params); $i++) {
+            $params[ $i ] .= '= ?';
+        }
+        $params = implode(', ', $params);
+        $sql    = sprintf("UPDATE %s SET %s WHERE id=?", $this->getTableName(), $params);
+        $sth    = $this->pdo->prepare($sql);
+        $b      = $sth->execute($values);
 
         return;
     }
+
 
     public function deleteOne($id)
     {

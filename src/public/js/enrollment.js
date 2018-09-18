@@ -1,4 +1,5 @@
 ;(function ( global, $ ) {
+    'use strict';
 
     function checkClassrooms() {
         if ( 0 === Classrooms.records.length ) {
@@ -38,9 +39,18 @@
         }
 
         // Convert classroom IDs in table to classroom names
-        function draw() {
+        function drawTable() {
             table.rows().every( function ( /* rowIdx, tableLoop, rowLoop */ ) {
                 this.data( this.data() );   // Forces row to redraw
+            } );
+        }
+
+        function redrawRow( newData ) {
+            table.rows().every( function ( /* rowIdx, tableLoop, rowLoop */ ) {
+                var data = this.data();
+                if ( data.id == newData.id ) {
+                    this.data( newData );
+                }
             } );
         }
 
@@ -48,7 +58,7 @@
         table = $self.find( 'table' ).DataTable( {
             "ajax"        : {
                 "url"    : "api/students",
-                "dataSrc": "data"
+                "dataSrc": ""
             },
             "select"      : true,
             "columns"     : [
@@ -131,7 +141,8 @@
 
         return {
             "isEmpty"  : isEmpty,
-            "drawTable": draw
+            "drawTable": drawTable,
+            "redrawRow": redrawRow
         };
     })( '#enrollment-tab' );
 
@@ -148,20 +159,24 @@
             "modal"   : true,
             "buttons" : {
                 "Submit": function () {
-                    id    = $self.find( '[name=id]' ).val();
-                    label = $self.find( '[name=label]' ).val();
+                    var id   = $self.find( '[name=id]' ).val();
+                    var data = {
+                        "family_name": $self.find( '[name=family_name]' ).val(),
+                        "first_name" : $self.find( '[name=first_name]' ).val(),
+                        "enrolled"   : ('on' === $self.find( '[name=enrolled]' ).val()) ? 1 : 0,
+                    };
+                    if ( $self.find( '[name=classroom_id]' ).val() ) {
+                        data.classroom_id = $self.find( '[name=classroom_id]' ).val();
+                    }
                     if ( !id ) {
                         $.ajax( {
                             "url"   : "api/students",
                             "method": "post",
-                            "data"  : {
-                                "label": label
-                            },
+                            "data"  : data,
 
                             "dataType": "json",
                             "success" : function ( json ) {
                                 console.log( json );
-                                alert( "Success" );
                             },
                             "error"   : function ( xhr ) {
                                 console.log( xhr );
@@ -172,17 +187,19 @@
                         $.ajax( {
                             "url"   : "api/students/" + id,
                             "method": "put",
-                            "data"  : {
-                                "label": label
-                            },
+                            "data"  : data,
 
-                            "dataType": "json",
-                            "success" : function ( json ) {
-                                console.log( json );
-                                alert( "Success" );
-                            },
-                            "error"   : function ( xhr ) {
+                            "success": function ( body, status, xhr ) {
+                                console.log( body );
+                                console.log( status );
                                 console.log( xhr );
+                                data.id = id;
+                                EnrollmentTab.redrawRow( data );
+                            },
+                            "error"  : function ( xhr, estring, e ) {
+                                console.log( xhr );
+                                console.log( estring );
+                                console.log( e );
                                 alert( "Error" );
                             }
                         } );
@@ -235,7 +252,7 @@
 
             'dataType': 'json',
             'success' : function ( json ) {
-                Classrooms.load( json.data );
+                Classrooms.load( json );
                 checkClassrooms();
             },
             'error'   : function ( xhr ) {

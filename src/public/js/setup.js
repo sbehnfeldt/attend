@@ -8,7 +8,7 @@
         table = $self.find( 'table' ).DataTable( {
             "ajax"     : {
                 "url"    : "api/classrooms",
-                "dataSrc": "data"
+                "dataSrc": ""
             },
             "paging"   : false,
             "searching": false,
