@@ -1,4 +1,5 @@
 ;(function ( global, $ ) {
+    'use strict';
 
     var ClassroomsTab = (function ( selector ) {
         var $self,
@@ -73,7 +74,24 @@
         } );
         b1.dom.container.eq( 0 ).appendTo( $self.find( '.table-buttons span' ) );
 
-        return {};
+
+        function insert( data ) {
+            alert( "insert" );
+        }
+
+        function redrawRow( newData ) {
+            table.rows().every( function ( /* rowIdx, tableLoop, rowLoop */ ) {
+                var data = this.data();
+                if ( data.id == newData.id ) {
+                    this.data( newData );
+                }
+            } );
+        }
+
+        return {
+            "insert"   : insert,
+            "redrawRow": redrawRow
+        };
     })( '#classrooms-tab' );
 
     var ClassroomPropsDlg = (function ( selector ) {
@@ -88,24 +106,24 @@
             "modal"   : true,
             "buttons" : {
                 "Submit": function () {
-                    id    = $self.find( '[name=id]' ).val();
-                    label = $self.find( '[name=label]' ).val();
+                    var id    = $self.find( '[name=id]' ).val();
+                    var label = $self.find( '[name=label]' ).val();
+                    var data  = {
+                        "label": label
+                    };
                     if ( !id ) {
                         $.ajax( {
                             "url"   : "api/classrooms",
                             "method": "post",
-                            "data"  : {
-                                "label": label
-                            },
+                            "data"  : data,
 
                             "dataType": "json",
                             "success" : function ( json ) {
                                 console.log( json );
-                                alert( "Success" );
+                                ClassroomsTab.insert( data );
                             },
                             "error"   : function ( xhr ) {
                                 console.log( xhr );
-                                alert( "Error" );
                             }
                         } );
                     } else {
@@ -119,11 +137,11 @@
                             "dataType": "json",
                             "success" : function ( json ) {
                                 console.log( json );
-                                alert( "Success" );
+                                data.id = id;
+                                ClassroomsTab.redrawRow( data );
                             },
                             "error"   : function ( xhr ) {
                                 console.log( xhr );
-                                alert( "Error" );
                             }
                         } );
                     }
