@@ -76,7 +76,7 @@
 
 
         function insert( data ) {
-            alert( "insert" );
+            table.row.add( data ).draw();
         }
 
         function redrawRow( newData ) {
@@ -119,8 +119,17 @@
 
                             "dataType": "json",
                             "success" : function ( json ) {
-                                console.log( json );
-                                ClassroomsTab.insert( data );
+                                $.ajax( {
+                                    'url'   : "api/classrooms/" + json,
+                                    "method": "get",
+
+                                    "success": function ( json ) {
+                                        ClassroomsTab.insert( json );
+                                    },
+                                    "error"  : function ( xhr ) {
+                                        console.log( xhr );
+                                    }
+                                } );
                             },
                             "error"   : function ( xhr ) {
                                 console.log( xhr );
@@ -136,7 +145,6 @@
 
                             "dataType": "json",
                             "success" : function ( json ) {
-                                console.log( json );
                                 data.id = id;
                                 ClassroomsTab.redrawRow( data );
                             },
