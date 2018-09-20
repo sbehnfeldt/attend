@@ -30,6 +30,4 @@ class ClassroomsRepository extends Repository
             ]
         ];
     }
-
-
 }

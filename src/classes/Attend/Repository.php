@@ -2,6 +2,7 @@
 
 namespace Attend;
 
+use Exception;
 use PDO;
 
 
@@ -49,7 +50,6 @@ abstract class Repository implements iRepository
         return $columns;
     }
 
-
     public function select()
     {
         $sql     = sprintf("SELECT %s FROM %s",
@@ -77,10 +77,26 @@ abstract class Repository implements iRepository
 
     public function insert($parsedBody)
     {
-        $cols = $this->getColumns('insert');
-        $vals = [];
-        for ($i = 0; $i < count($cols); $i++) {
-            $vals[] = $parsedBody[ $cols[ $i ] ];
+        $allCols = static::getColumnNames();
+        $cols    = [];
+        $vals    = [];
+
+        foreach ($parsedBody as $k => $v) {
+            if ( ! isset($allCols[ $k ])) {
+                throw new Exception(sprintf('Unknown column name "%s"'), $k);
+            }
+            if ( ! isset($allCols[ $k ][ 'insert' ])) {
+                throw new Exception(sprintf('Insert rule not defined for column "%s"'), $k);
+            }
+            if (is_callable($allCols[ $k ][ 'insert' ])) {
+                if ( ! $allCols[ $k ][ 'insert' ]()) {
+                    throw new Exception(sprintf('Cannot write to column "%s"', $k));
+                }
+            } else if ( ! $allCols[ $k ][ 'insert' ]) {
+                throw new Exception(sprintf('Cannot write to column "%s"', $k));
+            }
+            $cols[] = $k;
+            $vals[] = $v;
         }
 
         $sql = sprintf("INSERT INTO %s (%s) VALUES(%s)",
@@ -97,7 +113,7 @@ abstract class Repository implements iRepository
     }
 
 
-    // Break the update data associative arrays into 2 parallel indexed arrays
+// Break the update data associative arrays into 2 parallel indexed arrays
     static protected function preProcessUpdates($updates)
     {
         $params = $values = [];
