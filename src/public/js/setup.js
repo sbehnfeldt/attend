@@ -41,23 +41,34 @@
                 "extend": "selected",
                 "text"  : "Delete",
                 "action": function ( e, dt ) {
-                    var selected = dt.rows( { selected: true } ).indexes();
-                    var msg      = (1 === selected.length) ? 'Are you sure you want to delete this record?' : 'Are you sure you want to delete these ' + selected.length + ' records?';
+                    var selected = dt.rows( { selected: true } );
+                    var msg      = (1 === selected[ 0 ].length) ? 'Are you sure you want to delete this record?' : 'Are you sure you want to delete these ' + selected[ 0 ].length + ' records?';
                     if ( confirm( msg ) ) {
-                        for ( var i = 0; i < selected.length; i++ ) {
-                            console.log( dt.rows( selected[ i ] ).data()[ 0 ] );
+                        var length = selected[ 0 ].length;
+                        selected.every( function () {
+                            var row  = this;
+                            var data = row.data();
                             $.ajax( {
-                                "url"   : "api/classrooms/" + dt.rows( selected[ i ] ).data()[ 0 ][ 'id' ],
+                                "url"   : "api/classrooms/" + data.id,
                                 "method": "delete",
 
                                 "success": function ( json ) {
-                                    alert( "Deleted" );
+                                    length--;
+                                    if ( !length ) {
+                                        selected.remove().draw( false );
+                                    }
                                 },
-                                "error"  : function () {
-                                    alert( "Error" );
+                                "error"  : function ( xhr ) {
+                                    console.log( xhr );
+                                    length--;
+                                    row.deselect();
+                                    selected = dt.rows( { selected: true } );
+                                    if ( !length ) {
+                                        selected.remove().draw( false );
+                                    }
                                 }
                             } );
-                        }
+                        } );
                     }
                 }
             } ]
@@ -88,9 +99,24 @@
             } );
         }
 
+        function deleteRow( classroom_id ) {
+            table.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+                var data = this.data();
+                console.log( rowIdx );
+                console.log( tableLoop );
+                console.log( rowLoop );
+
+                console.log( data );
+                if ( classroom_id == data.id ) {
+                    this.remove();
+                }
+            } );
+        }
+
         return {
             "insert"   : insert,
-            "redrawRow": redrawRow
+            "redrawRow": redrawRow,
+            "deleteRow": deleteRow
         };
     })( '#classrooms-tab' );
 

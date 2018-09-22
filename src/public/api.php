@@ -39,6 +39,7 @@ $app->get('/api/classrooms/{id}', function (Request $request, Response $response
     $response = $response->withStatus(200, 'OK');
     $response = $response->withHeader('Content-Type', 'application/json');
     $response->getBody()->write(json_encode($results[ 0 ]));
+
     return $response;
 });
 
@@ -47,6 +48,7 @@ $app->get('/api/classrooms', function (Request $request, Response $response, arr
     $response = $response->withStatus(200, 'OK');
     $response = $response->withHeader('Content-Type', 'application/json');
     $response->getBody()->write(json_encode($results));
+
     return $response;
 });
 
@@ -78,6 +80,7 @@ $app->get('/api/students/{id}', function (Request $request, Response $response, 
     $response = $response->withStatus(200);
     $response = $response->withHeader('Content-Type', 'application/json');
     $response->getBody()->write(json_encode($results[ 0 ]));
+
     return $response;
 });
 
@@ -86,6 +89,7 @@ $app->get('/api/students', function (Request $request, Response $response, array
     $response = $response->withStatus(200, 'OK');
     $response = $response->withHeader('Content-Type', 'application/json');
     $response->getBody()->write(json_encode($results));
+
     return $response;
 });
 
