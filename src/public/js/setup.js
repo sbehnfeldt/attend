@@ -94,7 +94,11 @@
             table.rows().every( function ( /* rowIdx, tableLoop, rowLoop */ ) {
                 var data = this.data();
                 if ( data.id == newData.id ) {
-                    this.data( newData );
+                    var oldData = this.data();
+                    for ( var p in newData ) {
+                        oldData[ p ] = newData[ p ];
+                    }
+                    this.data( oldData );
                 }
             } );
         }
