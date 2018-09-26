@@ -14,9 +14,11 @@
             "paging"   : false,
             "searching": false,
             "select"   : true,
+            "order"    : [ [ 2, "asc" ] ],
             "columns"  : [
                 { "data": "id" },
-                { "data": "label" }
+                { "data": "label" },
+                { "data": "ordering" }
             ]
         } );
 
@@ -90,6 +92,10 @@
             table.row.add( data ).draw();
         }
 
+        function reload() {
+            table.ajax.reload();
+        }
+
         function redrawRow( newData ) {
             table.rows().every( function ( /* rowIdx, tableLoop, rowLoop */ ) {
                 var data = this.data();
@@ -119,6 +125,7 @@
 
         return {
             "insert"   : insert,
+            "reload"   : reload,
             "redrawRow": redrawRow,
             "deleteRow": deleteRow
         };
@@ -136,10 +143,15 @@
             "modal"   : true,
             "buttons" : {
                 "Submit": function () {
-                    var id    = $self.find( '[name=id]' ).val();
-                    var label = $self.find( '[name=label]' ).val();
-                    var data  = {
-                        "label": label
+                    var id       = $self.find( '[name=id]' ).val();
+                    var label    = $self.find( '[name=label]' ).val();
+                    var ordering = $self.find( '[name=ordering]' ).val();
+                    if ( ordering === '' ) {
+                        ordering = null;
+                    }
+                    var data = {
+                        "label"   : label,
+                        "ordering": ordering
                     };
                     if ( !id ) {
                         $.ajax( {
@@ -154,7 +166,12 @@
                                     "method": "get",
 
                                     "success": function ( json ) {
-                                        ClassroomsTab.insert( json );
+                                        console.log( json );
+                                        if ( !ordering ) {
+                                            ClassroomsTab.insert( json );
+                                        } else {
+                                            ClassroomsTab.reload( json );
+                                        }
                                     },
                                     "error"  : function ( xhr ) {
                                         console.log( xhr );
@@ -206,6 +223,7 @@
         function populate( classroom ) {
             $form.find( '[name=id]' ).val( classroom.id );
             $form.find( '[name=label]' ).val( classroom.label );
+            $form.find( '[name=ordering]' ).val( classroom.ordering );
         }
 
         function clear() {
