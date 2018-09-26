@@ -186,9 +186,7 @@
                         $.ajax( {
                             "url"   : "api/classrooms/" + id,
                             "method": "put",
-                            "data"  : {
-                                "label": label
-                            },
+                            "data"  : data,
 
                             "dataType": "json",
                             "success" : function ( json ) {
