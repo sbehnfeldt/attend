@@ -63,7 +63,11 @@ $app->post('/api/classrooms', function (Request $request, Response $response, ar
 
 $app->put('/api/classrooms/{id}', function (Request $request, Response $response, array $args) {
     $this->get('classroomsRepo')->updateOne($args[ 'id' ], $request->getParsedBody());
-    $response = $response->withStatus(204, 'No Content');
+
+    $results  = $this->get('classroomsRepo')->selectOne($args[ 'id' ]);
+    $response = $response->withStatus(200, 'OK');
+    $response = $response->withHeader('Content-Type', 'application/json');
+    $response->getBody()->write(json_encode($results[ 0 ]));
 
     return $response;
 });

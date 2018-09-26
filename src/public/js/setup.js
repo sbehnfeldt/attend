@@ -18,7 +18,9 @@
             "columns"  : [
                 { "data": "id" },
                 { "data": "label" },
-                { "data": "ordering" }
+                { "data": "ordering" },
+                { "data": "created_at" },
+                { "data": "updated_at" }
             ]
         } );
 
@@ -190,8 +192,7 @@
 
                             "dataType": "json",
                             "success" : function ( json ) {
-                                data.id = id;
-                                ClassroomsTab.redrawRow( data );
+                                ClassroomsTab.redrawRow( json );
                             },
                             "error"   : function ( xhr ) {
                                 console.log( xhr );
