@@ -1,6 +1,11 @@
 ;(function ( global, $ ) {
     'use strict';
 
+
+    // "Classroom" column on the Enrollment tab cannot be filled in until both the Students and Classrooms
+    // data has been retrieved from the server.  This function checks to see whether this is true; if so,
+    // draw the Enrollment table; it will be drawn with the names (rather than the IDs) of the classrooms
+    // filled in
     function checkClassrooms() {
         if ( 0 === Classrooms.records.length ) {
             return;
@@ -12,6 +17,7 @@
     }
 
 
+    // The classrooms records from the database
     var Classrooms = (function () {
         var records = [];
 
@@ -30,21 +36,25 @@
     })();
 
 
+    //
     var EnrollmentTab = (function ( selector ) {
         var $self,
             table;
 
+        // Check whether there are any rows in the Enrollment table
         function isEmpty() {
             return ( 0 === table.rows().count() );
         }
 
-        // Convert classroom IDs in table to classroom names
+        // Redraw the Enrollment table
+        // This is used to convert classroom IDs in table to classroom names.
         function drawTable() {
             table.rows().every( function ( /* rowIdx, tableLoop, rowLoop */ ) {
                 this.data( this.data() );   // Forces row to redraw
             } );
         }
 
+        // Redraw a specific row in the Enrollment table
         function redrawRow( newData ) {
             table.rows().every( function ( /* rowIdx, tableLoop, rowLoop */ ) {
                 var data = this.data();
@@ -53,6 +63,7 @@
                 }
             } );
         }
+
 
         $self = $( selector );
         table = $self.find( 'table' ).DataTable( {
