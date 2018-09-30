@@ -66,7 +66,7 @@
 
 
         $self = $( selector );
-        table = $self.find( 'table' ).DataTable( {
+        table = $self.find( 'table.enrollment-table' ).DataTable( {
             "ajax"        : {
                 "url"    : "api/students",
                 "dataSrc": ""
@@ -161,10 +161,16 @@
     var StudentPropsDlg = (function ( selector ) {
         var $self,
             $form,
+            $buttons,
             dialog;
 
-        $self  = $( selector );
-        $form  = $self.find( 'form' );
+        $self    = $( selector );
+        $form    = $self.find( 'form' );
+        $buttons = $form.find( 'button' );
+        $buttons.on( 'click', function () {
+            alert( "Click" );
+            return false;
+        } );
         dialog = $self.dialog( {
             "autoOpen": false,
             "modal"   : true,

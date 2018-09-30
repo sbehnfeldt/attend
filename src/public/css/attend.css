@@ -1,60 +1,60 @@
 body {
-    padding-top:70px;
+    padding-top: 70px;
     margin-bottom: 50px;
 }
 
 /*header {*/
-    /*margin: 0;*/
-    /*border-bottom: none;*/
+/*margin: 0;*/
+/*border-bottom: none;*/
 /*}*/
 
 /*h2 {*/
-    /*margin-top: 0;*/
+/*margin-top: 0;*/
 /*}*/
 
 /*label {*/
-    /*display: block;*/
+/*display: block;*/
 /*}*/
 
 /*table {*/
-    /*page-break-inside: auto;*/
+/*page-break-inside: auto;*/
 /*}*/
 
 /*tr {*/
-    /*page-break-inside: avoid;*/
-    /*page-break-after: auto*/
+/*page-break-inside: avoid;*/
+/*page-break-after: auto*/
 /*}*/
 
 /*th,*/
 /*td {*/
-    /*border: 1px solid black;*/
+/*border: 1px solid black;*/
 /*}*/
 
 /*th {*/
-    /*padding-left: 5px;*/
-    /*padding-right: 5px;*/
-    /*background-color: #eee;*/
-    /*text-align: center;*/
+/*padding-left: 5px;*/
+/*padding-right: 5px;*/
+/*background-color: #eee;*/
+/*text-align: center;*/
 /*}*/
 
 /*th.button-column {*/
-    /*width: 75px;*/
+/*width: 75px;*/
 /*}*/
 
 /*td {*/
-    /*margin: auto;*/
-    /*text-align: center;*/
+/*margin: auto;*/
+/*text-align: center;*/
 /*}*/
 
 /*button.discard span,*/
 /*button.undo span,*/
 /*button.delete span {*/
-    /*color: #f00;*/
+/*color: #f00;*/
 /*}*/
 
 /*button.edit span,*/
 /*button.schedules span {*/
-    /*color: #080;*/
+/*color: #080;*/
 /*}*/
 button {
     border: 2px double #494949;
@@ -68,6 +68,7 @@ button {
 button.disabled {
     background-image: linear-gradient(#fff 0%, #aaa 100%);
 }
+
 button.disabled span {
     color: #aaa;
 }
@@ -78,6 +79,10 @@ button.disabled span {
 
 .ui-dialog {
     display: none;
+}
+
+.ui-dialog hr {
+    border-top: 3px solid #aaa;
 }
 
 .ui-dialog div.row {
@@ -91,177 +96,191 @@ button.disabled span {
     display: block;
 }
 
+.ui-dialog table {
+    width: 100%;
+}
+
+.ui-dialog table td:not(:first-of-type) {
+    border: 1px solid #888;
+}
+
+.ui-dialog table td input[type=checkbox] {
+    text-align: center;
+    width: 100%;
+}
+
+.ui-dialog table button {
+    width: 100%;
+}
+
 /*div.in-out {*/
-    /*border-bottom: 1px dashed black;*/
+/*border-bottom: 1px dashed black;*/
 /*}*/
 
 /*tr.half-row {*/
-    /*border-bottom: 2px dashed dimgray;*/
+/*border-bottom: 2px dashed dimgray;*/
 /*}*/
 
 /*tr.full-row {*/
-    /*border-bottom: 5px double black;*/
+/*border-bottom: 5px double black;*/
 /*}*/
 
 /*div.print-header {*/
-    /*display: none;*/
+/*display: none;*/
 /*}*/
 
 /*div.time-date {*/
-    /*border-bottom: 3px solid #eaeaea;*/
-    /*margin-bottom: 10px;*/
+/*border-bottom: 3px solid #eaeaea;*/
+/*margin-bottom: 10px;*/
 /*}*/
 
 /*td.row-header {*/
-    /*background-color: #eee;*/
+/*background-color: #eee;*/
 /*}*/
 
 /*td.modified {*/
-    /*background-color: #ffff88;*/
+/*background-color: #ffff88;*/
 /*}*/
 
 /*input[type=text], textarea {*/
-    /*-webkit-transition: all 0.30s ease-in-out;*/
-    /*-moz-transition: all 0.30s ease-in-out;*/
-    /*-ms-transition: all 0.30s ease-in-out;*/
-    /*-o-transition: all 0.30s ease-in-out;*/
-    /*transition: all 0.30s ease-in-out;*/
-    /*outline: none;*/
+/*-webkit-transition: all 0.30s ease-in-out;*/
+/*-moz-transition: all 0.30s ease-in-out;*/
+/*-ms-transition: all 0.30s ease-in-out;*/
+/*-o-transition: all 0.30s ease-in-out;*/
+/*transition: all 0.30s ease-in-out;*/
+/*outline: none;*/
 
-    /*border: 3px solid #dddddd;*/
-    /*padding: 0px 0px 0px 0px;*/
+/*border: 3px solid #dddddd;*/
+/*padding: 0px 0px 0px 0px;*/
 /*}*/
 
 /*input[type=text]:focus, textarea:focus {*/
-    /*box-shadow: 0 0 5px rgba(81, 203, 238, 1);*/
-    /*border: 3px solid rgba(81, 203, 238, 1);*/
+/*box-shadow: 0 0 5px rgba(81, 203, 238, 1);*/
+/*border: 3px solid rgba(81, 203, 238, 1);*/
 /*}*/
 
 /*input[type=text].modified, textarea.modified {*/
-    /*background-color: #ffff88;*/
+/*background-color: #ffff88;*/
 /*}*/
 
 /*select.modified {*/
-    /*background-color: #ffff88;*/
+/*background-color: #ffff88;*/
 /*}*/
 
 /*.tab.active {*/
-    /*color: #222;*/
-    /*font-weight: bold;*/
-    /*background-color: rgba(81, 203, 238, 1);*/
+/*color: #222;*/
+/*font-weight: bold;*/
+/*background-color: rgba(81, 203, 238, 1);*/
 /*}*/
 
 /*.page {*/
-    /*padding-top: 70px;*/
-    /*display: none;*/
+/*padding-top: 70px;*/
+/*display: none;*/
 /*}*/
 
-
 /*form table {*/
-    /*width: 100%;*/
+/*width: 100%;*/
 /*}*/
 
 /*table select,*/
 /*table input[type=text] {*/
-    /*width: 100%;*/
+/*width: 100%;*/
 /*}*/
 
 /*.report {*/
-    /*display: none;*/
+/*display: none;*/
 /*}*/
 
 /*span.clock {*/
-    /*padding: 15px;*/
+/*padding: 15px;*/
 /*}*/
 
 /*.btn-group-toggle button.btn-default {*/
-    /*color: #222222;*/
-    /*background-image: linear-gradient(to bottom, #bbb 0%, #a0a0a0 100%);*/
+/*color: #222222;*/
+/*background-image: linear-gradient(to bottom, #bbb 0%, #a0a0a0 100%);*/
 /*}*/
 
 /*.btn-group-toggle button.btn-selected {*/
-    /*background-image: linear-gradient(to bottom, #fff 0%, #e0e0e0 100%);*/
-    /*color: #00bb00;*/
-    /*font-weight: bold;*/
-    /*border-right: 2px solid #e0e0e0;*/
-    /*border-top: 2px solid #e0e0e0;*/
+/*background-image: linear-gradient(to bottom, #fff 0%, #e0e0e0 100%);*/
+/*color: #00bb00;*/
+/*font-weight: bold;*/
+/*border-right: 2px solid #e0e0e0;*/
+/*border-top: 2px solid #e0e0e0;*/
 /*}*/
-
 
 /*#attendance-page td.absent,*/
 /*#signin-page td.absent {*/
-    /*background-color: #bdbdbd;*/
+/*background-color: #bdbdbd;*/
 /*}*/
 
 /*#attendance-page .attendance-report {*/
-    /*display: none;*/
+/*display: none;*/
 /*}*/
 
 /*#attendance-page .attendance-schedule th {*/
-    /*text-align: center;*/
+/*text-align: center;*/
 /*}*/
 
-
 /*#attendance-page th.attendance-schedule-name {*/
-    /*width: 20%;*/
+/*width: 20%;*/
 /*}*/
 
 /*#attendance-page td.attendance-schedule-notes {*/
-    /*text-align: left;*/
-    /*width: 35%;*/
+/*text-align: left;*/
+/*width: 35%;*/
 /*}*/
 
 /*#attendance-page td.attendance-schedule-name {*/
-    /*text-align: left;*/
+/*text-align: left;*/
 /*}*/
 
 /*#attendance-page td {*/
-    /*background-color: #fff;*/
+/*background-color: #fff;*/
 /*}*/
 
 /*#signin-page h4 {*/
-    /*text-align: center;*/
+/*text-align: center;*/
 /*}*/
 
 /*#attendance-page .attendance-page-schedules table,*/
 /*#signin-page .signin-page-contents table {*/
-    /*width: 100%;*/
-    /*margin-bottom: 2em;*/
+/*width: 100%;*/
+/*margin-bottom: 2em;*/
 /*}*/
 
 /*#enrollment-page .student-list select {*/
-    /*width: 100%;*/
+/*width: 100%;*/
 /*}*/
 
 /*.checkcontrol {*/
-    /*text-align: center;*/
+/*text-align: center;*/
 /*}*/
 
 /*.checkcontrol button {*/
-    /*width: 50%;*/
+/*width: 50%;*/
 /*}*/
 
 /*@media screen {*/
-    /*.print-only {*/
-        /*display: none;*/
-    /*}*/
+/*.print-only {*/
+/*display: none;*/
+/*}*/
 /*}*/
 
 /*.ui-dialog-content button {*/
-    /*font-size: 70%;*/
+/*font-size: 70%;*/
 /*}*/
 
 /*.ui-dialog-content input[type=text] {*/
-    /*width: 100%;*/
+/*width: 100%;*/
 /*}*/
 
 /*span.glyphicon span {*/
-    /*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
+/*font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;*/
 /*}*/
 /*span.glyphicon-plus {*/
-    /*color: #0000cc;*/
+/*color: #0000cc;*/
 /*}*/
 
 /*span.glyphicon-refresh {*/
-    /*color: #0000cc;*/
+/*color: #0000cc;*/
 /*}*/
