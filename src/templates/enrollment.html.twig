@@ -42,30 +42,34 @@
                     <div>
                         <input class="hidden" name="id">
                     </div>
-                    <div>
-                        <label>Family Name</label>
-                        <input type="text" name="family_name">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <label>Family Name</label>
+                            <input type="text" name="family_name">
+                        </div>
+                        <div class="col-xs-6">
+                            <label>First Name</label>
+                            <input type="text" name="first_name">
+                        </div>
                     </div>
 
-                    <div>
-                        <label>First Name</label>
-                        <input type="text" name="first_name">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label for="">Classroom</label>
+                            <select name="classroom_id" id="classroom_id">
+                                <option value="">Select a classroom</option>
+                                {% for classroom in classrooms %}
+                                    <option value="{{ classroom.id }}">{{ classroom.label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </div>
 
-                    <div>
-                        <label for="">Classroom</label>
-                        <select name="classroom_id" id="classroom_id">
-                            <option value="">Select a classroom</option>
-                            {% for classroom in classrooms %}
-                                <option value="{{ classroom.id }}">{{ classroom.label }}</option>
-                            {% endfor %}
-
-                        </select>
-                    </div>
-
-                    <div>
-                        <label> Enrolled</label>
-                        <input type="checkbox" name="enrolled">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <label>Enrolled </label>
+                            <input class="pull-left" type="checkbox" name="enrolled" checked>
+                        </div>
                     </div>
                 </form>
             </div>

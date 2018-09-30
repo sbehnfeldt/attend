@@ -79,6 +79,18 @@ button.disabled span {
 .ui-dialog {
     display: none;
 }
+
+.ui-dialog div.row {
+    margin-bottom: 20px;
+}
+
+.ui-dialog div.row div.col-xs-6 input[type=edit],
+.ui-dialog div.row div.col-xs-6 select,
+.ui-dialog div.row div.col-xs-12 input[type=edit],
+.ui-dialog div.row div.col-xs-12 select {
+    display: block;
+}
+
 /*div.in-out {*/
     /*border-bottom: 1px dashed black;*/
 /*}*/
