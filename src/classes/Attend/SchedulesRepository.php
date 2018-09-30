@@ -27,6 +27,11 @@ class SchedulesRepository extends Repository
                 'insert' => true,
                 'update' => true,
                 'select' => true
+            ],
+            'start_date' => [
+                'insert' => true,
+                'update' => true,
+                'select' => true
             ]
         ];
     }

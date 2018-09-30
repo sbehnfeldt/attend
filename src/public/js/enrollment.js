@@ -35,6 +35,41 @@
         };
     })();
 
+    var Schedules = (function () {
+        var records = [];
+
+        function load( schedules ) {
+            for ( var i = 0; i < schedules.length; i++ ) {
+                var s = schedules[ i ];
+                if ( undefined === records[ s.student_id ] ) {
+                    records[ s.student_id ] = [];
+                }
+                records[ s.student_id ].push( s );
+            }
+
+            for ( var p in records ) {
+                if ( records[ p ].length > 1 ) {
+                    console.log( p + ': ' );
+                    records[ p ].sort( function ( a, b ) {
+                        if ( a.start_date < b.start_date ) return 1;
+                        if ( a.start_date > b.start_date ) return -1;
+                        return 0;
+                    } );
+
+                    for ( i = 0; i < records[ p ].length; i++ ) {
+                        console.log( records[ p ][ i ] );
+                    }
+                }
+
+            }
+        }
+
+        return {
+            'records': records,
+            'load'   : load
+        };
+    })();
+
 
     //
     var EnrollmentTab = (function ( selector ) {
@@ -277,6 +312,21 @@
                 console.log( xhr );
             }
         } );
+
+        $.ajax( {
+            'url'   : 'api/schedules',
+            'method': 'get',
+
+            'dataType': 'json',
+            'success' : function ( json ) {
+                console.log( 'Schedules loaded' );
+                Schedules.load( json );
+            },
+            'error'   : function ( xhr ) {
+                console.log( "ERROR loading schedules" );
+                console.log( xhr );
+            }
+        } )
     } );
 
 })( this, jQuery );
