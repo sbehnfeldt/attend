@@ -28,6 +28,10 @@ $container[ 'studentsRepo' ] = function ($c) {
     return new \Attend\StudentsRepository($c->get('db'));
 };
 
+$container[ 'scheduleRepo' ] = function ($c) {
+    return new \Attend\SchedulesRepository($c->get('db'));
+};
+
 
 $app->get('/api/', function (Request $request, Response $response, array $args) {
     $response->getBody()->write('OK');
@@ -79,6 +83,7 @@ $app->delete('/api/classrooms/{id}', function (Request $request, Response $respo
     return $response;
 });
 
+
 $app->get('/api/students/{id}', function (Request $request, Response $response, array $args) {
     $results  = $this->get('studentsRepo')->selectOne($args[ 'id' ]);
     $response = $response->withStatus(200);
@@ -115,6 +120,48 @@ $app->put('/api/students/{id}', function (Request $request, Response $response, 
 
 $app->delete('/api/students/{id}', function (Request $request, Response $response, array $args) {
     $this->get('studentsRepo')->deleteOne($args[ 'id' ]);
+    $response = $response->withStatus(204, 'No Content');
+
+    return $response;
+});
+
+
+$app->get('/api/schedules/{id}', function (Request $request, Response $response, array $args) {
+    $results  = $this->get('scheduleRepo')->selectOne($args[ 'id' ]);
+    $response = $response->withStatus(200);
+    $response = $response->withHeader('Content-Type', 'application/json');
+    $response->getBody()->write(json_encode($results[ 0 ]));
+
+    return $response;
+});
+
+$app->get('/api/schedules', function (Request $request, Response $response, array $args) {
+    $results  = $this->get('scheduleRepo')->select();
+    $response = $response->withStatus(200, 'OK');
+    $response = $response->withHeader('Content-Type', 'application/json');
+    $response->getBody()->write(json_encode($results));
+
+    return $response;
+});
+
+$app->post('/api/schedules', function (Request $request, Response $response, array $args) {
+    $id       = $this->get('scheduleRepo')->insert($request->getParsedBody());
+    $response = $response->withStatus(200, 'OK');
+    $response->withHeader('Content-Type', 'application/json');
+    $response->getBody()->write(json_encode($id));
+
+    return $response;
+});
+
+$app->put('/api/schedules/{id}', function (Request $request, Response $response, array $args) {
+    $this->get('scheduleRepo')->updateOne($args[ 'id' ], $request->getParsedBody());
+    $response = $response->withStatus(204, 'No Content');
+
+    return $response;
+});
+
+$app->delete('/api/schedules/{id}', function (Request $request, Response $response, array $args) {
+    $this->get('scheduleRepo')->deleteOne($args[ 'id' ]);
     $response = $response->withStatus(204, 'No Content');
 
     return $response;
