@@ -15,6 +15,16 @@ $pdo        = new PDO('mysql:host=' . $config[ 'db' ][ 'host' ] . ';dbname=' . $
     ]);
 $repo       = new \Attend\ClassroomsRepository($pdo);
 $classrooms = $repo->select();
+usort($classrooms, function ($a, $b) {
+    if ($a[ 'ordering' ] > $b[ 'ordering' ]) {
+        return 1;
+    };
+    if ($a[ 'ordering' ] < $b[ 'ordering' ]) {
+        return -1;
+    };
+
+    return 0;
+});
 
 echo $twig->render('enrollment.html.twig', [
     'classrooms' => $classrooms
