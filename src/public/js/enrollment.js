@@ -35,6 +35,8 @@
         };
     })();
 
+
+    // The schedules for each student
     var Schedules = (function () {
         var records = [];
 
@@ -48,19 +50,11 @@
             }
 
             for ( var p in records ) {
-                if ( records[ p ].length > 1 ) {
-                    console.log( p + ': ' );
-                    records[ p ].sort( function ( a, b ) {
-                        if ( a.start_date < b.start_date ) return 1;
-                        if ( a.start_date > b.start_date ) return -1;
-                        return 0;
-                    } );
-
-                    for ( i = 0; i < records[ p ].length; i++ ) {
-                        console.log( records[ p ][ i ] );
-                    }
-                }
-
+                records[ p ].sort( function ( a, b ) {
+                    if ( a.start_date < b.start_date ) return 1;
+                    if ( a.start_date > b.start_date ) return -1;
+                    return 0;
+                } );
             }
         }
 
@@ -197,15 +191,40 @@
         var $self,
             $form,
             $buttons,
+            $boxes,
+            $list,
             dialog;
 
         $self    = $( selector );
         $form    = $self.find( 'form' );
-        $buttons = $form.find( 'button' );
+        $buttons = $form.find( 'table.schedule-table button' );
+        $boxes   = $form.find( 'table.schedule-table input[type=checkbox]' );
+        $list    = $form.find( '[name=schedulesList]' );
         $buttons.on( 'click', function () {
-            alert( "Click" );
             return false;
         } );
+        $boxes.on( 'change', function () {
+            console.log( this );
+            console.log( $( this ) );
+            console.log( $( this ).val() );
+        } );
+
+        $list.on( 'change', function () {
+//            console.log(this);
+//            console.log($(this));
+//            console.log($(this ).val());
+//            console.log($(this ).val());
+
+            var id  = $form.find( '[name=id]' ).val();
+            var idx = $( this )[ 0 ].selectedIndex;
+//            console.log( id + ', ' + idx );
+            if ( idx ) {
+                console.log( Schedules.records[ id ][ idx - 1 ] );
+
+            }
+        } );
+
+
         dialog = $self.dialog( {
             "autoOpen": false,
             "modal"   : true,
@@ -274,20 +293,39 @@
         }
 
         function close() {
+            clear();
             dialog.dialog( 'close' );
         }
 
         function populate( student ) {
-            console.log( student );
+            var $opt;
+
+//            console.log( student );
+//            console.log( Schedules.records[ student.id ] );
             $form.find( '[name=id]' ).val( student.id );
             $form.find( '[name=family_name]' ).val( student.family_name );
             $form.find( '[name=first_name]' ).val( student.first_name );
             $form.find( '[name=classroom_id]' ).val( student.classroom_id );
             $form.find( '[name=enrolled]' ).prop( 'checked', (1 == student.enrolled) );
+
+
+            $list.removeClass( 'hidden' );
+            $list.empty();
+            for ( var i = 0; i < Schedules.records[ student.id ].length; i++ ) {
+                console.log( Schedules.records[ student.id ][ i ] );
+                var s = Schedules.records[ student.id ][ i ];
+                $opt  = $( '<option>' ).text( s.start_date ).val( s.id );
+                $list.append( $opt );
+            }
+
+            $buttons.forEach( function ( idx, elem ) {
+                console.log( $( elem ).val() );
+            } );
         }
 
         function clear() {
             $form[ 0 ].reset();
+            $list.addClass( 'hidden' );
         }
 
         return {
@@ -295,6 +333,7 @@
             'close': close
         };
     })( '#student-props-dlg' );
+
 
     $( function () {
         $( '#tabs' ).tabs();

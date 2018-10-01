@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Setup{% endblock %}
+{% block title %}Enrollment{% endblock %}
 
 {% block scripts %}
     {{ parent() }}
@@ -56,7 +56,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <label for="">Classroom</label>
-                            <select name="classroom_id" id="classroom_id">
+                            <select name="classroomsList" id="classroom_id">
                                 <option value="">Select a classroom</option>
                                 {% for classroom in classrooms %}
                                     <option value="{{ classroom.id }}">{{ classroom.label }}</option>
@@ -80,11 +80,16 @@
                     </div>
 
                     <div class="row">
+                        <div class="col-xs-6">
+                            <select name="schedulesList" class=""></select>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="col-xs-12">
-                            <table>
+                            <table class="schedule-table">
                                 <thead>
                                 <tr>
-                                    <th></th>
+                                    <th>&nbsp;</th>
                                     <th>
                                         <button>Mon</button>
                                     </th>
@@ -107,31 +112,31 @@
                                     <td>
                                         <button>AM</button>
                                     </td>
-                                    <td><input type="checkbox"></td>
-                                    <td><input type="checkbox"></td>
-                                    <td><input type="checkbox"></td>
-                                    <td><input type="checkbox"></td>
-                                    <td><input type="checkbox"></td>
+                                    <td><input type="checkbox" value="0x01"></td>
+                                    <td><input type="checkbox" value="0x02"></td>
+                                    <td><input type="checkbox" value="0x04"></td>
+                                    <td><input type="checkbox" value="0x08"></td>
+                                    <td><input type="checkbox" value="0x10"></td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <button>Noon</button>
                                     </td>
-                                    <td><input type="checkbox"></td>
-                                    <td><input type="checkbox"></td>
-                                    <td><input type="checkbox"></td>
-                                    <td><input type="checkbox"></td>
-                                    <td><input type="checkbox"></td>
+                                    <td><input type="checkbox" value="0x20"></td>
+                                    <td><input type="checkbox" value="0x40"></td>
+                                    <td><input type="checkbox" value="0x80"></td>
+                                    <td><input type="checkbox" value="0x10"></td>
+                                    <td><input type="checkbox" value="0x20"></td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <button>PM</button>
                                     </td>
-                                    <td><input type="checkbox"></td>
-                                    <td><input type="checkbox"></td>
-                                    <td><input type="checkbox"></td>
-                                    <td><input type="checkbox"></td>
-                                    <td><input type="checkbox"></td>
+                                    <td><input type="checkbox" value="0x40"></td>
+                                    <td><input type="checkbox" value="0x80"></td>
+                                    <td><input type="checkbox" value="0x100"></td>
+                                    <td><input type="checkbox" value="0x200"></td>
+                                    <td><input type="checkbox" value="0x400"></td>
                                 </tr>
                                 </tbody>
                             </table>
