@@ -96,6 +96,10 @@ button.disabled span {
     display: block;
 }
 
+.ui-dialog .missing {
+    background-color: pink;
+    color: red;
+}
 .ui-dialog table {
     width: 100%;
 }
