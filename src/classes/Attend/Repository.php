@@ -75,13 +75,35 @@ abstract class Repository implements iRepository
         return $results;
     }
 
-    public function insert($parsedBody)
+    /****************************************************************************************************
+     * Insert
+     ****************************************************************************************************/
+    public function insert($inserts)
+    {
+        list($cols, $vals) = static::preProcessInserts($inserts);
+        static::postProcessInserts($cols, $vals);
+
+
+        $sql = sprintf("INSERT INTO %s (%s) VALUES(%s)",
+            $this->getTableName(),
+            implode(', ', $cols),
+            implode(', ', array_fill(0, count($cols), '?'))
+        );
+        $sth = $this->pdo->prepare($sql);
+        $b   = $sth->execute($vals);
+
+        $id = $this->pdo->lastInsertId();
+
+        return $id;
+    }
+
+    static protected function preProcessInserts($inserts)
     {
         $allCols = static::getColumnNames();
         $cols    = [];
         $vals    = [];
 
-        foreach ($parsedBody as $k => $v) {
+        foreach ($inserts as $k => $v) {
             if ( ! isset($allCols[ $k ])) {
                 throw new Exception(sprintf('Unknown column name "%s"'), $k);
             }
@@ -99,49 +121,50 @@ abstract class Repository implements iRepository
             $vals[] = $v;
         }
 
-        $sql = sprintf("INSERT INTO %s (%s) VALUES(%s)",
-            $this->getTableName(),
-            implode(', ', $cols),
-            implode(', ', array_fill(0, count($cols), '?'))
-        );
-        $sth = $this->pdo->prepare($sql);
-        $b   = $sth->execute($vals);
+        return [$cols, $vals];
+    }
 
-        $id = $this->pdo->lastInsertId();
+    static protected function postProcessInserts(&$cols, &$vals)
+    {
+        return;
+    }
 
-        return $id;
+
+    /****************************************************************************************************
+     * Updates
+     ****************************************************************************************************/
+    public function updateOne($id, $updates)
+    {
+        list($cols, $vals) = static::preProcessUpdates($updates);
+        $vals[] = $id;
+        for ($i = 0; $i < count($cols); $i++) {
+            $cols[ $i ] .= '= ?';
+        }
+        $cols = implode(', ', $cols);
+        $sql  = sprintf("UPDATE %s SET %s WHERE id=?", $this->getTableName(), $cols);
+        $sth  = $this->pdo->prepare($sql);
+        $b    = $sth->execute($vals);
+
+        return;
     }
 
 
 // Break the update data associative arrays into 2 parallel indexed arrays
     static protected function preProcessUpdates($updates)
     {
-        $params = $values = [];
+        $cols = $vals = [];
         foreach ($updates as $k => $v) {
-            $params[] = $k;
-            $values[] = $v;
+            $cols[] = $k;
+            $vals[] = $v;
         }
 
-        return [$params, $values];
+        return [$cols, $vals];
     }
 
 
-    public function updateOne($id, $updates)
-    {
-        list($params, $values) = static::preProcessUpdates($updates);
-        $values[] = $id;
-        for ($i = 0; $i < count($params); $i++) {
-            $params[ $i ] .= '= ?';
-        }
-        $params = implode(', ', $params);
-        $sql    = sprintf("UPDATE %s SET %s WHERE id=?", $this->getTableName(), $params);
-        $sth    = $this->pdo->prepare($sql);
-        $b      = $sth->execute($values);
-
-        return;
-    }
-
-
+    /****************************************************************************************************
+     * Deletes
+     ****************************************************************************************************/
     public function deleteOne($id)
     {
         $sql = sprintf("DELETE FROM %s WHERE id=?", $this->getTableName());
