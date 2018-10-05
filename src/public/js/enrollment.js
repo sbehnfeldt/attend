@@ -147,21 +147,24 @@
                 "text"  : "Delete",
                 "action": function ( e, dt ) {
                     var selected = dt.rows( { selected: true } ).indexes();
-                    var msg      = (1 === selected.length) ? 'Are you sure you want to delete this record?' : 'Are you sure you want to delete these ' + selected.length + ' records?';
+                    var msg      = (1 === selected.length) ? 'Are you sure you want to delete this student record?' : 'Are you sure you want to delete these ' + selected.length + ' student records?';
                     if ( confirm( msg ) ) {
                         for ( var i = 0; i < selected.length; i++ ) {
-                            console.log( dt.rows( selected[ i ] ).data()[ 0 ] );
-                            $.ajax( {
-                                "url"   : "api/students/" + dt.rows( selected[ i ] ).data()[ 0 ][ 'id' ],
-                                "method": "delete",
+                            (function ( index ) {
+                                $.ajax( {
+                                    "url"   : "api/students/" + dt.rows( selected[ index ] ).data()[ 0 ][ 'id' ],
+                                    "method": "delete",
 
-                                "success": function ( json ) {
-                                    alert( "Deleted" );
-                                },
-                                "error"  : function () {
-                                    alert( "Error" );
-                                }
-                            } );
+                                    "success": function ( json ) {
+                                        dt.rows( selected[ index ] ).remove();
+                                        dt.draw();
+                                    },
+                                    "error"  : function () {
+                                        alert( "Error" );
+                                    }
+                                } );
+
+                            })( i );
                         }
                     }
                 }
