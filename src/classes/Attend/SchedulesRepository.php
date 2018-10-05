@@ -32,8 +32,30 @@ class SchedulesRepository extends Repository
                 'insert' => true,
                 'update' => true,
                 'select' => true
+            ],
+            'entered_at' => [
+                'insert' => false,
+                'update' => false,
+                'select' => true
             ]
         ];
+    }
+
+    static protected function preProcessInserts($inserts)
+    {
+        if (empty($inserts[ 'start_date' ])) {
+            $inserts[ 'start_date' ] = date('Y-m-d');
+        }
+
+        return parent::preProcessInserts($inserts);
+    }
+
+    static protected function postProcessInserts(&$cols, &$vals)
+    {
+        $cols[] = 'entered_at';
+        $vals[] = time();
+
+        return parent::postProcessInserts($cols, $vals);
     }
 
 
