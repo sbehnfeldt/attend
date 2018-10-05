@@ -143,6 +143,7 @@
         dialog = $self.dialog( {
             "autoOpen": false,
             "modal"   : true,
+            "width"   : "300px",
             "buttons" : {
                 "Submit": function () {
                     var id       = $self.find( '[name=id]' ).val();
