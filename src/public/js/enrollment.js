@@ -190,23 +190,33 @@
     var StudentPropsDlg = (function ( selector ) {
         var $self,
             $form,
+            $required,
+            $familyName,
+            $firstName,
+            $classrooms,
+            $enrolled,
             $buttons,
             $boxes,
             $list,
             dialog;
 
-        $self    = $( selector );
-        $form    = $self.find( 'form' );
-        $buttons = $form.find( 'table.schedule-table button' );
-        $boxes   = $form.find( 'table.schedule-table input[type=checkbox]' );
-        $list    = $form.find( '[name=schedulesList]' );
+        $self       = $( selector );
+        $form       = $self.find( 'form' );
+        $required   = $form.find( '.required' );
+        $familyName = $self.find( '[name=family_name]' );
+        $firstName  = $self.find( '[name=first_name]' );
+        $classrooms = $self.find( '[name=classroomsList]' );
+        $enrolled   = $self.find( '[name=enrolled]' );
+        $buttons    = $form.find( 'table.schedule-table button' );
+        $boxes      = $form.find( 'table.schedule-table input[type=checkbox]' );
+        $list       = $form.find( '[name=schedulesList]' );
         $buttons.on( 'click', function () {
             return false;
         } );
         $boxes.on( 'change', function () {
-            console.log( this );
-            console.log( $( this ) );
-            console.log( $( this ).val() );
+//            console.log( this );
+//            console.log( $( this ) );
+//            console.log( $( this ).val() );
         } );
 
         $list.on( 'change', function () {
@@ -220,7 +230,6 @@
 //            console.log( id + ', ' + idx );
             if ( idx ) {
                 console.log( Schedules.records[ id ][ idx - 1 ] );
-
             }
         } );
 
@@ -230,54 +239,7 @@
             "modal"   : true,
             "width"   : "450px",
             "buttons" : {
-                "Submit": function () {
-                    var id   = $self.find( '[name=id]' ).val();
-                    var data = {
-                        "family_name": $self.find( '[name=family_name]' ).val(),
-                        "first_name" : $self.find( '[name=first_name]' ).val(),
-                        "enrolled"   : ('on' === $self.find( '[name=enrolled]' ).val()) ? 1 : 0,
-                    };
-                    if ( $self.find( '[name=classroom_id]' ).val() ) {
-                        data.classroom_id = $self.find( '[name=classroom_id]' ).val();
-                    }
-                    if ( !id ) {
-                        $.ajax( {
-                            "url"   : "api/students",
-                            "method": "post",
-                            "data"  : data,
-
-                            "dataType": "json",
-                            "success" : function ( json ) {
-                                console.log( json );
-                            },
-                            "error"   : function ( xhr ) {
-                                console.log( xhr );
-                                alert( "Error" );
-                            }
-                        } );
-                    } else {
-                        $.ajax( {
-                            "url"   : "api/students/" + id,
-                            "method": "put",
-                            "data"  : data,
-
-                            "success": function ( body, status, xhr ) {
-                                console.log( body );
-                                console.log( status );
-                                console.log( xhr );
-                                data.id = id;
-                                EnrollmentTab.redrawRow( data );
-                            },
-                            "error"  : function ( xhr, estring, e ) {
-                                console.log( xhr );
-                                console.log( estring );
-                                console.log( e );
-                                alert( "Error" );
-                            }
-                        } );
-                    }
-                    StudentPropsDlg.close();
-                },
+                "Submit": onSubmit,
                 "Cancel": function () {
                     StudentPropsDlg.close();
                 }
@@ -286,6 +248,8 @@
 
         function open( student ) {
             clear();
+
+            $required.removeClass( 'missing' );
             if ( student ) {
                 populate( student );
             }
@@ -296,6 +260,107 @@
             clear();
             dialog.dialog( 'close' );
         }
+
+        function validate() {
+            var valid = true;
+            $required.each( function ( i, e ) {
+                if ( !$( e ).val() ) {
+                    $( e ).addClass( 'missing' );
+                    valid = false;
+                } else {
+                    $( e ).removeClass( 'missing' );
+                }
+            } );
+            return valid;
+        }
+
+        function submit() {
+            var id   = $self.find( '[name=id]' ).val();
+            var data = {
+                "family_name" : $familyName.val(),
+                "first_name"  : $firstName.val(),
+                "enrolled"    : ('on' === $enrolled.val()) ? 1 : 0,
+                "classroom_id": JSON.stringify( {
+                    'data': ($classrooms.val() ? $classrooms.val() : null)
+                } )
+            };
+            console.log( data );
+
+
+            if ( !id ) {
+                var sched = 0;
+                $boxes.each( function ( i, e ) {
+                    if ( $( e ).prop( 'checked' ) ) {
+                        console.log( $( e ).val() );
+                        sched += parseInt( $( e ).val(), 16 );
+                    }
+                } );
+
+                $.ajax( {
+                    "url"   : "api/students",
+                    "method": "post",
+                    "data"  : data,
+
+                    "dataType": "json",
+                    "success" : function ( json ) {
+                        console.log( json );
+                        $.ajax( {
+                            "url"   : "api/schedules",
+                            "method": "post",
+                            "data"  : {
+                                'student_id': json,
+                                'schedule'  : sched
+                            },
+
+                            "dataType": "json",
+                            "success" : function ( json ) {
+                                console.log( json );
+                            },
+                            "error"   : function ( xhr ) {
+                                console.log( xhr );
+                                alert( "Error" );
+                            }
+                        } )
+                    },
+                    "error"   : function ( xhr ) {
+                        console.log( xhr );
+                        alert( "Error" );
+                    }
+                } );
+
+
+            } else {
+                $.ajax( {
+                    "url"   : "api/students/" + id,
+                    "method": "put",
+                    "data"  : data,
+
+                    "success": function ( body, status, xhr ) {
+                        console.log( body );
+                        console.log( status );
+                        console.log( xhr );
+                        data.id = id;
+                        EnrollmentTab.redrawRow( data );
+                    },
+                    "error"  : function ( xhr, estring, e ) {
+                        console.log( xhr );
+                        console.log( estring );
+                        console.log( e );
+                        alert( "Error" );
+                    }
+                } );
+            }
+            StudentPropsDlg.close();
+
+        }
+
+        function onSubmit() {
+            if ( validate() ) {
+                submit();
+                close();
+            }
+        }
+
 
         function populate( student ) {
             var $opt;
