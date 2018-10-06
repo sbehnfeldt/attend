@@ -207,21 +207,27 @@
         $self       = $( selector );
         $form       = $self.find( 'form' );
         $studentId  = $form.find( '[name=id]' );
-        $required   = $form.find( '.required' );
         $familyName = $self.find( '[name=family_name]' );
         $firstName  = $self.find( '[name=first_name]' );
         $classrooms = $self.find( '[name=classroomsList]' );
         $enrolled   = $self.find( '[name=enrolled]' );
-        $buttons    = $form.find( 'table.schedule-table button' );
-        $boxes      = $form.find( 'table.schedule-table input[type=checkbox]' );
         $list       = $form.find( '[name=schedulesList]' );
+
+        $boxes    = $form.find( 'table.schedule-table input[type=checkbox]' );
+        $buttons  = $form.find( 'table.schedule-table button' );
+        $required = $form.find( '.required' );
 
         dialog = $self.dialog( {
             "autoOpen": false,
             "modal"   : true,
             "width"   : "450px",
             "buttons" : {
-                "Submit": onSubmit,
+                "Submit": function () {
+                    if ( validate() ) {
+                        submit();
+                        close();
+                    }
+                },
                 "Cancel": function () {
                     StudentPropsDlg.close();
                 }
@@ -272,14 +278,6 @@
             $list.addClass( 'hidden' );
         }
 
-        function onSubmit() {
-            if ( validate() ) {
-                submit();
-                close();
-            }
-        }
-
-
         function populate( student ) {
             var $opt;
 
@@ -322,76 +320,77 @@
                     'data': ($classrooms.val() ? $classrooms.val() : null)
                 } )
             };
-            console.log( data );
-
 
             if ( !id ) {
-                var sched = 0;
-                $boxes.each( function ( i, e ) {
-                    if ( $( e ).prop( 'checked' ) ) {
-                        console.log( $( e ).val() );
-                        sched += parseInt( $( e ).val(), 16 );
-                    }
-                } );
-
-                $.ajax( {
-                    "url"   : "api/students",
-                    "method": "post",
-                    "data"  : data,
-
-                    "dataType": "json",
-                    "success" : function ( json ) {
-                        console.log( json );
-                        $.ajax( {
-                            "url"   : "api/schedules",
-                            "method": "post",
-                            "data"  : {
-                                'student_id': json,
-                                'schedule'  : sched
-                            },
-
-                            "dataType": "json",
-                            "success" : function ( json ) {
-                                console.log( json );
-                            },
-                            "error"   : function ( xhr ) {
-                                console.log( xhr );
-                                alert( "Error" );
-                            }
-                        } )
-                    },
-                    "error"   : function ( xhr ) {
-                        console.log( xhr );
-                        alert( "Error" );
-                    }
-                } );
-
-
+                insert( data );
             } else {
-                $.ajax( {
-                    "url"   : "api/students/" + id,
-                    "method": "put",
-                    "data"  : data,
-
-                    "success": function ( body, status, xhr ) {
-                        console.log( body );
-                        console.log( status );
-                        console.log( xhr );
-                        data.id = id;
-                        EnrollmentTab.redrawRow( data );
-                    },
-                    "error"  : function ( xhr, estring, e ) {
-                        console.log( xhr );
-                        console.log( estring );
-                        console.log( e );
-                        alert( "Error" );
-                    }
-                } );
+                update( id, data );
             }
             StudentPropsDlg.close();
-
         }
 
+        function insert( data ) {
+            var sched = 0;
+            $boxes.each( function ( i, e ) {
+                if ( $( e ).prop( 'checked' ) ) {
+                    sched += parseInt( $( e ).val(), 16 );
+                }
+            } );
+            $.ajax( {
+                "url"   : "api/students",
+                "method": "post",
+                "data"  : data,
+
+                "dataType": "json",
+                "success" : function ( json ) {
+                    console.log( json );
+                    $.ajax( {
+                        "url"   : "api/schedules",
+                        "method": "post",
+                        "data"  : {
+                            'student_id': json,
+                            'schedule'  : sched
+                        },
+
+                        "dataType": "json",
+                        "success" : function ( json ) {
+                            console.log( json );
+                        },
+                        "error"   : function ( xhr ) {
+                            console.log( xhr );
+                            alert( "Error" );
+                        }
+                    } )
+                },
+                "error"   : function ( xhr ) {
+                    console.log( xhr );
+                    alert( "Error" );
+                }
+            } );
+        }
+
+        function update( id, data ) {
+            $.ajax( {
+                "url"   : "api/students/" + id,
+                "method": "put",
+                "data"  : data,
+
+                "success": function ( body, status, xhr ) {
+                    console.log( body );
+                    console.log( status );
+                    console.log( xhr );
+                    data.id = id;
+                    EnrollmentTab.redrawRow( data );
+                },
+                "error"  : function ( xhr, estring, e ) {
+                    console.log( xhr );
+                    console.log( estring );
+                    console.log( e );
+                    alert( "Error" );
+                }
+            } );
+
+        }
 
 
         return {

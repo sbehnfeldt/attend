@@ -148,14 +148,19 @@
         $label       = $form.find( '[name=label]' );
         $order       = $form.find( '[name=ordering]' );
 
-
         $required = $form.find( '.required' );
+
         dialog    = $self.dialog( {
             "autoOpen": false,
             "modal"   : true,
             "width"   : "300px",
             "buttons" : {
-                "Submit": onSubmit,
+                "Submit": function () {
+                    if ( validate() ) {
+                        submit();
+                        close();
+                    }
+                },
                 "Cancel": function () {
                     ClassroomPropsDlg.close();
                 }
@@ -177,13 +182,6 @@
         function clear() {
             $form[ 0 ].reset();
             $required.removeClass( 'missing' );
-        }
-
-        function onSubmit() {
-            if ( validate() ) {
-                submit();
-                close();
-            }
         }
 
         function populate( classroom ) {
