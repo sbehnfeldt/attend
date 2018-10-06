@@ -194,6 +194,7 @@
         var $self,
             $form,
             $required,
+            $studentId,
             $familyName,
             $firstName,
             $classrooms,
@@ -205,6 +206,7 @@
 
         $self       = $( selector );
         $form       = $self.find( 'form' );
+        $studentId  = $form.find( '[name=id]' );
         $required   = $form.find( '.required' );
         $familyName = $self.find( '[name=family_name]' );
         $firstName  = $self.find( '[name=first_name]' );
@@ -223,17 +225,17 @@
         } );
 
         $list.on( 'change', function () {
-//            console.log(this);
-//            console.log($(this));
-//            console.log($(this ).val());
-//            console.log($(this ).val());
-
-            var id  = $form.find( '[name=id]' ).val();
-            var idx = $( this )[ 0 ].selectedIndex;
-//            console.log( id + ', ' + idx );
-            if ( idx ) {
-                console.log( Schedules.records[ id ][ idx - 1 ] );
-            }
+            var id    = $studentId.val();
+            var idx   = $( this )[ 0 ].selectedIndex;
+            var sched = Schedules.records[ id ][ idx ].schedule;
+            console.log( sched );
+            $boxes.each( function ( idx, elem ) {
+                if ( $( elem ).val() & sched ) {
+                    $( elem ).prop( 'checked', true );
+                } else {
+                    $( elem ).prop( 'checked', false );
+                }
+            } );
         } );
 
 
@@ -368,14 +370,11 @@
         function populate( student ) {
             var $opt;
 
-//            console.log( student );
-//            console.log( Schedules.records[ student.id ] );
-            $form.find( '[name=id]' ).val( student.id );
-            $form.find( '[name=family_name]' ).val( student.family_name );
-            $form.find( '[name=first_name]' ).val( student.first_name );
-            $form.find( '[name=classroom_id]' ).val( student.classroom_id );
-            $form.find( '[name=enrolled]' ).prop( 'checked', (1 == student.enrolled) );
-
+            $studentId.val( student.id );
+            $familyName.val( student.family_name );
+            $firstName.val( student.first_name );
+            $classrooms.val( student.classroom_id );
+            $enrolled.prop( 'checked', (1 == student.enrolled) );
 
             $list.removeClass( 'hidden' );
             $list.empty();
@@ -385,10 +384,7 @@
                 $opt  = $( '<option>' ).text( s.start_date ).val( s.id );
                 $list.append( $opt );
             }
-
-            $buttons.forEach( function ( idx, elem ) {
-                console.log( $( elem ).val() );
-            } );
+            $list.trigger( 'change' );
         }
 
         function clear() {
