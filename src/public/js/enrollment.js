@@ -215,9 +215,23 @@
         $buttons    = $form.find( 'table.schedule-table button' );
         $boxes      = $form.find( 'table.schedule-table input[type=checkbox]' );
         $list       = $form.find( '[name=schedulesList]' );
+
+        dialog = $self.dialog( {
+            "autoOpen": false,
+            "modal"   : true,
+            "width"   : "450px",
+            "buttons" : {
+                "Submit": onSubmit,
+                "Cancel": function () {
+                    StudentPropsDlg.close();
+                }
+            }
+        } );
+
         $buttons.on( 'click', function () {
             return false;
         } );
+
         $boxes.on( 'change', function () {
 //            console.log( this );
 //            console.log( $( this ) );
@@ -239,22 +253,8 @@
         } );
 
 
-        dialog = $self.dialog( {
-            "autoOpen": false,
-            "modal"   : true,
-            "width"   : "450px",
-            "buttons" : {
-                "Submit": onSubmit,
-                "Cancel": function () {
-                    StudentPropsDlg.close();
-                }
-            }
-        } );
-
         function open( student ) {
             clear();
-
-            $required.removeClass( 'missing' );
             if ( student ) {
                 populate( student );
             }
@@ -262,8 +262,41 @@
         }
 
         function close() {
-            clear();
             dialog.dialog( 'close' );
+        }
+
+        function clear() {
+            $form[ 0 ].reset();
+            $required.removeClass( 'missing' );
+            $list.empty();
+            $list.addClass( 'hidden' );
+        }
+
+        function onSubmit() {
+            if ( validate() ) {
+                submit();
+                close();
+            }
+        }
+
+
+        function populate( student ) {
+            var $opt;
+
+            $studentId.val( student.id );
+            $familyName.val( student.family_name );
+            $firstName.val( student.first_name );
+            $classrooms.val( student.classroom_id );
+            $enrolled.prop( 'checked', (1 == student.enrolled) );
+
+            $list.removeClass( 'hidden' );
+            for ( var i = 0; i < Schedules.records[ student.id ].length; i++ ) {
+                console.log( Schedules.records[ student.id ][ i ] );
+                var s = Schedules.records[ student.id ][ i ];
+                $opt  = $( '<option>' ).text( s.start_date ).val( s.id );
+                $list.append( $opt );
+            }
+            $list.trigger( 'change' );
         }
 
         function validate() {
@@ -359,38 +392,7 @@
 
         }
 
-        function onSubmit() {
-            if ( validate() ) {
-                submit();
-                close();
-            }
-        }
 
-
-        function populate( student ) {
-            var $opt;
-
-            $studentId.val( student.id );
-            $familyName.val( student.family_name );
-            $firstName.val( student.first_name );
-            $classrooms.val( student.classroom_id );
-            $enrolled.prop( 'checked', (1 == student.enrolled) );
-
-            $list.removeClass( 'hidden' );
-            $list.empty();
-            for ( var i = 0; i < Schedules.records[ student.id ].length; i++ ) {
-                console.log( Schedules.records[ student.id ][ i ] );
-                var s = Schedules.records[ student.id ][ i ];
-                $opt  = $( '<option>' ).text( s.start_date ).val( s.id );
-                $list.append( $opt );
-            }
-            $list.trigger( 'change' );
-        }
-
-        function clear() {
-            $form[ 0 ].reset();
-            $list.addClass( 'hidden' );
-        }
 
         return {
             'open' : open,

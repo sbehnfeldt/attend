@@ -136,72 +136,26 @@
     var ClassroomPropsDlg = (function ( selector ) {
         var $self,
             $form,
+            $classroomId,
+            $label,
+            $order,
+            $required,
             dialog;
 
-        $self  = $( selector );
-        $form  = $self.find( 'form' );
-        dialog = $self.dialog( {
+        $self        = $( selector );
+        $form        = $self.find( 'form' );
+        $classroomId = $form.find( '[name=id]' );
+        $label       = $form.find( '[name=label]' );
+        $order       = $form.find( '[name=ordering]' );
+
+
+        $required = $form.find( '.required' );
+        dialog    = $self.dialog( {
             "autoOpen": false,
             "modal"   : true,
             "width"   : "300px",
             "buttons" : {
-                "Submit": function () {
-                    var id       = $self.find( '[name=id]' ).val();
-                    var label    = $self.find( '[name=label]' ).val();
-                    var ordering = $self.find( '[name=ordering]' ).val();
-                    if ( ordering === '' ) {
-                        ordering = null;
-                    }
-                    var data = {
-                        "label"   : label,
-                        "ordering": ordering
-                    };
-                    if ( !id ) {
-                        $.ajax( {
-                            "url"   : "api/classrooms",
-                            "method": "post",
-                            "data"  : data,
-
-                            "dataType": "json",
-                            "success" : function ( json ) {
-                                $.ajax( {
-                                    'url'   : "api/classrooms/" + json,
-                                    "method": "get",
-
-                                    "success": function ( json ) {
-                                        console.log( json );
-                                        if ( !ordering ) {
-                                            ClassroomsTab.insert( json );
-                                        } else {
-                                            ClassroomsTab.reload( json );
-                                        }
-                                    },
-                                    "error"  : function ( xhr ) {
-                                        console.log( xhr );
-                                    }
-                                } );
-                            },
-                            "error"   : function ( xhr ) {
-                                console.log( xhr );
-                            }
-                        } );
-                    } else {
-                        $.ajax( {
-                            "url"   : "api/classrooms/" + id,
-                            "method": "put",
-                            "data"  : data,
-
-                            "dataType": "json",
-                            "success" : function ( json ) {
-                                ClassroomsTab.redrawRow( json );
-                            },
-                            "error"   : function ( xhr ) {
-                                console.log( xhr );
-                            }
-                        } );
-                    }
-                    ClassroomPropsDlg.close();
-                },
+                "Submit": onSubmit,
                 "Cancel": function () {
                     ClassroomPropsDlg.close();
                 }
@@ -220,15 +174,104 @@
             dialog.dialog( 'close' );
         }
 
-        function populate( classroom ) {
-            $form.find( '[name=id]' ).val( classroom.id );
-            $form.find( '[name=label]' ).val( classroom.label );
-            $form.find( '[name=ordering]' ).val( classroom.ordering );
-        }
-
         function clear() {
             $form[ 0 ].reset();
+            $required.removeClass( 'missing' );
         }
+
+        function onSubmit() {
+            if ( validate() ) {
+                submit();
+                close();
+            }
+        }
+
+        function populate( classroom ) {
+            $classroomId.val( classroom.id );
+            $label.val( classroom.label );
+            $order.val( classroom.ordering );
+        }
+
+        function validate() {
+            var valid = true;
+            $required.each( function ( i, e ) {
+                if ( !$( e ).val() ) {
+                    $( e ).addClass( 'missing' );
+                    valid = false;
+                } else {
+                    $( e ).removeClass( 'missing' );
+                }
+            } );
+            return valid;
+        }
+
+        function submit() {
+            var id       = $classroomId.val();
+            var label    = $label.val();
+            var ordering = $order.val();
+            if ( ordering === '' ) {
+                ordering = null;
+            }
+            var data = {
+                "label"   : label,
+                "ordering": ordering
+            };
+            if ( !id ) {
+                insert( data );
+            } else {
+                update( id, data );
+            }
+            ClassroomPropsDlg.close();
+        }
+
+        function insert( data ) {
+            $.ajax( {
+                "url"   : "api/classrooms",
+                "method": "post",
+                "data"  : data,
+
+                "dataType": "json",
+                "success" : function ( json ) {
+                    $.ajax( {
+                        'url'   : "api/classrooms/" + json,
+                        "method": "get",
+
+                        "success": function ( json ) {
+                            console.log( json );
+                            if ( !ordering ) {
+                                ClassroomsTab.insert( json );
+                            } else {
+                                ClassroomsTab.reload( json );
+                            }
+                        },
+                        "error"  : function ( xhr ) {
+                            console.log( xhr );
+                        }
+                    } );
+                },
+                "error"   : function ( xhr ) {
+                    console.log( xhr );
+                }
+            } );
+
+        }
+
+        function update( id, data ) {
+            $.ajax( {
+                "url"   : "api/classrooms/" + id,
+                "method": "put",
+                "data"  : data,
+
+                "dataType": "json",
+                "success" : function ( json ) {
+                    ClassroomsTab.redrawRow( json );
+                },
+                "error"   : function ( xhr ) {
+                    console.log( xhr );
+                }
+            } );
+        }
+
 
         return {
             'open' : open,

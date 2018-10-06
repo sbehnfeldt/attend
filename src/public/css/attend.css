@@ -55,8 +55,9 @@ button.disabled span {
     background-image: linear-gradient(#fff 0%, #67f80B 100%);
 }
 
-.ui-dialog .missing {
+.ui-dialog .required.missing {
     background-color: pink;
+    background-image: none;
     color: red;
 }
 .ui-dialog table {
