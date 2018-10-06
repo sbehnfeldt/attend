@@ -52,4 +52,24 @@ foreach ($schedules as $schedule) {
     print "$sched, ${schedule['id']}<br />";
     $sth = $pdo->prepare($sql);
     $sth->execute([$sched, $schedule[ 'id' ]]);
+
+
+    $sql = 'ALTER TABLE `attend`.`schedules`
+DROP COLUMN `fri_pm`,
+DROP COLUMN `fri_noon`,
+DROP COLUMN `fri_am`,
+DROP COLUMN `thu_pm`,
+DROP COLUMN `thu_noon`,
+DROP COLUMN `thu_am`,
+DROP COLUMN `wed_pm`,
+DROP COLUMN `wed_noon`,
+DROP COLUMN `wed_am`,
+DROP COLUMN `tue_pm`,
+DROP COLUMN `tue_noon`,
+DROP COLUMN `tue_am`,
+DROP COLUMN `mon_pm`,
+DROP COLUMN `mon_noon`,
+DROP COLUMN `mon_am`';
+    $sth = $pdo->prepare($sql);
+    $sth->execute();
 }

@@ -32,29 +32,15 @@ CREATE TABLE `students` (
 CREATE TABLE `schedules` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `student_id` int(10) unsigned NOT NULL,
-  `mon_am` tinyint(1) NOT NULL DEFAULT '1',
-  `mon_noon` tinyint(1) NOT NULL DEFAULT '1',
-  `mon_pm` tinyint(1) NOT NULL DEFAULT '1',
-  `tue_am` tinyint(1) NOT NULL DEFAULT '1',
-  `tue_noon` tinyint(1) NOT NULL DEFAULT '1',
-  `tue_pm` tinyint(1) NOT NULL DEFAULT '1',
-  `wed_am` tinyint(1) NOT NULL DEFAULT '1',
-  `wed_noon` tinyint(1) NOT NULL DEFAULT '1',
-  `wed_pm` tinyint(1) NOT NULL DEFAULT '1',
-  `thu_am` tinyint(1) NOT NULL DEFAULT '1',
-  `thu_noon` tinyint(1) NOT NULL DEFAULT '1',
-  `thu_pm` tinyint(1) NOT NULL DEFAULT '1',
-  `fri_am` tinyint(1) NOT NULL DEFAULT '1',
-  `fri_noon` tinyint(1) NOT NULL DEFAULT '1',
-  `fri_pm` tinyint(1) NOT NULL DEFAULT '1',
+  `schedule` int(11) NOT NULL DEFAULT '0',
   `start_date` date NOT NULL,
-  `entered_at` int(11) NOT NULL DEFAULT '1',
+  `entered_at` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   UNIQUE KEY `student_date_unique` (`student_id`,`start_date`),
   KEY `fk_student_idx` (`student_id`),
   CONSTRAINT `fk_student` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COMMENT='Table indicating when students are scheduled to attend';
+) ENGINE=InnoDB AUTO_INCREMENT=441 DEFAULT CHARSET=utf8 COMMENT='Table indicating when students are scheduled to attend';
 
 CREATE TABLE `attendance` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
