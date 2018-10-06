@@ -58,9 +58,22 @@
             }
         }
 
+        function insert( s ) {
+            if ( undefined === records[ s.student_id ] ) {
+                records[ s.student_id ] = [];
+            }
+            records[ s.student_id ].push( s );
+            records[ s.student_id ].sort( function ( a, b ) {
+                if ( a.start_date < b.start_date ) return 1;
+                if ( a.start_date > b.start_date ) return -1;
+                return 0;
+            } );
+        }
+
         return {
             'records': records,
-            'load'   : load
+            'load'   : load,
+            'insert' : insert
         };
     })();
 
@@ -69,30 +82,6 @@
     var EnrollmentTab = (function ( selector ) {
         var $self,
             table;
-
-        // Check whether there are any rows in the Enrollment table
-        function isEmpty() {
-            return ( 0 === table.rows().count() );
-        }
-
-        // Redraw the Enrollment table
-        // This is used to convert classroom IDs in table to classroom names.
-        function drawTable() {
-            table.rows().every( function ( /* rowIdx, tableLoop, rowLoop */ ) {
-                this.data( this.data() );   // Forces row to redraw
-            } );
-        }
-
-        // Redraw a specific row in the Enrollment table
-        function redrawRow( newData ) {
-            table.rows().every( function ( /* rowIdx, tableLoop, rowLoop */ ) {
-                var data = this.data();
-                if ( data.id == newData.id ) {
-                    this.data( newData );
-                }
-            } );
-        }
-
 
         $self = $( selector );
         table = $self.find( 'table.enrollment-table' ).DataTable( {
@@ -182,10 +171,39 @@
         } );
         b1.dom.container.eq( 0 ).appendTo( $self.find( '.table-buttons span' ) );
 
+        // Check whether there are any rows in the Enrollment table
+        function isEmpty() {
+            return ( 0 === table.rows().count() );
+        }
+
+        // Redraw the Enrollment table
+        // This is used to convert classroom IDs in table to classroom names.
+        function drawTable() {
+            table.rows().every( function ( /* rowIdx, tableLoop, rowLoop */ ) {
+                this.data( this.data() );   // Forces row to redraw
+            } );
+        }
+
+        // Redraw a specific row in the Enrollment table
+        function redrawRow( newData ) {
+            table.rows().every( function ( /* rowIdx, tableLoop, rowLoop */ ) {
+                var data = this.data();
+                if ( data.id == newData.id ) {
+                    this.data( newData );
+                }
+            } );
+        }
+
+        function insert( data ) {
+            table.row.add( data ).draw();
+        }
+
+
         return {
             "isEmpty"  : isEmpty,
             "drawTable": drawTable,
-            "redrawRow": redrawRow
+            "redrawRow": redrawRow,
+            "insert"   : insert
         };
     })( '#enrollment-tab' );
 
@@ -248,7 +266,6 @@
             var id    = $studentId.val();
             var idx   = $( this )[ 0 ].selectedIndex;
             var sched = Schedules.records[ id ][ idx ].schedule;
-            console.log( sched );
             $boxes.each( function ( idx, elem ) {
                 if ( $( elem ).val() & sched ) {
                     $( elem ).prop( 'checked', true );
@@ -289,7 +306,6 @@
 
             $list.removeClass( 'hidden' );
             for ( var i = 0; i < Schedules.records[ student.id ].length; i++ ) {
-                console.log( Schedules.records[ student.id ][ i ] );
                 var s = Schedules.records[ student.id ][ i ];
                 $opt  = $( '<option>' ).text( s.start_date ).val( s.id );
                 $list.append( $opt );
@@ -343,7 +359,17 @@
 
                 "dataType": "json",
                 "success" : function ( json ) {
-                    console.log( json );
+                    $.ajax( {
+                        'url'    : 'api/students/' + json,
+                        'method' : 'get',
+                        'success': function ( json ) {
+                            console.log( json );
+                            EnrollmentTab.insert( json );
+                        },
+                        'error'  : function ( xhr ) {
+                            console.log( xhr );
+                        }
+                    } );
                     $.ajax( {
                         "url"   : "api/schedules",
                         "method": "post",
@@ -354,7 +380,17 @@
 
                         "dataType": "json",
                         "success" : function ( json ) {
-                            console.log( json );
+                            $.ajax( {
+                                'url'    : 'api/schedules/' + json,
+                                'method' : 'get',
+                                'success': function ( json ) {
+                                    console.log( json );
+                                    Schedules.insert( json );
+                                },
+                                'error'  : function ( xhr ) {
+                                    console.log( xhr );
+                                }
+                            } )
                         },
                         "error"   : function ( xhr ) {
                             console.log( xhr );
