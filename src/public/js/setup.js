@@ -237,10 +237,13 @@
                         "method": "get",
 
                         "success": function ( json ) {
-                            console.log( json );
-                            if ( !ordering ) {
+                            if ( !data.ordering ) {
+                                // If ordering not specified, it defaults to current max + 1,
+                                // so table is fine; just add new row
                                 ClassroomsTab.insert( json );
                             } else {
+                                // If ordering IS specified, ordering of other classrooms may be affected;
+                                // so, reload entire table.
                                 ClassroomsTab.reload( json );
                             }
                         },
