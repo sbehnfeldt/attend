@@ -1,16 +1,19 @@
 CREATE USER `attend`@`localhost` identified by 'attend';
 
-CREATE DATABASE `attend` /*!40100 DEFAULT CHARACTER SET utf8 */;
+CREATE DATABASE `attend` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
 
 USE attend;
 
 CREATE TABLE `classrooms` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
+  `label` varchar(45) NOT NULL,
+  `ordering` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
-  UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+  UNIQUE KEY `name_UNIQUE` (`label`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 INSERT INTO classrooms (name) VALUES ("123's"), ("ABC's"), ("Pre-K");
 
@@ -63,5 +66,20 @@ CREATE TABLE `attendance` (
   KEY `fk_students_idx` (`student_id`),
   CONSTRAINT `fk_students` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE DEFINER = CURRENT_USER TRIGGER `attend`.`classrooms_BEFORE_INSERT` BEFORE INSERT ON `classrooms` FOR EACH ROW
+BEGIN
+	DECLARE mytemp INT(11);
+	IF NEW.ordering = '' then
+		SELECT MAX(ordering) FROM classrooms INTO mytemp;
+		SET NEW.ordering = mytemp + 1;
+	END IF;
+END
+
+CREATE DEFINER = CURRENT_USER TRIGGER `attend`.`classrooms_BEFORE_UPDATE` BEFORE UPDATE ON `classrooms` FOR EACH ROW
+BEGIN
+    SET NEW.updated_at = CURRENT_TIMESTAMP;
+END
 
 grant all on attend.* to `attend`@`localhost`;
