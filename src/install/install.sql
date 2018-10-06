@@ -54,7 +54,7 @@ CREATE TABLE `attendance` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE DEFINER = CURRENT_USER TRIGGER `attend`.`classrooms_BEFORE_INSERT` BEFORE INSERT ON `classrooms` FOR EACH ROW
+CREATE DEFINER = `attend`@`localhost` TRIGGER `attend`.`classrooms_BEFORE_INSERT` BEFORE INSERT ON `classrooms` FOR EACH ROW
 BEGIN
 	DECLARE mytemp INT(11);
 	IF NEW.ordering = '' then
@@ -63,7 +63,7 @@ BEGIN
 	END IF;
 END
 
-CREATE DEFINER = CURRENT_USER TRIGGER `attend`.`classrooms_BEFORE_UPDATE` BEFORE UPDATE ON `classrooms` FOR EACH ROW
+CREATE DEFINER = `attend`@`localhost` TRIGGER `attend`.`classrooms_BEFORE_UPDATE` BEFORE UPDATE ON `classrooms` FOR EACH ROW
 BEGIN
     SET NEW.updated_at = CURRENT_TIMESTAMP;
 END
