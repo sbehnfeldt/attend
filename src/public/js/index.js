@@ -59,7 +59,6 @@
 
                     for ( i = 0; i < Students.students.length; i++ ) {
                         if ( !Students.students[ i ] ) continue;
-                        console.log( i );
                         Students.students[ i ].sort( function ( a, b ) {
                             if ( a.family_name > b.family_name ) return 1;
                             if ( a.family_name < b.family_name ) return -1;
@@ -84,6 +83,38 @@
     })();
 
 
+    var Schedules = (function () {
+        var schedules = [];   // Schedules by student id
+
+        function load() {
+            $.ajax( {
+                'url'   : 'api/schedules',
+                'method': 'get',
+
+                'success': function ( json ) {
+                    console.log( json );
+                    for ( var i = 0; i < json.length; i++ ) {
+                        var sched = json[ i ];
+                        if ( !( sched.student_id in Schedules.schedules) ) {
+                            Schedules.schedules[ sched.student_id ] = [];
+                        }
+                        Schedules.schedules[ sched.student_id ].push( sched );
+                    }
+                    AttendanceTab.build();
+                },
+                'error'  : function ( xhr ) {
+                    console.log( xhr );
+                }
+            } )
+        }
+
+        return {
+            'schedules': schedules,
+            'load'     : load
+        };
+    })();
+
+
     var AttendanceTab = (function () {
         var $tab,
             $weekOf,
@@ -101,6 +132,9 @@
                 return;
             }
             if ( !Students.students.length ) {
+                return;
+            }
+            if ( !Schedules.schedules.length ) {
                 return;
             }
             buildAttendanceTables( Classrooms.classrooms, Students.students );
@@ -127,8 +161,6 @@
                 var $tbody = $( '<tbody>' );
                 $table.append( $tbody );
                 if ( students[ classroom.id ] ) {
-
-
                     for ( var j = 0; j < students[ classroom.id ].length; j++ ) {
                         var student = students[ classroom.id ][ j ];
                         $tr         = $( '<tr>' );
@@ -160,13 +192,14 @@
         };
     })();
 
+
     $( function () {
         console.log( "Index page ready" );
         $( '#tabs' ).tabs();
         AttendanceTab.init( '#attendance-tab' );
         Classrooms.load();
         Students.load();
-
+        Schedules.load();
     } );
 
 
