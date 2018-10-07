@@ -56,6 +56,18 @@
                         }
                         Students.students[ student.classroom_id ].push( student );
                     }
+
+                    for ( i = 0; i < Students.students.length; i++ ) {
+                        if ( !Students.students[ i ] ) continue;
+                        console.log( i );
+                        Students.students[ i ].sort( function ( a, b ) {
+                            if ( a.family_name > b.family_name ) return 1;
+                            if ( a.family_name < b.family_name ) return -1;
+                            if ( a.first_name > b.first_name ) return 1;
+                            if ( a.first_name < b.first_name ) return -1;
+                            return 0;
+                        } );
+                    }
                     AttendanceTab.build();
 
                 },
