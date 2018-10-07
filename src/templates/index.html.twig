@@ -26,37 +26,7 @@
                 </div>
             </header>
 
-            <div class="attendance-page-schedules">
-                {% for classroom in classrooms %}
-                    <h3>{{ classroom.label }}</h3>
-                    <table class="display compact attendance-table" data-classroom-id="{{ classroom.id }}">
-                        <thead>
-                        <tr>
-                            <th>Student</th>
-                            <th>Mon</th>
-                            <th>Tue</th>
-                            <th>Wed</th>
-                            <th>Thu</th>
-                            <th>Fri</th>
-                            <th>Summary</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for student in classroom.students %}
-                            <tr>
-                                <td> {{ student.family_name }}, {{ student.first_name }}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                {% endfor %}
-            </div>
+            <section class="attendance-page-schedules"></section>
         </section>
 
         <section id="signin-tab">
