@@ -50,13 +50,26 @@ abstract class Repository implements iRepository
         return $columns;
     }
 
-    public function select()
+    protected function parseCriteria($filters)
     {
-        $sql     = sprintf("SELECT %s FROM %s",
+        return [[], []];
+    }
+
+    public function select($params = [])
+    {
+        $values = [];
+
+        list($criteria, $vals) = static::parseCriteria($params[ 'filters' ]);
+        $criteria = empty($params[ 'filters' ]) ? '' : implode(' AND ', $criteria);
+        $values   = array_merge($values, $vals);
+
+        $sql = sprintf("SELECT %s FROM %s %s",
             implode(', ', $this->getColumns('select')),
-            $this->getTableName());
+            $this->getTableName(),
+            $criteria ? "WHERE $criteria" : '');
+
         $sth     = $this->pdo->prepare($sql);
-        $b       = $sth->execute();
+        $b       = $sth->execute($values);
         $results = $sth->fetchAll();
 
         return $results;

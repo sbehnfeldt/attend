@@ -1,5 +1,5 @@
 <?php
-include('bootstrap.php');
+include('../lib/bootstrap.php');
 
 define('FPDF_FONTPATH', INSTALL . DIRECTORY_SEPARATOR . 'font' . DIRECTORY_SEPARATOR);
 if (array_key_exists('attendance', $_GET)) {

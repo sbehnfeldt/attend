@@ -1,99 +1,67 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Attend{% endblock %}
+{% block title %}Attend | Attendance{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script src="js/index.js"></script>
+{% endblock %}
+
 {% block main %}
-    <!-- Attendance Page -->
-    <section class="page container" id="attendance-page">
-        <header class="page-header">
-            <h2>Attendance</h2>
-            <div class="controls">
-                Week Of: <input type="text" name="week-of"/>
-                <a id="pdf-attendance" href="pdf.php?attendance">PDF</a>
-            </div>
-        </header>
 
-        <div class="attendance-page-schedules"></div>
-    </section><!-- end attendance page -->
+    <div id="tabs">
+        <ul>
+            <li><a href="#attendance-tab">Attendance</a></li>
+            <li><a href="#signin-tab">Sign-In</a></li>
+        </ul>
 
-    <!-- Sign-In Page -->
-    <section class="page container" id="signin-page">
-        <header class="page-header">
-            <h2>Sign In</h2>
-            <div class="controls">
-                Week of: <input type="text" name="week-of"/>
-                <a id="pdf-signin" href="pdf.php?signin">PDF</a>
-            </div>
-        </header>
-        <div class="signin-page-contents"></div>
-    </section><!-- end signin page -->
+        <!-- Attendance Tab -->
+        <section id="attendance-tab">
 
-    <!-- Checkin Page -->
-    <section class="page container" id="checkin-page">
-        <header>
-            <h2>Check-In</h2>
-        </header>
-        <div class="row time-date">
-            <span class="clock"></span>
-            <span class="glyphicon glyphicon-time"></span>
-            <span class="calendar"></span>
-        </div>
-
-        <div class="row attendance-report attendance-checkin">
-            <div class="btn-group btn-group-xs btn-group-toggle" role="group">
-                <button type="button" class="btn btn-default btn-selected" data-toggle="scheduled">Scheduled</button>
-                <button type="button" class="btn btn-default" data-toggle="enrolled">Active</button>
-            </div>
-
-            <select class="filter-select">
-                <option value="">Show All</option>
-                <option value="0">Unassigned</option>
-            </select>
-
-            <table class='clearfix' id="attendance-checkin-table">
-                <thead>
-                <tr>
-                    <th>Controls</th>
-                    <th>Student</th>
-                    <th>Checked In</th>
-                    <th>Checked Out</th>
-                </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-            <a href="#attendance">top</a>
-        </div>
-    </section><!-- Checkin Page -->
-
-    <!-- Reports Page -->
-    <section class="page container" id="reports">
-        <header>
-            <h2>Reports</h2>
-        </header>
-        <div class="row">
-            <div class="col-lg-2 report-list">
-                <div>
-                    <select name="report-list">
-                        <option value="">Select a Report</option>
-                    </select>
+            <header class="page-header">
+                <h2>Attendance</h2>
+                <div class="controls">
+                    Week Of: <input type="text" name="week-of"/>
+                    <a id="pdf-attendance" href="pdf.php?attendance">PDF</a>
                 </div>
-            </div>
-            <div class="container panel" id="attendance-report">
-                <h3>Attendance</h3>
-                <table id="attendance-report-table">
-                    <thead>
-                    <tr>
-                    </tr>
-                    <tr>
-                    </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
+            </header>
 
-            <div class="container panel" id="student-report">
-                <h3>Students</h3>
+            <div class="attendance-page-schedules">
+                {% for classroom in classrooms %}
+                    <h3>{{ classroom.label }}</h3>
+                    <table class="display compact attendance-table" data-classroom-id="{{ classroom.id }}">
+                        <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Mon</th>
+                            <th>Tue</th>
+                            <th>Wed</th>
+                            <th>Thu</th>
+                            <th>Fri</th>
+                            <th>Summary</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for student in classroom.students %}
+                            <tr>
+                                <td> {{ student.family_name }}, {{ student.first_name }}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endfor %}
             </div>
-        </div>
-    </section><!-- Reports Page -->
+        </section>
+
+        <section id="signin-tab">
+            <h2></h2>
+        </section>
+    </div>
 {% endblock %}
 
