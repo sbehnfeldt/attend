@@ -411,11 +411,9 @@
                 "method": "put",
                 "data"  : data,
 
-                "success": function ( body, status, xhr ) {
-                    console.log( body );
-                    console.log( status );
-                    console.log( xhr );
-                    data.id = id;
+                "success": function () {
+                    data.id           = id;
+                    data.classroom_id = JSON.parse( data.classroom_id ).data;
                     EnrollmentTab.redrawRow( data );
                 },
                 "error"  : function ( xhr, estring, e ) {
@@ -425,7 +423,6 @@
                     alert( "Error" );
                 }
             } );
-
         }
 
 
