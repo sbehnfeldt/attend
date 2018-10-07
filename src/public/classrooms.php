@@ -9,4 +9,4 @@ $twig = new Twig_Environment($loader, array(
     'cache' => false
 ));
 
-echo $twig->render('setup.html.twig');
+echo $twig->render('classrooms.html.twig');
