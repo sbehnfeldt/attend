@@ -37,6 +37,41 @@
     })();
 
 
+    var Students = (function () {
+        var students = [];
+
+        function load() {
+            $.ajax( {
+                'url'   : 'api/students',
+                'method': 'get',
+
+                'success': function ( json ) {
+                    console.log( json );
+                    for ( var i = 0; i < json.length; i++ ) {
+                        var student = json[ i ];
+                        if ( "1" !== student.enrolled ) continue;
+
+                        if ( !(student.classroom_id in Students.students) ) {
+                            Students.students[ student.classroom_id ] = [];
+                        }
+                        Students.students[ student.classroom_id ].push( student );
+                    }
+                    AttendanceTab.build();
+
+                },
+                'error'  : function ( xhr ) {
+                    console.log( xhr );
+                }
+            } );
+        }
+
+        return {
+            'students': students,
+            'load'    : load
+        }
+    })();
+
+
     var AttendanceTab = (function () {
         var $tab,
             $weekOf,
@@ -50,20 +85,24 @@
         }
 
         function build() {
-            if ( !Classrooms.classrooms ) {
+            if ( !Classrooms.classrooms.length ) {
                 return;
             }
-            buildAttendanceTables( Classrooms.classrooms );
+            if ( !Students.students.length ) {
+                return;
+            }
+            buildAttendanceTables( Classrooms.classrooms, Students.students );
         }
 
-        function buildAttendanceTables( classrooms ) {
+        function buildAttendanceTables( classrooms, students ) {
             for ( var i = 0; i < classrooms.length; i++ ) {
                 var classroom = classrooms[ i ];
                 $attendance.append( $( '<h3>' ).text( classroom.label ) );
 
                 var $table = $( '<table class="table table-striped table-bordered">' );
                 var $thead = $( '<thead>' );
-                var $tr    = $( '<tr>' );
+                $table.append( $thead );
+                var $tr = $( '<tr>' );
                 $tr.append( $( '<th>Name</th>' ) );
                 $tr.append( $( '<th>Mon</th>' ) );
                 $tr.append( $( '<th>Tue</th>' ) );
@@ -74,11 +113,25 @@
                 $thead.append( $tr );
 
                 var $tbody = $( '<tbody>' );
-
-                $table.append( $thead );
                 $table.append( $tbody );
-                $attendance.append( $table );
+                if ( students[ classroom.id ] ) {
 
+
+                    for ( var j = 0; j < students[ classroom.id ].length; j++ ) {
+                        var student = students[ classroom.id ][ j ];
+                        $tr         = $( '<tr>' );
+                        $tr.append( $( '<td>' ).text( student.family_name + ', ' + student.first_name ) );
+                        $tr.append( $( '<td>' ) );
+                        $tr.append( $( '<td>' ) );
+                        $tr.append( $( '<td>' ) );
+                        $tr.append( $( '<td>' ) );
+                        $tr.append( $( '<td>' ) );
+                        $tr.append( $( '<td>' ) );
+                        $tbody.append( $tr );
+                    }
+                }
+
+                $attendance.append( $table );
                 $table.DataTable( {
                     'searching': false,
                     'paging'   : false,
@@ -100,6 +153,7 @@
         $( '#tabs' ).tabs();
         AttendanceTab.init( '#attendance-tab' );
         Classrooms.load();
+        Students.load();
 
     } );
 
