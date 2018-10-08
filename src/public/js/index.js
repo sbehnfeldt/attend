@@ -141,66 +141,9 @@
         }
 
         function buildAttendanceTables( classrooms, students, schedules ) {
-            var decoder = [
-                [ 0x0001, 0x0020, 0x0400 ],
-                [ 0x0002, 0x0040, 0x0800 ],
-                [ 0x0004, 0x0080, 0x1000 ],
-                [ 0x0008, 0x0100, 0x2000 ],
-                [ 0x0010, 0x0200, 0x4000 ]
-            ];
             for ( var i = 0; i < classrooms.length; i++ ) {
-                var classroom = classrooms[ i ];
-                $attendance.append( $( '<h3>' ).text( classroom.label ) );
-
-                var $table = $( '<table class="table table-striped table-bordered">' );
-                var $thead = $( '<thead>' );
-                $table.append( $thead );
-
-                var $tbody = $( '<tbody>' );
-                $table.append( $tbody );
-
-                var $tr = $( '<tr>' );
-                $tr.append( $( '<th>Name</th>' ) );
-                $tr.append( $( '<th>Mon</th>' ) );
-                $tr.append( $( '<th>Tue</th>' ) );
-                $tr.append( $( '<th>Wed</th>' ) );
-                $tr.append( $( '<th>Thu</th>' ) );
-                $tr.append( $( '<th>Fri</th>' ) );
-                $tr.append( $( '<th>Summary</th>' ) );
-                $thead.append( $tr );
-
-                if ( students[ classroom.id ] ) {
-                    for ( var j = 0; j < students[ classroom.id ].length; j++ ) {
-                        var student = students[ classroom.id ][ j ];
-                        var sched   = schedules[ student.id ][ schedules[ student.id ].length - 1 ].schedule;
-                        var notes   = {
-                            'FD' : 0,
-                            'HDL': 0,
-                            'HD' : 0
-                        };
-                        $tr         = $( '<tr>' );
-                        $tr.append( $( '<td>' ).text( student.family_name + ', ' + student.first_name ) );
-                        for ( var k = 0; k < 5; k++ ) {
-                            var $cell = buildDayCell( sched, decoder[ k ] );
-                            $tr.append( $cell.td );
-                            if ( $cell.p ) {
-                                notes[ $cell.p ]++;
-                            }
-                        }
-                        var summary = [];
-                        if ( notes[ 'FD' ] ) {
-                            summary.push( notes[ 'FD' ] + 'FD' );
-                        }
-                        if ( notes[ 'HD' ] ) {
-                            summary.push( notes[ 'HD' ] + 'HD' );
-                        }
-                        if ( notes[ 'HDL' ] ) {
-                            summary.push( notes[ 'HDL' ] + 'HDL' );
-                        }
-                        $tr.append( $( '<td>' ).text( summary.join() ) );
-                        $tbody.append( $tr );
-                    }
-                }
+                $attendance.append( $( '<h3>' ).text( classrooms[ i ].label ) );
+                var $table = buildAttendanceTable( classrooms[ i ], students, schedules );
 
                 $table.DataTable( {
                     'searching': false,
@@ -212,6 +155,73 @@
                 $attendance.append( $table );
             }
         }
+
+        function buildAttendanceTable( classroom, students, schedules ) {
+            var $table = $( '<table class="table table-striped table-bordered">' );
+            var $thead = $( '<thead>' );
+            $table.append( $thead );
+
+            var $tbody = $( '<tbody>' );
+            $table.append( $tbody );
+
+            var $tr = $( '<tr>' );
+            $tr.append( $( '<th>Name</th>' ) );
+            $tr.append( $( '<th>Mon</th>' ) );
+            $tr.append( $( '<th>Tue</th>' ) );
+            $tr.append( $( '<th>Wed</th>' ) );
+            $tr.append( $( '<th>Thu</th>' ) );
+            $tr.append( $( '<th>Fri</th>' ) );
+            $tr.append( $( '<th>Summary</th>' ) );
+            $thead.append( $tr );
+
+            if ( students[ classroom.id ] ) {
+                for ( var i = 0; i < students[ classroom.id ].length; i++ ) {
+                    var $tr = buildStudentRow( students[ classroom.id ][ i ], schedules );
+                    $tbody.append( $tr );
+                }
+            }
+            return $table;
+        }
+
+
+        function buildStudentRow( student, schedules ) {
+            var decoder = [
+                [ 0x0001, 0x0020, 0x0400 ],
+                [ 0x0002, 0x0040, 0x0800 ],
+                [ 0x0004, 0x0080, 0x1000 ],
+                [ 0x0008, 0x0100, 0x2000 ],
+                [ 0x0010, 0x0200, 0x4000 ]
+            ];
+
+            var sched = schedules[ student.id ][ schedules[ student.id ].length - 1 ].schedule;
+            var notes = {
+                'FD' : 0,
+                'HDL': 0,
+                'HD' : 0
+            };
+            var $tr   = $( '<tr>' );
+            $tr.append( $( '<td>' ).text( student.family_name + ', ' + student.first_name ) );
+            for ( var i = 0; i < 5; i++ ) {
+                var $cell = buildDayCell( sched, decoder[ i ] );
+                $tr.append( $cell.td );
+                if ( $cell.p ) {
+                    notes[ $cell.p ]++;
+                }
+            }
+            var summary = [];
+            if ( notes[ 'FD' ] ) {
+                summary.push( notes[ 'FD' ] + 'FD' );
+            }
+            if ( notes[ 'HD' ] ) {
+                summary.push( notes[ 'HD' ] + 'HD' );
+            }
+            if ( notes[ 'HDL' ] ) {
+                summary.push( notes[ 'HDL' ] + 'HDL' );
+            }
+            $tr.append( $( '<td>' ).text( summary.join() ) );
+            return $tr;
+        }
+
 
         function buildDayCell( sched, decoder ) {
             var $td = $( '<td>' );
