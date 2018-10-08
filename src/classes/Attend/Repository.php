@@ -59,8 +59,8 @@ abstract class Repository implements iRepository
     {
         $values = [];
 
-        list($criteria, $vals) = static::parseCriteria($params[ 'filters' ]);
-        $criteria = empty($params[ 'filters' ]) ? '' : implode(' AND ', $criteria);
+        list($criteria, $vals) = empty($params[ 'filters' ]) ? [[], []] : static::parseCriteria($params[ 'filters' ]);
+        $criteria = implode(' AND ', $criteria);
         $values   = array_merge($values, $vals);
 
         $sql = sprintf("SELECT %s FROM %s %s",
