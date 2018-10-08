@@ -76,3 +76,7 @@ button.disabled span {
 .ui-dialog table button {
     width: 100%;
 }
+
+.dark {
+    background-color: #777;
+}

@@ -137,10 +137,17 @@
             if ( !Schedules.schedules.length ) {
                 return;
             }
-            buildAttendanceTables( Classrooms.classrooms, Students.students );
+            buildAttendanceTables( Classrooms.classrooms, Students.students, Schedules.schedules );
         }
 
-        function buildAttendanceTables( classrooms, students ) {
+        function buildAttendanceTables( classrooms, students, schedules ) {
+            var decoder = [
+                [ 0x0001, 0x0020, 0x0400 ],
+                [ 0x0002, 0x0040, 0x0800 ],
+                [ 0x0004, 0x0080, 0x1000 ],
+                [ 0x0008, 0x0100, 0x2000 ],
+                [ 0x0010, 0x0200, 0x4000 ]
+            ];
             for ( var i = 0; i < classrooms.length; i++ ) {
                 var classroom = classrooms[ i ];
                 $attendance.append( $( '<h3>' ).text( classroom.label ) );
@@ -148,6 +155,10 @@
                 var $table = $( '<table class="table table-striped table-bordered">' );
                 var $thead = $( '<thead>' );
                 $table.append( $thead );
+
+                var $tbody = $( '<tbody>' );
+                $table.append( $tbody );
+
                 var $tr = $( '<tr>' );
                 $tr.append( $( '<th>Name</th>' ) );
                 $tr.append( $( '<th>Mon</th>' ) );
@@ -158,32 +169,81 @@
                 $tr.append( $( '<th>Summary</th>' ) );
                 $thead.append( $tr );
 
-                var $tbody = $( '<tbody>' );
-                $table.append( $tbody );
                 if ( students[ classroom.id ] ) {
                     for ( var j = 0; j < students[ classroom.id ].length; j++ ) {
                         var student = students[ classroom.id ][ j ];
+                        var sched   = schedules[ student.id ][ schedules[ student.id ].length - 1 ].schedule;
+                        var notes   = {
+                            'FD' : 0,
+                            'HDL': 0,
+                            'HD' : 0
+                        };
                         $tr         = $( '<tr>' );
                         $tr.append( $( '<td>' ).text( student.family_name + ', ' + student.first_name ) );
-                        $tr.append( $( '<td>' ) );
-                        $tr.append( $( '<td>' ) );
-                        $tr.append( $( '<td>' ) );
-                        $tr.append( $( '<td>' ) );
-                        $tr.append( $( '<td>' ) );
-                        $tr.append( $( '<td>' ) );
+                        for ( var k = 0; k < 5; k++ ) {
+                            var $cell = buildDayCell( sched, decoder[ k ] );
+                            $tr.append( $cell.td );
+                            if ( $cell.p ) {
+                                notes[ $cell.p ]++;
+                            }
+                        }
+                        var summary = [];
+                        if ( notes[ 'FD' ] ) {
+                            summary.push( notes[ 'FD' ] + 'FD' );
+                        }
+                        if ( notes[ 'HD' ] ) {
+                            summary.push( notes[ 'HD' ] + 'HD' );
+                        }
+                        if ( notes[ 'HDL' ] ) {
+                            summary.push( notes[ 'HDL' ] + 'HDL' );
+                        }
+                        $tr.append( $( '<td>' ).text( summary.join() ) );
                         $tbody.append( $tr );
                     }
                 }
 
-                $attendance.append( $table );
                 $table.DataTable( {
                     'searching': false,
                     'paging'   : false,
                     'ordering' : false,
                     'info'     : false
                 } );
-            }
 
+                $attendance.append( $table );
+            }
+        }
+
+        function buildDayCell( sched, decoder ) {
+            var $td = $( '<td>' );
+            var p;
+            if ( ( sched & decoder[ 0 ]) && (sched & decoder[ 2 ]) ) {
+                $td.text( 'FD' );
+                p = 'FD';
+            } else if ( sched & decoder[ 0 ] ) {
+                if ( sched & decoder[ 1 ] ) {
+                    $td.text( 'HDL' );
+                    p = 'HDL';
+                } else {
+                    $td.text( 'HD' );
+                    p = 'HD';
+                }
+
+            } else if ( sched & decoder[ 2 ] ) {
+                if ( sched & decoder[ 1 ] ) {
+                    $td.text( 'HDL' );
+                    p = 'HDL';
+                } else {
+                    $td.text( 'HD' );
+                    p = 'HD';
+                }
+            } else {
+                $td.addClass( 'dark' );
+                p = '';
+            }
+            return {
+                'td': $td,
+                'p' : p
+            };
         }
 
         return {
