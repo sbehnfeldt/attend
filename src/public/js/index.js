@@ -120,11 +120,45 @@
             $weekOf,
             $attendance;
 
+        function getMonday( d ) {
+
+            var dw = d.getDay();
+            switch ( dw ) {
+                case 1:   // Monday: no op
+                    break;
+                case 2:   // Tuesday:
+                    d.setDate( d.getDate() - 1 );
+                    break;
+                case 3: // Wednesday:
+                    d.setDate( d.getDate() - 2 );
+                    break;
+                case 4: // Thursday:
+                    d.dateDate( d.getDate() - 3 );
+                    break;
+                case 5:  // Friday:
+                    d.dateDate( d.getDate() + 3 );
+                    break;
+                case 6:
+                    d.dateDate( d.getDate() + 2 );
+                    break;
+                case 0:
+                    d.setDate( d.getDate() + 1 );
+                    break;
+            }
+            return d;
+        }
+
         function init( selector ) {
             $tab    = $( selector );
             $weekOf = $tab.find( '[name=week-of]' );
             $weekOf.datepicker();
             $attendance = $tab.find( '.attendance-page-schedules' );
+
+            $weekOf.datepicker( 'setDate', getMonday( new Date() ) );
+            $weekOf.on( 'change', function () {
+                $weekOf.datepicker( 'setDate', getMonday( new Date( $( this ).val() ) ) );
+                $weekOf.blur();
+            } );
         }
 
         function build() {
