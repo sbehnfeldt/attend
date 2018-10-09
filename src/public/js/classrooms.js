@@ -68,6 +68,7 @@
                         selected.every( function () {
                             var row  = this;
                             var data = row.data();
+                            Attend.loadAnother();
                             $.ajax( {
                                 "url"   : "api/classrooms/" + data.id,
                                 "method": "delete",
@@ -77,6 +78,7 @@
                                     if ( !length ) {
                                         selected.remove().draw( false );
                                     }
+                                    Attend.doneLoading();
                                 },
                                 "error"  : function ( xhr ) {
                                     console.log( xhr );
@@ -86,6 +88,7 @@
                                     if ( !length ) {
                                         selected.remove().draw( false );
                                     }
+                                    Attend.doneLoading();
                                 }
                             } );
                         } );
@@ -100,6 +103,7 @@
                 "text"  : "Reload",
                 "action": function ( e, dt ) {
                     Attend.loadAnother();
+                    table.clear();
                     dt.ajax.reload( Attend.doneLoading );
                 }
             } ]
@@ -240,6 +244,7 @@
         }
 
         function insert( data ) {
+            Attend.loadAnother();
             $.ajax( {
                 "url"   : "api/classrooms",
                 "method": "post",
@@ -247,6 +252,7 @@
 
                 "dataType": "json",
                 "success" : function ( json ) {
+                    Attend.loadAnother();
                     $.ajax( {
                         'url'   : "api/classrooms/" + json,
                         "method": "get",
@@ -261,9 +267,11 @@
                                 // so, reload entire table.
                                 ClassroomsTab.reload( json );
                             }
+                            Attend.doneLoading();
                         },
                         "error"  : function ( xhr ) {
                             console.log( xhr );
+                            Attend.doneLoading();
                         }
                     } );
                 },
@@ -275,6 +283,7 @@
         }
 
         function update( id, data ) {
+            Attend.loadAnother();
             $.ajax( {
                 "url"   : "api/classrooms/" + id,
                 "method": "put",
@@ -283,9 +292,11 @@
                 "dataType": "json",
                 "success" : function ( json ) {
                     ClassroomsTab.redrawRow( json );
+                    Attend.doneLoading();
                 },
                 "error"   : function ( xhr ) {
                     console.log( xhr );
+                    Attend.doneLoading();
                 }
             } );
         }

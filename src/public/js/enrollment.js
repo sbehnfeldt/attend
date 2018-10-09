@@ -156,6 +156,7 @@
                     if ( confirm( msg ) ) {
                         for ( var i = 0; i < selected.length; i++ ) {
                             (function ( index ) {
+                                Attend.loadAnother();
                                 $.ajax( {
                                     "url"   : "api/students/" + dt.rows( selected[ index ] ).data()[ 0 ][ 'id' ],
                                     "method": "delete",
@@ -163,9 +164,11 @@
                                     "success": function ( json ) {
                                         dt.rows( selected[ index ] ).remove();
                                         dt.draw();
+                                        Attend.doneLoading();
                                     },
                                     "error"  : function () {
                                         alert( "Error" );
+                                        Attend.doneLoading();
                                     }
                                 } );
 
@@ -181,6 +184,7 @@
             "buttons": [ {
                 "text"  : "Reload",
                 "action": function ( e, dt ) {
+                    table.clear();
                     Attend.loadAnother();
                     dt.ajax.reload( Attend.doneLoading );
                 }
@@ -369,6 +373,7 @@
                     sched += parseInt( $( e ).val(), 16 );
                 }
             } );
+            Attend.loadAnother();
             $.ajax( {
                 "url"   : "api/students",
                 "method": "post",
@@ -382,11 +387,15 @@
                         'success': function ( json ) {
                             console.log( json );
                             EnrollmentTab.insert( json );
+                            Attend.doneLoading();
                         },
                         'error'  : function ( xhr ) {
                             console.log( xhr );
+                            Attend.doneLoading();
                         }
                     } );
+
+                    Attend.doneLoading();
                     $.ajax( {
                         "url"   : "api/schedules",
                         "method": "post",
@@ -403,9 +412,11 @@
                                 'success': function ( json ) {
                                     console.log( json );
                                     Schedules.insert( json );
+                                    Attend.doneLoading();
                                 },
                                 'error'  : function ( xhr ) {
                                     console.log( xhr );
+                                    Attend.doneLoading();
                                 }
                             } )
                         },
@@ -423,6 +434,7 @@
         }
 
         function update( id, data ) {
+            Attend.loadAnother();
             $.ajax( {
                 "url"   : "api/students/" + id,
                 "method": "put",
@@ -432,11 +444,13 @@
                     data.id           = id;
                     data.classroom_id = JSON.parse( data.classroom_id ).data;
                     EnrollmentTab.redrawRow( data );
+                    Attend.doneLoading();
                 },
                 "error"  : function ( xhr, estring, e ) {
                     console.log( xhr );
                     console.log( estring );
                     console.log( e );
+                    Attend.doneLoading();
                     alert( "Error" );
                 }
             } );
@@ -466,6 +480,7 @@
             },
             'error'   : function ( xhr ) {
                 console.log( xhr );
+                Attend.doneLoading();
             }
         } );
 
@@ -483,6 +498,7 @@
             'error'   : function ( xhr ) {
                 console.log( "ERROR loading schedules" );
                 console.log( xhr );
+                Attend.doneLoading();
             }
         } )
     } );
