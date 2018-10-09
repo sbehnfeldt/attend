@@ -166,6 +166,7 @@
             $weekOf.on( 'change', function () {
                 $weekOf.datepicker( 'setDate', getMonday( new Date( $( this ).val() ) ) );
                 $weekOf.blur();
+                build();
             } );
         }
 
@@ -183,6 +184,9 @@
         }
 
         function buildAttendanceTables( classrooms, students, schedules ) {
+            $attendance.empty();
+            Attend.loadAnother();
+
             for ( var i = 0; i < classrooms.length; i++ ) {
                 $attendance.append( $( '<h3>' ).text( classrooms[ i ].label ) );
                 var $table = buildAttendanceTable( classrooms[ i ], students, schedules );
@@ -196,6 +200,7 @@
 
                 $attendance.append( $table );
             }
+            Attend.doneLoading();
         }
 
         function buildAttendanceTable( classroom, students, schedules ) {
