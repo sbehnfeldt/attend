@@ -141,13 +141,13 @@
                     d.setDate( d.getDate() - 2 );
                     break;
                 case 4: // Thursday:
-                    d.dateDate( d.getDate() - 3 );
+                    d.setDate( d.getDate() - 3 );
                     break;
                 case 5:  // Friday:
-                    d.dateDate( d.getDate() + 3 );
+                    d.setDate( d.getDate() + 3 );
                     break;
                 case 6:
-                    d.dateDate( d.getDate() + 2 );
+                    d.setDate( d.getDate() + 2 );
                     break;
                 case 0:
                     d.setDate( d.getDate() + 1 );
