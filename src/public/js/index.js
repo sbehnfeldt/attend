@@ -5,6 +5,7 @@
         var classrooms = [];
 
         function load() {
+            Attend.loadAnother();
             $.ajax( {
                 'url'   : 'api/classrooms',
                 'method': 'get',
@@ -22,10 +23,12 @@
                     } );
                     Classrooms.classrooms = json;
                     AttendanceTab.build();
+                    Attend.doneLoading();
                 },
 
                 'error': function ( xhr ) {
                     console.log( xhr );
+                    Attend.doneLoading();
                 }
             } )
         }
@@ -41,6 +44,7 @@
         var students = [];
 
         function load() {
+            Attend.loadAnother();
             $.ajax( {
                 'url'   : 'api/students',
                 'method': 'get',
@@ -68,10 +72,11 @@
                         } );
                     }
                     AttendanceTab.build();
-
+                    Attend.doneLoading();
                 },
                 'error'  : function ( xhr ) {
                     console.log( xhr );
+                    Attend.doneLoading();
                 }
             } );
         }
@@ -87,6 +92,7 @@
         var schedules = [];   // Schedules by student id
 
         function load() {
+            Attend.loadAnother();
             $.ajax( {
                 'url'   : 'api/schedules',
                 'method': 'get',
@@ -101,9 +107,11 @@
                         Schedules.schedules[ sched.student_id ].push( sched );
                     }
                     AttendanceTab.build();
+                    Attend.doneLoading();
                 },
                 'error'  : function ( xhr ) {
                     console.log( xhr );
+                    Attend.doneLoading();
                 }
             } )
         }

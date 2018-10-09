@@ -7,9 +7,25 @@
 
         $self = $( selector );
         table = $self.find( 'table' ).DataTable( {
-            "ajax"     : {
-                "url"    : "api/classrooms",
-                "dataSrc": ""
+            "ajax"     : function () {
+                Attend.loadAnother();
+                $.ajax( {
+                    'url'   : 'api/classrooms',
+                    'method': 'get',
+
+                    'success': function ( json ) {
+                        console.log( json );
+                        for ( var i = 0; i < json.length; i++ ) {
+                            table.row.add( json[ i ] );
+                        }
+                        table.draw();
+                        Attend.doneLoading();
+                    },
+                    'error'  : function ( xhr ) {
+                        console.log( xhr );
+                        Attend.doneLoading();
+                    }
+                } );
             },
             "paging"   : false,
             "searching": false,
@@ -83,7 +99,8 @@
             "buttons": [ {
                 "text"  : "Reload",
                 "action": function ( e, dt ) {
-                    dt.ajax.reload();
+                    Attend.loadAnother();
+                    dt.ajax.reload( Attend.doneLoading );
                 }
             } ]
         } );
@@ -150,7 +167,7 @@
 
         $required = $form.find( '.required' );
 
-        dialog    = $self.dialog( {
+        dialog = $self.dialog( {
             "autoOpen": false,
             "modal"   : true,
             "width"   : "300px",

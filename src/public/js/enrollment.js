@@ -85,12 +85,28 @@
 
         $self = $( selector );
         table = $self.find( 'table.enrollment-table' ).DataTable( {
-            "ajax"        : {
-                "url"    : "api/students",
-                "dataSrc": ""
+            "ajax"   : function () {
+                Attend.loadAnother();
+                $.ajax( {
+                    'url'   : 'api/students',
+                    'method': 'get',
+
+                    'success': function ( json ) {
+                        console.log( json );
+                        for ( var i = 0; i < json.length; i++ ) {
+                            table.row.add( json[ i ] );
+                        }
+                        table.draw();
+                        Attend.doneLoading();
+                    },
+                    'error'  : function ( xhr ) {
+                        console.log( xhr );
+                        Attend.doneLoading();
+                    }
+                } );
             },
-            "select"      : true,
-            "columns"     : [
+            "select" : true,
+            "columns": [
                 { "data": "id" },
                 { "data": "family_name" },
                 { "data": "first_name" }, {
@@ -165,7 +181,8 @@
             "buttons": [ {
                 "text"  : "Reload",
                 "action": function ( e, dt ) {
-                    dt.ajax.reload();
+                    Attend.loadAnother();
+                    dt.ajax.reload( Attend.doneLoading );
                 }
             } ]
         } );
@@ -436,6 +453,7 @@
     $( function () {
         $( '#tabs' ).tabs();
 
+        Attend.loadAnother();
         $.ajax( {
             'url'   : 'api/classrooms',
             'method': 'get',
@@ -444,20 +462,23 @@
             'success' : function ( json ) {
                 Classrooms.load( json );
                 checkClassrooms();
+                Attend.doneLoading();
             },
             'error'   : function ( xhr ) {
                 console.log( xhr );
             }
         } );
 
+        Attend.loadAnother();
         $.ajax( {
             'url'   : 'api/schedules',
             'method': 'get',
 
             'dataType': 'json',
             'success' : function ( json ) {
-                console.log( 'Schedules loaded' );
+                console.log( json );
                 Schedules.load( json );
+                Attend.doneLoading();
             },
             'error'   : function ( xhr ) {
                 console.log( "ERROR loading schedules" );
