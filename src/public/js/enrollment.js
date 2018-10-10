@@ -253,15 +253,17 @@
     var StudentPropsDlg = (function ( selector ) {
         var $self,
             $form,
-            $required,
             $studentId,
             $familyName,
             $firstName,
             $classrooms,
             $enrolled,
+            $startDate,
+            $list,
+
+            $required,
             $buttons,
             $boxes,
-            $list,
             dialog;
 
         $self       = $( selector );
@@ -271,6 +273,7 @@
         $firstName  = $self.find( '[name=first_name]' );
         $classrooms = $self.find( '[name=classroomsList]' );
         $enrolled   = $self.find( '[name=enrolled]' );
+        $startDate  = $self.find( '[name=weekOf]' );
         $list       = $form.find( '[name=schedulesList]' );
 
         $boxes    = $form.find( 'table.schedule-table input[type=checkbox]' );
@@ -292,6 +295,9 @@
                     StudentPropsDlg.close();
                 }
             }
+        } );
+        $startDate.datepicker( {
+            'dateFormat': 'yy-mm-dd'
         } );
 
         $buttons.on( 'click', function () {
@@ -322,6 +328,8 @@
             clear();
             if ( student ) {
                 populate( student );
+            } else {
+                $startDate.datepicker( 'setDate', Attend.getMonday( new Date() ) );
             }
             dialog.dialog( 'open' );
         }
@@ -379,28 +387,33 @@
                 } )
             };
 
+            var schedule = {
+                start_date: $startDate.val(),
+                schedule  : (function () {
+                    var sched = 0;
+                    $boxes.each( function ( i, e ) {
+                        if ( $( e ).prop( 'checked' ) ) {
+                            sched += parseInt( $( e ).val(), 16 );
+                        }
+                    } );
+                    return sched;
+                })()
+            };
+
             if ( !id ) {
-                insert( data );
+                insert( data, schedule );
             } else {
-                update( id, data );
+                update( id, data, schedule );
             }
             StudentPropsDlg.close();
         }
 
-        function insert( data ) {
-            var sched = 0;
-            $boxes.each( function ( i, e ) {
-                if ( $( e ).prop( 'checked' ) ) {
-                    sched += parseInt( $( e ).val(), 16 );
-                }
-            } );
-
-
+        function insert( student, schedule ) {
             Attend.loadAnother();
             $.ajax( {
                 "url"   : "api/students",
                 "method": "post",
-                "data"  : data,
+                "data"  : student,
 
                 "dataType": "json",
                 "success" : function ( json ) {
@@ -411,45 +424,43 @@
                         'success': function ( json ) {
                             console.log( json );
                             EnrollmentTab.insert( json );
+                            Attend.loadAnother();   // Get student record just loaded
+                            schedule.student_id = json.id;
+                            $.ajax( {
+                                "url"   : "api/schedules",
+                                "method": "post",
+                                "data"  : schedule,
+
+                                "dataType": "json",
+                                "success" : function ( json ) {
+                                    $.ajax( {
+                                        'url'    : 'api/schedules/' + json,
+                                        'method' : 'get',
+                                        'success': function ( json ) {
+                                            console.log( json );
+                                            Schedules.insert( json );
+                                            Attend.doneLoading();
+                                        },
+                                        'error'  : function ( xhr ) {
+                                            console.log( xhr );
+                                            Attend.doneLoading();
+                                        }
+                                    } )
+                                },
+                                "error"   : function ( xhr ) {
+                                    console.log( xhr );
+                                    Attend.doneLoading();
+                                    alert( "Error" );
+                                }
+                            } );
                             Attend.doneLoading();
                         },
-                        'error'  : function ( xhr ) {
+
+                        'error': function ( xhr ) {
                             console.log( xhr );
                             Attend.doneLoading();
                         }
                     } );
-
-                    Attend.loadAnother();   // Get student record
-                    $.ajax( {
-                        "url"   : "api/schedules",
-                        "method": "post",
-                        "data"  : {
-                            'student_id': json,
-                            'schedule'  : sched
-                        },
-
-                        "dataType": "json",
-                        "success" : function ( json ) {
-                            $.ajax( {
-                                'url'    : 'api/schedules/' + json,
-                                'method' : 'get',
-                                'success': function ( json ) {
-                                    console.log( json );
-                                    Schedules.insert( json );
-                                    Attend.doneLoading();
-                                },
-                                'error'  : function ( xhr ) {
-                                    console.log( xhr );
-                                    Attend.doneLoading();
-                                }
-                            } )
-                        },
-                        "error"   : function ( xhr ) {
-                            console.log( xhr );
-                            Attend.doneLoading();
-                            alert( "Error" );
-                        }
-                    } )
 
                     Attend.doneLoading();
                 },
@@ -461,17 +472,17 @@
             } );
         }
 
-        function update( id, data ) {
+        function update( id, student, schedule ) {
             Attend.loadAnother();
             $.ajax( {
                 "url"   : "api/students/" + id,
                 "method": "put",
-                "data"  : data,
+                "data"  : student,
 
                 "success": function () {
-                    data.id           = id;
-                    data.classroom_id = JSON.parse( data.classroom_id ).data;
-                    EnrollmentTab.redrawRow( data );
+                    student.id           = id;
+                    student.classroom_id = JSON.parse( student.classroom_id ).data;
+                    EnrollmentTab.redrawRow( student );
                     Attend.doneLoading();
                 },
                 "error"  : function ( xhr, estring, e ) {
