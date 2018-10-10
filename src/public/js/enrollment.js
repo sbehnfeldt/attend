@@ -154,6 +154,7 @@
                     var selected = dt.rows( { selected: true } ).indexes();
                     var msg      = (1 === selected.length) ? 'Are you sure you want to delete this student record?' : 'Are you sure you want to delete these ' + selected.length + ' student records?';
                     if ( confirm( msg ) ) {
+
                         for ( var i = 0; i < selected.length; i++ ) {
                             (function ( index ) {
                                 Attend.loadAnother();
@@ -162,7 +163,8 @@
                                     "method": "delete",
 
                                     "success": function ( json ) {
-                                        dt.rows( selected[ index ] ).remove();
+//                                        dt.rows( selected[ index ] ).remove();
+                                        remove( dt.rows( selected[ index ] ).data()[ 0 ][ 'id' ] );
                                         dt.draw();
                                         Attend.doneLoading();
                                     },
@@ -171,7 +173,6 @@
                                         Attend.doneLoading();
                                     }
                                 } );
-
                             })( i );
                         }
                     }
@@ -217,6 +218,26 @@
 
         function insert( data ) {
             table.row.add( data ).draw();
+        }
+
+        function remove( studentId ) {
+            console.log( studentId );
+            table.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+                var data = this.data();
+                if ( studentId == data.id ) {
+                    console.log( studentId );
+                    console.log( data.id );
+                    console.log( rowIdx );
+                    console.log( tableLoop );
+                    console.log( rowLoop );
+                    console.log( this );
+                    console.log( this.data() );
+                    console.log( $( this ) );
+                    console.log( $( this ).data() );
+//                    this.remove();
+                }
+            } );
+            table.draw();
         }
 
 
@@ -373,6 +394,8 @@
                     sched += parseInt( $( e ).val(), 16 );
                 }
             } );
+
+
             Attend.loadAnother();
             $.ajax( {
                 "url"   : "api/students",
@@ -381,6 +404,7 @@
 
                 "dataType": "json",
                 "success" : function ( json ) {
+                    Attend.loadAnother();   // Get student record
                     $.ajax( {
                         'url'    : 'api/students/' + json,
                         'method' : 'get',
@@ -395,7 +419,7 @@
                         }
                     } );
 
-                    Attend.doneLoading();
+                    Attend.loadAnother();   // Get student record
                     $.ajax( {
                         "url"   : "api/schedules",
                         "method": "post",
@@ -422,12 +446,16 @@
                         },
                         "error"   : function ( xhr ) {
                             console.log( xhr );
+                            Attend.doneLoading();
                             alert( "Error" );
                         }
                     } )
+
+                    Attend.doneLoading();
                 },
                 "error"   : function ( xhr ) {
                     console.log( xhr );
+                    Attend.doneLoading();
                     alert( "Error" );
                 }
             } );
