@@ -300,6 +300,25 @@
             'dateFormat': 'yy-mm-dd'
         } );
 
+        // When a schedule button is clicked, Set/clear all the checkboxes in that button's row or column
+        $( '.sched-button' ).on( 'click', function () {
+            var key,   // Button's bit-map of checkbox values
+                $b;    // Subset of checkboxes to set/clear
+
+            key = $( this ).data( 'key' );
+
+            // From the set of all checkboxes in the schedule table, select only those whose values are found
+            // in the schedule button's bitmap key
+            $b = $boxes.filter( function () {
+
+                // Return true of the checkbox's value is turned on in the button's bitmap key
+                return ( $( this ).val() & key );
+            } );
+
+            // If all of the checkboxes are already checked, clear them all; otherwise, set them all
+            $b.prop( 'checked', $b.length !== $b.filter( ':checked' ).length );
+        } );
+
         $buttons.on( 'click', function () {
             return false;
         } );
