@@ -160,6 +160,7 @@
             $classroomId,
             $label,
             $order,
+            $inputs,
             $required,
             dialog;
 
@@ -169,6 +170,18 @@
         $label       = $form.find( '[name=label]' );
         $order       = $form.find( '[name=ordering]' );
 
+
+        $inputs = $form.find( 'input' );
+        $inputs.on( 'change', function () {
+            console.log( $( this ).val() + ', ' + $( this ).data( 'db-val' ) );
+            if ( $( this ).val() !== $( this ).data( 'db-val' ) ) {
+                $( this ).addClass( 'modified' );
+            } else {
+                $( this ).removeClass( 'modified' );
+            }
+        } );
+
+        console.log( $inputs.length );
         $required = $form.find( '.required' );
 
         dialog = $self.dialog( {
@@ -203,13 +216,15 @@
         function clear() {
             $form[ 0 ].reset();
             $required.removeClass( 'missing' );
+            $inputs.data( 'db-val', '' ).removeClass( 'modified' );
         }
 
         function populate( classroom ) {
             $classroomId.val( classroom.id );
-            $label.val( classroom.label );
-            $order.val( classroom.ordering );
+            $label.val( classroom.label ).data( 'db-val', classroom.label );
+            $order.val( classroom.ordering ).data( 'db-val', classroom.ordering );
         }
+
 
         function validate() {
             var valid = true;

@@ -47,12 +47,18 @@ button.disabled span {
 
 /* Remove the blue border around the input with the focus; instead, indicate focus with the same styling
  as the buttons have.  (Might be a good candidate for  LESS/SASS) */
-.ui-dialog div.row button:focus,
-.ui-dialog div.row input:focus,
-.ui-dialog div.row select:focus {
+.ui-dialog button:focus,
+.ui-dialog input:focus,
+.ui-dialog select:focus {
     outline-style: none;
     box-shadow: none;
     background-image: linear-gradient(#fff 0%, #67f80B 100%);
+}
+
+.ui-dialog input.modified,
+.ui-dialog select.modified {
+    background-color: lightgoldenrodyellow;
+    background-image: none;
 }
 
 .ui-dialog .required.missing {
@@ -60,6 +66,7 @@ button.disabled span {
     background-image: none;
     color: red;
 }
+
 .ui-dialog table {
     width: 100%;
 }
