@@ -176,6 +176,9 @@
         }
 
         function buildAttendanceTable( classroom, students, schedules ) {
+            var days   = [ 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri' ];
+            var months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
+
             var $table = $( '<table class="table table-striped table-bordered">' );
             var $thead = $( '<thead>' );
             $table.append( $thead );
@@ -185,11 +188,14 @@
 
             var $tr = $( '<tr>' );
             $tr.append( $( '<th>Name</th>' ) );
-            $tr.append( $( '<th>Mon</th>' ) );
-            $tr.append( $( '<th>Tue</th>' ) );
-            $tr.append( $( '<th>Wed</th>' ) );
-            $tr.append( $( '<th>Thu</th>' ) );
-            $tr.append( $( '<th>Fri</th>' ) );
+
+            var weekOf = $weekOf.val();
+            var cur    = new Date( weekOf );
+            for ( var i = 0; i < 5; i++ ) {
+                cur = cur.addDays( 1 );
+                $tr.append( $( '<th>' + days[ cur.getDay() ] + '<br/>' + months[ cur.getMonth() ] + ' ' + cur.getDate() + '</th>' ) );
+            }
+
             $tr.append( $( '<th>Summary</th>' ) );
             $thead.append( $tr );
 
