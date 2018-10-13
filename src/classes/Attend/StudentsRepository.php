@@ -14,29 +14,29 @@ class StudentsRepository extends Repository
     {
         return [
             'id'           => [
-                'select' => true,
                 'insert' => false,
                 'update' => false,
+                'select' => true,
             ],
             'family_name'  => [
-                'select' => true,
                 'insert' => true,
                 'update' => true,
+                'select' => true,
             ],
             'first_name'   => [
-                'select' => true,
                 'insert' => true,
                 'update' => true,
+                'select' => true,
             ],
             'enrolled'     => [
-                'select' => true,
                 'insert' => true,
                 'update' => true,
+                'select' => true,
             ],
             'classroom_id' => [
-                'select' => true,
                 'insert' => true,
                 'update' => true,
+                'select' => true,
             ]
         ];
     }

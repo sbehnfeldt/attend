@@ -285,13 +285,13 @@
             "modal"   : true,
             "width"   : "450px",
             "buttons" : {
-                "Submit": function () {
+                "Submit": function onSubmit() {
                     if ( validate() ) {
                         submit();
                         close();
                     }
                 },
-                "Cancel": function () {
+                "Cancel": function onCancel() {
                     StudentPropsDlg.close();
                 }
             }
@@ -324,9 +324,7 @@
         } );
 
         $boxes.on( 'change', function () {
-//            console.log( this );
-//            console.log( $( this ) );
-//            console.log( $( this ).val() );
+            // No op
         } );
 
         $list.on( 'change', function () {
@@ -372,6 +370,7 @@
             $firstName.val( student.first_name );
             $classrooms.val( student.classroom_id );
             $enrolled.prop( 'checked', (1 == student.enrolled) );
+            $startDate.datepicker( 'setDate', Attend.getMonday( new Date() ) );
 
             $list.removeClass( 'hidden' );
             for ( var i = 0; i < Schedules.records[ student.id ].length; i++ ) {
@@ -396,8 +395,12 @@
         }
 
         function submit() {
-            var id   = $self.find( '[name=id]' ).val();
-            var data = {
+            var id,
+                student,
+                map;
+
+            id      = $self.find( '[name=id]' ).val();
+            student = {
                 "family_name" : $familyName.val(),
                 "first_name"  : $firstName.val(),
                 "enrolled"    : ('on' === $enrolled.val()) ? 1 : 0,
@@ -406,27 +409,41 @@
                 } )
             };
 
-            var schedule = {
-                start_date: $startDate.val(),
-                schedule  : (function () {
-                    var sched = 0;
-                    $boxes.each( function ( i, e ) {
-                        if ( $( e ).prop( 'checked' ) ) {
-                            sched += parseInt( $( e ).val(), 16 );
-                        }
-                    } );
-                    return sched;
-                })()
-            };
+            map = 0;
+            $boxes.each( function ( i, e ) {
+                if ( $( e ).prop( 'checked' ) ) {
+                    map += parseInt( $( e ).val(), 16 );
+                }
+            } );
 
             if ( !id ) {
-                insert( data, schedule );
+                // Insert new student and schedule
+                insert( student, {
+                    start_date: $startDate.val(),
+                    schedule  : map
+                } );
+
             } else {
-                update( id, data, schedule );
+                var idx = $list.prop( 'selectedIndex' );
+                var cur = Schedules.records[ id ][ idx ];
+
+                console.log( cur );
+                if ( cur.schedule == map ) {
+                    // Update student, leave schedule unchanged
+                    update( id, student, null );
+                } else {
+                    // Update student, add new schedule
+                    update( id, student, {
+                        start_date: $startDate.val(),
+                        schedule  : map
+                    } );
+                }
             }
             StudentPropsDlg.close();
         }
 
+
+        // Insert new student, new schedule
         function insert( student, schedule ) {
             Attend.loadAnother();
             $.ajax( {
@@ -436,7 +453,7 @@
 
                 "dataType": "json",
                 "success" : function ( json ) {
-                    Attend.loadAnother();   // Get student record
+                    Attend.loadAnother();
                     $.ajax( {
                         'url'    : 'api/students/' + json,
                         'method' : 'get',
@@ -502,6 +519,27 @@
                     student.id           = id;
                     student.classroom_id = JSON.parse( student.classroom_id ).data;
                     EnrollmentTab.redrawRow( student );
+                    if ( schedule ) {
+                        schedule.student_id = id;
+                        Attend.loadAnother();
+                        $.ajax( {
+                            "url"   : "api/schedules",
+                            "method": "post",
+                            "data"  : schedule,
+
+                            "dataType": "json",
+                            "success" : function ( json ) {
+                                console.log( json );
+                                schedule.id = json;
+                                Schedules.insert( schedule );
+                                Attend.doneLoading();
+                            },
+                            "error"   : function ( xhr ) {
+                                console.log( xhr );
+                                Attend.doneLoading();
+                            }
+                        } );
+                    }
                     Attend.doneLoading();
                 },
                 "error"  : function ( xhr, estring, e ) {
