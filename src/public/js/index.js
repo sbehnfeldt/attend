@@ -135,9 +135,11 @@
             $attendance = $tab.find( '.attendance-page-schedules' );
 
             $weekOf.datepicker( 'setDate', Attend.getMonday( new Date() ) );
+            $( '#pdf-attendance' ).attr( 'href', 'pdf.php?attendance&week=' + $weekOf.val() );
             $weekOf.on( 'change', function () {
-                $weekOf.datepicker( 'setDate', Attend.getMonday( new Date( $( this ).val() ) ) );
-                $weekOf.blur();
+                $( this ).datepicker( 'setDate', Attend.getMonday( new Date( $( this ).val() ) ) );
+                $( this ).blur();
+                $( '#pdf-attendance' ).attr( 'href', 'pdf.php?attendance&week=' + $( this ).val() );
                 build();
             } );
         }
