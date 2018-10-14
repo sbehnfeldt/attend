@@ -341,6 +341,16 @@
         } );
 
 
+        // $classrooms is required only if student is enrolled
+        $enrolled.on( 'click', function () {
+            if ( $( this ).prop( 'checked' ) ) {
+                $classrooms.addClass( 'required' );
+            } else {
+                $classrooms.removeClass( 'required' );
+            }
+        } );
+
+
         function open( student ) {
             clear();
             if ( student ) {
@@ -358,6 +368,7 @@
         function clear() {
             $form[ 0 ].reset();
             $required.removeClass( 'missing' );
+            $classrooms.addClass( 'required' );
             $list.empty();
             $list.addClass( 'hidden' );
         }
