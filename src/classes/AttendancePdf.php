@@ -136,7 +136,7 @@ class AttendancePdf extends AttendPdf
         $this->Cell($this->colWidths[ 0 ], $this->rowHeight,
             $student[ 'family_name' ] . ', ' . $student[ 'first_name' ], 1, 0);
 
-        $thisWeek = $this->getWeekOf();
+        $thisWeek = clone $this->getWeekOf();
         $today    = DateTime::createFromFormat('Y-m-d',
             $this->schedules[ $student[ 'schedules' ][ 0 ] ][ 'start_date' ]);
         $notes    = [
