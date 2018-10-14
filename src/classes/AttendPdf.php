@@ -4,6 +4,8 @@
 class AttendPdf extends FPDF
 {
 
+    /** @var  PDO $pdo */
+    protected $pdo;
     protected $classes;
     protected $students;
     protected $schedules;
@@ -59,6 +61,23 @@ class AttendPdf extends FPDF
     {
         $this->theClassroom = $theClassroom;
     }
+
+    /**
+     * @return PDO
+     */
+    public function getPdo()
+    {
+        return $this->pdo;
+    }
+
+    /**
+     * @param PDO $pdo
+     */
+    public function setPdo($pdo)
+    {
+        $this->pdo = $pdo;
+    }
+
 
     /**
      * @return array
@@ -190,44 +209,41 @@ class AttendPdf extends FPDF
         return $composite;
     }
 
-    protected function fetch($url)
-    {
-        error_log($url);
-        $contents = file_get_contents($url);
-        $json     = json_decode($contents, true);
-        $records  = $json[ 'data' ];
-        $return   = [];
-        foreach ($records as $record) {
-            $return[ $record[ 'id' ] ] = $record;
-        }
-
-        return $return;
-    }
-
     protected function prepare()
     {
-        $this->classes   = $this->fetch('http://' . $_SERVER[ 'HTTP_HOST' ] . '/attend-api/classrooms');
-        $this->students  = $this->fetch('http://' . $_SERVER[ 'HTTP_HOST' ] . '/attend-api/students');
-        $this->schedules = $this->fetch('http://' . $_SERVER[ 'HTTP_HOST' ] . '/attend-api/schedules');
-
-        foreach ($this->classes as $classroomId => &$class) {
-            $class[ 'students' ] = [];
+        $this->classes = [];
+        $repo          = new \Attend\ClassroomsRepository($this->getPdo());
+        $classes       = $repo->select();
+        for ($i = 0; $i < count($classes); $i++) {
+            $class                           = $classes[ $i ];
+            $class[ 'students' ]             = [];
+            $this->classes[ $class[ 'id' ] ] = $class;
         }
-        unset($class);
 
+        $this->students = [];
+        $repo           = new \Attend\StudentsRepository($this->getPdo());
+        $students       = $repo->select();
+        for ($i = 0; $i < count($students); $i++) {
+            $student                            = $students[ $i ];
+            $student[ 'schedules' ]             = [];
+            $this->students[ $student[ 'id' ] ] = $student;
 
-        foreach ($this->students as $studentId => &$student) {
-            $student[ 'schedules' ]                        = [];
             $classroomId                                   = $student[ 'classroom_id' ];
-            $this->classes[ $classroomId ][ 'students' ][] = $studentId;
+            $this->classes[ $classroomId ][ 'students' ][] = $student[ 'id' ];
         }
-        unset($student);
 
-        foreach ($this->schedules as $scheduleId => &$schedule) {
+
+        $this->schedules = [];
+        $repo            = new \Attend\SchedulesRepository($this->getPdo());
+        $schedules       = $repo->select();
+        for ($i = 0; $i < count($schedules); $i++) {
+            $schedule                             = $schedules[ $i ];
+            $this->schedules[ $schedule[ 'id' ] ] = $schedule;
+
             $studentId                                     = $schedule[ 'student_id' ];
-            $this->students[ $studentId ][ 'schedules' ][] = $scheduleId;
+            $this->students[ $studentId ][ 'schedules' ][] = $schedule[ 'id' ];
         }
-        unset($schedule);
-    }
 
+        return;
+    }
 }
