@@ -57,6 +57,4 @@ class SchedulesRepository extends Repository
 
         return parent::postProcessInserts($cols, $vals);
     }
-
-
 }

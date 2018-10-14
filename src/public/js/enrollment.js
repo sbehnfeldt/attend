@@ -70,10 +70,22 @@
             } );
         }
 
+        function update( s ) {
+            for ( var i = 0; i < records[ s.student_id ].length; i++ ) {
+                if ( s.id === records[ s.student_id ][ i ].id ) {
+                    for ( var p in s ) {
+                        records[ s.student_id ][ i ][ p ] = s[ p ];
+                    }
+                    break;
+                }
+            }
+        }
+
         return {
             'records': records,
             'load'   : load,
-            'insert' : insert
+            'insert' : insert,
+            'update' : update
         };
     })();
 
@@ -532,24 +544,54 @@
                     EnrollmentTab.redrawRow( student );
                     if ( schedule ) {
                         schedule.student_id = id;
-                        Attend.loadAnother();
-                        $.ajax( {
-                            "url"   : "api/schedules",
-                            "method": "post",
-                            "data"  : schedule,
 
-                            "dataType": "json",
-                            "success" : function ( json ) {
-                                console.log( json );
-                                schedule.id = json;
-                                Schedules.insert( schedule );
-                                Attend.doneLoading();
-                            },
-                            "error"   : function ( xhr ) {
-                                console.log( xhr );
-                                Attend.doneLoading();
+                        var d1 = $startDate.val();
+                        for ( var i = 0; i < Schedules.records[ id ].length; i++ ) {
+                            if ( d1 === Schedules.records[ id ][ i ].start_date ) {
+                                break;
                             }
-                        } );
+                        }
+                        if ( i < Schedules.records[ id ].length ) {
+                            // Update existing schedule
+                            schedule.id = Schedules.records[ id ][ i ].id;
+                            Attend.loadAnother();
+                            $.ajax( {
+                                "url"   : "api/schedules/" + schedule.id,
+                                "method": "put",
+                                "data"  : schedule,
+
+                                "dataType": "json",
+                                "success" : function ( json ) {
+                                    console.log( json );
+                                    Schedules.update( schedule );
+                                    Attend.doneLoading();
+                                },
+                                "error"   : function ( xhr ) {
+                                    console.log( xhr );
+                                    Attend.doneLoading();
+                                }
+                            } );
+                        } else {
+                            // Insert new schedule
+                            Attend.loadAnother();
+                            $.ajax( {
+                                "url"   : "api/schedules",
+                                "method": "post",
+                                "data"  : schedule,
+
+                                "dataType": "json",
+                                "success" : function ( json ) {
+                                    console.log( json );
+                                    schedule.id = json;
+                                    Schedules.insert( schedule );
+                                    Attend.doneLoading();
+                                },
+                                "error"   : function ( xhr ) {
+                                    console.log( xhr );
+                                    Attend.doneLoading();
+                                }
+                            } );
+                        }
                     }
                     Attend.doneLoading();
                 },
