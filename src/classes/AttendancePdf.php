@@ -63,7 +63,7 @@ class AttendancePdf extends AttendPdf
     }
 
 
-    public function Output()
+    public function Output($dest = '', $name = '', $isUTF8 = false)
     {
         $this->prepare();
 
@@ -91,7 +91,7 @@ class AttendancePdf extends AttendPdf
             $this->outputClassroom($class);
         }
 
-        parent::Output();
+        parent::Output($dest, $name, $isUTF8);
     }
 
     private function outputClassroom($classroom)
@@ -102,9 +102,11 @@ class AttendancePdf extends AttendPdf
         foreach ($classroom[ 'students' ] as $studentId) {
             $subtotals = $this->outputStudent($studentId);
 
-            for ($i = 0; $i < count($subtotals); $i++) {
-                if ($subtotals[ $i ]) {
-                    $totals[ $i ]++;
+            if ($subtotals) {
+                for ($i = 0; $i < count($subtotals); $i++) {
+                    if ($subtotals[ $i ]) {
+                        $totals[ $i ]++;
+                    }
                 }
             }
         }
