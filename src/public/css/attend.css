@@ -20,6 +20,7 @@ button.disabled span {
     color: #aaa;
 }
 
+.attendance-page-signin table th:not(:first-of-type),
 .attendance-page-schedules table th:not(:first-of-type) {
     text-align: center;
 }

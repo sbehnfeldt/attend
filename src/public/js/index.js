@@ -23,6 +23,7 @@
                     } );
                     Classrooms.classrooms = json;
                     AttendanceTab.build();
+                    SigninTab.build();
                     Attend.doneLoading();
                 },
 
@@ -72,6 +73,7 @@
                         } );
                     }
                     AttendanceTab.build();
+                    SigninTab.build();
                     Attend.doneLoading();
                 },
                 'error'  : function ( xhr ) {
@@ -107,6 +109,7 @@
                         Schedules.schedules[ sched.student_id ].push( sched );
                     }
                     AttendanceTab.build();
+                    SigninTab.build();
                     Attend.doneLoading();
                 },
                 'error'  : function ( xhr ) {
@@ -289,11 +292,130 @@
         };
     })();
 
+    var SigninTab = (function () {
+        var $tab,
+            $weekOf,
+            $signin
+                ;
+
+        function init( selector ) {
+            $tab    = $( selector );
+            $weekOf = $tab.find( '[name=week-of]' );
+            $weekOf.datepicker();
+            $signin = $tab.find( '.attendance-page-signin' );
+
+            $weekOf.datepicker( 'setDate', Attend.getMonday( new Date() ) );
+            $( '#pdf-signin' ).attr( 'href', 'pdf.php?signin&week=' + $weekOf.val() );
+
+            $weekOf.on( 'change', function onChange_weekOf() {
+                $( this ).datepicker( 'setDate', Attend.getMonday( new Date( $( this ).val() ) ) );
+                $( this ).blur();
+                $( '#pdf-signin' ).attr( 'href', 'pdf.php?signin&week=' + $( this ).val() );
+                build();
+            } );
+        }
+
+        function build() {
+            if ( !Classrooms.classrooms.length ) {
+                return;
+            }
+            if ( !Students.students.length ) {
+                return;
+            }
+            if ( !Schedules.schedules.length ) {
+                return;
+            }
+            buildSigninTables( Classrooms.classrooms, Students.students, Schedules.schedules );
+        }
+
+        function buildSigninTables( classrooms, students, schedules ) {
+            $signin.empty();
+            Attend.loadAnother();
+
+            for ( var i = 0; i < classrooms.length; i++ ) {
+                $signin.append( $( '<h3>' ).text( classrooms[ i ].label ) );
+                var $table = buildSigninTable( classrooms[ i ], students, schedules );
+
+                $table.DataTable( {
+                    'searching': false,
+                    'paging'   : false,
+                    'ordering' : false,
+                    'info'     : false
+                } );
+
+                $signin.append( $table );
+            }
+            Attend.doneLoading();
+        }
+
+        function buildSigninTable( classroom, students, schedules ) {
+            var days   = [ 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri' ];
+            var months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
+            var $table = $( '<table class="table table-striped table-bordered">' );
+            var $thead = $( '<thead>' );
+            $table.append( $thead );
+
+            var $tbody = $( '<tbody>' );
+            $table.append( $tbody );
+
+            var $tr = $( '<tr>' );
+            $tr.append( $( '<th>Name</th>' ) );
+
+            var weekOf = $weekOf.val();
+            var cur    = new Date( weekOf );
+            for ( var i = 0; i < 5; i++ ) {
+                cur = cur.addDays( 1 );
+                $tr.append( $( '<th>' + days[ cur.getDay() ] + '<br/>' + months[ cur.getMonth() ] + ' ' + cur.getDate() + '</th>' ) );
+            }
+            $thead.append( $tr );
+
+            if ( students[ classroom.id ] ) {
+                for ( var i = 0; i < students[ classroom.id ].length; i++ ) {
+                    var $tr = buildStudentRow( students[ classroom.id ][ i ], schedules );
+                    $tbody.append( $tr );
+                }
+            }
+            return $table;
+        }
+
+        function buildStudentRow( student, schedules ) {
+            var decoder = [
+                [ 0x0001, 0x0020, 0x0400 ],
+                [ 0x0002, 0x0040, 0x0800 ],
+                [ 0x0004, 0x0080, 0x1000 ],
+                [ 0x0008, 0x0100, 0x2000 ],
+                [ 0x0010, 0x0200, 0x4000 ]
+            ];
+
+            var sched = schedules[ student.id ][ schedules[ student.id ].length - 1 ].schedule;
+            var $tr   = $( '<tr>' );
+            $tr.append( $( '<td>' ).text( student.family_name + ', ' + student.first_name ) );
+            for ( var i = 0; i < 5; i++ ) {
+                var $td = buildDayCell( sched, decoder[ i ] );
+                $tr.append( $td );
+            }
+
+            return $tr;
+        }
+
+        function buildDayCell( sched, decoder ) {
+            var $td = $( '<td>' );
+
+            return $td;
+        }
+
+        return {
+            'init' : init,
+            'build': build
+        };
+    })();
+
 
     $( function () {
         console.log( "Index page ready" );
         $( '#tabs' ).tabs();
         AttendanceTab.init( '#attendance-tab' );
+        SigninTab.init( '#signin-tab' );
         Classrooms.load();
         Students.load();
         Schedules.load();
