@@ -1,0 +1,16 @@
+; Generate the schema.xml
+vendor\bin\propel reverse --schema-name=attend --database-name=attend --namespace=attend "mysql:host=localhost;dbname=attend;user=attend;password=attend"
+
+
+; Generate the schema map
+;vendor\bin\propel help sql:build
+;vendor\bin\propel sql:build --schema-dir=generated-reversed-database --output-dir=classes/propel -vvv
+;cd generated-reversed-database
+;..\vendor\bin\propel sql:build --output-dir=../classes/propel -vvv
+
+
+cls && vendor\bin\propel sql:build --config-dir=generated-reversed-database --schema-dir=generated-reversed-database --output-dir=generated-reversed-database
+
+
+cls && vendor\bin\propel help model:build
+cls && vendor\bin\propel model:build --config-dir=generated-reversed-database --schema-dir=generated-reversed-database --output-dir=classes/Attend/Database
