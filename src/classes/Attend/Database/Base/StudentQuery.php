@@ -1,12 +1,12 @@
 <?php
 
-namespace Attend\Database\attend\Base;
+namespace Attend\Database\Base;
 
 use \Exception;
 use \PDO;
-use Attend\Database\attend\Students as ChildStudents;
-use Attend\Database\attend\StudentsQuery as ChildStudentsQuery;
-use Attend\Database\attend\Map\StudentsTableMap;
+use Attend\Database\Student as ChildStudent;
+use Attend\Database\StudentQuery as ChildStudentQuery;
+use Attend\Database\Map\StudentTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -20,117 +20,114 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  *
- * @method     ChildStudentsQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildStudentsQuery orderByFamilyName($order = Criteria::ASC) Order by the family_name column
- * @method     ChildStudentsQuery orderByFirstName($order = Criteria::ASC) Order by the first_name column
- * @method     ChildStudentsQuery orderByEnrolled($order = Criteria::ASC) Order by the enrolled column
- * @method     ChildStudentsQuery orderByClassroomId($order = Criteria::ASC) Order by the classroom_id column
+ * @method     ChildStudentQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildStudentQuery orderByFamilyName($order = Criteria::ASC) Order by the family_name column
+ * @method     ChildStudentQuery orderByFirstName($order = Criteria::ASC) Order by the first_name column
+ * @method     ChildStudentQuery orderByEnrolled($order = Criteria::ASC) Order by the enrolled column
+ * @method     ChildStudentQuery orderByClassroomId($order = Criteria::ASC) Order by the classroom_id column
  *
- * @method     ChildStudentsQuery groupById() Group by the id column
- * @method     ChildStudentsQuery groupByFamilyName() Group by the family_name column
- * @method     ChildStudentsQuery groupByFirstName() Group by the first_name column
- * @method     ChildStudentsQuery groupByEnrolled() Group by the enrolled column
- * @method     ChildStudentsQuery groupByClassroomId() Group by the classroom_id column
+ * @method     ChildStudentQuery groupById() Group by the id column
+ * @method     ChildStudentQuery groupByFamilyName() Group by the family_name column
+ * @method     ChildStudentQuery groupByFirstName() Group by the first_name column
+ * @method     ChildStudentQuery groupByEnrolled() Group by the enrolled column
+ * @method     ChildStudentQuery groupByClassroomId() Group by the classroom_id column
  *
- * @method     ChildStudentsQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     ChildStudentsQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     ChildStudentsQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     ChildStudentQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     ChildStudentQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     ChildStudentQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildStudentsQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildStudentsQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildStudentsQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ * @method     ChildStudentQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildStudentQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildStudentQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildStudentsQuery leftJoinClassrooms($relationAlias = null) Adds a LEFT JOIN clause to the query using the Classrooms relation
- * @method     ChildStudentsQuery rightJoinClassrooms($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Classrooms relation
- * @method     ChildStudentsQuery innerJoinClassrooms($relationAlias = null) Adds a INNER JOIN clause to the query using the Classrooms relation
+ * @method     ChildStudentQuery leftJoinClassroom($relationAlias = null) Adds a LEFT JOIN clause to the query using the Classroom relation
+ * @method     ChildStudentQuery rightJoinClassroom($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Classroom relation
+ * @method     ChildStudentQuery innerJoinClassroom($relationAlias = null) Adds a INNER JOIN clause to the query using the Classroom relation
  *
- * @method     ChildStudentsQuery joinWithClassrooms($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Classrooms relation
+ * @method     ChildStudentQuery joinWithClassroom($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Classroom relation
  *
- * @method     ChildStudentsQuery leftJoinWithClassrooms() Adds a LEFT JOIN clause and with to the query using the Classrooms relation
- * @method     ChildStudentsQuery rightJoinWithClassrooms() Adds a RIGHT JOIN clause and with to the query using the Classrooms relation
- * @method     ChildStudentsQuery innerJoinWithClassrooms() Adds a INNER JOIN clause and with to the query using the Classrooms relation
+ * @method     ChildStudentQuery leftJoinWithClassroom() Adds a LEFT JOIN clause and with to the query using the Classroom relation
+ * @method     ChildStudentQuery rightJoinWithClassroom() Adds a RIGHT JOIN clause and with to the query using the Classroom relation
+ * @method     ChildStudentQuery innerJoinWithClassroom() Adds a INNER JOIN clause and with to the query using the Classroom relation
  *
- * @method     ChildStudentsQuery leftJoinAttendance($relationAlias = null) Adds a LEFT JOIN clause to the query using the Attendance relation
- * @method     ChildStudentsQuery rightJoinAttendance($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Attendance relation
- * @method     ChildStudentsQuery innerJoinAttendance($relationAlias = null) Adds a INNER JOIN clause to the query using the Attendance relation
+ * @method     ChildStudentQuery leftJoinAttendance($relationAlias = null) Adds a LEFT JOIN clause to the query using the Attendance relation
+ * @method     ChildStudentQuery rightJoinAttendance($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Attendance relation
+ * @method     ChildStudentQuery innerJoinAttendance($relationAlias = null) Adds a INNER JOIN clause to the query using the Attendance relation
  *
- * @method     ChildStudentsQuery joinWithAttendance($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Attendance relation
+ * @method     ChildStudentQuery joinWithAttendance($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Attendance relation
  *
- * @method     ChildStudentsQuery leftJoinWithAttendance() Adds a LEFT JOIN clause and with to the query using the Attendance relation
- * @method     ChildStudentsQuery rightJoinWithAttendance() Adds a RIGHT JOIN clause and with to the query using the Attendance relation
- * @method     ChildStudentsQuery innerJoinWithAttendance() Adds a INNER JOIN clause and with to the query using the Attendance relation
+ * @method     ChildStudentQuery leftJoinWithAttendance() Adds a LEFT JOIN clause and with to the query using the Attendance relation
+ * @method     ChildStudentQuery rightJoinWithAttendance() Adds a RIGHT JOIN clause and with to the query using the Attendance relation
+ * @method     ChildStudentQuery innerJoinWithAttendance() Adds a INNER JOIN clause and with to the query using the Attendance relation
  *
- * @method     ChildStudentsQuery leftJoinSchedules($relationAlias = null) Adds a LEFT JOIN clause to the query using the Schedules relation
- * @method     ChildStudentsQuery rightJoinSchedules($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Schedules relation
- * @method     ChildStudentsQuery innerJoinSchedules($relationAlias = null) Adds a INNER JOIN clause to the query using the Schedules relation
+ * @method     ChildStudentQuery leftJoinSchedule($relationAlias = null) Adds a LEFT JOIN clause to the query using the Schedule relation
+ * @method     ChildStudentQuery rightJoinSchedule($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Schedule relation
+ * @method     ChildStudentQuery innerJoinSchedule($relationAlias = null) Adds a INNER JOIN clause to the query using the Schedule relation
  *
- * @method     ChildStudentsQuery joinWithSchedules($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Schedules relation
+ * @method     ChildStudentQuery joinWithSchedule($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Schedule relation
  *
- * @method     ChildStudentsQuery leftJoinWithSchedules() Adds a LEFT JOIN clause and with to the query using the Schedules relation
- * @method     ChildStudentsQuery rightJoinWithSchedules() Adds a RIGHT JOIN clause and with to the query using the Schedules relation
- * @method     ChildStudentsQuery innerJoinWithSchedules() Adds a INNER JOIN clause and with to the query using the Schedules relation
+ * @method     ChildStudentQuery leftJoinWithSchedule() Adds a LEFT JOIN clause and with to the query using the Schedule relation
+ * @method     ChildStudentQuery rightJoinWithSchedule() Adds a RIGHT JOIN clause and with to the query using the Schedule relation
+ * @method     ChildStudentQuery innerJoinWithSchedule() Adds a INNER JOIN clause and with to the query using the Schedule relation
  *
- * @method     \Attend\Database\attend\ClassroomsQuery|\Attend\Database\attend\AttendanceQuery|\Attend\Database\attend\SchedulesQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \Attend\Database\ClassroomQuery|\Attend\Database\AttendanceQuery|\Attend\Database\ScheduleQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
- * @method     ChildStudents findOne(ConnectionInterface $con = null) Return the first ChildStudents matching the query
- * @method     ChildStudents findOneOrCreate(ConnectionInterface $con = null) Return the first ChildStudents matching the query, or a new ChildStudents object populated from the query conditions when no match is found
+ * @method     ChildStudent findOne(ConnectionInterface $con = null) Return the first ChildStudent matching the query
+ * @method     ChildStudent findOneOrCreate(ConnectionInterface $con = null) Return the first ChildStudent matching the query, or a new ChildStudent object populated from the query conditions when no match is found
  *
- * @method     ChildStudents findOneById(int $id) Return the first ChildStudents filtered by the id column
- * @method     ChildStudents findOneByFamilyName(string $family_name) Return the first ChildStudents filtered by the family_name column
- * @method     ChildStudents findOneByFirstName(string $first_name) Return the first ChildStudents filtered by the first_name column
- * @method     ChildStudents findOneByEnrolled(int $enrolled) Return the first ChildStudents filtered by the enrolled column
- * @method     ChildStudents findOneByClassroomId(int $classroom_id) Return the first ChildStudents filtered by the classroom_id column *
- * @method     ChildStudents requirePk($key, ConnectionInterface $con = null) Return the ChildStudents by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildStudents requireOne(ConnectionInterface $con = null) Return the first ChildStudents matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildStudent findOneById(int $id) Return the first ChildStudent filtered by the id column
+ * @method     ChildStudent findOneByFamilyName(string $family_name) Return the first ChildStudent filtered by the family_name column
+ * @method     ChildStudent findOneByFirstName(string $first_name) Return the first ChildStudent filtered by the first_name column
+ * @method     ChildStudent findOneByEnrolled(int $enrolled) Return the first ChildStudent filtered by the enrolled column
+ * @method     ChildStudent findOneByClassroomId(int $classroom_id) Return the first ChildStudent filtered by the classroom_id column *
+ * @method     ChildStudent requirePk($key, ConnectionInterface $con = null) Return the ChildStudent by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildStudent requireOne(ConnectionInterface $con = null) Return the first ChildStudent matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildStudents requireOneById(int $id) Return the first ChildStudents filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildStudents requireOneByFamilyName(string $family_name) Return the first ChildStudents filtered by the family_name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildStudents requireOneByFirstName(string $first_name) Return the first ChildStudents filtered by the first_name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildStudents requireOneByEnrolled(int $enrolled) Return the first ChildStudents filtered by the enrolled column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildStudents requireOneByClassroomId(int $classroom_id) Return the first ChildStudents filtered by the classroom_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildStudent requireOneById(int $id) Return the first ChildStudent filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildStudent requireOneByFamilyName(string $family_name) Return the first ChildStudent filtered by the family_name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildStudent requireOneByFirstName(string $first_name) Return the first ChildStudent filtered by the first_name column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildStudent requireOneByEnrolled(int $enrolled) Return the first ChildStudent filtered by the enrolled column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildStudent requireOneByClassroomId(int $classroom_id) Return the first ChildStudent filtered by the classroom_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildStudents[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildStudents objects based on current ModelCriteria
- * @method     ChildStudents[]|ObjectCollection findById(int $id) Return ChildStudents objects filtered by the id column
- * @method     ChildStudents[]|ObjectCollection findByFamilyName(string $family_name) Return ChildStudents objects filtered by the family_name column
- * @method     ChildStudents[]|ObjectCollection findByFirstName(string $first_name) Return ChildStudents objects filtered by the first_name column
- * @method     ChildStudents[]|ObjectCollection findByEnrolled(int $enrolled) Return ChildStudents objects filtered by the enrolled column
- * @method     ChildStudents[]|ObjectCollection findByClassroomId(int $classroom_id) Return ChildStudents objects filtered by the classroom_id column
- * @method     ChildStudents[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
+ * @method     ChildStudent[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildStudent objects based on current ModelCriteria
+ * @method     ChildStudent[]|ObjectCollection findById(int $id) Return ChildStudent objects filtered by the id column
+ * @method     ChildStudent[]|ObjectCollection findByFamilyName(string $family_name) Return ChildStudent objects filtered by the family_name column
+ * @method     ChildStudent[]|ObjectCollection findByFirstName(string $first_name) Return ChildStudent objects filtered by the first_name column
+ * @method     ChildStudent[]|ObjectCollection findByEnrolled(int $enrolled) Return ChildStudent objects filtered by the enrolled column
+ * @method     ChildStudent[]|ObjectCollection findByClassroomId(int $classroom_id) Return ChildStudent objects filtered by the classroom_id column
+ * @method     ChildStudent[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
-abstract class StudentsQuery extends ModelCriteria
+abstract class StudentQuery extends ModelCriteria
 {
     protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
-     * Initializes internal state of \Attend\Database\attend\Base\StudentsQuery object.
+     * Initializes internal state of \Attend\Database\Base\StudentQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct(
-        $dbName = 'attend',
-        $modelName = '\\Attend\\Database\\attend\\Students',
-        $modelAlias = null
-    ) {
+    public function __construct($dbName = 'attend', $modelName = '\\Attend\\Database\\Student', $modelAlias = null)
+    {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
-     * Returns a new ChildStudentsQuery object.
+     * Returns a new ChildStudentQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
      * @param     Criteria $criteria Optional Criteria to build the query from
      *
-     * @return ChildStudentsQuery
+     * @return ChildStudentQuery
      */
     public static function create($modelAlias = null, Criteria $criteria = null)
     {
-        if ($criteria instanceof ChildStudentsQuery) {
+        if ($criteria instanceof ChildStudentQuery) {
             return $criteria;
         }
-        $query = new ChildStudentsQuery();
+        $query = new ChildStudentQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -153,7 +150,7 @@ abstract class StudentsQuery extends ModelCriteria
      * @param mixed $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
-     * @return ChildStudents|array|mixed the result, formatted by the current formatter
+     * @return ChildStudent|array|mixed the result, formatted by the current formatter
      */
     public function findPk($key, ConnectionInterface $con = null)
     {
@@ -162,7 +159,7 @@ abstract class StudentsQuery extends ModelCriteria
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(StudentsTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(StudentTableMap::DATABASE_NAME);
         }
 
         $this->basePreSelect($con);
@@ -175,7 +172,7 @@ abstract class StudentsQuery extends ModelCriteria
             return $this->findPkComplex($key, $con);
         }
 
-        if ((null !== ($obj = StudentsTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([
+        if ((null !== ($obj = StudentTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([
                 $key,
                 '__toString'
             ]) ? (string)$key : $key)))
@@ -196,7 +193,7 @@ abstract class StudentsQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildStudents A model object, or null if the key is not found
+     * @return ChildStudent A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
@@ -211,10 +208,10 @@ abstract class StudentsQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-            /** @var ChildStudents $obj */
-            $obj = new ChildStudents();
+            /** @var ChildStudent $obj */
+            $obj = new ChildStudent();
             $obj->hydrate($row);
-            StudentsTableMap::addInstanceToPool($obj,
+            StudentTableMap::addInstanceToPool($obj,
                 null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string)$key : $key);
         }
         $stmt->closeCursor();
@@ -228,7 +225,7 @@ abstract class StudentsQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return ChildStudents|array|mixed the result, formatted by the current formatter
+     * @return ChildStudent|array|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, ConnectionInterface $con)
     {
@@ -246,7 +243,6 @@ abstract class StudentsQuery extends ModelCriteria
      * <code>
      * $objs = $c->findPks(array(12, 56, 832), $con);
      * </code>
-     *
      * @param     array $keys Primary keys to use for the query
      * @param     ConnectionInterface $con an optional connection object
      *
@@ -271,12 +267,12 @@ abstract class StudentsQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return $this|ChildStudentsQuery The current query, for fluid interface
+     * @return $this|ChildStudentQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
 
-        return $this->addUsingAlias(StudentsTableMap::COL_ID, $key, Criteria::EQUAL);
+        return $this->addUsingAlias(StudentTableMap::COL_ID, $key, Criteria::EQUAL);
     }
 
     /**
@@ -284,12 +280,12 @@ abstract class StudentsQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return $this|ChildStudentsQuery The current query, for fluid interface
+     * @return $this|ChildStudentQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
 
-        return $this->addUsingAlias(StudentsTableMap::COL_ID, $keys, Criteria::IN);
+        return $this->addUsingAlias(StudentTableMap::COL_ID, $keys, Criteria::IN);
     }
 
     /**
@@ -308,18 +304,18 @@ abstract class StudentsQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildStudentsQuery The current query, for fluid interface
+     * @return $this|ChildStudentQuery The current query, for fluid interface
      */
     public function filterById($id = null, $comparison = null)
     {
         if (is_array($id)) {
             $useMinMax = false;
             if (isset($id[ 'min' ])) {
-                $this->addUsingAlias(StudentsTableMap::COL_ID, $id[ 'min' ], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(StudentTableMap::COL_ID, $id[ 'min' ], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($id[ 'max' ])) {
-                $this->addUsingAlias(StudentsTableMap::COL_ID, $id[ 'max' ], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(StudentTableMap::COL_ID, $id[ 'max' ], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -330,7 +326,7 @@ abstract class StudentsQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(StudentsTableMap::COL_ID, $id, $comparison);
+        return $this->addUsingAlias(StudentTableMap::COL_ID, $id, $comparison);
     }
 
     /**
@@ -345,7 +341,7 @@ abstract class StudentsQuery extends ModelCriteria
      * @param     string $familyName The value to use as filter.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildStudentsQuery The current query, for fluid interface
+     * @return $this|ChildStudentQuery The current query, for fluid interface
      */
     public function filterByFamilyName($familyName = null, $comparison = null)
     {
@@ -355,7 +351,7 @@ abstract class StudentsQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(StudentsTableMap::COL_FAMILY_NAME, $familyName, $comparison);
+        return $this->addUsingAlias(StudentTableMap::COL_FAMILY_NAME, $familyName, $comparison);
     }
 
     /**
@@ -370,7 +366,7 @@ abstract class StudentsQuery extends ModelCriteria
      * @param     string $firstName The value to use as filter.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildStudentsQuery The current query, for fluid interface
+     * @return $this|ChildStudentQuery The current query, for fluid interface
      */
     public function filterByFirstName($firstName = null, $comparison = null)
     {
@@ -380,7 +376,7 @@ abstract class StudentsQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(StudentsTableMap::COL_FIRST_NAME, $firstName, $comparison);
+        return $this->addUsingAlias(StudentTableMap::COL_FIRST_NAME, $firstName, $comparison);
     }
 
     /**
@@ -399,18 +395,18 @@ abstract class StudentsQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildStudentsQuery The current query, for fluid interface
+     * @return $this|ChildStudentQuery The current query, for fluid interface
      */
     public function filterByEnrolled($enrolled = null, $comparison = null)
     {
         if (is_array($enrolled)) {
             $useMinMax = false;
             if (isset($enrolled[ 'min' ])) {
-                $this->addUsingAlias(StudentsTableMap::COL_ENROLLED, $enrolled[ 'min' ], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(StudentTableMap::COL_ENROLLED, $enrolled[ 'min' ], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($enrolled[ 'max' ])) {
-                $this->addUsingAlias(StudentsTableMap::COL_ENROLLED, $enrolled[ 'max' ], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(StudentTableMap::COL_ENROLLED, $enrolled[ 'max' ], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -421,7 +417,7 @@ abstract class StudentsQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(StudentsTableMap::COL_ENROLLED, $enrolled, $comparison);
+        return $this->addUsingAlias(StudentTableMap::COL_ENROLLED, $enrolled, $comparison);
     }
 
     /**
@@ -434,7 +430,7 @@ abstract class StudentsQuery extends ModelCriteria
      * $query->filterByClassroomId(array('min' => 12)); // WHERE classroom_id > 12
      * </code>
      *
-     * @see       filterByClassrooms()
+     * @see       filterByClassroom()
      *
      * @param     mixed $classroomId The value to use as filter.
      *              Use scalar values for equality.
@@ -442,19 +438,18 @@ abstract class StudentsQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildStudentsQuery The current query, for fluid interface
+     * @return $this|ChildStudentQuery The current query, for fluid interface
      */
     public function filterByClassroomId($classroomId = null, $comparison = null)
     {
         if (is_array($classroomId)) {
             $useMinMax = false;
             if (isset($classroomId[ 'min' ])) {
-                $this->addUsingAlias(StudentsTableMap::COL_CLASSROOM_ID, $classroomId[ 'min' ],
-                    Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(StudentTableMap::COL_CLASSROOM_ID, $classroomId[ 'min' ], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($classroomId[ 'max' ])) {
-                $this->addUsingAlias(StudentsTableMap::COL_CLASSROOM_ID, $classroomId[ 'max' ], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(StudentTableMap::COL_CLASSROOM_ID, $classroomId[ 'max' ], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -465,49 +460,49 @@ abstract class StudentsQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(StudentsTableMap::COL_CLASSROOM_ID, $classroomId, $comparison);
+        return $this->addUsingAlias(StudentTableMap::COL_CLASSROOM_ID, $classroomId, $comparison);
     }
 
     /**
-     * Filter the query by a related \Attend\Database\attend\Classrooms object
+     * Filter the query by a related \Attend\Database\Classroom object
      *
-     * @param \Attend\Database\attend\Classrooms|ObjectCollection $classrooms The related object(s) to use as filter
+     * @param \Attend\Database\Classroom|ObjectCollection $classroom The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildStudentsQuery The current query, for fluid interface
+     * @return ChildStudentQuery The current query, for fluid interface
      */
-    public function filterByClassrooms($classrooms, $comparison = null)
+    public function filterByClassroom($classroom, $comparison = null)
     {
-        if ($classrooms instanceof \Attend\Database\attend\Classrooms) {
+        if ($classroom instanceof \Attend\Database\Classroom) {
             return $this
-                ->addUsingAlias(StudentsTableMap::COL_CLASSROOM_ID, $classrooms->getId(), $comparison);
-        } elseif ($classrooms instanceof ObjectCollection) {
+                ->addUsingAlias(StudentTableMap::COL_CLASSROOM_ID, $classroom->getId(), $comparison);
+        } elseif ($classroom instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(StudentsTableMap::COL_CLASSROOM_ID, $classrooms->toKeyValue('PrimaryKey', 'Id'),
+                ->addUsingAlias(StudentTableMap::COL_CLASSROOM_ID, $classroom->toKeyValue('PrimaryKey', 'Id'),
                     $comparison);
         } else {
-            throw new PropelException('filterByClassrooms() only accepts arguments of type \Attend\Database\attend\Classrooms or Collection');
+            throw new PropelException('filterByClassroom() only accepts arguments of type \Attend\Database\Classroom or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Classrooms relation
+     * Adds a JOIN clause to the query using the Classroom relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildStudentsQuery The current query, for fluid interface
+     * @return $this|ChildStudentQuery The current query, for fluid interface
      */
-    public function joinClassrooms($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function joinClassroom($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap    = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Classrooms');
+        $relationMap = $tableMap->getRelation('Classroom');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -522,14 +517,14 @@ abstract class StudentsQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Classrooms');
+            $this->addJoinObject($join, 'Classroom');
         }
 
         return $this;
     }
 
     /**
-     * Use the Classrooms relation Classrooms object
+     * Use the Classroom relation Classroom object
      *
      * @see useQuery()
      *
@@ -537,35 +532,35 @@ abstract class StudentsQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \Attend\Database\attend\ClassroomsQuery A secondary query class using the current class as primary query
+     * @return \Attend\Database\ClassroomQuery A secondary query class using the current class as primary query
      */
-    public function useClassroomsQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useClassroomQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinClassrooms($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Classrooms', '\Attend\Database\attend\ClassroomsQuery');
+            ->joinClassroom($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Classroom', '\Attend\Database\ClassroomQuery');
     }
 
     /**
-     * Filter the query by a related \Attend\Database\attend\Attendance object
+     * Filter the query by a related \Attend\Database\Attendance object
      *
-     * @param \Attend\Database\attend\Attendance|ObjectCollection $attendance the related object to use as filter
+     * @param \Attend\Database\Attendance|ObjectCollection $attendance the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildStudentsQuery The current query, for fluid interface
+     * @return ChildStudentQuery The current query, for fluid interface
      */
     public function filterByAttendance($attendance, $comparison = null)
     {
-        if ($attendance instanceof \Attend\Database\attend\Attendance) {
+        if ($attendance instanceof \Attend\Database\Attendance) {
             return $this
-                ->addUsingAlias(StudentsTableMap::COL_ID, $attendance->getStudentId(), $comparison);
+                ->addUsingAlias(StudentTableMap::COL_ID, $attendance->getStudentId(), $comparison);
         } elseif ($attendance instanceof ObjectCollection) {
             return $this
                 ->useAttendanceQuery()
                 ->filterByPrimaryKeys($attendance->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterByAttendance() only accepts arguments of type \Attend\Database\attend\Attendance or Collection');
+            throw new PropelException('filterByAttendance() only accepts arguments of type \Attend\Database\Attendance or Collection');
         }
     }
 
@@ -575,7 +570,7 @@ abstract class StudentsQuery extends ModelCriteria
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildStudentsQuery The current query, for fluid interface
+     * @return $this|ChildStudentQuery The current query, for fluid interface
      */
     public function joinAttendance($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -610,50 +605,50 @@ abstract class StudentsQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \Attend\Database\attend\AttendanceQuery A secondary query class using the current class as primary query
+     * @return \Attend\Database\AttendanceQuery A secondary query class using the current class as primary query
      */
     public function useAttendanceQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
             ->joinAttendance($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Attendance', '\Attend\Database\attend\AttendanceQuery');
+            ->useQuery($relationAlias ? $relationAlias : 'Attendance', '\Attend\Database\AttendanceQuery');
     }
 
     /**
-     * Filter the query by a related \Attend\Database\attend\Schedules object
+     * Filter the query by a related \Attend\Database\Schedule object
      *
-     * @param \Attend\Database\attend\Schedules|ObjectCollection $schedules the related object to use as filter
+     * @param \Attend\Database\Schedule|ObjectCollection $schedule the related object to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return ChildStudentsQuery The current query, for fluid interface
+     * @return ChildStudentQuery The current query, for fluid interface
      */
-    public function filterBySchedules($schedules, $comparison = null)
+    public function filterBySchedule($schedule, $comparison = null)
     {
-        if ($schedules instanceof \Attend\Database\attend\Schedules) {
+        if ($schedule instanceof \Attend\Database\Schedule) {
             return $this
-                ->addUsingAlias(StudentsTableMap::COL_ID, $schedules->getStudentId(), $comparison);
-        } elseif ($schedules instanceof ObjectCollection) {
+                ->addUsingAlias(StudentTableMap::COL_ID, $schedule->getStudentId(), $comparison);
+        } elseif ($schedule instanceof ObjectCollection) {
             return $this
-                ->useSchedulesQuery()
-                ->filterByPrimaryKeys($schedules->getPrimaryKeys())
+                ->useScheduleQuery()
+                ->filterByPrimaryKeys($schedule->getPrimaryKeys())
                 ->endUse();
         } else {
-            throw new PropelException('filterBySchedules() only accepts arguments of type \Attend\Database\attend\Schedules or Collection');
+            throw new PropelException('filterBySchedule() only accepts arguments of type \Attend\Database\Schedule or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Schedules relation
+     * Adds a JOIN clause to the query using the Schedule relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildStudentsQuery The current query, for fluid interface
+     * @return $this|ChildStudentQuery The current query, for fluid interface
      */
-    public function joinSchedules($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinSchedule($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap    = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Schedules');
+        $relationMap = $tableMap->getRelation('Schedule');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -668,14 +663,14 @@ abstract class StudentsQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Schedules');
+            $this->addJoinObject($join, 'Schedule');
         }
 
         return $this;
     }
 
     /**
-     * Use the Schedules relation Schedules object
+     * Use the Schedule relation Schedule object
      *
      * @see useQuery()
      *
@@ -683,26 +678,26 @@ abstract class StudentsQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \Attend\Database\attend\SchedulesQuery A secondary query class using the current class as primary query
+     * @return \Attend\Database\ScheduleQuery A secondary query class using the current class as primary query
      */
-    public function useSchedulesQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useScheduleQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinSchedules($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Schedules', '\Attend\Database\attend\SchedulesQuery');
+            ->joinSchedule($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Schedule', '\Attend\Database\ScheduleQuery');
     }
 
     /**
      * Exclude object from result
      *
-     * @param   ChildStudents $students Object to remove from the list of results
+     * @param   ChildStudent $student Object to remove from the list of results
      *
-     * @return $this|ChildStudentsQuery The current query, for fluid interface
+     * @return $this|ChildStudentQuery The current query, for fluid interface
      */
-    public function prune($students = null)
+    public function prune($student = null)
     {
-        if ($students) {
-            $this->addUsingAlias(StudentsTableMap::COL_ID, $students->getId(), Criteria::NOT_EQUAL);
+        if ($student) {
+            $this->addUsingAlias(StudentTableMap::COL_ID, $student->getId(), Criteria::NOT_EQUAL);
         }
 
         return $this;
@@ -712,13 +707,12 @@ abstract class StudentsQuery extends ModelCriteria
      * Deletes all rows from the students table.
      *
      * @param ConnectionInterface $con the connection to use
-     *
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public function doDeleteAll(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(StudentsTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(StudentTableMap::DATABASE_NAME);
         }
 
         // use transaction because $criteria could contain info
@@ -729,8 +723,8 @@ abstract class StudentsQuery extends ModelCriteria
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            StudentsTableMap::clearInstancePool();
-            StudentsTableMap::clearRelatedInstancePool();
+            StudentTableMap::clearInstancePool();
+            StudentTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
@@ -740,7 +734,6 @@ abstract class StudentsQuery extends ModelCriteria
      * Performs a DELETE on the database based on the current ModelCriteria
      *
      * @param ConnectionInterface $con the connection to use
-     *
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
      *                         if supported by native driver or if emulated using Propel.
      * @throws PropelException Any exceptions caught during processing will be
@@ -749,26 +742,26 @@ abstract class StudentsQuery extends ModelCriteria
     public function delete(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(StudentsTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(StudentTableMap::DATABASE_NAME);
         }
 
         $criteria = $this;
 
         // Set the correct dbName
-        $criteria->setDbName(StudentsTableMap::DATABASE_NAME);
+        $criteria->setDbName(StudentTableMap::DATABASE_NAME);
 
         // use transaction because $criteria could contain info
         // for more than one table or we could emulating ON DELETE CASCADE, etc.
         return $con->transaction(function () use ($con, $criteria) {
             $affectedRows = 0; // initialize var to track total num of affected rows
 
-            StudentsTableMap::removeInstanceFromPool($criteria);
+            StudentTableMap::removeInstanceFromPool($criteria);
 
             $affectedRows += ModelCriteria::delete($con);
-            StudentsTableMap::clearRelatedInstancePool();
+            StudentTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
     }
 
-} // StudentsQuery
+} // StudentQuery

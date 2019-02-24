@@ -1,8 +1,8 @@
 <?php
 
-namespace Attend\Database\attend;
+namespace Attend\Database;
 
-use Attend\Database\attend\Base\SchedulesQuery as BaseSchedulesQuery;
+use Attend\Database\Base\ScheduleQuery as BaseScheduleQuery;
 
 /**
  * Skeleton subclass for performing query and update operations on the 'schedules' table.
@@ -14,7 +14,7 @@ use Attend\Database\attend\Base\SchedulesQuery as BaseSchedulesQuery;
  * long as it does not already exist in the output directory.
  *
  */
-class SchedulesQuery extends BaseSchedulesQuery
+class ScheduleQuery extends BaseScheduleQuery
 {
 
 }

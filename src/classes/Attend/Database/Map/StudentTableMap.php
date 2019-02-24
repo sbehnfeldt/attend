@@ -1,9 +1,9 @@
 <?php
 
-namespace Attend\Database\attend\Map;
+namespace Attend\Database\Map;
 
-use Attend\Database\attend\Attendance;
-use Attend\Database\attend\AttendanceQuery;
+use Attend\Database\Student;
+use Attend\Database\StudentQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'attendance' table.
+ * This class defines the structure of the 'students' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class AttendanceTableMap extends TableMap
+class StudentTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class AttendanceTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.AttendanceTableMap';
+    const CLASS_NAME = '.Map.StudentTableMap';
 
     /**
      * The default database name for this class
@@ -44,22 +44,22 @@ class AttendanceTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'attendance';
+    const TABLE_NAME = 'students';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\Attend\\Database\\attend\\Attendance';
+    const OM_CLASS = '\\Attend\\Database\\Student';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Attendance';
+    const CLASS_DEFAULT = 'Student';
 
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 4;
+    const NUM_COLUMNS = 5;
 
     /**
      * The number of lazy-loaded columns
@@ -69,27 +69,32 @@ class AttendanceTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 4;
+    const NUM_HYDRATE_COLUMNS = 5;
 
     /**
      * the column name for the id field
      */
-    const COL_ID = 'attendance.id';
+    const COL_ID = 'students.id';
 
     /**
-     * the column name for the student_id field
+     * the column name for the family_name field
      */
-    const COL_STUDENT_ID = 'attendance.student_id';
+    const COL_FAMILY_NAME = 'students.family_name';
 
     /**
-     * the column name for the check_in field
+     * the column name for the first_name field
      */
-    const COL_CHECK_IN = 'attendance.check_in';
+    const COL_FIRST_NAME = 'students.first_name';
 
     /**
-     * the column name for the check_out field
+     * the column name for the enrolled field
      */
-    const COL_CHECK_OUT = 'attendance.check_out';
+    const COL_ENROLLED = 'students.enrolled';
+
+    /**
+     * the column name for the classroom_id field
+     */
+    const COL_CLASSROOM_ID = 'students.classroom_id';
 
     /**
      * The default string format for model objects of the related table
@@ -103,16 +108,17 @@ class AttendanceTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array(
-        self::TYPE_PHPNAME   => array('Id', 'StudentId', 'CheckIn', 'CheckOut',),
-        self::TYPE_CAMELNAME => array('id', 'studentId', 'checkIn', 'checkOut',),
+        self::TYPE_PHPNAME   => array('Id', 'FamilyName', 'FirstName', 'Enrolled', 'ClassroomId',),
+        self::TYPE_CAMELNAME => array('id', 'familyName', 'firstName', 'enrolled', 'classroomId',),
         self::TYPE_COLNAME   => array(
-            AttendanceTableMap::COL_ID,
-            AttendanceTableMap::COL_STUDENT_ID,
-            AttendanceTableMap::COL_CHECK_IN,
-            AttendanceTableMap::COL_CHECK_OUT,
+            StudentTableMap::COL_ID,
+            StudentTableMap::COL_FAMILY_NAME,
+            StudentTableMap::COL_FIRST_NAME,
+            StudentTableMap::COL_ENROLLED,
+            StudentTableMap::COL_CLASSROOM_ID,
         ),
-        self::TYPE_FIELDNAME => array('id', 'student_id', 'check_in', 'check_out',),
-        self::TYPE_NUM       => array(0, 1, 2, 3,)
+        self::TYPE_FIELDNAME => array('id', 'family_name', 'first_name', 'enrolled', 'classroom_id',),
+        self::TYPE_NUM       => array(0, 1, 2, 3, 4,)
     );
 
     /**
@@ -122,16 +128,35 @@ class AttendanceTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array(
-        self::TYPE_PHPNAME   => array('Id' => 0, 'StudentId' => 1, 'CheckIn' => 2, 'CheckOut' => 3,),
-        self::TYPE_CAMELNAME => array('id' => 0, 'studentId' => 1, 'checkIn' => 2, 'checkOut' => 3,),
-        self::TYPE_COLNAME   => array(
-            AttendanceTableMap::COL_ID         => 0,
-            AttendanceTableMap::COL_STUDENT_ID => 1,
-            AttendanceTableMap::COL_CHECK_IN   => 2,
-            AttendanceTableMap::COL_CHECK_OUT  => 3,
+        self::TYPE_PHPNAME   => array(
+            'Id'          => 0,
+            'FamilyName'  => 1,
+            'FirstName'   => 2,
+            'Enrolled'    => 3,
+            'ClassroomId' => 4,
         ),
-        self::TYPE_FIELDNAME => array('id' => 0, 'student_id' => 1, 'check_in' => 2, 'check_out' => 3,),
-        self::TYPE_NUM       => array(0, 1, 2, 3,)
+        self::TYPE_CAMELNAME => array(
+            'id'          => 0,
+            'familyName'  => 1,
+            'firstName'   => 2,
+            'enrolled'    => 3,
+            'classroomId' => 4,
+        ),
+        self::TYPE_COLNAME   => array(
+            StudentTableMap::COL_ID           => 0,
+            StudentTableMap::COL_FAMILY_NAME  => 1,
+            StudentTableMap::COL_FIRST_NAME   => 2,
+            StudentTableMap::COL_ENROLLED     => 3,
+            StudentTableMap::COL_CLASSROOM_ID => 4,
+        ),
+        self::TYPE_FIELDNAME => array(
+            'id'           => 0,
+            'family_name'  => 1,
+            'first_name'   => 2,
+            'enrolled'     => 3,
+            'classroom_id' => 4,
+        ),
+        self::TYPE_NUM       => array(0, 1, 2, 3, 4,)
     );
 
     /**
@@ -144,17 +169,18 @@ class AttendanceTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('attendance');
-        $this->setPhpName('Attendance');
+        $this->setName('students');
+        $this->setPhpName('Student');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\Attend\\Database\\attend\\Attendance');
+        $this->setClassName('\\Attend\\Database\\Student');
         $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, 10, null);
-        $this->addForeignKey('student_id', 'StudentId', 'INTEGER', 'students', 'id', true, 10, null);
-        $this->addColumn('check_in', 'CheckIn', 'INTEGER', false, null, null);
-        $this->addColumn('check_out', 'CheckOut', 'INTEGER', false, null, null);
+        $this->addColumn('family_name', 'FamilyName', 'VARCHAR', true, 45, null);
+        $this->addColumn('first_name', 'FirstName', 'VARCHAR', true, 45, null);
+        $this->addColumn('enrolled', 'Enrolled', 'INTEGER', true, 1, 0);
+        $this->addForeignKey('classroom_id', 'ClassroomId', 'INTEGER', 'classrooms', 'id', false, 10, null);
     } // initialize()
 
     /**
@@ -162,14 +188,38 @@ class AttendanceTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Students', '\\Attend\\Database\\attend\\Students', RelationMap::MANY_TO_ONE, array(
+        $this->addRelation('Classroom', '\\Attend\\Database\\Classroom', RelationMap::MANY_TO_ONE, array(
+            0 =>
+                array(
+                    0 => ':classroom_id',
+                    1 => ':id',
+                ),
+        ), 'SET NULL', null, null, false);
+        $this->addRelation('Attendance', '\\Attend\\Database\\Attendance', RelationMap::ONE_TO_MANY, array(
             0 =>
                 array(
                     0 => ':student_id',
                     1 => ':id',
                 ),
-        ), 'CASCADE', null, null, false);
+        ), 'CASCADE', null, 'Attendances', false);
+        $this->addRelation('Schedule', '\\Attend\\Database\\Schedule', RelationMap::ONE_TO_MANY, array(
+            0 =>
+                array(
+                    0 => ':student_id',
+                    1 => ':id',
+                ),
+        ), 'CASCADE', null, 'Schedules', false);
     } // buildRelations()
+    /**
+     * Method to invalidate the instance pool of all tables related to students     * by a foreign key with ON DELETE CASCADE
+     */
+    public static function clearRelatedInstancePool()
+    {
+        // Invalidate objects in related instance pools,
+        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
+        AttendanceTableMap::clearInstancePool();
+        ScheduleTableMap::clearInstancePool();
+    }
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -234,12 +284,11 @@ class AttendanceTableMap extends TableMap
      * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
      *
      * @param boolean $withPrefix Whether or not to return the path with the class name
-     *
      * @return string path.to.ClassName
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? AttendanceTableMap::CLASS_DEFAULT : AttendanceTableMap::OM_CLASS;
+        return $withPrefix ? StudentTableMap::CLASS_DEFAULT : StudentTableMap::OM_CLASS;
     }
 
     /**
@@ -253,22 +302,22 @@ class AttendanceTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Attendance object, last column rank)
+     * @return array           (Student object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = AttendanceTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = AttendanceTableMap::getInstanceFromPool($key))) {
+        $key = StudentTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = StudentTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + AttendanceTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + StudentTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = AttendanceTableMap::OM_CLASS;
-            /** @var Attendance $obj */
+            $cls = StudentTableMap::OM_CLASS;
+            /** @var Student $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            AttendanceTableMap::addInstanceToPool($obj, $key);
+            StudentTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -279,7 +328,6 @@ class AttendanceTableMap extends TableMap
      * objects that inherit from the default.
      *
      * @param DataFetcherInterface $dataFetcher
-     *
      * @return array
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
@@ -292,24 +340,23 @@ class AttendanceTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = AttendanceTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = AttendanceTableMap::getInstanceFromPool($key))) {
+            $key = StudentTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = StudentTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Attendance $obj */
+                /** @var Student $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                AttendanceTableMap::addInstanceToPool($obj, $key);
+                StudentTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
         return $results;
     }
-
     /**
      * Add all the columns needed to create a new object.
      *
@@ -320,21 +367,23 @@ class AttendanceTableMap extends TableMap
      * @param Criteria $criteria object containing the columns to add.
      * @param string $alias optional table alias
      *
-     * @throws PropelException Any exceptions caught during processing will be
+*@throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(AttendanceTableMap::COL_ID);
-            $criteria->addSelectColumn(AttendanceTableMap::COL_STUDENT_ID);
-            $criteria->addSelectColumn(AttendanceTableMap::COL_CHECK_IN);
-            $criteria->addSelectColumn(AttendanceTableMap::COL_CHECK_OUT);
+            $criteria->addSelectColumn(StudentTableMap::COL_ID);
+            $criteria->addSelectColumn(StudentTableMap::COL_FAMILY_NAME);
+            $criteria->addSelectColumn(StudentTableMap::COL_FIRST_NAME);
+            $criteria->addSelectColumn(StudentTableMap::COL_ENROLLED);
+            $criteria->addSelectColumn(StudentTableMap::COL_CLASSROOM_ID);
         } else {
             $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.student_id');
-            $criteria->addSelectColumn($alias . '.check_in');
-            $criteria->addSelectColumn($alias . '.check_out');
+            $criteria->addSelectColumn($alias . '.family_name');
+            $criteria->addSelectColumn($alias . '.first_name');
+            $criteria->addSelectColumn($alias . '.enrolled');
+            $criteria->addSelectColumn($alias . '.classroom_id');
         }
     }
 
@@ -347,7 +396,7 @@ class AttendanceTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(AttendanceTableMap::DATABASE_NAME)->getTable(AttendanceTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(StudentTableMap::DATABASE_NAME)->getTable(StudentTableMap::TABLE_NAME);
     }
 
     /**
@@ -355,20 +404,20 @@ class AttendanceTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(AttendanceTableMap::DATABASE_NAME);
-        if ( ! $dbMap->hasTable(AttendanceTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new AttendanceTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(StudentTableMap::DATABASE_NAME);
+        if ( ! $dbMap->hasTable(StudentTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new StudentTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Attendance or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a Student or Criteria object OR a primary key value.
      *
-     * @param mixed $values Criteria or Attendance object or primary key or array of primary keys
+     * @param mixed $values Criteria or Student object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      *
-     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+*@return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
      *                         if supported by native driver or if emulated using Propel.
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
@@ -376,27 +425,27 @@ class AttendanceTableMap extends TableMap
     public static function doDelete($values, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(AttendanceTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(StudentTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \Attend\Database\attend\Attendance) { // it's a model object
+        } elseif ($values instanceof \Attend\Database\Student) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(AttendanceTableMap::DATABASE_NAME);
-            $criteria->add(AttendanceTableMap::COL_ID, (array)$values, Criteria::IN);
+            $criteria = new Criteria(StudentTableMap::DATABASE_NAME);
+            $criteria->add(StudentTableMap::COL_ID, (array)$values, Criteria::IN);
         }
 
-        $query = AttendanceQuery::create()->mergeWith($criteria);
+        $query = StudentQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            AttendanceTableMap::clearInstancePool();
+            StudentTableMap::clearInstancePool();
         } elseif ( ! is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array)$values as $singleval) {
-                AttendanceTableMap::removeInstanceFromPool($singleval);
+                StudentTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -404,46 +453,45 @@ class AttendanceTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the attendance table.
+     * Deletes all rows from the students table.
      *
      * @param ConnectionInterface $con the connection to use
-     *
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return AttendanceQuery::create()->doDeleteAll($con);
+        return StudentQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Attendance or Criteria object.
+     * Performs an INSERT on the database, given a Student or Criteria object.
      *
-     * @param mixed $criteria Criteria or Attendance object containing data that is used to create the INSERT statement.
+     * @param mixed $criteria Criteria or Student object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      *
-     * @return mixed           The new primary key.
+*@return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(AttendanceTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(StudentTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Attendance object
+            $criteria = $criteria->buildCriteria(); // build Criteria from Student object
         }
 
-        if ($criteria->containsKey(AttendanceTableMap::COL_ID) && $criteria->keyContainsValue(AttendanceTableMap::COL_ID)) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . AttendanceTableMap::COL_ID . ')');
+        if ($criteria->containsKey(StudentTableMap::COL_ID) && $criteria->keyContainsValue(StudentTableMap::COL_ID)) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . StudentTableMap::COL_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = AttendanceQuery::create()->mergeWith($criteria);
+        $query = StudentQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -452,7 +500,7 @@ class AttendanceTableMap extends TableMap
         });
     }
 
-} // AttendanceTableMap
+} // StudentTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-AttendanceTableMap::buildTableMap();
+StudentTableMap::buildTableMap();

@@ -1,8 +1,8 @@
 <?php
 
-namespace Attend\Database\attend;
+namespace Attend\Database;
 
-use Attend\Database\attend\Base\AttendanceQuery as BaseAttendanceQuery;
+use Attend\Database\Base\AttendanceQuery as BaseAttendanceQuery;
 
 /**
  * Skeleton subclass for performing query and update operations on the 'attendance' table.

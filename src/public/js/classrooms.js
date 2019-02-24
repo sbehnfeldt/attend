@@ -15,8 +15,8 @@
 
                     'success': function ( json ) {
                         console.log( json );
-                        for ( var i = 0; i < json.length; i++ ) {
-                            table.row.add( json[ i ] );
+                        for ( var i = 0; i < json.Classrooms.length; i++ ) {
+                            table.row.add( json.Classrooms[ i ] );
                         }
                         table.draw();
                         Attend.doneLoading();
@@ -32,11 +32,11 @@
             "select"   : true,
             "order"    : [ [ 2, "asc" ] ],
             "columns"  : [
-                { "data": "id" },
-                { "data": "label" },
-                { "data": "ordering" },
-                { "data": "created_at" },
-                { "data": "updated_at" }
+                { "data": "Id" },
+                { "data": "Label" },
+                { "data": "Ordering" },
+                { "data": "CreatedAt" },
+                { "data": "UpdatedAt" }
             ]
         } );
 

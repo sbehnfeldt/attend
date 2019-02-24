@@ -1,22 +1,19 @@
 <?php
 
-namespace Attend\Database\attend\Base;
+namespace Attend\Database\Base;
 
 use \DateTime;
 use \Exception;
 use \PDO;
-use Attend\Database\attend\Classrooms as ChildClassrooms;
-use Attend\Database\attend\ClassroomsQuery as ChildClassroomsQuery;
-use Attend\Database\attend\Students as ChildStudents;
-use Attend\Database\attend\StudentsQuery as ChildStudentsQuery;
-use Attend\Database\attend\Map\ClassroomsTableMap;
-use Attend\Database\attend\Map\StudentsTableMap;
+use Attend\Database\ScheduleQuery as ChildScheduleQuery;
+use Attend\Database\Student as ChildStudent;
+use Attend\Database\StudentQuery as ChildStudentQuery;
+use Attend\Database\Map\ScheduleTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
 use Propel\Runtime\ActiveRecord\ActiveRecordInterface;
 use Propel\Runtime\Collection\Collection;
-use Propel\Runtime\Collection\ObjectCollection;
 use Propel\Runtime\Connection\ConnectionInterface;
 use Propel\Runtime\Exception\BadMethodCallException;
 use Propel\Runtime\Exception\LogicException;
@@ -26,18 +23,18 @@ use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
 
 /**
- * Base class that represents a row from the 'classrooms' table.
+ * Base class that represents a row from the 'schedules' table.
  *
  *
  *
  * @package    propel.generator..Base
  */
-abstract class Classrooms implements ActiveRecordInterface
+abstract class Schedule implements ActiveRecordInterface
 {
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Attend\\Database\\attend\\Map\\ClassroomsTableMap';
+    const TABLE_MAP = '\\Attend\\Database\\Map\\ScheduleTableMap';
 
 
     /**
@@ -74,40 +71,38 @@ abstract class Classrooms implements ActiveRecordInterface
     protected $id;
 
     /**
-     * The value for the label field.
-     *
-     * @var        string
-     */
-    protected $label;
-
-    /**
-     * The value for the ordering field.
+     * The value for the student_id field.
      *
      * @var        int
      */
-    protected $ordering;
+    protected $student_id;
 
     /**
-     * The value for the created_at field.
+     * The value for the schedule field.
      *
-     * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
+     * Note: this column has a database default value of: 0
+     * @var        int
+     */
+    protected $schedule;
+
+    /**
+     * The value for the start_date field.
+     *
      * @var        DateTime
      */
-    protected $created_at;
+    protected $start_date;
 
     /**
-     * The value for the updated_at field.
+     * The value for the entered_at field.
      *
-     * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
-     * @var        DateTime
+     * @var        int
      */
-    protected $updated_at;
+    protected $entered_at;
 
     /**
-     * @var        ObjectCollection|ChildStudents[] Collection to store aggregation of ChildStudents objects.
+     * @var        ChildStudent
      */
-    protected $collStudentss;
-    protected $collStudentssPartial;
+    protected $aStudent;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -118,12 +113,6 @@ abstract class Classrooms implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * An array of objects scheduled for deletion.
-     * @var ObjectCollection|ChildStudents[]
-     */
-    protected $studentssScheduledForDeletion = null;
-
-    /**
      * Applies default values to this object.
      * This method should be called from the object's constructor (or
      * equivalent initialization method).
@@ -131,10 +120,11 @@ abstract class Classrooms implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
+        $this->schedule = 0;
     }
 
     /**
-     * Initializes internal state of Attend\Database\attend\Base\Classrooms object.
+     * Initializes internal state of Attend\Database\Base\Schedule object.
      * @see applyDefaults()
      */
     public function __construct()
@@ -157,7 +147,7 @@ abstract class Classrooms implements ActiveRecordInterface
      *
      * @param  string $col column fully qualified name (TableMap::TYPE_COLNAME), e.g. Book::AUTHOR_ID
      *
-     * @return boolean True if $col has been modified.
+*@return boolean True if $col has been modified.
      */
     public function isColumnModified($col)
     {
@@ -207,9 +197,7 @@ abstract class Classrooms implements ActiveRecordInterface
 
     /**
      * Specify whether this object has been deleted.
-     *
      * @param  boolean $b The deleted state of this object.
-     *
      * @return void
      */
     public function setDeleted($b)
@@ -219,9 +207,7 @@ abstract class Classrooms implements ActiveRecordInterface
 
     /**
      * Sets the modified state for the object to be false.
-     *
      * @param  string $col If supplied, only the specified column is reset.
-     *
      * @return void
      */
     public function resetModified($col = null)
@@ -236,13 +222,13 @@ abstract class Classrooms implements ActiveRecordInterface
     }
 
     /**
-     * Compares this with another <code>Classrooms</code> instance.  If
-     * <code>obj</code> is an instance of <code>Classrooms</code>, delegates to
-     * <code>equals(Classrooms)</code>.  Otherwise, returns <code>false</code>.
+     * Compares this with another <code>Schedule</code> instance.  If
+     * <code>obj</code> is an instance of <code>Schedule</code>, delegates to
+     * <code>equals(Schedule)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed $obj The object to compare to.
      *
-     * @return boolean Whether equal to the object specified.
+*@return boolean Whether equal to the object specified.
      */
     public function equals($obj)
     {
@@ -276,7 +262,7 @@ abstract class Classrooms implements ActiveRecordInterface
      *
      * @param  string $name The virtual column name
      *
-     * @return boolean
+*@return boolean
      */
     public function hasVirtualColumn($name)
     {
@@ -287,7 +273,6 @@ abstract class Classrooms implements ActiveRecordInterface
      * Get the value of a virtual column in this object
      *
      * @param  string $name The virtual column name
-     *
      * @return mixed
      *
      * @throws PropelException
@@ -298,7 +283,7 @@ abstract class Classrooms implements ActiveRecordInterface
             throw new PropelException(sprintf('Cannot get value of inexistent virtual column %s.', $name));
         }
 
-        return $this->virtualColumns[ $name ];
+        return $this->virtualColumns[ $name];
     }
 
     /**
@@ -307,7 +292,7 @@ abstract class Classrooms implements ActiveRecordInterface
      * @param string $name The virtual column name
      * @param mixed $value The value to give to the virtual column
      *
-     * @return $this|Classrooms The current object, for fluid interface
+     * @return $this|Schedule The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
@@ -322,7 +307,7 @@ abstract class Classrooms implements ActiveRecordInterface
      * @param  string $msg
      * @param  int $priority One of the Propel::LOG_* logging levels
      *
-     * @return boolean
+*@return boolean
      */
     protected function log($msg, $priority = Propel::LOG_INFO)
     {
@@ -340,7 +325,7 @@ abstract class Classrooms implements ActiveRecordInterface
      * @param  mixed $parser A AbstractParser instance, or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param  boolean $includeLazyLoadColumns (optional) Whether to include lazy load(ed) columns. Defaults to TRUE.
      *
-     * @return string  The exported data
+*@return string  The exported data
      */
     public function exportTo($parser, $includeLazyLoadColumns = true)
     {
@@ -382,63 +367,53 @@ abstract class Classrooms implements ActiveRecordInterface
     }
 
     /**
-     * Get the [label] column value.
-     *
-     * @return string
-     */
-    public function getLabel()
-    {
-        return $this->label;
-    }
-
-    /**
-     * Get the [ordering] column value.
+     * Get the [student_id] column value.
      *
      * @return int
      */
-    public function getOrdering()
+    public function getStudentId()
     {
-        return $this->ordering;
+        return $this->student_id;
     }
 
     /**
-     * Get the [optionally formatted] temporal [created_at] column value.
+     * Get the [schedule] column value.
+     *
+     * @return int
+     */
+    public function getSchedule()
+    {
+        return $this->schedule;
+    }
+
+    /**
+     * Get the [optionally formatted] temporal [start_date] column value.
      *
      *
      * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
      *                            If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00
      *
      * @throws PropelException - if unable to parse/validate the date/time value.
      */
-    public function getCreatedAt($format = null)
+    public function getStartDate($format = NULL)
     {
         if ($format === null) {
-            return $this->created_at;
+            return $this->start_date;
         } else {
-            return $this->created_at instanceof \DateTimeInterface ? $this->created_at->format($format) : null;
+            return $this->start_date instanceof \DateTimeInterface ? $this->start_date->format($format) : null;
         }
     }
 
     /**
-     * Get the [optionally formatted] temporal [updated_at] column value.
+     * Get the [entered_at] column value.
      *
-     *
-     * @param      string|null $format The date/time format string (either date()-style or strftime()-style).
-     *                            If format is NULL, then the raw DateTime object will be returned.
-     *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00
-     *
-     * @throws PropelException - if unable to parse/validate the date/time value.
+     * @return int
      */
-    public function getUpdatedAt($format = null)
+    public function getEnteredAt()
     {
-        if ($format === null) {
-            return $this->updated_at;
-        } else {
-            return $this->updated_at instanceof \DateTimeInterface ? $this->updated_at->format($format) : null;
-        }
+        return $this->entered_at;
     }
 
     /**
@@ -446,105 +421,109 @@ abstract class Classrooms implements ActiveRecordInterface
      *
      * @param int $v new value
      *
-     * @return $this|\Attend\Database\attend\Classrooms The current object (for fluent API support)
+     * @return $this|\Attend\Database\Schedule The current object (for fluent API support)
      */
     public function setId($v)
     {
         if ($v !== null) {
-            $v = (int)$v;
+            $v = (int) $v;
         }
 
         if ($this->id !== $v) {
-            $this->id                                            = $v;
-            $this->modifiedColumns[ ClassroomsTableMap::COL_ID ] = true;
+            $this->id                                         = $v;
+            $this->modifiedColumns[ ScheduleTableMap::COL_ID] = true;
         }
 
         return $this;
     } // setId()
 
     /**
-     * Set the value of [label] column.
-     *
-     * @param string $v new value
-     *
-     * @return $this|\Attend\Database\attend\Classrooms The current object (for fluent API support)
-     */
-    public function setLabel($v)
-    {
-        if ($v !== null) {
-            $v = (string)$v;
-        }
-
-        if ($this->label !== $v) {
-            $this->label                                            = $v;
-            $this->modifiedColumns[ ClassroomsTableMap::COL_LABEL ] = true;
-        }
-
-        return $this;
-    } // setLabel()
-
-    /**
-     * Set the value of [ordering] column.
+     * Set the value of [student_id] column.
      *
      * @param int $v new value
      *
-     * @return $this|\Attend\Database\attend\Classrooms The current object (for fluent API support)
+     * @return $this|\Attend\Database\Schedule The current object (for fluent API support)
      */
-    public function setOrdering($v)
+    public function setStudentId($v)
     {
         if ($v !== null) {
-            $v = (int)$v;
+            $v = (int) $v;
         }
 
-        if ($this->ordering !== $v) {
-            $this->ordering                                            = $v;
-            $this->modifiedColumns[ ClassroomsTableMap::COL_ORDERING ] = true;
+        if ($this->student_id !== $v) {
+            $this->student_id                                         = $v;
+            $this->modifiedColumns[ ScheduleTableMap::COL_STUDENT_ID] = true;
+        }
+
+        if ($this->aStudent !== null && $this->aStudent->getId() !== $v) {
+            $this->aStudent = null;
         }
 
         return $this;
-    } // setOrdering()
+    } // setStudentId()
 
     /**
-     * Sets the value of [created_at] column to a normalized version of the date/time value specified.
+     * Set the value of [schedule] column.
+     *
+     * @param int $v new value
+     *
+     * @return $this|\Attend\Database\Schedule The current object (for fluent API support)
+     */
+    public function setSchedule($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->schedule !== $v) {
+            $this->schedule                                         = $v;
+            $this->modifiedColumns[ ScheduleTableMap::COL_SCHEDULE] = true;
+        }
+
+        return $this;
+    } // setSchedule()
+
+    /**
+     * Sets the value of [start_date] column to a normalized version of the date/time value specified.
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
      *
-     * @return $this|\Attend\Database\attend\Classrooms The current object (for fluent API support)
+     * @return $this|\Attend\Database\Schedule The current object (for fluent API support)
      */
-    public function setCreatedAt($v)
+    public function setStartDate($v)
     {
         $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->created_at !== null || $dt !== null) {
-            if ($this->created_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->created_at->format("Y-m-d H:i:s.u")) {
-                $this->created_at                                            = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[ ClassroomsTableMap::COL_CREATED_AT ] = true;
+        if ($this->start_date !== null || $dt !== null) {
+            if ($this->start_date === null || $dt === null || $dt->format("Y-m-d") !== $this->start_date->format("Y-m-d")) {
+                $this->start_date                                         = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[ ScheduleTableMap::COL_START_DATE] = true;
             }
         } // if either are not null
 
         return $this;
-    } // setCreatedAt()
+    } // setStartDate()
 
     /**
-     * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
+     * Set the value of [entered_at] column.
      *
-     * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
-     *               Empty strings are treated as NULL.
+     * @param int $v new value
      *
-     * @return $this|\Attend\Database\attend\Classrooms The current object (for fluent API support)
+     * @return $this|\Attend\Database\Schedule The current object (for fluent API support)
      */
-    public function setUpdatedAt($v)
+    public function setEnteredAt($v)
     {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->updated_at !== null || $dt !== null) {
-            if ($this->updated_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->updated_at->format("Y-m-d H:i:s.u")) {
-                $this->updated_at                                            = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[ ClassroomsTableMap::COL_UPDATED_AT ] = true;
-            }
-        } // if either are not null
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->entered_at !== $v) {
+            $this->entered_at                                         = $v;
+            $this->modifiedColumns[ ScheduleTableMap::COL_ENTERED_AT] = true;
+        }
 
         return $this;
-    } // setUpdatedAt()
+    } // setEnteredAt()
 
     /**
      * Indicates whether the columns in this object are only set to default values.
@@ -556,6 +535,10 @@ abstract class Classrooms implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+        if ($this->schedule !== 0) {
+            return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -582,31 +565,28 @@ abstract class Classrooms implements ActiveRecordInterface
     {
         try {
 
-            $col      = $row[ TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ClassroomsTableMap::translateFieldName('Id',
+            $col      = $row[ TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ScheduleTableMap::translateFieldName('Id',
                 TableMap::TYPE_PHPNAME, $indexType) ];
             $this->id = (null !== $col) ? (int)$col : null;
 
-            $col         = $row[ TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ClassroomsTableMap::translateFieldName('Label',
+            $col              = $row[ TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ScheduleTableMap::translateFieldName('StudentId',
                 TableMap::TYPE_PHPNAME, $indexType) ];
-            $this->label = (null !== $col) ? (string)$col : null;
+            $this->student_id = (null !== $col) ? (int)$col : null;
 
-            $col            = $row[ TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ClassroomsTableMap::translateFieldName('Ordering',
+            $col            = $row[ TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ScheduleTableMap::translateFieldName('Schedule',
                 TableMap::TYPE_PHPNAME, $indexType) ];
-            $this->ordering = (null !== $col) ? (int)$col : null;
+            $this->schedule = (null !== $col) ? (int)$col : null;
 
-            $col = $row[ TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ClassroomsTableMap::translateFieldName('CreatedAt',
-                TableMap::TYPE_PHPNAME, $indexType) ];
-            if ($col === '0000-00-00 00:00:00') {
+            $col = $row[ TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ScheduleTableMap::translateFieldName('StartDate',
+                TableMap::TYPE_PHPNAME, $indexType)];
+            if ($col === '0000-00-00') {
                 $col = null;
             }
-            $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+            $this->start_date = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[ TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ClassroomsTableMap::translateFieldName('UpdatedAt',
+            $col              = $row[ TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ScheduleTableMap::translateFieldName('EnteredAt',
                 TableMap::TYPE_PHPNAME, $indexType) ];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
-            $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+            $this->entered_at = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -615,11 +595,10 @@ abstract class Classrooms implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = ClassroomsTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = ScheduleTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\Attend\\Database\\attend\\Classrooms'),
-                0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\Attend\\Database\\Schedule'), 0, $e);
         }
     }
 
@@ -638,6 +617,9 @@ abstract class Classrooms implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
+        if ($this->aStudent !== null && $this->student_id !== $this->aStudent->getId()) {
+            $this->aStudent = null;
+        }
     } // ensureConsistency
 
     /**
@@ -647,7 +629,6 @@ abstract class Classrooms implements ActiveRecordInterface
      *
      * @param      boolean $deep (optional) Whether to also de-associated any related objects.
      * @param      ConnectionInterface $con (optional) The ConnectionInterface connection to use.
-     *
      * @return void
      * @throws PropelException - if this object is deleted, unsaved or doesn't have pk match in db
      */
@@ -662,25 +643,24 @@ abstract class Classrooms implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(ClassroomsTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(ScheduleTableMap::DATABASE_NAME);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildClassroomsQuery::create(null,
+        $dataFetcher = ChildScheduleQuery::create(null,
             $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
         $row         = $dataFetcher->fetch();
         $dataFetcher->close();
-        if ( ! $row) {
+        if (!$row) {
             throw new PropelException('Cannot find matching row in the database to reload object values.');
         }
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->collStudentss = null;
-
+            $this->aStudent = null;
         } // if (deep)
     }
 
@@ -689,10 +669,10 @@ abstract class Classrooms implements ActiveRecordInterface
      *
      * @param      ConnectionInterface $con
      *
-     * @return void
+*@return void
      * @throws PropelException
-     * @see Classrooms::setDeleted()
-     * @see Classrooms::isDeleted()
+     * @see Schedule::setDeleted()
+     * @see Schedule::isDeleted()
      */
     public function delete(ConnectionInterface $con = null)
     {
@@ -701,12 +681,12 @@ abstract class Classrooms implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ClassroomsTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ScheduleTableMap::DATABASE_NAME);
         }
 
         $con->transaction(function () use ($con) {
-            $deleteQuery = ChildClassroomsQuery::create()
-                                               ->filterByPrimaryKey($this->getPrimaryKey());
+            $deleteQuery = ChildScheduleQuery::create()
+                                             ->filterByPrimaryKey($this->getPrimaryKey());
             $ret         = $this->preDelete($con);
             if ($ret) {
                 $deleteQuery->delete($con);
@@ -725,7 +705,6 @@ abstract class Classrooms implements ActiveRecordInterface
      * single transaction.
      *
      * @param      ConnectionInterface $con
-     *
      * @return int             The number of rows affected by this insert/update and any referring fk objects' save() operations.
      * @throws PropelException
      * @see doSave()
@@ -741,11 +720,11 @@ abstract class Classrooms implements ActiveRecordInterface
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getWriteConnection(ClassroomsTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ScheduleTableMap::DATABASE_NAME);
         }
 
         return $con->transaction(function () use ($con) {
-            $ret      = $this->preSave($con);
+            $ret = $this->preSave($con);
             $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
@@ -760,7 +739,7 @@ abstract class Classrooms implements ActiveRecordInterface
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                ClassroomsTableMap::addInstanceToPool($this);
+                ScheduleTableMap::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -776,7 +755,6 @@ abstract class Classrooms implements ActiveRecordInterface
      * All related objects are also updated in this method.
      *
      * @param      ConnectionInterface $con
-     *
      * @return int             The number of rows affected by this insert/update and any referring fk objects' save() operations.
      * @throws PropelException
      * @see save()
@@ -784,8 +762,20 @@ abstract class Classrooms implements ActiveRecordInterface
     protected function doSave(ConnectionInterface $con)
     {
         $affectedRows = 0; // initialize var to track total num of affected rows
-        if ( ! $this->alreadyInSave) {
+        if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
+
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aStudent !== null) {
+                if ($this->aStudent->isModified() || $this->aStudent->isNew()) {
+                    $affectedRows += $this->aStudent->save($con);
+                }
+                $this->setStudent($this->aStudent);
+            }
 
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
@@ -796,24 +786,6 @@ abstract class Classrooms implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
-            }
-
-            if ($this->studentssScheduledForDeletion !== null) {
-                if ( ! $this->studentssScheduledForDeletion->isEmpty()) {
-                    foreach ($this->studentssScheduledForDeletion as $students) {
-                        // need to save related object because we set the relation to null
-                        $students->save($con);
-                    }
-                    $this->studentssScheduledForDeletion = null;
-                }
-            }
-
-            if ($this->collStudentss !== null) {
-                foreach ($this->collStudentss as $referrerFK) {
-                    if ( ! $referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
-                        $affectedRows += $referrerFK->save($con);
-                    }
-                }
             }
 
             $this->alreadyInSave = false;
@@ -836,30 +808,30 @@ abstract class Classrooms implements ActiveRecordInterface
         $modifiedColumns = array();
         $index           = 0;
 
-        $this->modifiedColumns[ ClassroomsTableMap::COL_ID ] = true;
+        $this->modifiedColumns[ ScheduleTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ClassroomsTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ScheduleTableMap::COL_ID . ')');
         }
 
         // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(ClassroomsTableMap::COL_ID)) {
+        if ($this->isColumnModified(ScheduleTableMap::COL_ID)) {
             $modifiedColumns[ ':p' . $index++ ] = 'id';
         }
-        if ($this->isColumnModified(ClassroomsTableMap::COL_LABEL)) {
-            $modifiedColumns[ ':p' . $index++ ] = 'label';
+        if ($this->isColumnModified(ScheduleTableMap::COL_STUDENT_ID)) {
+            $modifiedColumns[ ':p' . $index++]  = 'student_id';
         }
-        if ($this->isColumnModified(ClassroomsTableMap::COL_ORDERING)) {
-            $modifiedColumns[ ':p' . $index++ ] = 'ordering';
+        if ($this->isColumnModified(ScheduleTableMap::COL_SCHEDULE)) {
+            $modifiedColumns[ ':p' . $index++] = 'schedule';
         }
-        if ($this->isColumnModified(ClassroomsTableMap::COL_CREATED_AT)) {
-            $modifiedColumns[ ':p' . $index++ ] = 'created_at';
+        if ($this->isColumnModified(ScheduleTableMap::COL_START_DATE)) {
+            $modifiedColumns[ ':p' . $index++]  = 'start_date';
         }
-        if ($this->isColumnModified(ClassroomsTableMap::COL_UPDATED_AT)) {
-            $modifiedColumns[ ':p' . $index++ ] = 'updated_at';
+        if ($this->isColumnModified(ScheduleTableMap::COL_ENTERED_AT)) {
+            $modifiedColumns[ ':p' . $index++]  = 'entered_at';
         }
 
         $sql = sprintf(
-            'INSERT INTO classrooms (%s) VALUES (%s)',
+            'INSERT INTO schedules (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -871,19 +843,17 @@ abstract class Classrooms implements ActiveRecordInterface
                     case 'id':
                         $stmt->bindValue($identifier, $this->id, PDO::PARAM_INT);
                         break;
-                    case 'label':
-                        $stmt->bindValue($identifier, $this->label, PDO::PARAM_STR);
+                    case 'student_id':
+                        $stmt->bindValue($identifier, $this->student_id, PDO::PARAM_INT);
                         break;
-                    case 'ordering':
-                        $stmt->bindValue($identifier, $this->ordering, PDO::PARAM_INT);
+                    case 'schedule':
+                        $stmt->bindValue($identifier, $this->schedule, PDO::PARAM_INT);
                         break;
-                    case 'created_at':
-                        $stmt->bindValue($identifier,
-                            $this->created_at ? $this->created_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                    case 'start_date':
+                        $stmt->bindValue($identifier, $this->start_date ? $this->start_date->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
                         break;
-                    case 'updated_at':
-                        $stmt->bindValue($identifier,
-                            $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                    case 'entered_at':
+                        $stmt->bindValue($identifier, $this->entered_at, PDO::PARAM_INT);
                         break;
                 }
             }
@@ -927,12 +897,11 @@ abstract class Classrooms implements ActiveRecordInterface
      *                     one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                     TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                     Defaults to TableMap::TYPE_PHPNAME.
-     *
      * @return mixed Value of field.
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos   = ClassroomsTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos   = ScheduleTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -943,7 +912,6 @@ abstract class Classrooms implements ActiveRecordInterface
      * Zero-based.
      *
      * @param      int $pos position in xml schema
-     *
      * @return mixed Value of field at $pos
      */
     public function getByPosition($pos)
@@ -953,16 +921,16 @@ abstract class Classrooms implements ActiveRecordInterface
                 return $this->getId();
                 break;
             case 1:
-                return $this->getLabel();
+                return $this->getStudentId();
                 break;
             case 2:
-                return $this->getOrdering();
+                return $this->getSchedule();
                 break;
             case 3:
-                return $this->getCreatedAt();
+                return $this->getStartDate();
                 break;
             case 4:
-                return $this->getUpdatedAt();
+                return $this->getEnteredAt();
                 break;
             default:
                 return null;
@@ -992,47 +960,42 @@ abstract class Classrooms implements ActiveRecordInterface
         $includeForeignObjects = false
     ) {
 
-        if (isset($alreadyDumpedObjects[ 'Classrooms' ][ $this->hashCode() ])) {
+        if (isset($alreadyDumpedObjects[ 'Schedule'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects[ 'Classrooms' ][ $this->hashCode() ] = true;
-        $keys                                                      = ClassroomsTableMap::getFieldNames($keyType);
-        $result                                                    = array(
+        $alreadyDumpedObjects[ 'Schedule' ][ $this->hashCode() ] = true;
+        $keys                                                    = ScheduleTableMap::getFieldNames($keyType);
+        $result                                                  = array(
             $keys[ 0 ] => $this->getId(),
-            $keys[ 1 ] => $this->getLabel(),
-            $keys[ 2 ] => $this->getOrdering(),
-            $keys[ 3 ] => $this->getCreatedAt(),
-            $keys[ 4 ] => $this->getUpdatedAt(),
+            $keys[ 1 ] => $this->getStudentId(),
+            $keys[ 2 ] => $this->getSchedule(),
+            $keys[ 3 ] => $this->getStartDate(),
+            $keys[ 4 ] => $this->getEnteredAt(),
         );
         if ($result[ $keys[ 3 ] ] instanceof \DateTimeInterface) {
-            $result[ $keys[ 3 ] ] = $result[ $keys[ 3 ] ]->format('c');
-        }
-
-        if ($result[ $keys[ 4 ] ] instanceof \DateTimeInterface) {
-            $result[ $keys[ 4 ] ] = $result[ $keys[ 4 ] ]->format('c');
+            $result[ $keys[ 3 ] ] = $result[$keys[3]]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
-            $result[ $key ] = $virtualColumn;
+            $result[$key] = $virtualColumn;
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->collStudentss) {
+            if (null !== $this->aStudent) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'studentss';
+                        $key = 'student';
                         break;
                     case TableMap::TYPE_FIELDNAME:
-                        $key = 'studentss';
+                        $key = 'students';
                         break;
                     default:
-                        $key = 'Studentss';
+                        $key = 'Student';
                 }
 
-                $result[ $key ] = $this->collStudentss->toArray(null, false, $keyType, $includeLazyLoadColumns,
-                    $alreadyDumpedObjects);
+                $result[ $key ] = $this->aStudent->toArray($keyType, $includeLazyLoadColumns, $alreadyDumpedObjects, true);
             }
         }
 
@@ -1043,17 +1006,17 @@ abstract class Classrooms implements ActiveRecordInterface
      * Sets a field from the object by name passed in as a string.
      *
      * @param  string $name
-     * @param  mixed $value field value
+     * @param  mixed  $value field value
      * @param  string $type The type of fieldname the $name is of:
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
      *
-     * @return $this|\Attend\Database\attend\Classrooms
+     * @return $this|\Attend\Database\Schedule
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos = ClassroomsTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = ScheduleTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
 
         return $this->setByPosition($pos, $value);
     }
@@ -1065,7 +1028,7 @@ abstract class Classrooms implements ActiveRecordInterface
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
      *
-     * @return $this|\Attend\Database\attend\Classrooms
+     * @return $this|\Attend\Database\Schedule
      */
     public function setByPosition($pos, $value)
     {
@@ -1074,16 +1037,16 @@ abstract class Classrooms implements ActiveRecordInterface
                 $this->setId($value);
                 break;
             case 1:
-                $this->setLabel($value);
+                $this->setStudentId($value);
                 break;
             case 2:
-                $this->setOrdering($value);
+                $this->setSchedule($value);
                 break;
             case 3:
-                $this->setCreatedAt($value);
+                $this->setStartDate($value);
                 break;
             case 4:
-                $this->setUpdatedAt($value);
+                $this->setEnteredAt($value);
                 break;
         } // switch()
 
@@ -1106,30 +1069,30 @@ abstract class Classrooms implements ActiveRecordInterface
      * @param      array $arr An array to populate the object from.
      * @param      string $keyType The type of keys the array uses.
      *
-     * @return void
+*@return void
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
-        $keys = ClassroomsTableMap::getFieldNames($keyType);
+        $keys = ScheduleTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[ 0 ], $arr)) {
             $this->setId($arr[ $keys[ 0 ] ]);
         }
         if (array_key_exists($keys[ 1 ], $arr)) {
-            $this->setLabel($arr[ $keys[ 1 ] ]);
+            $this->setStudentId($arr[ $keys[ 1 ] ]);
         }
         if (array_key_exists($keys[ 2 ], $arr)) {
-            $this->setOrdering($arr[ $keys[ 2 ] ]);
+            $this->setSchedule($arr[ $keys[ 2 ] ]);
         }
         if (array_key_exists($keys[ 3 ], $arr)) {
-            $this->setCreatedAt($arr[ $keys[ 3 ] ]);
+            $this->setStartDate($arr[ $keys[ 3 ] ]);
         }
         if (array_key_exists($keys[ 4 ], $arr)) {
-            $this->setUpdatedAt($arr[ $keys[ 4 ] ]);
+            $this->setEnteredAt($arr[ $keys[ 4]]);
         }
     }
 
-    /**
+     /**
      * Populate the current object from a string, using a given parser format
      * <code>
      * $book = new Book();
@@ -1145,8 +1108,8 @@ abstract class Classrooms implements ActiveRecordInterface
      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
-     *
-     * @return $this|\Attend\Database\attend\Classrooms The current object, for fluid interface
+      *
+      * @return $this|\Attend\Database\Schedule The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1166,22 +1129,22 @@ abstract class Classrooms implements ActiveRecordInterface
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(ClassroomsTableMap::DATABASE_NAME);
+        $criteria = new Criteria(ScheduleTableMap::DATABASE_NAME);
 
-        if ($this->isColumnModified(ClassroomsTableMap::COL_ID)) {
-            $criteria->add(ClassroomsTableMap::COL_ID, $this->id);
+        if ($this->isColumnModified(ScheduleTableMap::COL_ID)) {
+            $criteria->add(ScheduleTableMap::COL_ID, $this->id);
         }
-        if ($this->isColumnModified(ClassroomsTableMap::COL_LABEL)) {
-            $criteria->add(ClassroomsTableMap::COL_LABEL, $this->label);
+        if ($this->isColumnModified(ScheduleTableMap::COL_STUDENT_ID)) {
+            $criteria->add(ScheduleTableMap::COL_STUDENT_ID, $this->student_id);
         }
-        if ($this->isColumnModified(ClassroomsTableMap::COL_ORDERING)) {
-            $criteria->add(ClassroomsTableMap::COL_ORDERING, $this->ordering);
+        if ($this->isColumnModified(ScheduleTableMap::COL_SCHEDULE)) {
+            $criteria->add(ScheduleTableMap::COL_SCHEDULE, $this->schedule);
         }
-        if ($this->isColumnModified(ClassroomsTableMap::COL_CREATED_AT)) {
-            $criteria->add(ClassroomsTableMap::COL_CREATED_AT, $this->created_at);
+        if ($this->isColumnModified(ScheduleTableMap::COL_START_DATE)) {
+            $criteria->add(ScheduleTableMap::COL_START_DATE, $this->start_date);
         }
-        if ($this->isColumnModified(ClassroomsTableMap::COL_UPDATED_AT)) {
-            $criteria->add(ClassroomsTableMap::COL_UPDATED_AT, $this->updated_at);
+        if ($this->isColumnModified(ScheduleTableMap::COL_ENTERED_AT)) {
+            $criteria->add(ScheduleTableMap::COL_ENTERED_AT, $this->entered_at);
         }
 
         return $criteria;
@@ -1199,8 +1162,8 @@ abstract class Classrooms implements ActiveRecordInterface
      */
     public function buildPkeyCriteria()
     {
-        $criteria = ChildClassroomsQuery::create();
-        $criteria->add(ClassroomsTableMap::COL_ID, $this->id);
+        $criteria = ChildScheduleQuery::create();
+        $criteria->add(ScheduleTableMap::COL_ID, $this->id);
 
         return $criteria;
     }
@@ -1240,7 +1203,6 @@ abstract class Classrooms implements ActiveRecordInterface
      * Generic method to set the primary key (id column).
      *
      * @param       int $key Primary key.
-     *
      * @return void
      */
     public function setPrimaryKey($key)
@@ -1263,32 +1225,18 @@ abstract class Classrooms implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Attend\Database\attend\Classrooms (or compatible) type.
+     * @param      object $copyObj An object of \Attend\Database\Schedule (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      *
-     * @throws PropelException
+*@throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setLabel($this->getLabel());
-        $copyObj->setOrdering($this->getOrdering());
-        $copyObj->setCreatedAt($this->getCreatedAt());
-        $copyObj->setUpdatedAt($this->getUpdatedAt());
-
-        if ($deepCopy) {
-            // important: temporarily setNew(false) because this affects the behavior of
-            // the getter/setter methods for fkey referrer objects.
-            $copyObj->setNew(false);
-
-            foreach ($this->getStudentss() as $relObj) {
-                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
-                    $copyObj->addStudents($relObj->copy($deepCopy));
-                }
-            }
-
-        } // if ($deepCopy)
-
+        $copyObj->setStudentId($this->getStudentId());
+        $copyObj->setSchedule($this->getSchedule());
+        $copyObj->setStartDate($this->getStartDate());
+        $copyObj->setEnteredAt($this->getEnteredAt());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(null); // this is a auto-increment column, so set to default value
@@ -1305,266 +1253,70 @@ abstract class Classrooms implements ActiveRecordInterface
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      *
-     * @return \Attend\Database\attend\Classrooms Clone of current object.
+     * @return \Attend\Database\Schedule Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
     {
         // we use get_class(), because this might be a subclass
-        $clazz   = get_class($this);
+        $clazz = get_class($this);
         $copyObj = new $clazz();
         $this->copyInto($copyObj, $deepCopy);
 
         return $copyObj;
     }
 
-
     /**
-     * Initializes a collection based on the name of a relation.
-     * Avoids crafting an 'init[$relationName]s' method name
-     * that wouldn't work when StandardEnglishPluralizer is used.
+     * Declares an association between this object and a ChildStudent object.
      *
-     * @param      string $relationName The name of the relation to initialize
+     * @param  ChildStudent $v
      *
-     * @return void
-     */
-    public function initRelation($relationName)
-    {
-        if ('Students' == $relationName) {
-            $this->initStudentss();
-
-            return;
-        }
-    }
-
-    /**
-     * Clears out the collStudentss collection
-     *
-     * This does not modify the database; however, it will remove any associated objects, causing
-     * them to be refetched by subsequent calls to accessor method.
-     *
-     * @return void
-     * @see        addStudentss()
-     */
-    public function clearStudentss()
-    {
-        $this->collStudentss = null; // important to set this to NULL since that means it is uninitialized
-    }
-
-    /**
-     * Reset is the collStudentss collection loaded partially.
-     */
-    public function resetPartialStudentss($v = true)
-    {
-        $this->collStudentssPartial = $v;
-    }
-
-    /**
-     * Initializes the collStudentss collection.
-     *
-     * By default this just sets the collStudentss collection to an empty array (like clearcollStudentss());
-     * however, you may wish to override this method in your stub class to provide setting appropriate
-     * to your application -- for example, setting the initial array to the values stored in database.
-     *
-     * @param      boolean $overrideExisting If set to true, the method call initializes
-     *                                        the collection even if it is not empty
-     *
-     * @return void
-     */
-    public function initStudentss($overrideExisting = true)
-    {
-        if (null !== $this->collStudentss && ! $overrideExisting) {
-            return;
-        }
-
-        $collectionClassName = StudentsTableMap::getTableMap()->getCollectionClassName();
-
-        $this->collStudentss = new $collectionClassName;
-        $this->collStudentss->setModel('\Attend\Database\attend\Students');
-    }
-
-    /**
-     * Gets an array of ChildStudents objects which contain a foreign key that references this object.
-     *
-     * If the $criteria is not null, it is used to always fetch the results from the database.
-     * Otherwise the results are fetched from the database the first time, then cached.
-     * Next time the same method is called without $criteria, the cached collection is returned.
-     * If this ChildClassrooms is new, it will return
-     * an empty collection or the current collection; the criteria is ignored on a new object.
-     *
-     * @param      Criteria $criteria optional Criteria object to narrow the query
-     * @param      ConnectionInterface $con optional connection object
-     *
-     * @return ObjectCollection|ChildStudents[] List of ChildStudents objects
+     * @return $this|\Attend\Database\Schedule The current object (for fluent API support)
      * @throws PropelException
      */
-    public function getStudentss(Criteria $criteria = null, ConnectionInterface $con = null)
+    public function setStudent(ChildStudent $v = null)
     {
-        $partial = $this->collStudentssPartial && ! $this->isNew();
-        if (null === $this->collStudentss || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collStudentss) {
-                // return empty collection
-                $this->initStudentss();
-            } else {
-                $collStudentss = ChildStudentsQuery::create(null, $criteria)
-                                                   ->filterByClassrooms($this)
-                                                   ->find($con);
-
-                if (null !== $criteria) {
-                    if (false !== $this->collStudentssPartial && count($collStudentss)) {
-                        $this->initStudentss(false);
-
-                        foreach ($collStudentss as $obj) {
-                            if (false == $this->collStudentss->contains($obj)) {
-                                $this->collStudentss->append($obj);
-                            }
-                        }
-
-                        $this->collStudentssPartial = true;
-                    }
-
-                    return $collStudentss;
-                }
-
-                if ($partial && $this->collStudentss) {
-                    foreach ($this->collStudentss as $obj) {
-                        if ($obj->isNew()) {
-                            $collStudentss[] = $obj;
-                        }
-                    }
-                }
-
-                $this->collStudentss        = $collStudentss;
-                $this->collStudentssPartial = false;
-            }
+        if ($v === null) {
+            $this->setStudentId(NULL);
+        } else {
+            $this->setStudentId($v->getId());
         }
 
-        return $this->collStudentss;
-    }
+        $this->aStudent = $v;
 
-    /**
-     * Sets a collection of ChildStudents objects related by a one-to-many relationship
-     * to the current object.
-     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
-     * and new objects from the given Propel collection.
-     *
-     * @param      Collection $studentss A Propel collection.
-     * @param      ConnectionInterface $con Optional connection object
-     *
-     * @return $this|ChildClassrooms The current object (for fluent API support)
-     */
-    public function setStudentss(Collection $studentss, ConnectionInterface $con = null)
-    {
-        /** @var ChildStudents[] $studentssToDelete */
-        $studentssToDelete = $this->getStudentss(new Criteria(), $con)->diff($studentss);
-
-
-        $this->studentssScheduledForDeletion = $studentssToDelete;
-
-        foreach ($studentssToDelete as $studentsRemoved) {
-            $studentsRemoved->setClassrooms(null);
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildStudent object, it will not be re-added.
+        if ($v !== null) {
+            $v->addSchedule($this);
         }
 
-        $this->collStudentss = null;
-        foreach ($studentss as $students) {
-            $this->addStudents($students);
-        }
-
-        $this->collStudentss        = $studentss;
-        $this->collStudentssPartial = false;
 
         return $this;
     }
 
+
     /**
-     * Returns the number of related Students objects.
+     * Get the associated ChildStudent object
      *
-     * @param      Criteria $criteria
-     * @param      boolean $distinct
-     * @param      ConnectionInterface $con
+     * @param  ConnectionInterface $con Optional Connection object.
      *
-     * @return int             Count of related Students objects.
+     * @return ChildStudent The associated ChildStudent object.
      * @throws PropelException
      */
-    public function countStudentss(Criteria $criteria = null, $distinct = false, ConnectionInterface $con = null)
+    public function getStudent(ConnectionInterface $con = null)
     {
-        $partial = $this->collStudentssPartial && ! $this->isNew();
-        if (null === $this->collStudentss || null !== $criteria || $partial) {
-            if ($this->isNew() && null === $this->collStudentss) {
-                return 0;
-            }
-
-            if ($partial && ! $criteria) {
-                return count($this->getStudentss());
-            }
-
-            $query = ChildStudentsQuery::create(null, $criteria);
-            if ($distinct) {
-                $query->distinct();
-            }
-
-            return $query
-                ->filterByClassrooms($this)
-                ->count($con);
+        if ($this->aStudent === null && ($this->student_id != 0)) {
+            $this->aStudent = ChildStudentQuery::create()->findPk($this->student_id, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aStudent->addSchedules($this);
+             */
         }
 
-        return count($this->collStudentss);
-    }
-
-    /**
-     * Method called to associate a ChildStudents object to this object
-     * through the ChildStudents foreign key attribute.
-     *
-     * @param  ChildStudents $l ChildStudents
-     *
-     * @return $this|\Attend\Database\attend\Classrooms The current object (for fluent API support)
-     */
-    public function addStudents(ChildStudents $l)
-    {
-        if ($this->collStudentss === null) {
-            $this->initStudentss();
-            $this->collStudentssPartial = true;
-        }
-
-        if ( ! $this->collStudentss->contains($l)) {
-            $this->doAddStudents($l);
-
-            if ($this->studentssScheduledForDeletion and $this->studentssScheduledForDeletion->contains($l)) {
-                $this->studentssScheduledForDeletion->remove($this->studentssScheduledForDeletion->search($l));
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param ChildStudents $students The ChildStudents object to add.
-     */
-    protected function doAddStudents(ChildStudents $students)
-    {
-        $this->collStudentss[] = $students;
-        $students->setClassrooms($this);
-    }
-
-    /**
-     * @param  ChildStudents $students The ChildStudents object to remove.
-     *
-     * @return $this|ChildClassrooms The current object (for fluent API support)
-     */
-    public function removeStudents(ChildStudents $students)
-    {
-        if ($this->getStudentss()->contains($students)) {
-            $pos = $this->collStudentss->search($students);
-            $this->collStudentss->remove($pos);
-            if (null === $this->studentssScheduledForDeletion) {
-                $this->studentssScheduledForDeletion = clone $this->collStudentss;
-                $this->studentssScheduledForDeletion->clear();
-            }
-            $this->studentssScheduledForDeletion[] = $students;
-            $students->setClassrooms(null);
-        }
-
-        return $this;
+        return $this->aStudent;
     }
 
     /**
@@ -1574,11 +1326,14 @@ abstract class Classrooms implements ActiveRecordInterface
      */
     public function clear()
     {
+        if (null !== $this->aStudent) {
+            $this->aStudent->removeSchedule($this);
+        }
         $this->id            = null;
-        $this->label         = null;
-        $this->ordering      = null;
-        $this->created_at    = null;
-        $this->updated_at    = null;
+        $this->student_id    = null;
+        $this->schedule      = null;
+        $this->start_date    = null;
+        $this->entered_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -1598,14 +1353,9 @@ abstract class Classrooms implements ActiveRecordInterface
     public function clearAllReferences($deep = false)
     {
         if ($deep) {
-            if ($this->collStudentss) {
-                foreach ($this->collStudentss as $o) {
-                    $o->clearAllReferences($deep);
-                }
-            }
         } // if ($deep)
 
-        $this->collStudentss = null;
+        $this->aStudent = null;
     }
 
     /**
@@ -1615,14 +1365,12 @@ abstract class Classrooms implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string)$this->exportTo(ClassroomsTableMap::DEFAULT_STRING_FORMAT);
+        return (string)$this->exportTo(ScheduleTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**
      * Code to be run before persisting the object
-     *
      * @param  ConnectionInterface $con
-     *
      * @return boolean
      */
     public function preSave(ConnectionInterface $con = null)
@@ -1630,13 +1378,11 @@ abstract class Classrooms implements ActiveRecordInterface
         if (is_callable('parent::preSave')) {
             return parent::preSave($con);
         }
-
         return true;
     }
 
     /**
      * Code to be run after persisting the object
-     *
      * @param ConnectionInterface $con
      */
     public function postSave(ConnectionInterface $con = null)
@@ -1648,9 +1394,7 @@ abstract class Classrooms implements ActiveRecordInterface
 
     /**
      * Code to be run before inserting to database
-     *
      * @param  ConnectionInterface $con
-     *
      * @return boolean
      */
     public function preInsert(ConnectionInterface $con = null)
@@ -1658,13 +1402,11 @@ abstract class Classrooms implements ActiveRecordInterface
         if (is_callable('parent::preInsert')) {
             return parent::preInsert($con);
         }
-
         return true;
     }
 
     /**
      * Code to be run after inserting to database
-     *
      * @param ConnectionInterface $con
      */
     public function postInsert(ConnectionInterface $con = null)
@@ -1676,9 +1418,7 @@ abstract class Classrooms implements ActiveRecordInterface
 
     /**
      * Code to be run before updating the object in database
-     *
      * @param  ConnectionInterface $con
-     *
      * @return boolean
      */
     public function preUpdate(ConnectionInterface $con = null)
@@ -1686,13 +1426,11 @@ abstract class Classrooms implements ActiveRecordInterface
         if (is_callable('parent::preUpdate')) {
             return parent::preUpdate($con);
         }
-
         return true;
     }
 
     /**
      * Code to be run after updating the object in database
-     *
      * @param ConnectionInterface $con
      */
     public function postUpdate(ConnectionInterface $con = null)
@@ -1704,9 +1442,7 @@ abstract class Classrooms implements ActiveRecordInterface
 
     /**
      * Code to be run before deleting the object in database
-     *
      * @param  ConnectionInterface $con
-     *
      * @return boolean
      */
     public function preDelete(ConnectionInterface $con = null)
@@ -1714,13 +1450,11 @@ abstract class Classrooms implements ActiveRecordInterface
         if (is_callable('parent::preDelete')) {
             return parent::preDelete($con);
         }
-
         return true;
     }
 
     /**
      * Code to be run after deleting the object in database
-     *
      * @param ConnectionInterface $con
      */
     public function postDelete(ConnectionInterface $con = null)
@@ -1738,7 +1472,7 @@ abstract class Classrooms implements ActiveRecordInterface
      * Allows to define default __call() behavior if you overwrite __call()
      *
      * @param string $name
-     * @param mixed $params
+     * @param mixed  $params
      *
      * @return array|string
      */
@@ -1764,7 +1498,7 @@ abstract class Classrooms implements ActiveRecordInterface
 
         if (0 === strpos($name, 'to')) {
             $format                 = substr($name, 2);
-            $includeLazyLoadColumns = isset($params[ 0 ]) ? $params[ 0 ] : true;
+            $includeLazyLoadColumns = isset($params[0]) ? $params[0] : true;
 
             return $this->exportTo($format, $includeLazyLoadColumns);
         }

@@ -1,8 +1,8 @@
 <?php
 
-namespace Attend\Database\attend;
+namespace Attend\Database;
 
-use Attend\Database\attend\Base\Attendance as BaseAttendance;
+use Attend\Database\Base\Attendance as BaseAttendance;
 
 /**
  * Skeleton subclass for representing a row from the 'attendance' table.

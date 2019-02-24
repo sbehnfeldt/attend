@@ -1,8 +1,8 @@
 <?php
 
-namespace Attend\Database\attend;
+namespace Attend\Database;
 
-use Attend\Database\attend\Base\ClassroomsQuery as BaseClassroomsQuery;
+use Attend\Database\Base\ClassroomQuery as BaseClassroomQuery;
 
 /**
  * Skeleton subclass for performing query and update operations on the 'classrooms' table.
@@ -14,7 +14,7 @@ use Attend\Database\attend\Base\ClassroomsQuery as BaseClassroomsQuery;
  * long as it does not already exist in the output directory.
  *
  */
-class ClassroomsQuery extends BaseClassroomsQuery
+class ClassroomQuery extends BaseClassroomQuery
 {
 
 }

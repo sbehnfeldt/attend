@@ -1,9 +1,9 @@
 <?php
 
-namespace Attend\Database\attend\Map;
+namespace Attend\Database\Map;
 
-use Attend\Database\attend\Students;
-use Attend\Database\attend\StudentsQuery;
+use Attend\Database\Schedule;
+use Attend\Database\ScheduleQuery;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\InstancePoolTrait;
@@ -16,7 +16,7 @@ use Propel\Runtime\Map\TableMapTrait;
 
 
 /**
- * This class defines the structure of the 'students' table.
+ * This class defines the structure of the 'schedules' table.
  *
  *
  *
@@ -26,7 +26,7 @@ use Propel\Runtime\Map\TableMapTrait;
  * (i.e. if it's a text column type).
  *
  */
-class StudentsTableMap extends TableMap
+class ScheduleTableMap extends TableMap
 {
     use InstancePoolTrait;
     use TableMapTrait;
@@ -34,7 +34,7 @@ class StudentsTableMap extends TableMap
     /**
      * The (dot-path) name of this class
      */
-    const CLASS_NAME = '.Map.StudentsTableMap';
+    const CLASS_NAME = '.Map.ScheduleTableMap';
 
     /**
      * The default database name for this class
@@ -44,17 +44,17 @@ class StudentsTableMap extends TableMap
     /**
      * The table name for this class
      */
-    const TABLE_NAME = 'students';
+    const TABLE_NAME = 'schedules';
 
     /**
      * The related Propel class for this table
      */
-    const OM_CLASS = '\\Attend\\Database\\attend\\Students';
+    const OM_CLASS = '\\Attend\\Database\\Schedule';
 
     /**
      * A class that can be returned by this tableMap
      */
-    const CLASS_DEFAULT = 'Students';
+    const CLASS_DEFAULT = 'Schedule';
 
     /**
      * The total number of columns
@@ -74,27 +74,27 @@ class StudentsTableMap extends TableMap
     /**
      * the column name for the id field
      */
-    const COL_ID = 'students.id';
+    const COL_ID = 'schedules.id';
 
     /**
-     * the column name for the family_name field
+     * the column name for the student_id field
      */
-    const COL_FAMILY_NAME = 'students.family_name';
+    const COL_STUDENT_ID = 'schedules.student_id';
 
     /**
-     * the column name for the first_name field
+     * the column name for the schedule field
      */
-    const COL_FIRST_NAME = 'students.first_name';
+    const COL_SCHEDULE = 'schedules.schedule';
 
     /**
-     * the column name for the enrolled field
+     * the column name for the start_date field
      */
-    const COL_ENROLLED = 'students.enrolled';
+    const COL_START_DATE = 'schedules.start_date';
 
     /**
-     * the column name for the classroom_id field
+     * the column name for the entered_at field
      */
-    const COL_CLASSROOM_ID = 'students.classroom_id';
+    const COL_ENTERED_AT = 'schedules.entered_at';
 
     /**
      * The default string format for model objects of the related table
@@ -108,16 +108,16 @@ class StudentsTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array(
-        self::TYPE_PHPNAME   => array('Id', 'FamilyName', 'FirstName', 'Enrolled', 'ClassroomId',),
-        self::TYPE_CAMELNAME => array('id', 'familyName', 'firstName', 'enrolled', 'classroomId',),
+        self::TYPE_PHPNAME   => array('Id', 'StudentId', 'Schedule', 'StartDate', 'EnteredAt',),
+        self::TYPE_CAMELNAME => array('id', 'studentId', 'schedule', 'startDate', 'enteredAt',),
         self::TYPE_COLNAME   => array(
-            StudentsTableMap::COL_ID,
-            StudentsTableMap::COL_FAMILY_NAME,
-            StudentsTableMap::COL_FIRST_NAME,
-            StudentsTableMap::COL_ENROLLED,
-            StudentsTableMap::COL_CLASSROOM_ID,
+            ScheduleTableMap::COL_ID,
+            ScheduleTableMap::COL_STUDENT_ID,
+            ScheduleTableMap::COL_SCHEDULE,
+            ScheduleTableMap::COL_START_DATE,
+            ScheduleTableMap::COL_ENTERED_AT,
         ),
-        self::TYPE_FIELDNAME => array('id', 'family_name', 'first_name', 'enrolled', 'classroom_id',),
+        self::TYPE_FIELDNAME => array('id', 'student_id', 'schedule', 'start_date', 'entered_at',),
         self::TYPE_NUM       => array(0, 1, 2, 3, 4,)
     );
 
@@ -129,32 +129,32 @@ class StudentsTableMap extends TableMap
      */
     protected static $fieldKeys = array(
         self::TYPE_PHPNAME   => array(
-            'Id'          => 0,
-            'FamilyName'  => 1,
-            'FirstName'   => 2,
-            'Enrolled'    => 3,
-            'ClassroomId' => 4,
+            'Id'        => 0,
+            'StudentId' => 1,
+            'Schedule'  => 2,
+            'StartDate' => 3,
+            'EnteredAt' => 4,
         ),
         self::TYPE_CAMELNAME => array(
-            'id'          => 0,
-            'familyName'  => 1,
-            'firstName'   => 2,
-            'enrolled'    => 3,
-            'classroomId' => 4,
+            'id'        => 0,
+            'studentId' => 1,
+            'schedule'  => 2,
+            'startDate' => 3,
+            'enteredAt' => 4,
         ),
         self::TYPE_COLNAME   => array(
-            StudentsTableMap::COL_ID           => 0,
-            StudentsTableMap::COL_FAMILY_NAME  => 1,
-            StudentsTableMap::COL_FIRST_NAME   => 2,
-            StudentsTableMap::COL_ENROLLED     => 3,
-            StudentsTableMap::COL_CLASSROOM_ID => 4,
+            ScheduleTableMap::COL_ID         => 0,
+            ScheduleTableMap::COL_STUDENT_ID => 1,
+            ScheduleTableMap::COL_SCHEDULE   => 2,
+            ScheduleTableMap::COL_START_DATE => 3,
+            ScheduleTableMap::COL_ENTERED_AT => 4,
         ),
         self::TYPE_FIELDNAME => array(
-            'id'           => 0,
-            'family_name'  => 1,
-            'first_name'   => 2,
-            'enrolled'     => 3,
-            'classroom_id' => 4,
+            'id'         => 0,
+            'student_id' => 1,
+            'schedule'   => 2,
+            'start_date' => 3,
+            'entered_at' => 4,
         ),
         self::TYPE_NUM       => array(0, 1, 2, 3, 4,)
     );
@@ -169,18 +169,18 @@ class StudentsTableMap extends TableMap
     public function initialize()
     {
         // attributes
-        $this->setName('students');
-        $this->setPhpName('Students');
+        $this->setName('schedules');
+        $this->setPhpName('Schedule');
         $this->setIdentifierQuoting(false);
-        $this->setClassName('\\Attend\\Database\\attend\\Students');
+        $this->setClassName('\\Attend\\Database\\Schedule');
         $this->setPackage('');
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, 10, null);
-        $this->addColumn('family_name', 'FamilyName', 'VARCHAR', true, 45, null);
-        $this->addColumn('first_name', 'FirstName', 'VARCHAR', true, 45, null);
-        $this->addColumn('enrolled', 'Enrolled', 'INTEGER', true, 1, 0);
-        $this->addForeignKey('classroom_id', 'ClassroomId', 'INTEGER', 'classrooms', 'id', false, 10, null);
+        $this->addForeignKey('student_id', 'StudentId', 'INTEGER', 'students', 'id', true, 10, null);
+        $this->addColumn('schedule', 'Schedule', 'INTEGER', true, null, 0);
+        $this->addColumn('start_date', 'StartDate', 'DATE', true, null, null);
+        $this->addColumn('entered_at', 'EnteredAt', 'INTEGER', true, null, null);
     } // initialize()
 
     /**
@@ -188,39 +188,14 @@ class StudentsTableMap extends TableMap
      */
     public function buildRelations()
     {
-        $this->addRelation('Classrooms', '\\Attend\\Database\\attend\\Classrooms', RelationMap::MANY_TO_ONE, array(
-            0 =>
-                array(
-                    0 => ':classroom_id',
-                    1 => ':id',
-                ),
-        ), 'SET NULL', null, null, false);
-        $this->addRelation('Attendance', '\\Attend\\Database\\attend\\Attendance', RelationMap::ONE_TO_MANY, array(
+        $this->addRelation('Student', '\\Attend\\Database\\Student', RelationMap::MANY_TO_ONE, array(
             0 =>
                 array(
                     0 => ':student_id',
                     1 => ':id',
                 ),
-        ), 'CASCADE', null, 'Attendances', false);
-        $this->addRelation('Schedules', '\\Attend\\Database\\attend\\Schedules', RelationMap::ONE_TO_MANY, array(
-            0 =>
-                array(
-                    0 => ':student_id',
-                    1 => ':id',
-                ),
-        ), 'CASCADE', null, 'Scheduless', false);
+        ), 'CASCADE', null, null, false);
     } // buildRelations()
-
-    /**
-     * Method to invalidate the instance pool of all tables related to students     * by a foreign key with ON DELETE CASCADE
-     */
-    public static function clearRelatedInstancePool()
-    {
-        // Invalidate objects in related instance pools,
-        // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
-        AttendanceTableMap::clearInstancePool();
-        SchedulesTableMap::clearInstancePool();
-    }
 
     /**
      * Retrieves a string version of the primary key from the DB resultset row that can be used to uniquely identify a row in this table.
@@ -285,12 +260,11 @@ class StudentsTableMap extends TableMap
      * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
      *
      * @param boolean $withPrefix Whether or not to return the path with the class name
-     *
      * @return string path.to.ClassName
      */
     public static function getOMClass($withPrefix = true)
     {
-        return $withPrefix ? StudentsTableMap::CLASS_DEFAULT : StudentsTableMap::OM_CLASS;
+        return $withPrefix ? ScheduleTableMap::CLASS_DEFAULT : ScheduleTableMap::OM_CLASS;
     }
 
     /**
@@ -304,22 +278,22 @@ class StudentsTableMap extends TableMap
      *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Students object, last column rank)
+     * @return array           (Schedule object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        $key = StudentsTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
-        if (null !== ($obj = StudentsTableMap::getInstanceFromPool($key))) {
+        $key = ScheduleTableMap::getPrimaryKeyHashFromRow($row, $offset, $indexType);
+        if (null !== ($obj = ScheduleTableMap::getInstanceFromPool($key))) {
             // We no longer rehydrate the object, since this can cause data loss.
             // See http://www.propelorm.org/ticket/509
             // $obj->hydrate($row, $offset, true); // rehydrate
-            $col = $offset + StudentsTableMap::NUM_HYDRATE_COLUMNS;
+            $col = $offset + ScheduleTableMap::NUM_HYDRATE_COLUMNS;
         } else {
-            $cls = StudentsTableMap::OM_CLASS;
-            /** @var Students $obj */
+            $cls = ScheduleTableMap::OM_CLASS;
+            /** @var Schedule $obj */
             $obj = new $cls();
             $col = $obj->hydrate($row, $offset, false, $indexType);
-            StudentsTableMap::addInstanceToPool($obj, $key);
+            ScheduleTableMap::addInstanceToPool($obj, $key);
         }
 
         return array($obj, $col);
@@ -330,7 +304,6 @@ class StudentsTableMap extends TableMap
      * objects that inherit from the default.
      *
      * @param DataFetcherInterface $dataFetcher
-     *
      * @return array
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
@@ -343,24 +316,23 @@ class StudentsTableMap extends TableMap
         $cls = static::getOMClass(false);
         // populate the object(s)
         while ($row = $dataFetcher->fetch()) {
-            $key = StudentsTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
-            if (null !== ($obj = StudentsTableMap::getInstanceFromPool($key))) {
+            $key = ScheduleTableMap::getPrimaryKeyHashFromRow($row, 0, $dataFetcher->getIndexType());
+            if (null !== ($obj = ScheduleTableMap::getInstanceFromPool($key))) {
                 // We no longer rehydrate the object, since this can cause data loss.
                 // See http://www.propelorm.org/ticket/509
                 // $obj->hydrate($row, 0, true); // rehydrate
                 $results[] = $obj;
             } else {
-                /** @var Students $obj */
+                /** @var Schedule $obj */
                 $obj = new $cls();
                 $obj->hydrate($row);
                 $results[] = $obj;
-                StudentsTableMap::addInstanceToPool($obj, $key);
+                ScheduleTableMap::addInstanceToPool($obj, $key);
             } // if key exists
         }
 
         return $results;
     }
-
     /**
      * Add all the columns needed to create a new object.
      *
@@ -371,23 +343,23 @@ class StudentsTableMap extends TableMap
      * @param Criteria $criteria object containing the columns to add.
      * @param string $alias optional table alias
      *
-     * @throws PropelException Any exceptions caught during processing will be
+*@throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
     public static function addSelectColumns(Criteria $criteria, $alias = null)
     {
         if (null === $alias) {
-            $criteria->addSelectColumn(StudentsTableMap::COL_ID);
-            $criteria->addSelectColumn(StudentsTableMap::COL_FAMILY_NAME);
-            $criteria->addSelectColumn(StudentsTableMap::COL_FIRST_NAME);
-            $criteria->addSelectColumn(StudentsTableMap::COL_ENROLLED);
-            $criteria->addSelectColumn(StudentsTableMap::COL_CLASSROOM_ID);
+            $criteria->addSelectColumn(ScheduleTableMap::COL_ID);
+            $criteria->addSelectColumn(ScheduleTableMap::COL_STUDENT_ID);
+            $criteria->addSelectColumn(ScheduleTableMap::COL_SCHEDULE);
+            $criteria->addSelectColumn(ScheduleTableMap::COL_START_DATE);
+            $criteria->addSelectColumn(ScheduleTableMap::COL_ENTERED_AT);
         } else {
             $criteria->addSelectColumn($alias . '.id');
-            $criteria->addSelectColumn($alias . '.family_name');
-            $criteria->addSelectColumn($alias . '.first_name');
-            $criteria->addSelectColumn($alias . '.enrolled');
-            $criteria->addSelectColumn($alias . '.classroom_id');
+            $criteria->addSelectColumn($alias . '.student_id');
+            $criteria->addSelectColumn($alias . '.schedule');
+            $criteria->addSelectColumn($alias . '.start_date');
+            $criteria->addSelectColumn($alias . '.entered_at');
         }
     }
 
@@ -400,7 +372,7 @@ class StudentsTableMap extends TableMap
      */
     public static function getTableMap()
     {
-        return Propel::getServiceContainer()->getDatabaseMap(StudentsTableMap::DATABASE_NAME)->getTable(StudentsTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(ScheduleTableMap::DATABASE_NAME)->getTable(ScheduleTableMap::TABLE_NAME);
     }
 
     /**
@@ -408,20 +380,20 @@ class StudentsTableMap extends TableMap
      */
     public static function buildTableMap()
     {
-        $dbMap = Propel::getServiceContainer()->getDatabaseMap(StudentsTableMap::DATABASE_NAME);
-        if ( ! $dbMap->hasTable(StudentsTableMap::TABLE_NAME)) {
-            $dbMap->addTableObject(new StudentsTableMap());
+        $dbMap = Propel::getServiceContainer()->getDatabaseMap(ScheduleTableMap::DATABASE_NAME);
+        if ( ! $dbMap->hasTable(ScheduleTableMap::TABLE_NAME)) {
+            $dbMap->addTableObject(new ScheduleTableMap());
         }
     }
 
     /**
-     * Performs a DELETE on the database, given a Students or Criteria object OR a primary key value.
+     * Performs a DELETE on the database, given a Schedule or Criteria object OR a primary key value.
      *
-     * @param mixed $values Criteria or Students object or primary key or array of primary keys
+     * @param mixed $values Criteria or Schedule object or primary key or array of primary keys
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      *
-     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+*@return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
      *                         if supported by native driver or if emulated using Propel.
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
@@ -429,27 +401,27 @@ class StudentsTableMap extends TableMap
     public static function doDelete($values, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(StudentsTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ScheduleTableMap::DATABASE_NAME);
         }
 
         if ($values instanceof Criteria) {
             // rename for clarity
             $criteria = $values;
-        } elseif ($values instanceof \Attend\Database\attend\Students) { // it's a model object
+        } elseif ($values instanceof \Attend\Database\Schedule) { // it's a model object
             // create criteria based on pk values
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
-            $criteria = new Criteria(StudentsTableMap::DATABASE_NAME);
-            $criteria->add(StudentsTableMap::COL_ID, (array)$values, Criteria::IN);
+            $criteria = new Criteria(ScheduleTableMap::DATABASE_NAME);
+            $criteria->add(ScheduleTableMap::COL_ID, (array)$values, Criteria::IN);
         }
 
-        $query = StudentsQuery::create()->mergeWith($criteria);
+        $query = ScheduleQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
-            StudentsTableMap::clearInstancePool();
+            ScheduleTableMap::clearInstancePool();
         } elseif ( ! is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array)$values as $singleval) {
-                StudentsTableMap::removeInstanceFromPool($singleval);
+                ScheduleTableMap::removeInstanceFromPool($singleval);
             }
         }
 
@@ -457,46 +429,45 @@ class StudentsTableMap extends TableMap
     }
 
     /**
-     * Deletes all rows from the students table.
+     * Deletes all rows from the schedules table.
      *
      * @param ConnectionInterface $con the connection to use
-     *
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(ConnectionInterface $con = null)
     {
-        return StudentsQuery::create()->doDeleteAll($con);
+        return ScheduleQuery::create()->doDeleteAll($con);
     }
 
     /**
-     * Performs an INSERT on the database, given a Students or Criteria object.
+     * Performs an INSERT on the database, given a Schedule or Criteria object.
      *
-     * @param mixed $criteria Criteria or Students object containing data that is used to create the INSERT statement.
+     * @param mixed $criteria Criteria or Schedule object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      *
-     * @return mixed           The new primary key.
+*@return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
     public static function doInsert($criteria, ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(StudentsTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ScheduleTableMap::DATABASE_NAME);
         }
 
         if ($criteria instanceof Criteria) {
             $criteria = clone $criteria; // rename for clarity
         } else {
-            $criteria = $criteria->buildCriteria(); // build Criteria from Students object
+            $criteria = $criteria->buildCriteria(); // build Criteria from Schedule object
         }
 
-        if ($criteria->containsKey(StudentsTableMap::COL_ID) && $criteria->keyContainsValue(StudentsTableMap::COL_ID)) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . StudentsTableMap::COL_ID . ')');
+        if ($criteria->containsKey(ScheduleTableMap::COL_ID) && $criteria->keyContainsValue(ScheduleTableMap::COL_ID)) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ScheduleTableMap::COL_ID.')');
         }
 
 
         // Set the correct dbName
-        $query = StudentsQuery::create()->mergeWith($criteria);
+        $query = ScheduleQuery::create()->mergeWith($criteria);
 
         // use transaction because $criteria could contain info
         // for more than one table (I guess, conceivably)
@@ -505,7 +476,7 @@ class StudentsTableMap extends TableMap
         });
     }
 
-} // StudentsTableMap
+} // ScheduleTableMap
 // This is the static code needed to register the TableMap for this table with the main Propel class.
 //
-StudentsTableMap::buildTableMap();
+ScheduleTableMap::buildTableMap();

@@ -1,13 +1,13 @@
 <?php
 
-namespace Attend\Database\attend\Base;
+namespace Attend\Database\Base;
 
 use \Exception;
 use \PDO;
-use Attend\Database\attend\AttendanceQuery as ChildAttendanceQuery;
-use Attend\Database\attend\Students as ChildStudents;
-use Attend\Database\attend\StudentsQuery as ChildStudentsQuery;
-use Attend\Database\attend\Map\AttendanceTableMap;
+use Attend\Database\AttendanceQuery as ChildAttendanceQuery;
+use Attend\Database\Student as ChildStudent;
+use Attend\Database\StudentQuery as ChildStudentQuery;
+use Attend\Database\Map\AttendanceTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -32,7 +32,7 @@ abstract class Attendance implements ActiveRecordInterface
     /**
      * TableMap class name
      */
-    const TABLE_MAP = '\\Attend\\Database\\attend\\Map\\AttendanceTableMap';
+    const TABLE_MAP = '\\Attend\\Database\\Map\\AttendanceTableMap';
 
 
     /**
@@ -90,9 +90,9 @@ abstract class Attendance implements ActiveRecordInterface
     protected $check_out;
 
     /**
-     * @var        ChildStudents
+     * @var        ChildStudent
      */
-    protected $aStudents;
+    protected $aStudent;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -103,7 +103,7 @@ abstract class Attendance implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
-     * Initializes internal state of Attend\Database\attend\Base\Attendance object.
+     * Initializes internal state of Attend\Database\Base\Attendance object.
      */
     public function __construct()
     {
@@ -116,19 +116,18 @@ abstract class Attendance implements ActiveRecordInterface
      */
     public function isModified()
     {
-        return ! ! $this->modifiedColumns;
+        return !!$this->modifiedColumns;
     }
 
     /**
      * Has specified column been modified?
      *
-     * @param  string $col column fully qualified name (TableMap::TYPE_COLNAME), e.g. Book::AUTHOR_ID
-     *
+     * @param  string  $col column fully qualified name (TableMap::TYPE_COLNAME), e.g. Book::AUTHOR_ID
      * @return boolean True if $col has been modified.
      */
     public function isColumnModified($col)
     {
-        return $this->modifiedColumns && isset($this->modifiedColumns[ $col ]);
+        return $this->modifiedColumns && isset($this->modifiedColumns[$col]);
     }
 
     /**
@@ -160,7 +159,7 @@ abstract class Attendance implements ActiveRecordInterface
      */
     public function setNew($b)
     {
-        $this->new = (boolean)$b;
+        $this->new = (boolean) $b;
     }
 
     /**
@@ -174,28 +173,24 @@ abstract class Attendance implements ActiveRecordInterface
 
     /**
      * Specify whether this object has been deleted.
-     *
      * @param  boolean $b The deleted state of this object.
-     *
      * @return void
      */
     public function setDeleted($b)
     {
-        $this->deleted = (boolean)$b;
+        $this->deleted = (boolean) $b;
     }
 
     /**
      * Sets the modified state for the object to be false.
-     *
      * @param  string $col If supplied, only the specified column is reset.
-     *
      * @return void
      */
     public function resetModified($col = null)
     {
         if (null !== $col) {
-            if (isset($this->modifiedColumns[ $col ])) {
-                unset($this->modifiedColumns[ $col ]);
+            if (isset($this->modifiedColumns[$col])) {
+                unset($this->modifiedColumns[$col]);
             }
         } else {
             $this->modifiedColumns = array();
@@ -207,13 +202,12 @@ abstract class Attendance implements ActiveRecordInterface
      * <code>obj</code> is an instance of <code>Attendance</code>, delegates to
      * <code>equals(Attendance)</code>.  Otherwise, returns <code>false</code>.
      *
-     * @param  mixed $obj The object to compare to.
-     *
+     * @param  mixed   $obj The object to compare to.
      * @return boolean Whether equal to the object specified.
      */
     public function equals($obj)
     {
-        if ( ! $obj instanceof static) {
+        if (!$obj instanceof static) {
             return false;
         }
 
@@ -241,8 +235,7 @@ abstract class Attendance implements ActiveRecordInterface
     /**
      * Checks the existence of a virtual column in this object
      *
-     * @param  string $name The virtual column name
-     *
+     * @param  string  $name The virtual column name
      * @return boolean
      */
     public function hasVirtualColumn($name)
@@ -254,31 +247,30 @@ abstract class Attendance implements ActiveRecordInterface
      * Get the value of a virtual column in this object
      *
      * @param  string $name The virtual column name
-     *
      * @return mixed
      *
      * @throws PropelException
      */
     public function getVirtualColumn($name)
     {
-        if ( ! $this->hasVirtualColumn($name)) {
+        if (!$this->hasVirtualColumn($name)) {
             throw new PropelException(sprintf('Cannot get value of inexistent virtual column %s.', $name));
         }
 
-        return $this->virtualColumns[ $name ];
+        return $this->virtualColumns[$name];
     }
 
     /**
      * Set the value of a virtual column in this object
      *
-     * @param string $name The virtual column name
-     * @param mixed $value The value to give to the virtual column
+     * @param string $name  The virtual column name
+     * @param mixed  $value The value to give to the virtual column
      *
      * @return $this|Attendance The current object, for fluid interface
      */
     public function setVirtualColumn($name, $value)
     {
-        $this->virtualColumns[ $name ] = $value;
+        $this->virtualColumns[$name] = $value;
 
         return $this;
     }
@@ -286,9 +278,8 @@ abstract class Attendance implements ActiveRecordInterface
     /**
      * Logs a message using Propel::log().
      *
-     * @param  string $msg
-     * @param  int $priority One of the Propel::LOG_* logging levels
-     *
+     * @param  string  $msg
+     * @param  int     $priority One of the Propel::LOG_* logging levels
      * @return boolean
      */
     protected function log($msg, $priority = Propel::LOG_INFO)
@@ -304,14 +295,13 @@ abstract class Attendance implements ActiveRecordInterface
      *  => {"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
      * </code>
      *
-     * @param  mixed $parser A AbstractParser instance, or a format name ('XML', 'YAML', 'JSON', 'CSV')
+     * @param  mixed   $parser                 A AbstractParser instance, or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param  boolean $includeLazyLoadColumns (optional) Whether to include lazy load(ed) columns. Defaults to TRUE.
-     *
      * @return string  The exported data
      */
     public function exportTo($parser, $includeLazyLoadColumns = true)
     {
-        if ( ! $parser instanceof AbstractParser) {
+        if (!$parser instanceof AbstractParser) {
             $parser = AbstractParser::getParser($parser);
         }
 
@@ -326,12 +316,11 @@ abstract class Attendance implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        $cls                    = new \ReflectionClass($this);
-        $propertyNames          = [];
-        $serializableProperties = array_diff($cls->getProperties(),
-            $cls->getProperties(\ReflectionProperty::IS_STATIC));
+        $cls = new \ReflectionClass($this);
+        $propertyNames = [];
+        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
 
-        foreach ($serializableProperties as $property) {
+        foreach($serializableProperties as $property) {
             $propertyNames[] = $property->getName();
         }
 
@@ -382,18 +371,17 @@ abstract class Attendance implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param int $v new value
-     *
-     * @return $this|\Attend\Database\attend\Attendance The current object (for fluent API support)
+     * @return $this|\Attend\Database\Attendance The current object (for fluent API support)
      */
     public function setId($v)
     {
         if ($v !== null) {
-            $v = (int)$v;
+            $v = (int) $v;
         }
 
         if ($this->id !== $v) {
-            $this->id                                            = $v;
-            $this->modifiedColumns[ AttendanceTableMap::COL_ID ] = true;
+            $this->id = $v;
+            $this->modifiedColumns[AttendanceTableMap::COL_ID] = true;
         }
 
         return $this;
@@ -403,22 +391,21 @@ abstract class Attendance implements ActiveRecordInterface
      * Set the value of [student_id] column.
      *
      * @param int $v new value
-     *
-     * @return $this|\Attend\Database\attend\Attendance The current object (for fluent API support)
+     * @return $this|\Attend\Database\Attendance The current object (for fluent API support)
      */
     public function setStudentId($v)
     {
         if ($v !== null) {
-            $v = (int)$v;
+            $v = (int) $v;
         }
 
         if ($this->student_id !== $v) {
-            $this->student_id                                            = $v;
-            $this->modifiedColumns[ AttendanceTableMap::COL_STUDENT_ID ] = true;
+            $this->student_id = $v;
+            $this->modifiedColumns[AttendanceTableMap::COL_STUDENT_ID] = true;
         }
 
-        if ($this->aStudents !== null && $this->aStudents->getId() !== $v) {
-            $this->aStudents = null;
+        if ($this->aStudent !== null && $this->aStudent->getId() !== $v) {
+            $this->aStudent = null;
         }
 
         return $this;
@@ -428,18 +415,17 @@ abstract class Attendance implements ActiveRecordInterface
      * Set the value of [check_in] column.
      *
      * @param int $v new value
-     *
-     * @return $this|\Attend\Database\attend\Attendance The current object (for fluent API support)
+     * @return $this|\Attend\Database\Attendance The current object (for fluent API support)
      */
     public function setCheckIn($v)
     {
         if ($v !== null) {
-            $v = (int)$v;
+            $v = (int) $v;
         }
 
         if ($this->check_in !== $v) {
-            $this->check_in                                            = $v;
-            $this->modifiedColumns[ AttendanceTableMap::COL_CHECK_IN ] = true;
+            $this->check_in = $v;
+            $this->modifiedColumns[AttendanceTableMap::COL_CHECK_IN] = true;
         }
 
         return $this;
@@ -449,18 +435,17 @@ abstract class Attendance implements ActiveRecordInterface
      * Set the value of [check_out] column.
      *
      * @param int $v new value
-     *
-     * @return $this|\Attend\Database\attend\Attendance The current object (for fluent API support)
+     * @return $this|\Attend\Database\Attendance The current object (for fluent API support)
      */
     public function setCheckOut($v)
     {
         if ($v !== null) {
-            $v = (int)$v;
+            $v = (int) $v;
         }
 
         if ($this->check_out !== $v) {
-            $this->check_out                                            = $v;
-            $this->modifiedColumns[ AttendanceTableMap::COL_CHECK_OUT ] = true;
+            $this->check_out = $v;
+            $this->modifiedColumns[AttendanceTableMap::COL_CHECK_OUT] = true;
         }
 
         return $this;
@@ -488,11 +473,11 @@ abstract class Attendance implements ActiveRecordInterface
      * for results of JOIN queries where the resultset row includes columns from two or
      * more tables.
      *
-     * @param array $row The row returned by DataFetcher->fetch().
-     * @param int $startcol 0-based offset column which indicates which restultset column to start with.
+     * @param array   $row       The row returned by DataFetcher->fetch().
+     * @param int     $startcol  0-based offset column which indicates which restultset column to start with.
      * @param boolean $rehydrate Whether this object is being re-hydrated from the database.
-     * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
-     * One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * @param string  $indexType The index type of $row. Mostly DataFetcher->getIndexType().
+                                  One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                            TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @return int             next starting column
@@ -502,21 +487,17 @@ abstract class Attendance implements ActiveRecordInterface
     {
         try {
 
-            $col      = $row[ TableMap::TYPE_NUM == $indexType ? 0 + $startcol : AttendanceTableMap::translateFieldName('Id',
-                TableMap::TYPE_PHPNAME, $indexType) ];
-            $this->id = (null !== $col) ? (int)$col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : AttendanceTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->id = (null !== $col) ? (int) $col : null;
 
-            $col              = $row[ TableMap::TYPE_NUM == $indexType ? 1 + $startcol : AttendanceTableMap::translateFieldName('StudentId',
-                TableMap::TYPE_PHPNAME, $indexType) ];
-            $this->student_id = (null !== $col) ? (int)$col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : AttendanceTableMap::translateFieldName('StudentId', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->student_id = (null !== $col) ? (int) $col : null;
 
-            $col            = $row[ TableMap::TYPE_NUM == $indexType ? 2 + $startcol : AttendanceTableMap::translateFieldName('CheckIn',
-                TableMap::TYPE_PHPNAME, $indexType) ];
-            $this->check_in = (null !== $col) ? (int)$col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : AttendanceTableMap::translateFieldName('CheckIn', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->check_in = (null !== $col) ? (int) $col : null;
 
-            $col             = $row[ TableMap::TYPE_NUM == $indexType ? 3 + $startcol : AttendanceTableMap::translateFieldName('CheckOut',
-                TableMap::TYPE_PHPNAME, $indexType) ];
-            $this->check_out = (null !== $col) ? (int)$col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : AttendanceTableMap::translateFieldName('CheckOut', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->check_out = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -528,8 +509,7 @@ abstract class Attendance implements ActiveRecordInterface
             return $startcol + 4; // 4 = AttendanceTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(sprintf('Error populating %s object', '\\Attend\\Database\\attend\\Attendance'),
-                0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\Attend\\Database\\Attendance'), 0, $e);
         }
     }
 
@@ -548,8 +528,8 @@ abstract class Attendance implements ActiveRecordInterface
      */
     public function ensureConsistency()
     {
-        if ($this->aStudents !== null && $this->student_id !== $this->aStudents->getId()) {
-            $this->aStudents = null;
+        if ($this->aStudent !== null && $this->student_id !== $this->aStudent->getId()) {
+            $this->aStudent = null;
         }
     } // ensureConsistency
 
@@ -560,7 +540,6 @@ abstract class Attendance implements ActiveRecordInterface
      *
      * @param      boolean $deep (optional) Whether to also de-associated any related objects.
      * @param      ConnectionInterface $con (optional) The ConnectionInterface connection to use.
-     *
      * @return void
      * @throws PropelException - if this object is deleted, unsaved or doesn't have pk match in db
      */
@@ -581,18 +560,17 @@ abstract class Attendance implements ActiveRecordInterface
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildAttendanceQuery::create(null,
-            $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
-        $row         = $dataFetcher->fetch();
+        $dataFetcher = ChildAttendanceQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $row = $dataFetcher->fetch();
         $dataFetcher->close();
-        if ( ! $row) {
+        if (!$row) {
             throw new PropelException('Cannot find matching row in the database to reload object values.');
         }
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aStudents = null;
+            $this->aStudent = null;
         } // if (deep)
     }
 
@@ -600,7 +578,6 @@ abstract class Attendance implements ActiveRecordInterface
      * Removes this object from datastore and sets delete attribute.
      *
      * @param      ConnectionInterface $con
-     *
      * @return void
      * @throws PropelException
      * @see Attendance::setDeleted()
@@ -618,8 +595,8 @@ abstract class Attendance implements ActiveRecordInterface
 
         $con->transaction(function () use ($con) {
             $deleteQuery = ChildAttendanceQuery::create()
-                                               ->filterByPrimaryKey($this->getPrimaryKey());
-            $ret         = $this->preDelete($con);
+                ->filterByPrimaryKey($this->getPrimaryKey());
+            $ret = $this->preDelete($con);
             if ($ret) {
                 $deleteQuery->delete($con);
                 $this->postDelete($con);
@@ -637,7 +614,6 @@ abstract class Attendance implements ActiveRecordInterface
      * single transaction.
      *
      * @param      ConnectionInterface $con
-     *
      * @return int             The number of rows affected by this insert/update and any referring fk objects' save() operations.
      * @throws PropelException
      * @see doSave()
@@ -657,7 +633,7 @@ abstract class Attendance implements ActiveRecordInterface
         }
 
         return $con->transaction(function () use ($con) {
-            $ret      = $this->preSave($con);
+            $ret = $this->preSave($con);
             $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
@@ -688,7 +664,6 @@ abstract class Attendance implements ActiveRecordInterface
      * All related objects are also updated in this method.
      *
      * @param      ConnectionInterface $con
-     *
      * @return int             The number of rows affected by this insert/update and any referring fk objects' save() operations.
      * @throws PropelException
      * @see save()
@@ -696,7 +671,7 @@ abstract class Attendance implements ActiveRecordInterface
     protected function doSave(ConnectionInterface $con)
     {
         $affectedRows = 0; // initialize var to track total num of affected rows
-        if ( ! $this->alreadyInSave) {
+        if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
             // We call the save method on the following object(s) if they
@@ -704,11 +679,11 @@ abstract class Attendance implements ActiveRecordInterface
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aStudents !== null) {
-                if ($this->aStudents->isModified() || $this->aStudents->isNew()) {
-                    $affectedRows += $this->aStudents->save($con);
+            if ($this->aStudent !== null) {
+                if ($this->aStudent->isModified() || $this->aStudent->isNew()) {
+                    $affectedRows += $this->aStudent->save($con);
                 }
-                $this->setStudents($this->aStudents);
+                $this->setStudent($this->aStudent);
             }
 
             if ($this->isNew() || $this->isModified()) {
@@ -740,25 +715,25 @@ abstract class Attendance implements ActiveRecordInterface
     protected function doInsert(ConnectionInterface $con)
     {
         $modifiedColumns = array();
-        $index           = 0;
+        $index = 0;
 
-        $this->modifiedColumns[ AttendanceTableMap::COL_ID ] = true;
+        $this->modifiedColumns[AttendanceTableMap::COL_ID] = true;
         if (null !== $this->id) {
             throw new PropelException('Cannot insert a value for auto-increment primary key (' . AttendanceTableMap::COL_ID . ')');
         }
 
-        // check the columns in natural order for more readable SQL queries
+         // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(AttendanceTableMap::COL_ID)) {
-            $modifiedColumns[ ':p' . $index++ ] = 'id';
+            $modifiedColumns[':p' . $index++]  = 'id';
         }
         if ($this->isColumnModified(AttendanceTableMap::COL_STUDENT_ID)) {
-            $modifiedColumns[ ':p' . $index++ ] = 'student_id';
+            $modifiedColumns[':p' . $index++]  = 'student_id';
         }
         if ($this->isColumnModified(AttendanceTableMap::COL_CHECK_IN)) {
-            $modifiedColumns[ ':p' . $index++ ] = 'check_in';
+            $modifiedColumns[':p' . $index++]  = 'check_in';
         }
         if ($this->isColumnModified(AttendanceTableMap::COL_CHECK_OUT)) {
-            $modifiedColumns[ ':p' . $index++ ] = 'check_out';
+            $modifiedColumns[':p' . $index++]  = 'check_out';
         }
 
         $sql = sprintf(
@@ -825,12 +800,11 @@ abstract class Attendance implements ActiveRecordInterface
      *                     one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                     TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                     Defaults to TableMap::TYPE_PHPNAME.
-     *
      * @return mixed Value of field.
      */
     public function getByName($name, $type = TableMap::TYPE_PHPNAME)
     {
-        $pos   = AttendanceTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = AttendanceTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -841,7 +815,6 @@ abstract class Attendance implements ActiveRecordInterface
      * Zero-based.
      *
      * @param      int $pos position in xml schema
-     *
      * @return mixed Value of field at $pos
      */
     public function getByPosition($pos)
@@ -871,7 +844,7 @@ abstract class Attendance implements ActiveRecordInterface
      * You can specify the key type of the array by passing one of the class
      * type constants.
      *
-     * @param     string $keyType (optional) One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
+     * @param     string  $keyType (optional) One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
      *                    TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                    Defaults to TableMap::TYPE_PHPNAME.
      * @param     boolean $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
@@ -880,45 +853,40 @@ abstract class Attendance implements ActiveRecordInterface
      *
      * @return array an associative array containing the field names (as keys) and field values
      */
-    public function toArray(
-        $keyType = TableMap::TYPE_PHPNAME,
-        $includeLazyLoadColumns = true,
-        $alreadyDumpedObjects = array(),
-        $includeForeignObjects = false
-    ) {
+    public function toArray($keyType = TableMap::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
+    {
 
-        if (isset($alreadyDumpedObjects[ 'Attendance' ][ $this->hashCode() ])) {
+        if (isset($alreadyDumpedObjects['Attendance'][$this->hashCode()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects[ 'Attendance' ][ $this->hashCode() ] = true;
-        $keys                                                      = AttendanceTableMap::getFieldNames($keyType);
-        $result                                                    = array(
-            $keys[ 0 ] => $this->getId(),
-            $keys[ 1 ] => $this->getStudentId(),
-            $keys[ 2 ] => $this->getCheckIn(),
-            $keys[ 3 ] => $this->getCheckOut(),
+        $alreadyDumpedObjects['Attendance'][$this->hashCode()] = true;
+        $keys = AttendanceTableMap::getFieldNames($keyType);
+        $result = array(
+            $keys[0] => $this->getId(),
+            $keys[1] => $this->getStudentId(),
+            $keys[2] => $this->getCheckIn(),
+            $keys[3] => $this->getCheckOut(),
         );
-        $virtualColumns                                            = $this->virtualColumns;
+        $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
-            $result[ $key ] = $virtualColumn;
+            $result[$key] = $virtualColumn;
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aStudents) {
+            if (null !== $this->aStudent) {
 
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
-                        $key = 'students';
+                        $key = 'student';
                         break;
                     case TableMap::TYPE_FIELDNAME:
                         $key = 'students';
                         break;
                     default:
-                        $key = 'Students';
+                        $key = 'Student';
                 }
 
-                $result[ $key ] = $this->aStudents->toArray($keyType, $includeLazyLoadColumns, $alreadyDumpedObjects,
-                    true);
+                $result[$key] = $this->aStudent->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
         }
 
@@ -929,13 +897,12 @@ abstract class Attendance implements ActiveRecordInterface
      * Sets a field from the object by name passed in as a string.
      *
      * @param  string $name
-     * @param  mixed $value field value
+     * @param  mixed  $value field value
      * @param  string $type The type of fieldname the $name is of:
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     *
-     * @return $this|\Attend\Database\attend\Attendance
+     * @return $this|\Attend\Database\Attendance
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
     {
@@ -950,8 +917,7 @@ abstract class Attendance implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     *
-     * @return $this|\Attend\Database\attend\Attendance
+     * @return $this|\Attend\Database\Attendance
      */
     public function setByPosition($pos, $value)
     {
@@ -986,30 +952,29 @@ abstract class Attendance implements ActiveRecordInterface
      * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      * The default key type is the column's TableMap::TYPE_PHPNAME.
      *
-     * @param      array $arr An array to populate the object from.
+     * @param      array  $arr     An array to populate the object from.
      * @param      string $keyType The type of keys the array uses.
-     *
      * @return void
      */
     public function fromArray($arr, $keyType = TableMap::TYPE_PHPNAME)
     {
         $keys = AttendanceTableMap::getFieldNames($keyType);
 
-        if (array_key_exists($keys[ 0 ], $arr)) {
-            $this->setId($arr[ $keys[ 0 ] ]);
+        if (array_key_exists($keys[0], $arr)) {
+            $this->setId($arr[$keys[0]]);
         }
-        if (array_key_exists($keys[ 1 ], $arr)) {
-            $this->setStudentId($arr[ $keys[ 1 ] ]);
+        if (array_key_exists($keys[1], $arr)) {
+            $this->setStudentId($arr[$keys[1]]);
         }
-        if (array_key_exists($keys[ 2 ], $arr)) {
-            $this->setCheckIn($arr[ $keys[ 2 ] ]);
+        if (array_key_exists($keys[2], $arr)) {
+            $this->setCheckIn($arr[$keys[2]]);
         }
-        if (array_key_exists($keys[ 3 ], $arr)) {
-            $this->setCheckOut($arr[ $keys[ 3 ] ]);
+        if (array_key_exists($keys[3], $arr)) {
+            $this->setCheckOut($arr[$keys[3]]);
         }
     }
 
-    /**
+     /**
      * Populate the current object from a string, using a given parser format
      * <code>
      * $book = new Book();
@@ -1026,11 +991,11 @@ abstract class Attendance implements ActiveRecordInterface
      * @param string $data The source data to import from
      * @param string $keyType The type of keys the array uses.
      *
-     * @return $this|\Attend\Database\attend\Attendance The current object, for fluid interface
+     * @return $this|\Attend\Database\Attendance The current object, for fluid interface
      */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
-        if ( ! $parser instanceof AbstractParser) {
+        if (!$parser instanceof AbstractParser) {
             $parser = AbstractParser::getParser($parser);
         }
 
@@ -1093,7 +1058,7 @@ abstract class Attendance implements ActiveRecordInterface
         $validPk = null !== $this->getId();
 
         $validPrimaryKeyFKs = 0;
-        $primaryKeyFKs      = [];
+        $primaryKeyFKs = [];
 
         if ($validPk) {
             return crc32(json_encode($this->getPrimaryKey(), JSON_UNESCAPED_UNICODE));
@@ -1117,7 +1082,6 @@ abstract class Attendance implements ActiveRecordInterface
      * Generic method to set the primary key (id column).
      *
      * @param       int $key Primary key.
-     *
      * @return void
      */
     public function setPrimaryKey($key)
@@ -1140,10 +1104,9 @@ abstract class Attendance implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param      object $copyObj An object of \Attend\Database\attend\Attendance (or compatible) type.
+     * @param      object $copyObj An object of \Attend\Database\Attendance (or compatible) type.
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
-     *
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
@@ -1153,7 +1116,7 @@ abstract class Attendance implements ActiveRecordInterface
         $copyObj->setCheckOut($this->getCheckOut());
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setId(null); // this is a auto-increment column, so set to default value
+            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1166,14 +1129,13 @@ abstract class Attendance implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     *
-     * @return \Attend\Database\attend\Attendance Clone of current object.
+     * @return \Attend\Database\Attendance Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
     {
         // we use get_class(), because this might be a subclass
-        $clazz   = get_class($this);
+        $clazz = get_class($this);
         $copyObj = new $clazz();
         $this->copyInto($copyObj, $deepCopy);
 
@@ -1181,25 +1143,24 @@ abstract class Attendance implements ActiveRecordInterface
     }
 
     /**
-     * Declares an association between this object and a ChildStudents object.
+     * Declares an association between this object and a ChildStudent object.
      *
-     * @param  ChildStudents $v
-     *
-     * @return $this|\Attend\Database\attend\Attendance The current object (for fluent API support)
+     * @param  ChildStudent $v
+     * @return $this|\Attend\Database\Attendance The current object (for fluent API support)
      * @throws PropelException
      */
-    public function setStudents(ChildStudents $v = null)
+    public function setStudent(ChildStudent $v = null)
     {
         if ($v === null) {
-            $this->setStudentId(null);
+            $this->setStudentId(NULL);
         } else {
             $this->setStudentId($v->getId());
         }
 
-        $this->aStudents = $v;
+        $this->aStudent = $v;
 
         // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the ChildStudents object, it will not be re-added.
+        // If this object has already been added to the ChildStudent object, it will not be re-added.
         if ($v !== null) {
             $v->addAttendance($this);
         }
@@ -1210,27 +1171,26 @@ abstract class Attendance implements ActiveRecordInterface
 
 
     /**
-     * Get the associated ChildStudents object
+     * Get the associated ChildStudent object
      *
      * @param  ConnectionInterface $con Optional Connection object.
-     *
-     * @return ChildStudents The associated ChildStudents object.
+     * @return ChildStudent The associated ChildStudent object.
      * @throws PropelException
      */
-    public function getStudents(ConnectionInterface $con = null)
+    public function getStudent(ConnectionInterface $con = null)
     {
-        if ($this->aStudents === null && ($this->student_id != 0)) {
-            $this->aStudents = ChildStudentsQuery::create()->findPk($this->student_id, $con);
+        if ($this->aStudent === null && ($this->student_id != 0)) {
+            $this->aStudent = ChildStudentQuery::create()->findPk($this->student_id, $con);
             /* The following can be used additionally to
                 guarantee the related object contains a reference
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aStudents->addAttendances($this);
+                $this->aStudent->addAttendances($this);
              */
         }
 
-        return $this->aStudents;
+        return $this->aStudent;
     }
 
     /**
@@ -1240,13 +1200,13 @@ abstract class Attendance implements ActiveRecordInterface
      */
     public function clear()
     {
-        if (null !== $this->aStudents) {
-            $this->aStudents->removeAttendance($this);
+        if (null !== $this->aStudent) {
+            $this->aStudent->removeAttendance($this);
         }
-        $this->id            = null;
-        $this->student_id    = null;
-        $this->check_in      = null;
-        $this->check_out     = null;
+        $this->id = null;
+        $this->student_id = null;
+        $this->check_in = null;
+        $this->check_out = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1267,7 +1227,7 @@ abstract class Attendance implements ActiveRecordInterface
         if ($deep) {
         } // if ($deep)
 
-        $this->aStudents = null;
+        $this->aStudent = null;
     }
 
     /**
@@ -1277,14 +1237,12 @@ abstract class Attendance implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string)$this->exportTo(AttendanceTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(AttendanceTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**
      * Code to be run before persisting the object
-     *
      * @param  ConnectionInterface $con
-     *
      * @return boolean
      */
     public function preSave(ConnectionInterface $con = null)
@@ -1292,13 +1250,11 @@ abstract class Attendance implements ActiveRecordInterface
         if (is_callable('parent::preSave')) {
             return parent::preSave($con);
         }
-
         return true;
     }
 
     /**
      * Code to be run after persisting the object
-     *
      * @param ConnectionInterface $con
      */
     public function postSave(ConnectionInterface $con = null)
@@ -1310,9 +1266,7 @@ abstract class Attendance implements ActiveRecordInterface
 
     /**
      * Code to be run before inserting to database
-     *
      * @param  ConnectionInterface $con
-     *
      * @return boolean
      */
     public function preInsert(ConnectionInterface $con = null)
@@ -1320,13 +1274,11 @@ abstract class Attendance implements ActiveRecordInterface
         if (is_callable('parent::preInsert')) {
             return parent::preInsert($con);
         }
-
         return true;
     }
 
     /**
      * Code to be run after inserting to database
-     *
      * @param ConnectionInterface $con
      */
     public function postInsert(ConnectionInterface $con = null)
@@ -1338,9 +1290,7 @@ abstract class Attendance implements ActiveRecordInterface
 
     /**
      * Code to be run before updating the object in database
-     *
      * @param  ConnectionInterface $con
-     *
      * @return boolean
      */
     public function preUpdate(ConnectionInterface $con = null)
@@ -1348,13 +1298,11 @@ abstract class Attendance implements ActiveRecordInterface
         if (is_callable('parent::preUpdate')) {
             return parent::preUpdate($con);
         }
-
         return true;
     }
 
     /**
      * Code to be run after updating the object in database
-     *
      * @param ConnectionInterface $con
      */
     public function postUpdate(ConnectionInterface $con = null)
@@ -1366,9 +1314,7 @@ abstract class Attendance implements ActiveRecordInterface
 
     /**
      * Code to be run before deleting the object in database
-     *
      * @param  ConnectionInterface $con
-     *
      * @return boolean
      */
     public function preDelete(ConnectionInterface $con = null)
@@ -1376,13 +1322,11 @@ abstract class Attendance implements ActiveRecordInterface
         if (is_callable('parent::preDelete')) {
             return parent::preDelete($con);
         }
-
         return true;
     }
 
     /**
      * Code to be run after deleting the object in database
-     *
      * @param ConnectionInterface $con
      */
     public function postDelete(ConnectionInterface $con = null)
@@ -1400,7 +1344,7 @@ abstract class Attendance implements ActiveRecordInterface
      * Allows to define default __call() behavior if you overwrite __call()
      *
      * @param string $name
-     * @param mixed $params
+     * @param mixed  $params
      *
      * @return array|string
      */
@@ -1425,8 +1369,8 @@ abstract class Attendance implements ActiveRecordInterface
         }
 
         if (0 === strpos($name, 'to')) {
-            $format                 = substr($name, 2);
-            $includeLazyLoadColumns = isset($params[ 0 ]) ? $params[ 0 ] : true;
+            $format = substr($name, 2);
+            $includeLazyLoadColumns = isset($params[0]) ? $params[0] : true;
 
             return $this->exportTo($format, $includeLazyLoadColumns);
         }

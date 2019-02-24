@@ -1,12 +1,12 @@
 <?php
 
-namespace Attend\Database\attend\Base;
+namespace Attend\Database\Base;
 
 use \Exception;
 use \PDO;
-use Attend\Database\attend\Attendance as ChildAttendance;
-use Attend\Database\attend\AttendanceQuery as ChildAttendanceQuery;
-use Attend\Database\attend\Map\AttendanceTableMap;
+use Attend\Database\Attendance as ChildAttendance;
+use Attend\Database\AttendanceQuery as ChildAttendanceQuery;
+use Attend\Database\Map\AttendanceTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -38,17 +38,17 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildAttendanceQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildAttendanceQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildAttendanceQuery leftJoinStudents($relationAlias = null) Adds a LEFT JOIN clause to the query using the Students relation
- * @method     ChildAttendanceQuery rightJoinStudents($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Students relation
- * @method     ChildAttendanceQuery innerJoinStudents($relationAlias = null) Adds a INNER JOIN clause to the query using the Students relation
+ * @method     ChildAttendanceQuery leftJoinStudent($relationAlias = null) Adds a LEFT JOIN clause to the query using the Student relation
+ * @method     ChildAttendanceQuery rightJoinStudent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Student relation
+ * @method     ChildAttendanceQuery innerJoinStudent($relationAlias = null) Adds a INNER JOIN clause to the query using the Student relation
  *
- * @method     ChildAttendanceQuery joinWithStudents($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Students relation
+ * @method     ChildAttendanceQuery joinWithStudent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Student relation
  *
- * @method     ChildAttendanceQuery leftJoinWithStudents() Adds a LEFT JOIN clause and with to the query using the Students relation
- * @method     ChildAttendanceQuery rightJoinWithStudents() Adds a RIGHT JOIN clause and with to the query using the Students relation
- * @method     ChildAttendanceQuery innerJoinWithStudents() Adds a INNER JOIN clause and with to the query using the Students relation
+ * @method     ChildAttendanceQuery leftJoinWithStudent() Adds a LEFT JOIN clause and with to the query using the Student relation
+ * @method     ChildAttendanceQuery rightJoinWithStudent() Adds a RIGHT JOIN clause and with to the query using the Student relation
+ * @method     ChildAttendanceQuery innerJoinWithStudent() Adds a INNER JOIN clause and with to the query using the Student relation
  *
- * @method     \Attend\Database\attend\StudentsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \Attend\Database\StudentQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
  * @method     ChildAttendance findOne(ConnectionInterface $con = null) Return the first ChildAttendance matching the query
  * @method     ChildAttendance findOneOrCreate(ConnectionInterface $con = null) Return the first ChildAttendance matching the query, or a new ChildAttendance object populated from the query conditions when no match is found
@@ -78,17 +78,14 @@ abstract class AttendanceQuery extends ModelCriteria
     protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
-     * Initializes internal state of \Attend\Database\attend\Base\AttendanceQuery object.
+     * Initializes internal state of \Attend\Database\Base\AttendanceQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct(
-        $dbName = 'attend',
-        $modelName = '\\Attend\\Database\\attend\\Attendance',
-        $modelAlias = null
-    ) {
+    public function __construct($dbName = 'attend', $modelName = '\\Attend\\Database\\Attendance', $modelAlias = null)
+    {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
@@ -221,7 +218,6 @@ abstract class AttendanceQuery extends ModelCriteria
      * <code>
      * $objs = $c->findPks(array(12, 56, 832), $con);
      * </code>
-     *
      * @param     array $keys Primary keys to use for the query
      * @param     ConnectionInterface $con an optional connection object
      *
@@ -318,7 +314,7 @@ abstract class AttendanceQuery extends ModelCriteria
      * $query->filterByStudentId(array('min' => 12)); // WHERE student_id > 12
      * </code>
      *
-     * @see       filterByStudents()
+     * @see       filterByStudent()
      *
      * @param     mixed $studentId The value to use as filter.
      *              Use scalar values for equality.
@@ -434,45 +430,45 @@ abstract class AttendanceQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query by a related \Attend\Database\attend\Students object
+     * Filter the query by a related \Attend\Database\Student object
      *
-     * @param \Attend\Database\attend\Students|ObjectCollection $students The related object(s) to use as filter
+     * @param \Attend\Database\Student|ObjectCollection $student The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
      * @return ChildAttendanceQuery The current query, for fluid interface
      */
-    public function filterByStudents($students, $comparison = null)
+    public function filterByStudent($student, $comparison = null)
     {
-        if ($students instanceof \Attend\Database\attend\Students) {
+        if ($student instanceof \Attend\Database\Student) {
             return $this
-                ->addUsingAlias(AttendanceTableMap::COL_STUDENT_ID, $students->getId(), $comparison);
-        } elseif ($students instanceof ObjectCollection) {
+                ->addUsingAlias(AttendanceTableMap::COL_STUDENT_ID, $student->getId(), $comparison);
+        } elseif ($student instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(AttendanceTableMap::COL_STUDENT_ID, $students->toKeyValue('PrimaryKey', 'Id'),
+                ->addUsingAlias(AttendanceTableMap::COL_STUDENT_ID, $student->toKeyValue('PrimaryKey', 'Id'),
                     $comparison);
         } else {
-            throw new PropelException('filterByStudents() only accepts arguments of type \Attend\Database\attend\Students or Collection');
+            throw new PropelException('filterByStudent() only accepts arguments of type \Attend\Database\Student or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Students relation
+     * Adds a JOIN clause to the query using the Student relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this|ChildAttendanceQuery The current query, for fluid interface
      */
-    public function joinStudents($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinStudent($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap    = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Students');
+        $relationMap = $tableMap->getRelation('Student');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -487,14 +483,14 @@ abstract class AttendanceQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Students');
+            $this->addJoinObject($join, 'Student');
         }
 
         return $this;
     }
 
     /**
-     * Use the Students relation Students object
+     * Use the Student relation Student object
      *
      * @see useQuery()
      *
@@ -502,13 +498,13 @@ abstract class AttendanceQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \Attend\Database\attend\StudentsQuery A secondary query class using the current class as primary query
+     * @return \Attend\Database\StudentQuery A secondary query class using the current class as primary query
      */
-    public function useStudentsQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useStudentQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinStudents($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Students', '\Attend\Database\attend\StudentsQuery');
+            ->joinStudent($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Student', '\Attend\Database\StudentQuery');
     }
 
     /**
@@ -531,7 +527,6 @@ abstract class AttendanceQuery extends ModelCriteria
      * Deletes all rows from the attendance table.
      *
      * @param ConnectionInterface $con the connection to use
-     *
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public function doDeleteAll(ConnectionInterface $con = null)
@@ -559,7 +554,6 @@ abstract class AttendanceQuery extends ModelCriteria
      * Performs a DELETE on the database based on the current ModelCriteria
      *
      * @param ConnectionInterface $con the connection to use
-     *
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
      *                         if supported by native driver or if emulated using Propel.
      * @throws PropelException Any exceptions caught during processing will be

@@ -1,11 +1,11 @@
 <?php
 
-namespace Attend\Database\attend;
+namespace Attend\Database;
 
-use Attend\Database\attend\Base\Classrooms as BaseClassrooms;
+use Attend\Database\Base\Schedule as BaseSchedule;
 
 /**
- * Skeleton subclass for representing a row from the 'classrooms' table.
+ * Skeleton subclass for representing a row from the 'schedules' table.
  *
  *
  *
@@ -14,7 +14,7 @@ use Attend\Database\attend\Base\Classrooms as BaseClassrooms;
  * long as it does not already exist in the output directory.
  *
  */
-class Classrooms extends BaseClassrooms
+class Schedule extends BaseSchedule
 {
 
 }

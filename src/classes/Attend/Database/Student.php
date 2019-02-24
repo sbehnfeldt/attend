@@ -1,8 +1,8 @@
 <?php
 
-namespace Attend\Database\attend;
+namespace Attend\Database;
 
-use Attend\Database\attend\Base\Students as BaseStudents;
+use Attend\Database\Base\Student as BaseStudent;
 
 /**
  * Skeleton subclass for representing a row from the 'students' table.
@@ -14,7 +14,7 @@ use Attend\Database\attend\Base\Students as BaseStudents;
  * long as it does not already exist in the output directory.
  *
  */
-class Students extends BaseStudents
+class Student extends BaseStudent
 {
 
 }

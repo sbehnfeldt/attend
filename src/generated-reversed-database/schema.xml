@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <database name="attend" defaultIdMethod="native" namespace="Attend\Database" defaultPhpNamingMethod="underscore">
-    <table name="attendance" idMethod="native" phpName="Attendance" namespace="attend">
+    <table name="attendance" idMethod="native" phpName="Attendance" namespace="">
         <column name="id" phpName="Id" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true"
                 autoIncrement="true" required="true"/>
         <column name="student_id" phpName="StudentId" type="INTEGER" size="10" sqlType="int(10) unsigned"
@@ -20,7 +20,7 @@
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
     </table>
-    <table name="classrooms" idMethod="native" phpName="Classrooms" namespace="attend">
+    <table name="classrooms" idMethod="native" phpName="Classroom" namespace="">
         <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="label" phpName="Label" type="VARCHAR" size="45" required="true"/>
         <column name="ordering" phpName="Ordering" type="INTEGER"/>
@@ -36,7 +36,7 @@
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
     </table>
-    <table name="schedules" idMethod="native" phpName="Schedules" namespace="attend">
+    <table name="schedules" idMethod="native" phpName="Schedule" namespace="">
         <column name="id" phpName="Id" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true"
                 autoIncrement="true" required="true"/>
         <column name="student_id" phpName="StudentId" type="INTEGER" size="10" sqlType="int(10) unsigned"
@@ -61,7 +61,7 @@
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
     </table>
-    <table name="students" idMethod="native" phpName="Students" namespace="attend">
+    <table name="students" idMethod="native" phpName="Student" namespace="">
         <column name="id" phpName="Id" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true"
                 autoIncrement="true" required="true"/>
         <column name="family_name" phpName="FamilyName" type="VARCHAR" size="45" required="true"/>

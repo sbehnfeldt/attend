@@ -1,12 +1,12 @@
 <?php
 
-namespace Attend\Database\attend\Base;
+namespace Attend\Database\Base;
 
 use \Exception;
 use \PDO;
-use Attend\Database\attend\Schedules as ChildSchedules;
-use Attend\Database\attend\SchedulesQuery as ChildSchedulesQuery;
-use Attend\Database\attend\Map\SchedulesTableMap;
+use Attend\Database\Schedule as ChildSchedule;
+use Attend\Database\ScheduleQuery as ChildScheduleQuery;
+use Attend\Database\Map\ScheduleTableMap;
 use Propel\Runtime\Propel;
 use Propel\Runtime\ActiveQuery\Criteria;
 use Propel\Runtime\ActiveQuery\ModelCriteria;
@@ -20,97 +20,94 @@ use Propel\Runtime\Exception\PropelException;
  *
  *
  *
- * @method     ChildSchedulesQuery orderById($order = Criteria::ASC) Order by the id column
- * @method     ChildSchedulesQuery orderByStudentId($order = Criteria::ASC) Order by the student_id column
- * @method     ChildSchedulesQuery orderBySchedule($order = Criteria::ASC) Order by the schedule column
- * @method     ChildSchedulesQuery orderByStartDate($order = Criteria::ASC) Order by the start_date column
- * @method     ChildSchedulesQuery orderByEnteredAt($order = Criteria::ASC) Order by the entered_at column
+ * @method     ChildScheduleQuery orderById($order = Criteria::ASC) Order by the id column
+ * @method     ChildScheduleQuery orderByStudentId($order = Criteria::ASC) Order by the student_id column
+ * @method     ChildScheduleQuery orderBySchedule($order = Criteria::ASC) Order by the schedule column
+ * @method     ChildScheduleQuery orderByStartDate($order = Criteria::ASC) Order by the start_date column
+ * @method     ChildScheduleQuery orderByEnteredAt($order = Criteria::ASC) Order by the entered_at column
  *
- * @method     ChildSchedulesQuery groupById() Group by the id column
- * @method     ChildSchedulesQuery groupByStudentId() Group by the student_id column
- * @method     ChildSchedulesQuery groupBySchedule() Group by the schedule column
- * @method     ChildSchedulesQuery groupByStartDate() Group by the start_date column
- * @method     ChildSchedulesQuery groupByEnteredAt() Group by the entered_at column
+ * @method     ChildScheduleQuery groupById() Group by the id column
+ * @method     ChildScheduleQuery groupByStudentId() Group by the student_id column
+ * @method     ChildScheduleQuery groupBySchedule() Group by the schedule column
+ * @method     ChildScheduleQuery groupByStartDate() Group by the start_date column
+ * @method     ChildScheduleQuery groupByEnteredAt() Group by the entered_at column
  *
- * @method     ChildSchedulesQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
- * @method     ChildSchedulesQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
- * @method     ChildSchedulesQuery innerJoin($relation) Adds a INNER JOIN clause to the query
+ * @method     ChildScheduleQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
+ * @method     ChildScheduleQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
+ * @method     ChildScheduleQuery innerJoin($relation) Adds a INNER JOIN clause to the query
  *
- * @method     ChildSchedulesQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
- * @method     ChildSchedulesQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
- * @method     ChildSchedulesQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
+ * @method     ChildScheduleQuery leftJoinWith($relation) Adds a LEFT JOIN clause and with to the query
+ * @method     ChildScheduleQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
+ * @method     ChildScheduleQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildSchedulesQuery leftJoinStudents($relationAlias = null) Adds a LEFT JOIN clause to the query using the Students relation
- * @method     ChildSchedulesQuery rightJoinStudents($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Students relation
- * @method     ChildSchedulesQuery innerJoinStudents($relationAlias = null) Adds a INNER JOIN clause to the query using the Students relation
+ * @method     ChildScheduleQuery leftJoinStudent($relationAlias = null) Adds a LEFT JOIN clause to the query using the Student relation
+ * @method     ChildScheduleQuery rightJoinStudent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Student relation
+ * @method     ChildScheduleQuery innerJoinStudent($relationAlias = null) Adds a INNER JOIN clause to the query using the Student relation
  *
- * @method     ChildSchedulesQuery joinWithStudents($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Students relation
+ * @method     ChildScheduleQuery joinWithStudent($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Student relation
  *
- * @method     ChildSchedulesQuery leftJoinWithStudents() Adds a LEFT JOIN clause and with to the query using the Students relation
- * @method     ChildSchedulesQuery rightJoinWithStudents() Adds a RIGHT JOIN clause and with to the query using the Students relation
- * @method     ChildSchedulesQuery innerJoinWithStudents() Adds a INNER JOIN clause and with to the query using the Students relation
+ * @method     ChildScheduleQuery leftJoinWithStudent() Adds a LEFT JOIN clause and with to the query using the Student relation
+ * @method     ChildScheduleQuery rightJoinWithStudent() Adds a RIGHT JOIN clause and with to the query using the Student relation
+ * @method     ChildScheduleQuery innerJoinWithStudent() Adds a INNER JOIN clause and with to the query using the Student relation
  *
- * @method     \Attend\Database\attend\StudentsQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
+ * @method     \Attend\Database\StudentQuery endUse() Finalizes a secondary criteria and merges it with its primary Criteria
  *
- * @method     ChildSchedules findOne(ConnectionInterface $con = null) Return the first ChildSchedules matching the query
- * @method     ChildSchedules findOneOrCreate(ConnectionInterface $con = null) Return the first ChildSchedules matching the query, or a new ChildSchedules object populated from the query conditions when no match is found
+ * @method     ChildSchedule findOne(ConnectionInterface $con = null) Return the first ChildSchedule matching the query
+ * @method     ChildSchedule findOneOrCreate(ConnectionInterface $con = null) Return the first ChildSchedule matching the query, or a new ChildSchedule object populated from the query conditions when no match is found
  *
- * @method     ChildSchedules findOneById(int $id) Return the first ChildSchedules filtered by the id column
- * @method     ChildSchedules findOneByStudentId(int $student_id) Return the first ChildSchedules filtered by the student_id column
- * @method     ChildSchedules findOneBySchedule(int $schedule) Return the first ChildSchedules filtered by the schedule column
- * @method     ChildSchedules findOneByStartDate(string $start_date) Return the first ChildSchedules filtered by the start_date column
- * @method     ChildSchedules findOneByEnteredAt(int $entered_at) Return the first ChildSchedules filtered by the entered_at column *
- * @method     ChildSchedules requirePk($key, ConnectionInterface $con = null) Return the ChildSchedules by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildSchedules requireOne(ConnectionInterface $con = null) Return the first ChildSchedules matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildSchedule findOneById(int $id) Return the first ChildSchedule filtered by the id column
+ * @method     ChildSchedule findOneByStudentId(int $student_id) Return the first ChildSchedule filtered by the student_id column
+ * @method     ChildSchedule findOneBySchedule(int $schedule) Return the first ChildSchedule filtered by the schedule column
+ * @method     ChildSchedule findOneByStartDate(string $start_date) Return the first ChildSchedule filtered by the start_date column
+ * @method     ChildSchedule findOneByEnteredAt(int $entered_at) Return the first ChildSchedule filtered by the entered_at column *
+ * @method     ChildSchedule requirePk($key, ConnectionInterface $con = null) Return the ChildSchedule by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildSchedule requireOne(ConnectionInterface $con = null) Return the first ChildSchedule matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildSchedules requireOneById(int $id) Return the first ChildSchedules filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildSchedules requireOneByStudentId(int $student_id) Return the first ChildSchedules filtered by the student_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildSchedules requireOneBySchedule(int $schedule) Return the first ChildSchedules filtered by the schedule column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildSchedules requireOneByStartDate(string $start_date) Return the first ChildSchedules filtered by the start_date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildSchedules requireOneByEnteredAt(int $entered_at) Return the first ChildSchedules filtered by the entered_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildSchedule requireOneById(int $id) Return the first ChildSchedule filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildSchedule requireOneByStudentId(int $student_id) Return the first ChildSchedule filtered by the student_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildSchedule requireOneBySchedule(int $schedule) Return the first ChildSchedule filtered by the schedule column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildSchedule requireOneByStartDate(string $start_date) Return the first ChildSchedule filtered by the start_date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildSchedule requireOneByEnteredAt(int $entered_at) Return the first ChildSchedule filtered by the entered_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
- * @method     ChildSchedules[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildSchedules objects based on current ModelCriteria
- * @method     ChildSchedules[]|ObjectCollection findById(int $id) Return ChildSchedules objects filtered by the id column
- * @method     ChildSchedules[]|ObjectCollection findByStudentId(int $student_id) Return ChildSchedules objects filtered by the student_id column
- * @method     ChildSchedules[]|ObjectCollection findBySchedule(int $schedule) Return ChildSchedules objects filtered by the schedule column
- * @method     ChildSchedules[]|ObjectCollection findByStartDate(string $start_date) Return ChildSchedules objects filtered by the start_date column
- * @method     ChildSchedules[]|ObjectCollection findByEnteredAt(int $entered_at) Return ChildSchedules objects filtered by the entered_at column
- * @method     ChildSchedules[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
+ * @method     ChildSchedule[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildSchedule objects based on current ModelCriteria
+ * @method     ChildSchedule[]|ObjectCollection findById(int $id) Return ChildSchedule objects filtered by the id column
+ * @method     ChildSchedule[]|ObjectCollection findByStudentId(int $student_id) Return ChildSchedule objects filtered by the student_id column
+ * @method     ChildSchedule[]|ObjectCollection findBySchedule(int $schedule) Return ChildSchedule objects filtered by the schedule column
+ * @method     ChildSchedule[]|ObjectCollection findByStartDate(string $start_date) Return ChildSchedule objects filtered by the start_date column
+ * @method     ChildSchedule[]|ObjectCollection findByEnteredAt(int $entered_at) Return ChildSchedule objects filtered by the entered_at column
+ * @method     ChildSchedule[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
-abstract class SchedulesQuery extends ModelCriteria
+abstract class ScheduleQuery extends ModelCriteria
 {
     protected $entityNotFoundExceptionClass = '\\Propel\\Runtime\\Exception\\EntityNotFoundException';
 
     /**
-     * Initializes internal state of \Attend\Database\attend\Base\SchedulesQuery object.
+     * Initializes internal state of \Attend\Database\Base\ScheduleQuery object.
      *
      * @param     string $dbName The database name
      * @param     string $modelName The phpName of a model, e.g. 'Book'
      * @param     string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct(
-        $dbName = 'attend',
-        $modelName = '\\Attend\\Database\\attend\\Schedules',
-        $modelAlias = null
-    ) {
+    public function __construct($dbName = 'attend', $modelName = '\\Attend\\Database\\Schedule', $modelAlias = null)
+    {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
-     * Returns a new ChildSchedulesQuery object.
+     * Returns a new ChildScheduleQuery object.
      *
      * @param     string $modelAlias The alias of a model in the query
      * @param     Criteria $criteria Optional Criteria to build the query from
      *
-     * @return ChildSchedulesQuery
+     * @return ChildScheduleQuery
      */
     public static function create($modelAlias = null, Criteria $criteria = null)
     {
-        if ($criteria instanceof ChildSchedulesQuery) {
+        if ($criteria instanceof ChildScheduleQuery) {
             return $criteria;
         }
-        $query = new ChildSchedulesQuery();
+        $query = new ChildScheduleQuery();
         if (null !== $modelAlias) {
             $query->setModelAlias($modelAlias);
         }
@@ -133,7 +130,7 @@ abstract class SchedulesQuery extends ModelCriteria
      * @param mixed $key Primary key to use for the query
      * @param ConnectionInterface $con an optional connection object
      *
-     * @return ChildSchedules|array|mixed the result, formatted by the current formatter
+     * @return ChildSchedule|array|mixed the result, formatted by the current formatter
      */
     public function findPk($key, ConnectionInterface $con = null)
     {
@@ -142,7 +139,7 @@ abstract class SchedulesQuery extends ModelCriteria
         }
 
         if ($con === null) {
-            $con = Propel::getServiceContainer()->getReadConnection(SchedulesTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getReadConnection(ScheduleTableMap::DATABASE_NAME);
         }
 
         $this->basePreSelect($con);
@@ -155,7 +152,7 @@ abstract class SchedulesQuery extends ModelCriteria
             return $this->findPkComplex($key, $con);
         }
 
-        if ((null !== ($obj = SchedulesTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([
+        if ((null !== ($obj = ScheduleTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([
                 $key,
                 '__toString'
             ]) ? (string)$key : $key)))
@@ -176,7 +173,7 @@ abstract class SchedulesQuery extends ModelCriteria
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildSchedules A model object, or null if the key is not found
+     * @return ChildSchedule A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
@@ -191,10 +188,10 @@ abstract class SchedulesQuery extends ModelCriteria
         }
         $obj = null;
         if ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-            /** @var ChildSchedules $obj */
-            $obj = new ChildSchedules();
+            /** @var ChildSchedule $obj */
+            $obj = new ChildSchedule();
             $obj->hydrate($row);
-            SchedulesTableMap::addInstanceToPool($obj,
+            ScheduleTableMap::addInstanceToPool($obj,
                 null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string)$key : $key);
         }
         $stmt->closeCursor();
@@ -208,7 +205,7 @@ abstract class SchedulesQuery extends ModelCriteria
      * @param     mixed $key Primary key to use for the query
      * @param     ConnectionInterface $con A connection object
      *
-     * @return ChildSchedules|array|mixed the result, formatted by the current formatter
+     * @return ChildSchedule|array|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, ConnectionInterface $con)
     {
@@ -226,7 +223,6 @@ abstract class SchedulesQuery extends ModelCriteria
      * <code>
      * $objs = $c->findPks(array(12, 56, 832), $con);
      * </code>
-     *
      * @param     array $keys Primary keys to use for the query
      * @param     ConnectionInterface $con an optional connection object
      *
@@ -251,12 +247,12 @@ abstract class SchedulesQuery extends ModelCriteria
      *
      * @param     mixed $key Primary key to use for the query
      *
-     * @return $this|ChildSchedulesQuery The current query, for fluid interface
+     * @return $this|ChildScheduleQuery The current query, for fluid interface
      */
     public function filterByPrimaryKey($key)
     {
 
-        return $this->addUsingAlias(SchedulesTableMap::COL_ID, $key, Criteria::EQUAL);
+        return $this->addUsingAlias(ScheduleTableMap::COL_ID, $key, Criteria::EQUAL);
     }
 
     /**
@@ -264,12 +260,12 @@ abstract class SchedulesQuery extends ModelCriteria
      *
      * @param     array $keys The list of primary key to use for the query
      *
-     * @return $this|ChildSchedulesQuery The current query, for fluid interface
+     * @return $this|ChildScheduleQuery The current query, for fluid interface
      */
     public function filterByPrimaryKeys($keys)
     {
 
-        return $this->addUsingAlias(SchedulesTableMap::COL_ID, $keys, Criteria::IN);
+        return $this->addUsingAlias(ScheduleTableMap::COL_ID, $keys, Criteria::IN);
     }
 
     /**
@@ -288,18 +284,18 @@ abstract class SchedulesQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildSchedulesQuery The current query, for fluid interface
+     * @return $this|ChildScheduleQuery The current query, for fluid interface
      */
     public function filterById($id = null, $comparison = null)
     {
         if (is_array($id)) {
             $useMinMax = false;
             if (isset($id[ 'min' ])) {
-                $this->addUsingAlias(SchedulesTableMap::COL_ID, $id[ 'min' ], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ScheduleTableMap::COL_ID, $id[ 'min' ], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($id[ 'max' ])) {
-                $this->addUsingAlias(SchedulesTableMap::COL_ID, $id[ 'max' ], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ScheduleTableMap::COL_ID, $id[ 'max' ], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -310,7 +306,7 @@ abstract class SchedulesQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(SchedulesTableMap::COL_ID, $id, $comparison);
+        return $this->addUsingAlias(ScheduleTableMap::COL_ID, $id, $comparison);
     }
 
     /**
@@ -323,7 +319,7 @@ abstract class SchedulesQuery extends ModelCriteria
      * $query->filterByStudentId(array('min' => 12)); // WHERE student_id > 12
      * </code>
      *
-     * @see       filterByStudents()
+     * @see       filterByStudent()
      *
      * @param     mixed $studentId The value to use as filter.
      *              Use scalar values for equality.
@@ -331,18 +327,18 @@ abstract class SchedulesQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildSchedulesQuery The current query, for fluid interface
+     * @return $this|ChildScheduleQuery The current query, for fluid interface
      */
     public function filterByStudentId($studentId = null, $comparison = null)
     {
         if (is_array($studentId)) {
             $useMinMax = false;
             if (isset($studentId[ 'min' ])) {
-                $this->addUsingAlias(SchedulesTableMap::COL_STUDENT_ID, $studentId[ 'min' ], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ScheduleTableMap::COL_STUDENT_ID, $studentId[ 'min' ], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($studentId[ 'max' ])) {
-                $this->addUsingAlias(SchedulesTableMap::COL_STUDENT_ID, $studentId[ 'max' ], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ScheduleTableMap::COL_STUDENT_ID, $studentId[ 'max' ], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -353,7 +349,7 @@ abstract class SchedulesQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(SchedulesTableMap::COL_STUDENT_ID, $studentId, $comparison);
+        return $this->addUsingAlias(ScheduleTableMap::COL_STUDENT_ID, $studentId, $comparison);
     }
 
     /**
@@ -372,18 +368,18 @@ abstract class SchedulesQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildSchedulesQuery The current query, for fluid interface
+     * @return $this|ChildScheduleQuery The current query, for fluid interface
      */
     public function filterBySchedule($schedule = null, $comparison = null)
     {
         if (is_array($schedule)) {
             $useMinMax = false;
             if (isset($schedule[ 'min' ])) {
-                $this->addUsingAlias(SchedulesTableMap::COL_SCHEDULE, $schedule[ 'min' ], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ScheduleTableMap::COL_SCHEDULE, $schedule[ 'min' ], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($schedule[ 'max' ])) {
-                $this->addUsingAlias(SchedulesTableMap::COL_SCHEDULE, $schedule[ 'max' ], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ScheduleTableMap::COL_SCHEDULE, $schedule[ 'max' ], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -394,7 +390,7 @@ abstract class SchedulesQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(SchedulesTableMap::COL_SCHEDULE, $schedule, $comparison);
+        return $this->addUsingAlias(ScheduleTableMap::COL_SCHEDULE, $schedule, $comparison);
     }
 
     /**
@@ -415,18 +411,18 @@ abstract class SchedulesQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildSchedulesQuery The current query, for fluid interface
+     * @return $this|ChildScheduleQuery The current query, for fluid interface
      */
     public function filterByStartDate($startDate = null, $comparison = null)
     {
         if (is_array($startDate)) {
             $useMinMax = false;
             if (isset($startDate[ 'min' ])) {
-                $this->addUsingAlias(SchedulesTableMap::COL_START_DATE, $startDate[ 'min' ], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ScheduleTableMap::COL_START_DATE, $startDate[ 'min' ], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($startDate[ 'max' ])) {
-                $this->addUsingAlias(SchedulesTableMap::COL_START_DATE, $startDate[ 'max' ], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ScheduleTableMap::COL_START_DATE, $startDate[ 'max' ], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -437,7 +433,7 @@ abstract class SchedulesQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(SchedulesTableMap::COL_START_DATE, $startDate, $comparison);
+        return $this->addUsingAlias(ScheduleTableMap::COL_START_DATE, $startDate, $comparison);
     }
 
     /**
@@ -456,18 +452,18 @@ abstract class SchedulesQuery extends ModelCriteria
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
      * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this|ChildSchedulesQuery The current query, for fluid interface
+     * @return $this|ChildScheduleQuery The current query, for fluid interface
      */
     public function filterByEnteredAt($enteredAt = null, $comparison = null)
     {
         if (is_array($enteredAt)) {
             $useMinMax = false;
             if (isset($enteredAt[ 'min' ])) {
-                $this->addUsingAlias(SchedulesTableMap::COL_ENTERED_AT, $enteredAt[ 'min' ], Criteria::GREATER_EQUAL);
+                $this->addUsingAlias(ScheduleTableMap::COL_ENTERED_AT, $enteredAt[ 'min' ], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($enteredAt[ 'max' ])) {
-                $this->addUsingAlias(SchedulesTableMap::COL_ENTERED_AT, $enteredAt[ 'max' ], Criteria::LESS_EQUAL);
+                $this->addUsingAlias(ScheduleTableMap::COL_ENTERED_AT, $enteredAt[ 'max' ], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -478,49 +474,49 @@ abstract class SchedulesQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(SchedulesTableMap::COL_ENTERED_AT, $enteredAt, $comparison);
+        return $this->addUsingAlias(ScheduleTableMap::COL_ENTERED_AT, $enteredAt, $comparison);
     }
 
     /**
-     * Filter the query by a related \Attend\Database\attend\Students object
+     * Filter the query by a related \Attend\Database\Student object
      *
-     * @param \Attend\Database\attend\Students|ObjectCollection $students The related object(s) to use as filter
+     * @param \Attend\Database\Student|ObjectCollection $student The related object(s) to use as filter
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
-     * @return ChildSchedulesQuery The current query, for fluid interface
+     * @return ChildScheduleQuery The current query, for fluid interface
      */
-    public function filterByStudents($students, $comparison = null)
+    public function filterByStudent($student, $comparison = null)
     {
-        if ($students instanceof \Attend\Database\attend\Students) {
+        if ($student instanceof \Attend\Database\Student) {
             return $this
-                ->addUsingAlias(SchedulesTableMap::COL_STUDENT_ID, $students->getId(), $comparison);
-        } elseif ($students instanceof ObjectCollection) {
+                ->addUsingAlias(ScheduleTableMap::COL_STUDENT_ID, $student->getId(), $comparison);
+        } elseif ($student instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             return $this
-                ->addUsingAlias(SchedulesTableMap::COL_STUDENT_ID, $students->toKeyValue('PrimaryKey', 'Id'),
+                ->addUsingAlias(ScheduleTableMap::COL_STUDENT_ID, $student->toKeyValue('PrimaryKey', 'Id'),
                     $comparison);
         } else {
-            throw new PropelException('filterByStudents() only accepts arguments of type \Attend\Database\attend\Students or Collection');
+            throw new PropelException('filterByStudent() only accepts arguments of type \Attend\Database\Student or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Students relation
+     * Adds a JOIN clause to the query using the Student relation
      *
      * @param     string $relationAlias optional alias for the relation
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return $this|ChildSchedulesQuery The current query, for fluid interface
+     * @return $this|ChildScheduleQuery The current query, for fluid interface
      */
-    public function joinStudents($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinStudent($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         $tableMap    = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Students');
+        $relationMap = $tableMap->getRelation('Student');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -535,14 +531,14 @@ abstract class SchedulesQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Students');
+            $this->addJoinObject($join, 'Student');
         }
 
         return $this;
     }
 
     /**
-     * Use the Students relation Students object
+     * Use the Student relation Student object
      *
      * @see useQuery()
      *
@@ -550,26 +546,26 @@ abstract class SchedulesQuery extends ModelCriteria
      *                                   to be used as main alias in the secondary query
      * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
-     * @return \Attend\Database\attend\StudentsQuery A secondary query class using the current class as primary query
+     * @return \Attend\Database\StudentQuery A secondary query class using the current class as primary query
      */
-    public function useStudentsQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useStudentQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinStudents($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Students', '\Attend\Database\attend\StudentsQuery');
+            ->joinStudent($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Student', '\Attend\Database\StudentQuery');
     }
 
     /**
      * Exclude object from result
      *
-     * @param   ChildSchedules $schedules Object to remove from the list of results
+     * @param   ChildSchedule $schedule Object to remove from the list of results
      *
-     * @return $this|ChildSchedulesQuery The current query, for fluid interface
+     * @return $this|ChildScheduleQuery The current query, for fluid interface
      */
-    public function prune($schedules = null)
+    public function prune($schedule = null)
     {
-        if ($schedules) {
-            $this->addUsingAlias(SchedulesTableMap::COL_ID, $schedules->getId(), Criteria::NOT_EQUAL);
+        if ($schedule) {
+            $this->addUsingAlias(ScheduleTableMap::COL_ID, $schedule->getId(), Criteria::NOT_EQUAL);
         }
 
         return $this;
@@ -579,13 +575,12 @@ abstract class SchedulesQuery extends ModelCriteria
      * Deletes all rows from the schedules table.
      *
      * @param ConnectionInterface $con the connection to use
-     *
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public function doDeleteAll(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SchedulesTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ScheduleTableMap::DATABASE_NAME);
         }
 
         // use transaction because $criteria could contain info
@@ -596,8 +591,8 @@ abstract class SchedulesQuery extends ModelCriteria
             // Because this db requires some delete cascade/set null emulation, we have to
             // clear the cached instance *after* the emulation has happened (since
             // instances get re-added by the select statement contained therein).
-            SchedulesTableMap::clearInstancePool();
-            SchedulesTableMap::clearRelatedInstancePool();
+            ScheduleTableMap::clearInstancePool();
+            ScheduleTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
@@ -607,7 +602,6 @@ abstract class SchedulesQuery extends ModelCriteria
      * Performs a DELETE on the database based on the current ModelCriteria
      *
      * @param ConnectionInterface $con the connection to use
-     *
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
      *                         if supported by native driver or if emulated using Propel.
      * @throws PropelException Any exceptions caught during processing will be
@@ -616,26 +610,26 @@ abstract class SchedulesQuery extends ModelCriteria
     public function delete(ConnectionInterface $con = null)
     {
         if (null === $con) {
-            $con = Propel::getServiceContainer()->getWriteConnection(SchedulesTableMap::DATABASE_NAME);
+            $con = Propel::getServiceContainer()->getWriteConnection(ScheduleTableMap::DATABASE_NAME);
         }
 
         $criteria = $this;
 
         // Set the correct dbName
-        $criteria->setDbName(SchedulesTableMap::DATABASE_NAME);
+        $criteria->setDbName(ScheduleTableMap::DATABASE_NAME);
 
         // use transaction because $criteria could contain info
         // for more than one table or we could emulating ON DELETE CASCADE, etc.
         return $con->transaction(function () use ($con, $criteria) {
             $affectedRows = 0; // initialize var to track total num of affected rows
 
-            SchedulesTableMap::removeInstanceFromPool($criteria);
+            ScheduleTableMap::removeInstanceFromPool($criteria);
 
             $affectedRows += ModelCriteria::delete($con);
-            SchedulesTableMap::clearRelatedInstancePool();
+            ScheduleTableMap::clearRelatedInstancePool();
 
             return $affectedRows;
         });
     }
 
-} // SchedulesQuery
+} // ScheduleQuery
