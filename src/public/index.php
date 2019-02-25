@@ -55,8 +55,24 @@ $app->get('/api/classrooms', function (ServerRequestInterface $request, Response
     $classrooms = $query->find();
     $response   = $response->withHeader('Content-type', 'application/json');
     $response->getBody()->write($classrooms->toJSON());
+    return $response;
+});
 
-//    $response->getBody()->write( 'classrooms' );
+$app->get('/api/schedules', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
+    $query     = new \Attend\Database\ScheduleQuery();
+    $schedules = $query->find();
+    $response  = $response->withHeader('Content-type', 'application/json');
+    $response->getBody()->write($schedules->toJSON());
+
+    return $response;
+});
+
+$app->get('/api/students', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
+    $query    = new \Attend\Database\StudentQuery();
+    $students = $query->find();
+    $response = $response->withHeader('Content-type', 'application/json');
+    $response->getBody()->write($students->toJSON());
+
     return $response;
 });
 

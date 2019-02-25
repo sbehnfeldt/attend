@@ -43,38 +43,38 @@
         function load( schedules ) {
             for ( var i = 0; i < schedules.length; i++ ) {
                 var s = schedules[ i ];
-                if ( undefined === records[ s.student_id ] ) {
-                    records[ s.student_id ] = [];
+                if ( undefined === records[ s.StudentId ] ) {
+                    records[ s.StudentId ] = [];
                 }
-                records[ s.student_id ].push( s );
+                records[ s.StudentId ].push( s );
             }
 
             for ( var p in records ) {
                 records[ p ].sort( function ( a, b ) {
-                    if ( a.start_date < b.start_date ) return 1;
-                    if ( a.start_date > b.start_date ) return -1;
+                    if ( a.StartDate < b.StartDate ) return 1;
+                    if ( a.StartDate > b.StartDate ) return -1;
                     return 0;
                 } );
             }
         }
 
         function insert( s ) {
-            if ( undefined === records[ s.student_id ] ) {
+            if ( undefined === records[ s.StudentId ] ) {
                 records[ s.student_id ] = [];
             }
-            records[ s.student_id ].push( s );
-            records[ s.student_id ].sort( function ( a, b ) {
-                if ( a.start_date < b.start_date ) return 1;
-                if ( a.start_date > b.start_date ) return -1;
+            records[ s.StudentId ].push( s );
+            records[ s.StudentId ].sort( function ( a, b ) {
+                if ( a.StartDate < b.StartDate ) return 1;
+                if ( a.StartDate > b.StartDate ) return -1;
                 return 0;
             } );
         }
 
         function update( s ) {
-            for ( var i = 0; i < records[ s.student_id ].length; i++ ) {
-                if ( s.id === records[ s.student_id ][ i ].id ) {
+            for ( var i = 0; i < records[ s.StudentId ].length; i++ ) {
+                if ( s.id === records[ s.StudentId ][ i ].id ) {
                     for ( var p in s ) {
-                        records[ s.student_id ][ i ][ p ] = s[ p ];
+                        records[ s.StudentId ][ i ][ p ] = s[ p ];
                     }
                     break;
                 }
@@ -105,8 +105,8 @@
 
                     'success': function ( json ) {
                         console.log( json );
-                        for ( var i = 0; i < json.length; i++ ) {
-                            table.row.add( json[ i ] );
+                        for ( var i = 0; i < json.Students.length; i++ ) {
+                            table.row.add( json.Students[ i ] );
                         }
                         table.draw();
                         Attend.doneLoading();
@@ -119,15 +119,15 @@
             },
             "select" : true,
             "columns": [
-                { "data": "id" },
-                { "data": "family_name" },
-                { "data": "first_name" }, {
-                    "data"  : "enrolled",
+                { "data": "Id" },
+                { "data": "FamilyName" },
+                { "data": "FirstName" }, {
+                    "data"  : "Enrolled",
                     "render": function ( data ) {
                         return '<input type=checkbox ' + (1 == data ? 'checked ' : '') + ' disabled />';
                     }
                 }, {
-                    "data"  : "classroom_id",
+                    "data"  : "ClassroomId",
                     "render": function ( data ) {
                         if ( data ) {
                             if ( Classrooms.records[ data ] ) {
@@ -623,6 +623,7 @@
 
             'dataType': 'json',
             'success' : function ( json ) {
+                console.log( json );
                 Classrooms.load( json );
                 checkClassrooms();
                 Attend.doneLoading();
@@ -641,7 +642,7 @@
             'dataType': 'json',
             'success' : function ( json ) {
                 console.log( json );
-                Schedules.load( json );
+                Schedules.load( json.Schedules );
                 Attend.doneLoading();
             },
             'error'   : function ( xhr ) {

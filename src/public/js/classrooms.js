@@ -181,7 +181,6 @@
             }
         } );
 
-        console.log( $inputs.length );
         $required = $form.find( '.required' );
 
         dialog = $self.dialog( {
