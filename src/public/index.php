@@ -50,11 +50,23 @@ $app->get('/classrooms', function (ServerRequestInterface $request, ResponseInte
     return $response;
 });
 
+$app->get('/api/classrooms/{id}', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
+    $query    = new \Attend\Database\ClassroomQuery();
+    $results  = $query->findPk($args[ 'id' ]);
+    $response = $response->withStatus(200, 'OK');
+    $response = $response->withHeader('Content-Type', 'application/json');
+    $response->getBody()->write($results->toJSON());
+
+    return $response;
+});
+
 $app->get('/api/classrooms', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    $query      = new \Attend\Database\ClassroomQuery();
-    $classrooms = $query->find();
-    $response   = $response->withHeader('Content-type', 'application/json');
-    $response->getBody()->write($classrooms->toJSON());
+    $query    = new \Attend\Database\ClassroomQuery();
+    $results  = $query->find();
+    $response = $response->withStatus(200, 'OK');
+    $response = $response->withHeader('Content-type', 'application/json');
+    $response->getBody()->write($results->toJSON());
+
     return $response;
 });
 
