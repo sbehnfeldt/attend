@@ -102,6 +102,18 @@ $app->put('/api/classrooms/{id}', function (ServerRequestInterface $request, Res
     return $response;
 });
 
+$app->delete('/api/classrooms/{id}',
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
+        $query    = new \Attend\Database\ClassroomQuery();
+        $resource = $query->findPk($args[ 'id' ]);
+        $resource->delete();
+
+        $response = $response->withStatus(204, 'No Content');
+        $response = $response->withHeader('Content-Type', 'application/json');
+
+        return $response;
+    });
+
 
 $app->get('/api/schedules', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
     $query     = new \Attend\Database\ScheduleQuery();

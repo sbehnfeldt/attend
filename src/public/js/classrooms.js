@@ -70,7 +70,7 @@
                             var data = row.data();
                             Attend.loadAnother();
                             $.ajax( {
-                                "url"   : "api/classrooms/" + data.id,
+                                "url"   : "api/classrooms/" + data.Id,
                                 "method": "delete",
 
                                 "success": function ( json ) {
