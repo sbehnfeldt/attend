@@ -51,8 +51,8 @@ $app->get('/classrooms', function (ServerRequestInterface $request, ResponseInte
 });
 
 $app->get('/api/classrooms/{id}', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    $query    = new \Attend\Database\ClassroomQuery();
-    $results  = $query->findPk($args[ 'id' ]);
+    $query   = new \Attend\Database\ClassroomQuery();
+    $results = $query->findPk($args[ 'id' ]);
 
     $response = $response->withStatus(200, 'OK');
     $response = $response->withHeader('Content-Type', 'application/json');
@@ -78,12 +78,30 @@ $app->post('/api/classrooms', function (ServerRequestInterface $request, Respons
     $resource->setOrdering($body[ 'Ordering' ]);
     $resource->save();
 
-    $response = $response->withStatus(200, 'OK');
+    $response = $response->withStatus(201, 'Created');
     $response = $response->withHeader('Content-Type', 'application/json');
     $response->getBody()->write(json_encode($resource->getId()));
 
     return $response;
 });
+
+
+$app->put('/api/classrooms/{id}', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
+    $query    = new \Attend\Database\ClassroomQuery();
+    $resource = $query->findPk($args[ 'id' ]);
+
+    $body = $request->getParsedBody();
+    $resource->setLabel($body[ 'Label' ]);
+    $resource->setOrdering($body[ 'Ordering' ]);
+    $resource->save();
+
+    $response = $response->withStatus(200, 'OK');
+    $response = $response->withHeader('Content-Type', 'application/json');
+    $response->getBody()->write($resource->toJSON());
+
+    return $response;
+});
+
 
 $app->get('/api/schedules', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
     $query     = new \Attend\Database\ScheduleQuery();

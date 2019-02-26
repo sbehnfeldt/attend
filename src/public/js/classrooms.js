@@ -122,7 +122,7 @@
         function redrawRow( newData ) {
             table.rows().every( function ( /* rowIdx, tableLoop, rowLoop */ ) {
                 var data = this.data();
-                if ( data.id == newData.id ) {
+                if ( data.Id == newData.Id ) {
                     var oldData = this.data();
                     for ( var p in newData ) {
                         oldData[ p ] = newData[ p ];
@@ -218,9 +218,9 @@
         }
 
         function populate( classroom ) {
-            $classroomId.val( classroom.id );
-            $label.val( classroom.label ).data( 'db-val', classroom.label );
-            $order.val( classroom.ordering ).data( 'db-val', classroom.ordering );
+            $classroomId.val( classroom.Id );
+            $label.val( classroom.Label ).data( 'db-val', classroom.Label );
+            $order.val( classroom.Ordering ).data( 'db-val', classroom.Ordering );
         }
 
 
@@ -306,6 +306,7 @@
 
                 "dataType": "json",
                 "success" : function ( json ) {
+                    console.log( json );
                     ClassroomsTab.redrawRow( json );
                     Attend.doneLoading();
                 },
