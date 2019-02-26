@@ -166,14 +166,13 @@
 
         $self        = $( selector );
         $form        = $self.find( 'form' );
-        $classroomId = $form.find( '[name=id]' );
-        $label       = $form.find( '[name=label]' );
-        $order       = $form.find( '[name=ordering]' );
+        $classroomId = $form.find( '[name=Id]' );
+        $label       = $form.find( '[name=Label]' );
+        $order       = $form.find( '[name=Ordering]' );
 
 
         $inputs = $form.find( 'input' );
         $inputs.on( 'change', function () {
-            console.log( $( this ).val() + ', ' + $( this ).data( 'db-val' ) );
             if ( $( this ).val() !== $( this ).data( 'db-val' ) ) {
                 $( this ).addClass( 'modified' );
             } else {
@@ -246,8 +245,8 @@
                 ordering = null;
             }
             var data = {
-                "label"   : label,
-                "ordering": ordering
+                "Label"   : label,
+                "Ordering": ordering
             };
             if ( !id ) {
                 insert( data );
@@ -266,12 +265,13 @@
 
                 "dataType": "json",
                 "success" : function ( json ) {
-                    Attend.loadAnother();
+                    console.log( json );
                     $.ajax( {
                         'url'   : "api/classrooms/" + json,
                         "method": "get",
 
                         "success": function ( json ) {
+                            console.log( json );
                             if ( !data.ordering ) {
                                 // If ordering not specified, it defaults to current max + 1,
                                 // so table is fine; just add new row
@@ -291,6 +291,7 @@
                 },
                 "error"   : function ( xhr ) {
                     console.log( xhr );
+                    Attend.doneLoading();
                 }
             } );
 
