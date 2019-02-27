@@ -40,26 +40,26 @@
                 <form>
                     <p class="update-tips"></p>
                     <div>
-                        <input class="hidden" name="id">
+                        <input class="hidden" name="Id">
                     </div>
                     <div class="row">
                         <div class="col-xs-6">
                             <label>Family Name</label>
-                            <input type="text" name="family_name" class="required">
+                            <input type="text" name="FamilyName" class="required">
                         </div>
                         <div class="col-xs-6">
                             <label>First Name</label>
-                            <input type="text" name="first_name" class="required">
+                            <input type="text" name="FirstName" class="required">
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-xs-12">
                             <label for="">Classroom</label>
-                            <select name="classroomsList" id="classroom_id" class="required">
+                            <select name="ClassroomsList" id="ClassroomId" class="required">
                                 <option value="">Select a classroom</option>
                                 {% for classroom in classrooms %}
-                                    <option value="{{ classroom.id }}">{{ classroom.label }}</option>
+                                    <option value="{{ classroom.Id }}">{{ classroom.Label }}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -68,7 +68,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <label>Enrolled </label>
-                            <input class="pull-left" type="checkbox" name="enrolled" checked>
+                            <input class="pull-left" type="checkbox" name="Enrolled" checked>
                         </div>
                     </div>
 
@@ -83,7 +83,7 @@
 
                     <div class="row">
                         <div class="col-xs-6">
-                            Week Of: <input type="text" name="weekOf"/>
+                            Week Of: <input type="text" name="WeekOf"/>
                         </div>
                     </div>
 

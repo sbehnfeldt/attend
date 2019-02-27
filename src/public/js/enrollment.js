@@ -19,19 +19,28 @@
 
     // The classrooms records from the database
     var Classrooms = (function () {
-        var records = [];
+        var records   = {};
+        var callbacks = {
+            'classrooms-loaded': $.Callbacks()
+        };
 
         function load( classrooms ) {
             for ( var i = 0; i < classrooms.length; i++ ) {
                 var c          = classrooms[ i ];
-                var idx        = c.id;
+                var idx        = c.Id;
                 records[ idx ] = c;
             }
+            callbacks[ 'classrooms-loaded' ].fire( records );
+        }
+
+        function subscribe( event, fn ) {
+            callbacks[ event ].add( fn );
         }
 
         return {
-            'records': records,
-            'load'   : load
+            'records'  : records,
+            'load'     : load,
+            'subscribe': subscribe
         };
     })();
 
@@ -80,6 +89,7 @@
                 }
             }
         }
+
 
         return {
             'records': records,
@@ -131,7 +141,7 @@
                     "render": function ( data ) {
                         if ( data ) {
                             if ( Classrooms.records[ data ] ) {
-                                return Classrooms.records[ data ].label;
+                                return Classrooms.records[ data ].Label;
                             }
                             return data;
                         }
@@ -280,13 +290,13 @@
 
         $self       = $( selector );
         $form       = $self.find( 'form' );
-        $studentId  = $form.find( '[name=id]' );
-        $familyName = $self.find( '[name=family_name]' );
-        $firstName  = $self.find( '[name=first_name]' );
-        $classrooms = $self.find( '[name=classroomsList]' );
-        $enrolled   = $self.find( '[name=enrolled]' );
-        $startDate  = $self.find( '[name=weekOf]' );
-        $list       = $form.find( '[name=schedulesList]' );
+        $studentId  = $form.find( '[name=Id]' );
+        $familyName = $self.find( '[name=FamilyName]' );
+        $firstName  = $self.find( '[name=FirstName]' );
+        $classrooms = $self.find( '[name=ClassroomsList]' );
+        $enrolled   = $self.find( '[name=Enrolled]' );
+        $startDate  = $self.find( '[name=WeekOf]' );
+        $list       = $form.find( '[name=SchedulesList]' );
 
         $boxes    = $form.find( 'table.schedule-table input[type=checkbox]' );
         $buttons  = $form.find( 'table.schedule-table button' );
@@ -352,6 +362,12 @@
             } );
         } );
 
+        Classrooms.subscribe( 'classrooms-loaded', function ( classrooms ) {
+            for ( var p in classrooms ) {
+                var $option = $( '<option>' ).val( p ).text( classrooms[ p ].Label );
+                $classrooms.append( $option );
+            }
+        } );
 
         // $classrooms is required only if student is enrolled
         $enrolled.on( 'click', function () {
@@ -388,17 +404,17 @@
         function populate( student ) {
             var $opt;
 
-            $studentId.val( student.id );
-            $familyName.val( student.family_name );
-            $firstName.val( student.first_name );
-            $classrooms.val( student.classroom_id );
-            $enrolled.prop( 'checked', (1 == student.enrolled) );
+            $studentId.val( student.Id );
+            $familyName.val( student.FamilyName );
+            $firstName.val( student.FirstName );
+            $classrooms.val( student.ClassroomId );
+            $enrolled.prop( 'checked', (1 == student.Enrolled) );
             $startDate.datepicker( 'setDate', Attend.getMonday( new Date() ) );
 
             $list.removeClass( 'hidden' );
-            for ( var i = 0; i < Schedules.records[ student.id ].length; i++ ) {
-                var s = Schedules.records[ student.id ][ i ];
-                $opt  = $( '<option>' ).text( s.start_date ).val( s.id );
+            for ( var i = 0; i < Schedules.records[ student.Id ].length; i++ ) {
+                var s = Schedules.records[ student.Id ][ i ];
+                $opt  = $( '<option>' ).text( s.StartDate ).val( s.Id );
                 $list.append( $opt );
             }
             $list.trigger( 'change' );
@@ -424,10 +440,10 @@
 
             id      = $self.find( '[name=id]' ).val();
             student = {
-                "family_name" : $familyName.val(),
-                "first_name"  : $firstName.val(),
-                "enrolled"    : ('on' === $enrolled.val()) ? 1 : 0,
-                "classroom_id": JSON.stringify( {
+                "FamilyName" : $familyName.val(),
+                "FirstName"  : $firstName.val(),
+                "Enrolled"   : ('on' === $enrolled.val()) ? 1 : 0,
+                "ClassroomId": JSON.stringify( {
                     'data': ($classrooms.val() ? $classrooms.val() : null)
                 } )
             };
@@ -624,7 +640,7 @@
             'dataType': 'json',
             'success' : function ( json ) {
                 console.log( json );
-                Classrooms.load( json );
+                Classrooms.load( json.Classrooms );
                 checkClassrooms();
                 Attend.doneLoading();
             },
