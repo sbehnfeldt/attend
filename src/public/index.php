@@ -17,6 +17,10 @@ $dependencies = new Container([
 ]);
 $app          = new App(new $dependencies);
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Routing for Web App Pages
+////////////////////////////////////////////////////////////////////////////////////////////////////
 $app->get('/', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
     $loader = new Twig_Loader_Filesystem('../templates');
     $twig   = new Twig_Environment($loader, array(
@@ -50,9 +54,19 @@ $app->get('/classrooms', function (ServerRequestInterface $request, ResponseInte
     return $response;
 });
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Routing for API
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Classrooms
 $app->get('/api/classrooms/{id}', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
     $query   = new \Attend\Database\ClassroomQuery();
     $results = $query->findPk($args[ 'id' ]);
+    if (null === $results) {
+        $response = $response->withStatus(404, 'Not Found');
+
+        return $response;
+    }
 
     $response = $response->withStatus(200, 'OK');
     $response = $response->withHeader('Content-Type', 'application/json');
@@ -87,26 +101,36 @@ $app->post('/api/classrooms', function (ServerRequestInterface $request, Respons
 
 
 $app->put('/api/classrooms/{id}', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    $query    = new \Attend\Database\ClassroomQuery();
-    $resource = $query->findPk($args[ 'id' ]);
+    $query   = new \Attend\Database\ClassroomQuery();
+    $results = $query->findPk($args[ 'id' ]);
+    if (null === $results) {
+        $response = $response->withStatus(404, 'Not Found');
+
+        return $response;
+    }
 
     $body = $request->getParsedBody();
-    $resource->setLabel($body[ 'Label' ]);
-    $resource->setOrdering($body[ 'Ordering' ]);
-    $resource->save();
+    $results->setLabel($body[ 'Label' ]);
+    $results->setOrdering($body[ 'Ordering' ]);
+    $results->save();
 
     $response = $response->withStatus(200, 'OK');
     $response = $response->withHeader('Content-Type', 'application/json');
-    $response->getBody()->write($resource->toJSON());
+    $response->getBody()->write($results->toJSON());
 
     return $response;
 });
 
 $app->delete('/api/classrooms/{id}',
     function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-        $query    = new \Attend\Database\ClassroomQuery();
-        $resource = $query->findPk($args[ 'id' ]);
-        $resource->delete();
+        $query   = new \Attend\Database\ClassroomQuery();
+        $results = $query->findPk($args[ 'id' ]);
+        if (null === $results) {
+            $response = $response->withStatus(404, 'Not Found');
+
+            return $response;
+        }
+        $results->delete();
 
         $response = $response->withStatus(204, 'No Content');
         $response = $response->withHeader('Content-Type', 'application/json');
@@ -114,21 +138,40 @@ $app->delete('/api/classrooms/{id}',
         return $response;
     });
 
-
+// Schedules
 $app->get('/api/schedules', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    $query     = new \Attend\Database\ScheduleQuery();
-    $schedules = $query->find();
+    $query   = new \Attend\Database\ScheduleQuery();
+    $results = $query->find();
+
+    $response  = $response->withStatus(200, 'OK');
     $response  = $response->withHeader('Content-type', 'application/json');
-    $response->getBody()->write($schedules->toJSON());
+    $response->getBody()->write($results->toJSON());
+
+    return $response;
+});
+
+// Students
+$app->get('/api/students/{id}', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
+    $query   = new \Attend\Database\StudentQuery();
+    $results = $query->findPk($args[ 'id' ]);
+    if (null === $results) {
+        $response = $response->withStatus(404, 'Not Found');
+
+        return $response;
+    }
+
+    $response = $response->withStatus(200, 'OK');
+    $response = $response->withHeader('Content-type', 'application/json');
+    $response->getBody()->write($results->toJSON());
 
     return $response;
 });
 
 $app->get('/api/students', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
     $query    = new \Attend\Database\StudentQuery();
-    $students = $query->find();
+    $results  = $query->find();
     $response = $response->withHeader('Content-type', 'application/json');
-    $response->getBody()->write($students->toJSON());
+    $response->getBody()->write($results->toJSON());
 
     return $response;
 });
