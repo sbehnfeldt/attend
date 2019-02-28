@@ -352,7 +352,7 @@
         $list.on( 'change', function () {
             var id    = $studentId.val();
             var idx   = $( this )[ 0 ].selectedIndex;
-            var sched = Schedules.records[ id ][ idx ].schedule;
+            var sched = Schedules.records[ id ][ idx ].Schedule;
             $boxes.each( function ( idx, elem ) {
                 if ( $( elem ).val() & sched ) {
                     $( elem ).prop( 'checked', true );
