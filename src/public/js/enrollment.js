@@ -69,7 +69,7 @@
 
         function insert( s ) {
             if ( undefined === records[ s.StudentId ] ) {
-                records[ s.student_id ] = [];
+                records[ s.StudentId ] = [];
             }
             records[ s.StudentId ].push( s );
             records[ s.StudentId ].sort( function ( a, b ) {
@@ -458,8 +458,8 @@
             if ( !id ) {
                 // Insert new student and schedule
                 insert( student, {
-                    start_date: $startDate.val(),
-                    schedule  : map
+                    StartDate: $startDate.val(),
+                    Schedule : map
                 } );
 
             } else {
@@ -500,7 +500,7 @@
                             console.log( json );
                             EnrollmentTab.insert( json );
                             Attend.loadAnother();   // Get student record just loaded
-                            schedule.student_id = json.id;
+                            schedule.StudentId = json.Id;
                             $.ajax( {
                                 "url"   : "api/schedules",
                                 "method": "post",
