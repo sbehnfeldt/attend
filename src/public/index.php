@@ -181,6 +181,23 @@ $app->post('/api/students', function (ServerRequestInterface $request, ResponseI
     return $response;
 });
 
+$app->delete('/api/students/{id}',
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
+        $query   = new \Attend\Database\StudentQuery();
+        $results = $query->findPk($args[ 'id' ]);
+        if (null === $results) {
+            $response = $response->withStatus(404, 'Not Found');
+
+            return $response;
+        }
+        $results->delete();
+
+        $response = $response->withStatus(204, 'No Content');
+        $response = $response->withHeader('Content-Type', 'application/json');
+
+        return $response;
+    });
+
 
 // Schedules
 $app->get('/api/schedules/{id}', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
@@ -219,6 +236,25 @@ $app->post('/api/schedules', function (ServerRequestInterface $request, Response
 
     return $response;
 });
+
+$app->delete('/api/schedules/{id}',
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
+        $query   = new \Attend\Database\ScheduleQuery();
+        $results = $query->findPk($args[ 'id' ]);
+        if (null === $results) {
+            $response = $response->withStatus(404, 'Not Found');
+
+            return $response;
+        }
+        $results->delete();
+
+        $response = $response->withStatus(204, 'No Content');
+        $response = $response->withHeader('Content-Type', 'application/json');
+
+        return $response;
+    });
+
+
 
 
 $app->run();

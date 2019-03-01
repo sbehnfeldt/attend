@@ -173,30 +173,38 @@
                 "extend": "selected",
                 "text"  : "Delete",
                 "action": function ( e, dt ) {
-                    var selected = dt.rows( { selected: true } ).indexes();
+                    var selected = dt.rows( { selected: true } );
                     var msg      = (1 === selected.length) ? 'Are you sure you want to delete this student record?' : 'Are you sure you want to delete these ' + selected.length + ' student records?';
                     if ( confirm( msg ) ) {
+                        var length = selected[ 0 ].length;
+                        selected.every( function () {
+                            var row  = this;
+                            var data = row.data();
+                            console.log( data );
+                            Attend.loadAnother();
+                            $.ajax( {
+                                "url"   : "api/students/" + data.Id,
+                                "method": "delete",
 
-                        for ( var i = 0; i < selected.length; i++ ) {
-                            (function ( index ) {
-                                Attend.loadAnother();
-                                $.ajax( {
-                                    "url"   : "api/students/" + dt.rows( selected[ index ] ).data()[ 0 ][ 'id' ],
-                                    "method": "delete",
-
-                                    "success": function ( json ) {
-//                                        dt.rows( selected[ index ] ).remove();
-                                        remove( dt.rows( selected[ index ] ).data()[ 0 ][ 'id' ] );
-                                        dt.draw();
-                                        Attend.doneLoading();
-                                    },
-                                    "error"  : function () {
-                                        alert( "Error" );
-                                        Attend.doneLoading();
+                                "success": function ( json ) {
+                                    length--;
+                                    if ( !length ) {
+                                        selected.remove().draw( false );
                                     }
-                                } );
-                            })( i );
-                        }
+                                    Attend.doneLoading();
+                                },
+                                "error"  : function () {
+                                    console.log( xhr );
+                                    length--;
+                                    row.deselect();
+                                    selected = dt.rows( { selected: true } );
+                                    if ( !length ) {
+                                        selected.remove().draw( false );
+                                    }
+                                    Attend.doneLoading();
+                                }
+                            } );
+                        } );
                     }
                 }
             } ]
@@ -246,17 +254,8 @@
             console.log( studentId );
             table.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
                 var data = this.data();
-                if ( studentId == data.id ) {
-                    console.log( studentId );
-                    console.log( data.id );
-                    console.log( rowIdx );
-                    console.log( tableLoop );
-                    console.log( rowLoop );
-                    console.log( this );
-                    console.log( this.data() );
-                    console.log( $( this ) );
-                    console.log( $( this ).data() );
-//                    this.remove();
+                if ( studentId == data.Id ) {
+                    this.remove();
                 }
             } );
             table.draw();
