@@ -32,6 +32,17 @@ $app->get('/', function (ServerRequestInterface $request, ResponseInterface $res
     return $response;
 });
 
+$app->get('/attendance', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
+    $loader = new Twig_Loader_Filesystem('../templates');
+    $twig   = new Twig_Environment($loader, array(
+        'cache' => false
+    ));
+
+    $response->getBody()->write($twig->render('index.html.twig', []));
+
+    return $response;
+});
+
 $app->get('/enrollment', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
     $loader = new Twig_Loader_Filesystem('../templates');
     $twig   = new Twig_Environment($loader, array(
