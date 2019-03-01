@@ -43,7 +43,7 @@
                 required="true"/>
         <column name="schedule" phpName="Schedule" type="INTEGER" required="true" defaultValue="0"/>
         <column name="start_date" phpName="StartDate" type="DATE" required="true"/>
-        <column name="entered_at" phpName="EnteredAt" type="INTEGER" required="true"/>
+        <column name="entered_at" phpName="EnteredAt" type="INTEGER" required="true" defaultValue="0"/>
         <foreign-key foreignTable="students" name="fk_student" onDelete="CASCADE">
             <reference local="student_id" foreign="id"/>
         </foreign-key>

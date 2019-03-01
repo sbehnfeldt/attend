@@ -206,20 +206,12 @@ $app->get('/api/schedules', function (ServerRequestInterface $request, ResponseI
 });
 
 $app->post('/api/schedules', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    try {
-
-
-        $body     = $request->getParsedBody();
-        $resource = new \Attend\Database\Schedule();
-        $resource->setStartDate($body[ 'StartDate' ]);
-        $resource->setEnteredAt($body[ 'StartDate' ]);
-        $resource->setSchedule($body[ 'Schedule' ]);
-        $resource->setStudentId($body[ 'StudentId' ]);
-        $resource->save();
-    } catch (\Exception $e) {
-        error_log($e->getMessage());
-        throw $e;
-    }
+    $body     = $request->getParsedBody();
+    $resource = new \Attend\Database\Schedule();
+    $resource->setStartDate($body[ 'StartDate' ]);
+    $resource->setSchedule($body[ 'Schedule' ]);
+    $resource->setStudentId($body[ 'StudentId' ]);
+    $resource->save();
 
     $response = $response->withStatus(201, 'Created');
     $response = $response->withHeader('Content-Type', 'application/json');

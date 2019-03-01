@@ -95,6 +95,7 @@ abstract class Schedule implements ActiveRecordInterface
     /**
      * The value for the entered_at field.
      *
+     * Note: this column has a database default value of: 0
      * @var        int
      */
     protected $entered_at;
@@ -120,7 +121,8 @@ abstract class Schedule implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
-        $this->schedule = 0;
+        $this->schedule   = 0;
+        $this->entered_at = 0;
     }
 
     /**
@@ -147,7 +149,7 @@ abstract class Schedule implements ActiveRecordInterface
      *
      * @param  string $col column fully qualified name (TableMap::TYPE_COLNAME), e.g. Book::AUTHOR_ID
      *
-*@return boolean True if $col has been modified.
+     * @return boolean True if $col has been modified.
      */
     public function isColumnModified($col)
     {
@@ -228,7 +230,7 @@ abstract class Schedule implements ActiveRecordInterface
      *
      * @param  mixed $obj The object to compare to.
      *
-*@return boolean Whether equal to the object specified.
+     * @return boolean Whether equal to the object specified.
      */
     public function equals($obj)
     {
@@ -262,7 +264,7 @@ abstract class Schedule implements ActiveRecordInterface
      *
      * @param  string $name The virtual column name
      *
-*@return boolean
+     * @return boolean
      */
     public function hasVirtualColumn($name)
     {
@@ -307,7 +309,7 @@ abstract class Schedule implements ActiveRecordInterface
      * @param  string $msg
      * @param  int $priority One of the Propel::LOG_* logging levels
      *
-*@return boolean
+     * @return boolean
      */
     protected function log($msg, $priority = Propel::LOG_INFO)
     {
@@ -325,7 +327,7 @@ abstract class Schedule implements ActiveRecordInterface
      * @param  mixed $parser A AbstractParser instance, or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param  boolean $includeLazyLoadColumns (optional) Whether to include lazy load(ed) columns. Defaults to TRUE.
      *
-*@return string  The exported data
+     * @return string  The exported data
      */
     public function exportTo($parser, $includeLazyLoadColumns = true)
     {
@@ -420,7 +422,6 @@ abstract class Schedule implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param int $v new value
-     *
      * @return $this|\Attend\Database\Schedule The current object (for fluent API support)
      */
     public function setId($v)
@@ -441,7 +442,6 @@ abstract class Schedule implements ActiveRecordInterface
      * Set the value of [student_id] column.
      *
      * @param int $v new value
-     *
      * @return $this|\Attend\Database\Schedule The current object (for fluent API support)
      */
     public function setStudentId($v)
@@ -466,7 +466,6 @@ abstract class Schedule implements ActiveRecordInterface
      * Set the value of [schedule] column.
      *
      * @param int $v new value
-     *
      * @return $this|\Attend\Database\Schedule The current object (for fluent API support)
      */
     public function setSchedule($v)
@@ -488,7 +487,6 @@ abstract class Schedule implements ActiveRecordInterface
      *
      * @param  mixed $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
-     *
      * @return $this|\Attend\Database\Schedule The current object (for fluent API support)
      */
     public function setStartDate($v)
@@ -508,7 +506,6 @@ abstract class Schedule implements ActiveRecordInterface
      * Set the value of [entered_at] column.
      *
      * @param int $v new value
-     *
      * @return $this|\Attend\Database\Schedule The current object (for fluent API support)
      */
     public function setEnteredAt($v)
@@ -537,7 +534,11 @@ abstract class Schedule implements ActiveRecordInterface
     {
         if ($this->schedule !== 0) {
             return false;
-            }
+        }
+
+        if ($this->entered_at !== 0) {
+            return false;
+        }
 
         // otherwise, everything was equal, so return TRUE
         return true;
@@ -585,7 +586,7 @@ abstract class Schedule implements ActiveRecordInterface
             $this->start_date = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
             $col              = $row[ TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ScheduleTableMap::translateFieldName('EnteredAt',
-                TableMap::TYPE_PHPNAME, $indexType) ];
+                TableMap::TYPE_PHPNAME, $indexType)];
             $this->entered_at = (null !== $col) ? (int) $col : null;
             $this->resetModified();
 
@@ -669,7 +670,7 @@ abstract class Schedule implements ActiveRecordInterface
      *
      * @param      ConnectionInterface $con
      *
-*@return void
+     *@return void
      * @throws PropelException
      * @see Schedule::setDeleted()
      * @see Schedule::isDeleted()
@@ -815,19 +816,19 @@ abstract class Schedule implements ActiveRecordInterface
 
         // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(ScheduleTableMap::COL_ID)) {
-            $modifiedColumns[ ':p' . $index++ ] = 'id';
+            $modifiedColumns[ ':p' . $index++]  = 'id';
         }
         if ($this->isColumnModified(ScheduleTableMap::COL_STUDENT_ID)) {
-            $modifiedColumns[ ':p' . $index++]  = 'student_id';
+            $modifiedColumns[ ':p' . $index++ ] = 'student_id';
         }
         if ($this->isColumnModified(ScheduleTableMap::COL_SCHEDULE)) {
-            $modifiedColumns[ ':p' . $index++] = 'schedule';
+            $modifiedColumns[ ':p' . $index++ ] = 'schedule';
         }
         if ($this->isColumnModified(ScheduleTableMap::COL_START_DATE)) {
-            $modifiedColumns[ ':p' . $index++]  = 'start_date';
+            $modifiedColumns[ ':p' . $index++ ] = 'start_date';
         }
         if ($this->isColumnModified(ScheduleTableMap::COL_ENTERED_AT)) {
-            $modifiedColumns[ ':p' . $index++]  = 'entered_at';
+            $modifiedColumns[ ':p' . $index++ ] = 'entered_at';
         }
 
         $sql = sprintf(
@@ -960,7 +961,7 @@ abstract class Schedule implements ActiveRecordInterface
         $includeForeignObjects = false
     ) {
 
-        if (isset($alreadyDumpedObjects[ 'Schedule'][$this->hashCode()])) {
+        if (isset($alreadyDumpedObjects[ 'Schedule' ][ $this->hashCode()])) {
             return '*RECURSION*';
         }
         $alreadyDumpedObjects[ 'Schedule' ][ $this->hashCode() ] = true;
@@ -973,7 +974,7 @@ abstract class Schedule implements ActiveRecordInterface
             $keys[ 4 ] => $this->getEnteredAt(),
         );
         if ($result[ $keys[ 3 ] ] instanceof \DateTimeInterface) {
-            $result[ $keys[ 3 ] ] = $result[$keys[3]]->format('c');
+            $result[ $keys[ 3 ] ] = $result[ $keys[ 3 ] ]->format('c');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1011,7 +1012,6 @@ abstract class Schedule implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     *
      * @return $this|\Attend\Database\Schedule
      */
     public function setByName($name, $value, $type = TableMap::TYPE_PHPNAME)
@@ -1027,7 +1027,6 @@ abstract class Schedule implements ActiveRecordInterface
      *
      * @param  int $pos position in xml schema
      * @param  mixed $value field value
-     *
      * @return $this|\Attend\Database\Schedule
      */
     public function setByPosition($pos, $value)
@@ -1076,19 +1075,19 @@ abstract class Schedule implements ActiveRecordInterface
         $keys = ScheduleTableMap::getFieldNames($keyType);
 
         if (array_key_exists($keys[ 0 ], $arr)) {
-            $this->setId($arr[ $keys[ 0 ] ]);
+            $this->setId($arr[$keys[ 0 ] ]);
         }
         if (array_key_exists($keys[ 1 ], $arr)) {
-            $this->setStudentId($arr[ $keys[ 1 ] ]);
+            $this->setStudentId($arr[$keys[ 1 ] ]);
         }
         if (array_key_exists($keys[ 2 ], $arr)) {
-            $this->setSchedule($arr[ $keys[ 2 ] ]);
+            $this->setSchedule($arr[$keys[ 2 ] ]);
         }
         if (array_key_exists($keys[ 3 ], $arr)) {
-            $this->setStartDate($arr[ $keys[ 3 ] ]);
+            $this->setStartDate($arr[$keys[ 3 ] ]);
         }
         if (array_key_exists($keys[ 4 ], $arr)) {
-            $this->setEnteredAt($arr[ $keys[ 4]]);
+            $this->setEnteredAt($arr[$keys[4]]);
         }
     }
 
@@ -1229,7 +1228,7 @@ abstract class Schedule implements ActiveRecordInterface
      * @param      boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param      boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      *
-*@throws PropelException
+     * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
@@ -1252,7 +1251,6 @@ abstract class Schedule implements ActiveRecordInterface
      * objects.
      *
      * @param  boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     *
      * @return \Attend\Database\Schedule Clone of current object.
      * @throws PropelException
      */
@@ -1270,7 +1268,6 @@ abstract class Schedule implements ActiveRecordInterface
      * Declares an association between this object and a ChildStudent object.
      *
      * @param  ChildStudent $v
-     *
      * @return $this|\Attend\Database\Schedule The current object (for fluent API support)
      * @throws PropelException
      */
@@ -1299,7 +1296,6 @@ abstract class Schedule implements ActiveRecordInterface
      * Get the associated ChildStudent object
      *
      * @param  ConnectionInterface $con Optional Connection object.
-     *
      * @return ChildStudent The associated ChildStudent object.
      * @throws PropelException
      */
@@ -1332,7 +1328,7 @@ abstract class Schedule implements ActiveRecordInterface
         $this->id            = null;
         $this->student_id    = null;
         $this->schedule      = null;
-        $this->start_date    = null;
+        $this->start_date = null;
         $this->entered_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();

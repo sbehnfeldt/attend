@@ -317,7 +317,7 @@ class AttendanceTableMap extends TableMap
      * @param Criteria $criteria object containing the columns to add.
      * @param string $alias optional table alias
      *
-*@throws PropelException Any exceptions caught during processing will be
+     * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
     public static function addSelectColumns(Criteria $criteria, $alias = null)
@@ -365,7 +365,7 @@ class AttendanceTableMap extends TableMap
      *              which is used to create the DELETE statement
      * @param  ConnectionInterface $con the connection to use
      *
-*@return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
+     * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
      *                         if supported by native driver or if emulated using Propel.
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
@@ -417,7 +417,7 @@ class AttendanceTableMap extends TableMap
      * @param mixed $criteria Criteria or Attendance object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
      *
-*@return mixed           The new primary key.
+     * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */

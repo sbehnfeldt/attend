@@ -54,7 +54,7 @@ CREATE TABLE `schedules`
     `student_id` int(10) unsigned NOT NULL,
     `schedule` INTEGER DEFAULT 0 NOT NULL,
     `start_date` DATE NOT NULL,
-    `entered_at` INTEGER NOT NULL,
+    `entered_at` INTEGER DEFAULT 0 NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `id_UNIQUE` (`id`),
     UNIQUE INDEX `student_date_unique` (`student_id`, `start_date`),

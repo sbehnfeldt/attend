@@ -57,6 +57,7 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildAttendance findOneByStudentId(int $student_id) Return the first ChildAttendance filtered by the student_id column
  * @method     ChildAttendance findOneByCheckIn(int $check_in) Return the first ChildAttendance filtered by the check_in column
  * @method     ChildAttendance findOneByCheckOut(int $check_out) Return the first ChildAttendance filtered by the check_out column *
+
  * @method     ChildAttendance requirePk($key, ConnectionInterface $con = null) Return the ChildAttendance by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildAttendance requireOne(ConnectionInterface $con = null) Return the first ChildAttendance matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
@@ -147,11 +148,7 @@ abstract class AttendanceQuery extends ModelCriteria
             return $this->findPkComplex($key, $con);
         }
 
-        if ((null !== ($obj = AttendanceTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([
-                $key,
-                '__toString'
-            ]) ? (string)$key : $key)))
-        ) {
+        if ((null !== ($obj = AttendanceTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -186,8 +183,7 @@ abstract class AttendanceQuery extends ModelCriteria
             /** @var ChildAttendance $obj */
             $obj = new ChildAttendance();
             $obj->hydrate($row);
-            AttendanceTableMap::addInstanceToPool($obj,
-                null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string)$key : $key);
+            AttendanceTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -205,7 +201,7 @@ abstract class AttendanceQuery extends ModelCriteria
     protected function findPkComplex($key, ConnectionInterface $con)
     {
         // As the query uses a PK condition, no limit(1) is necessary.
-        $criteria    = $this->isKeepQuery() ? clone $this : $this;
+        $criteria = $this->isKeepQuery() ? clone $this : $this;
         $dataFetcher = $criteria
             ->filterByPrimaryKey($key)
             ->doSelect($con);
@@ -229,7 +225,7 @@ abstract class AttendanceQuery extends ModelCriteria
             $con = Propel::getServiceContainer()->getReadConnection($this->getDbName());
         }
         $this->basePreSelect($con);
-        $criteria    = $this->isKeepQuery() ? clone $this : $this;
+        $criteria = $this->isKeepQuery() ? clone $this : $this;
         $dataFetcher = $criteria
             ->filterByPrimaryKeys($keys)
             ->doSelect($con);
@@ -285,12 +281,12 @@ abstract class AttendanceQuery extends ModelCriteria
     {
         if (is_array($id)) {
             $useMinMax = false;
-            if (isset($id[ 'min' ])) {
-                $this->addUsingAlias(AttendanceTableMap::COL_ID, $id[ 'min' ], Criteria::GREATER_EQUAL);
+            if (isset($id['min'])) {
+                $this->addUsingAlias(AttendanceTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($id[ 'max' ])) {
-                $this->addUsingAlias(AttendanceTableMap::COL_ID, $id[ 'max' ], Criteria::LESS_EQUAL);
+            if (isset($id['max'])) {
+                $this->addUsingAlias(AttendanceTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -328,12 +324,12 @@ abstract class AttendanceQuery extends ModelCriteria
     {
         if (is_array($studentId)) {
             $useMinMax = false;
-            if (isset($studentId[ 'min' ])) {
-                $this->addUsingAlias(AttendanceTableMap::COL_STUDENT_ID, $studentId[ 'min' ], Criteria::GREATER_EQUAL);
+            if (isset($studentId['min'])) {
+                $this->addUsingAlias(AttendanceTableMap::COL_STUDENT_ID, $studentId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($studentId[ 'max' ])) {
-                $this->addUsingAlias(AttendanceTableMap::COL_STUDENT_ID, $studentId[ 'max' ], Criteria::LESS_EQUAL);
+            if (isset($studentId['max'])) {
+                $this->addUsingAlias(AttendanceTableMap::COL_STUDENT_ID, $studentId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -369,12 +365,12 @@ abstract class AttendanceQuery extends ModelCriteria
     {
         if (is_array($checkIn)) {
             $useMinMax = false;
-            if (isset($checkIn[ 'min' ])) {
-                $this->addUsingAlias(AttendanceTableMap::COL_CHECK_IN, $checkIn[ 'min' ], Criteria::GREATER_EQUAL);
+            if (isset($checkIn['min'])) {
+                $this->addUsingAlias(AttendanceTableMap::COL_CHECK_IN, $checkIn['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($checkIn[ 'max' ])) {
-                $this->addUsingAlias(AttendanceTableMap::COL_CHECK_IN, $checkIn[ 'max' ], Criteria::LESS_EQUAL);
+            if (isset($checkIn['max'])) {
+                $this->addUsingAlias(AttendanceTableMap::COL_CHECK_IN, $checkIn['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -410,12 +406,12 @@ abstract class AttendanceQuery extends ModelCriteria
     {
         if (is_array($checkOut)) {
             $useMinMax = false;
-            if (isset($checkOut[ 'min' ])) {
-                $this->addUsingAlias(AttendanceTableMap::COL_CHECK_OUT, $checkOut[ 'min' ], Criteria::GREATER_EQUAL);
+            if (isset($checkOut['min'])) {
+                $this->addUsingAlias(AttendanceTableMap::COL_CHECK_OUT, $checkOut['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($checkOut[ 'max' ])) {
-                $this->addUsingAlias(AttendanceTableMap::COL_CHECK_OUT, $checkOut[ 'max' ], Criteria::LESS_EQUAL);
+            if (isset($checkOut['max'])) {
+                $this->addUsingAlias(AttendanceTableMap::COL_CHECK_OUT, $checkOut['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -450,8 +446,7 @@ abstract class AttendanceQuery extends ModelCriteria
             }
 
             return $this
-                ->addUsingAlias(AttendanceTableMap::COL_STUDENT_ID, $student->toKeyValue('PrimaryKey', 'Id'),
-                    $comparison);
+                ->addUsingAlias(AttendanceTableMap::COL_STUDENT_ID, $student->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
             throw new PropelException('filterByStudent() only accepts arguments of type \Attend\Database\Student or Collection');
         }
@@ -467,7 +462,7 @@ abstract class AttendanceQuery extends ModelCriteria
      */
     public function joinStudent($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
-        $tableMap    = $this->getTableMap();
+        $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('Student');
 
         // create a ModelJoin object for this join
