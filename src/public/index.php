@@ -17,6 +17,12 @@ $dependencies = new Container([
 ]);
 $app          = new App(new $dependencies);
 
+$router   = new PropelEngine();
+$host     = $config[ 'db' ][ 'host' ];
+$dbname   = $config[ 'db' ][ 'dbname' ];
+$user     = $config[ 'db' ][ 'uname' ];
+$password = $config[ 'db' ][ 'pword' ];
+$router->connect($host, $dbname, $user, $password);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Routing for Web App Pages
