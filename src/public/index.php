@@ -130,58 +130,24 @@ $app->delete('/api/students/{id}',
 
 
 // Schedules
-$app->get('/api/schedules/{id}', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    $query   = new \Attend\Database\ScheduleQuery();
-    $results = $query->findPk($args[ 'id' ]);
+$app->get('/api/schedules/{id}',
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
+        return $engine->getScheduleById($request, $response, $args);
+    });
 
-    $response = $response->withStatus(200, 'OK');
-    $response = $response->withHeader('Content-type', 'application/json');
-    $response->getBody()->write($results->toJSON());
+$app->get('/api/schedules',
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
+        return $engine->getSchedules($request, $response, $args);
+    });
 
-    return $response;
-});
-
-$app->get('/api/schedules', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    $query   = new \Attend\Database\ScheduleQuery();
-    $results = $query->find();
-
-    $response = $response->withStatus(200, 'OK');
-    $response = $response->withHeader('Content-type', 'application/json');
-    $response->getBody()->write($results->toJSON());
-
-    return $response;
-});
-
-$app->post('/api/schedules', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    $body     = $request->getParsedBody();
-    $resource = new \Attend\Database\Schedule();
-    $resource->setStartDate($body[ 'StartDate' ]);
-    $resource->setSchedule($body[ 'Schedule' ]);
-    $resource->setStudentId($body[ 'StudentId' ]);
-    $resource->save();
-
-    $response = $response->withStatus(201, 'Created');
-    $response = $response->withHeader('Content-Type', 'application/json');
-    $response->getBody()->write(json_encode($resource->getId()));
-
-    return $response;
-});
+$app->post('/api/schedules',
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
+        return $engine->postSchedule($request, $response, $args);
+    });
 
 $app->delete('/api/schedules/{id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-        $query   = new \Attend\Database\ScheduleQuery();
-        $results = $query->findPk($args[ 'id' ]);
-        if (null === $results) {
-            $response = $response->withStatus(404, 'Not Found');
-
-            return $response;
-        }
-        $results->delete();
-
-        $response = $response->withStatus(204, 'No Content');
-        $response = $response->withHeader('Content-Type', 'application/json');
-
-        return $response;
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
+        return $engine->deleteScheduleById($request, $response, $args);
     });
 
 
