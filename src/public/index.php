@@ -103,63 +103,29 @@ $app->delete('/api/classrooms/{id}',
 
 
 // Students
-$app->get('/api/students/{id}', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    $query   = new \Attend\Database\StudentQuery();
-    $results = $query->findPk($args[ 'id' ]);
-    if (null === $results) {
-        $response = $response->withStatus(404, 'Not Found');
+$app->get('/api/students/{id}',
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
+        return $engine->getStudentById($request, $response, $args);
+    });
 
-        return $response;
-    }
+$app->get('/api/students',
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
+        return $engine->getStudents($request, $response, $args);
+    });
 
-    $response = $response->withStatus(200, 'OK');
-    $response = $response->withHeader('Content-type', 'application/json');
-    $response->getBody()->write($results->toJSON());
+$app->post('/api/students',
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
+        return $engine->postStudent($request, $response, $args);
+    });
 
-    return $response;
-});
-
-$app->get('/api/students', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    $query    = new \Attend\Database\StudentQuery();
-    $results  = $query->find();
-    $response = $response->withHeader('Content-type', 'application/json');
-    $response->getBody()->write($results->toJSON());
-
-    return $response;
-});
-
-$app->post('/api/students', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    $body     = $request->getParsedBody();
-    $resource = new \Attend\Database\Student();
-    $resource->setFamilyName($body[ 'FamilyName' ]);
-    $resource->setFirstName($body[ 'FirstName' ]);
-    $resource->setEnrolled($body[ 'Enrolled' ]);
-    $temp = json_decode($body[ 'ClassroomId' ]);
-    $resource->setClassroomId($temp->data);
-    $resource->save();
-
-    $response = $response->withStatus(201, 'Created');
-    $response = $response->withHeader('Content-Type', 'application/json');
-    $response->getBody()->write(json_encode($resource->getId()));
-
-    return $response;
-});
+$app->put('/api/students',
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
+        return $engine->putStudentById($request, $response, $args);
+    });
 
 $app->delete('/api/students/{id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-        $query   = new \Attend\Database\StudentQuery();
-        $results = $query->findPk($args[ 'id' ]);
-        if (null === $results) {
-            $response = $response->withStatus(404, 'Not Found');
-
-            return $response;
-        }
-        $results->delete();
-
-        $response = $response->withStatus(204, 'No Content');
-        $response = $response->withHeader('Content-Type', 'application/json');
-
-        return $response;
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
+        return $engine->deleteStudentById($request, $response, $args);
     });
 
 
