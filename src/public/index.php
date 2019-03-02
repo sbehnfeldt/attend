@@ -17,12 +17,12 @@ $dependencies = new Container([
 ]);
 $app          = new App(new $dependencies);
 
-$router   = new PropelEngine();
+$engine   = new PropelEngine();
 $host     = $config[ 'db' ][ 'host' ];
 $dbname   = $config[ 'db' ][ 'dbname' ];
 $user     = $config[ 'db' ][ 'uname' ];
 $password = $config[ 'db' ][ 'pword' ];
-$router->connect($host, $dbname, $user, $password);
+$engine->connect($host, $dbname, $user, $password);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Routing for Web App Pages
@@ -76,84 +76,31 @@ $app->get('/classrooms', function (ServerRequestInterface $request, ResponseInte
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Classrooms
-$app->get('/api/classrooms/{id}', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    $query   = new \Attend\Database\ClassroomQuery();
-    $results = $query->findPk($args[ 'id' ]);
-    if (null === $results) {
-        $response = $response->withStatus(404, 'Not Found');
+$app->get('/api/classrooms/{id}',
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
+        return $engine->getClassroomById($request, $response, $args);
+    });
 
-        return $response;
-    }
+$app->get('/api/classrooms',
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
+        return $engine->getClassrooms($request, $response, $args);
+    });
 
-    $response = $response->withStatus(200, 'OK');
-    $response = $response->withHeader('Content-Type', 'application/json');
-    $response->getBody()->write($results->toJSON());
+$app->post('/api/classrooms',
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
+        return $engine->postClassroom($request, $response, $args);
+    });
 
-    return $response;
-});
-
-$app->get('/api/classrooms', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    $query    = new \Attend\Database\ClassroomQuery();
-    $results  = $query->find();
-    $response = $response->withStatus(200, 'OK');
-    $response = $response->withHeader('Content-type', 'application/json');
-    $response->getBody()->write($results->toJSON());
-
-    return $response;
-});
-
-$app->post('/api/classrooms', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    $body     = $request->getParsedBody();
-    $resource = new \Attend\Database\Classroom();
-    $resource->setLabel($body[ 'Label' ]);
-    $resource->setOrdering($body[ 'Ordering' ]);
-    $resource->save();
-
-    $response = $response->withStatus(201, 'Created');
-    $response = $response->withHeader('Content-Type', 'application/json');
-    $response->getBody()->write(json_encode($resource->getId()));
-
-    return $response;
-});
-
-
-$app->put('/api/classrooms/{id}', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    $query   = new \Attend\Database\ClassroomQuery();
-    $results = $query->findPk($args[ 'id' ]);
-    if (null === $results) {
-        $response = $response->withStatus(404, 'Not Found');
-
-        return $response;
-    }
-
-    $body = $request->getParsedBody();
-    $results->setLabel($body[ 'Label' ]);
-    $results->setOrdering($body[ 'Ordering' ]);
-    $results->save();
-
-    $response = $response->withStatus(200, 'OK');
-    $response = $response->withHeader('Content-Type', 'application/json');
-    $response->getBody()->write($results->toJSON());
-
-    return $response;
-});
+$app->put('/api/classrooms/{id}',
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
+        return $engine->putClassroomById($request, $response, $args);
+    });
 
 $app->delete('/api/classrooms/{id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-        $query   = new \Attend\Database\ClassroomQuery();
-        $results = $query->findPk($args[ 'id' ]);
-        if (null === $results) {
-            $response = $response->withStatus(404, 'Not Found');
-
-            return $response;
-        }
-        $results->delete();
-
-        $response = $response->withStatus(204, 'No Content');
-        $response = $response->withHeader('Content-Type', 'application/json');
-
-        return $response;
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
+        return $engine->deleteClassroomById($request, $response, $args);
     });
+
 
 // Students
 $app->get('/api/students/{id}', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
@@ -270,8 +217,6 @@ $app->delete('/api/schedules/{id}',
 
         return $response;
     });
-
-
 
 
 $app->run();

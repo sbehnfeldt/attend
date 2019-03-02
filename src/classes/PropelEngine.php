@@ -1,5 +1,6 @@
 <?php
-
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 class PropelEngine
 {
@@ -33,6 +34,89 @@ class PropelEngine
         $manager->setName('attend');
         $serviceContainer->setConnectionManager('attend', $manager);
         $serviceContainer->setDefaultDatasource('attend');
+    }
 
+
+    public function getClassroomById(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    {
+        $query   = new \Attend\Database\ClassroomQuery();
+        $results = $query->findPk($args[ 'id' ]);
+        if (null === $results) {
+            $response = $response->withStatus(404, 'Not Found');
+
+            return $response;
+        }
+
+        $response = $response->withStatus(200, 'OK');
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write($results->toJSON());
+
+        return $response;
+    }
+
+
+    public function getClassrooms(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    {
+        $query    = new \Attend\Database\ClassroomQuery();
+        $results  = $query->find();
+        $response = $response->withStatus(200, 'OK');
+        $response = $response->withHeader('Content-type', 'application/json');
+        $response->getBody()->write($results->toJSON());
+
+        return $response;
+    }
+
+    public function postClassroom(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    {
+        $body     = $request->getParsedBody();
+        $resource = new \Attend\Database\Classroom();
+        $resource->setLabel($body[ 'Label' ]);
+        $resource->setOrdering($body[ 'Ordering' ]);
+        $resource->save();
+
+        $response = $response->withStatus(201, 'Created');
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode($resource->getId()));
+
+        return $response;
+    }
+
+    public function putClassroomById(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    {
+        $query   = new \Attend\Database\ClassroomQuery();
+        $results = $query->findPk($args[ 'id' ]);
+        if (null === $results) {
+            $response = $response->withStatus(404, 'Not Found');
+
+            return $response;
+        }
+
+        $body = $request->getParsedBody();
+        $results->setLabel($body[ 'Label' ]);
+        $results->setOrdering($body[ 'Ordering' ]);
+        $results->save();
+
+        $response = $response->withStatus(200, 'OK');
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write($results->toJSON());
+
+        return $response;
+    }
+
+    public function deleteClassroomById(ServerRequestInterface $request, ResponseInterface $response, array $args)
+    {
+        $query   = new \Attend\Database\ClassroomQuery();
+        $results = $query->findPk($args[ 'id' ]);
+        if (null === $results) {
+            $response = $response->withStatus(404, 'Not Found');
+
+            return $response;
+        }
+        $results->delete();
+
+        $response = $response->withStatus(204, 'No Content');
+        $response = $response->withHeader('Content-Type', 'application/json');
+
+        return $response;
     }
 }
