@@ -17,7 +17,7 @@ class SigninPdf extends AttendPdf
 
         $this->SetFont('Arial', '', 12);
         $this->ln();
-        $this->Cell(0, 10, $this->getTheClassroom()[ 'label' ], 0, 0, 'L');
+        $this->Cell(0, 10, $this->getTheClassroom()[ 'Label' ], 0, 0, 'L');
         $this->Cell(0, 10, 'Week of ' . $this->getWeekOf()->format('M j, Y'), 0, 1, 'R');
 
         // Draw the table header
@@ -25,31 +25,35 @@ class SigninPdf extends AttendPdf
         $this->SetFillColor(200);
 
         $i = 0;
-        $d = new DateTime($this->getWeekOf()->format('Y-m-d'));
+        $d = new \DateTime($this->getWeekOf()->format('Y-m-d'));
         $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(), '', 'LTR', 0, 'C', true);
 
         $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(), $d->format('D'), 'LTR', 0, 'C', true);
-        $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(), $d->add(new DateInterval('P1D'))->format('D'),
+        $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(), $d->add(new \DateInterval('P1D'))->format('D'),
             'LTR', 0, 'C', true);
-        $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(), $d->add(new DateInterval('P1D'))->format('D'),
+        $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(), $d->add(new \DateInterval('P1D'))->format('D'),
             'LTR', 0, 'C', true);
-        $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(), $d->add(new DateInterval('P1D'))->format('D'),
+        $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(), $d->add(new \DateInterval('P1D'))->format('D'),
             'LTR', 0, 'C', true);
-        $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(), $d->add(new DateInterval('P1D'))->format('D'),
+        $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(), $d->add(new \DateInterval('P1D'))->format('D'),
             'LTR', 0, 'C', true);
         $this->ln();
 
         $i = 0;
-        $d = new DateTime($this->getWeekOf()->format('Y-m-d'));
+        $d = new \DateTime($this->getWeekOf()->format('Y-m-d'));
         $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(), '', 'LR', 0, 'C', true);
         $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(), $d->format('M j'), 'LBR', 0, 'C', true);
-        $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(), $d->add(new DateInterval('P1D'))->format('M d'),
+        $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(),
+            $d->add(new \DateInterval('P1D'))->format('M d'),
             'LBR', 0, 'C', true);
-        $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(), $d->add(new DateInterval('P1D'))->format('M d'),
+        $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(),
+            $d->add(new \DateInterval('P1D'))->format('M d'),
             'LBR', 0, 'C', true);
-        $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(), $d->add(new DateInterval('P1D'))->format('M d'),
+        $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(),
+            $d->add(new \DateInterval('P1D'))->format('M d'),
             'LBR', 0, 'C', true);
-        $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(), $d->add(new DateInterval('P1D'))->format('M d'),
+        $this->Cell($this->colWidths[ $i++ ], $this->getHeaderHeight(),
+            $d->add(new \DateInterval('P1D'))->format('M d'),
             'LBR', 0, 'C', true);
         $this->ln();
 
@@ -79,7 +83,7 @@ class SigninPdf extends AttendPdf
         $this->Cell(0, 10, 'Page ' . $this->PageNo() . '/{nb}', 0, 0, 'C');
     }
 
-    public function Output()
+    public function Output($dest = '', $name = '', $isUTF8 = false)
     {
         $this->prepare();
         $this->SetFont('Arial', '', 10);
@@ -88,16 +92,16 @@ class SigninPdf extends AttendPdf
 
         foreach ($this->classes as $class) {
             usort($class[ 'students' ], function ($id1, $id2) {
-                if ($this->students[ $id1 ][ 'family_name' ] > $this->students[ $id2 ][ 'family_name' ]) {
+                if ($this->students[ $id1 ][ 'FamilyName' ] > $this->students[ $id2 ][ 'FamilyName' ]) {
                     return 1;
                 }
-                if ($this->students[ $id1 ][ 'family_name' ] < $this->students[ $id2 ][ 'family_name' ]) {
+                if ($this->students[ $id1 ][ 'FamilyName' ] < $this->students[ $id2 ][ 'FamilyName' ]) {
                     return -1;
                 }
-                if ($this->students[ $id1 ][ 'first_name' ] > $this->students[ $id2 ][ 'first_name' ]) {
+                if ($this->students[ $id1 ][ 'FirstName' ] > $this->students[ $id2 ][ 'FirstName' ]) {
                     return 1;
                 }
-                if ($this->students[ $id1 ][ 'first_name' ] < $this->students[ $id2 ][ 'first_name' ]) {
+                if ($this->students[ $id1 ][ 'FirstName' ] < $this->students[ $id2 ][ 'FirstName' ]) {
                     return -1;
                 }
 
@@ -121,12 +125,12 @@ class SigninPdf extends AttendPdf
     private function outputStudent($studentId)
     {
         $student = $this->students[ $studentId ];
-        if ('1' !== $student[ 'enrolled' ]) {
+        if ('1' != $student[ 'Enrolled' ]) {
             return;
         }
         usort($student[ 'schedules' ], function ($id1, $id2) {
-            $date1 = DateTime::createFromFormat('Y-m-d', $this->schedules[ $id1 ][ 'start_date' ]);
-            $date2 = DateTime::createFromFormat('Y-m-d', $this->schedules[ $id2 ][ 'start_date' ]);
+            $date1 = \DateTime::createFromFormat('Y-m-d', $this->schedules[ $id1 ][ 'StartDate' ]);
+            $date2 = \DateTime::createFromFormat('Y-m-d', $this->schedules[ $id2 ][ 'StartDate' ]);
             if ($date1 < $date2) {
                 return -1;
             }
@@ -138,7 +142,7 @@ class SigninPdf extends AttendPdf
         });
 
         $this->Cell($this->colWidths[ 0 ], $this->getRowHeight(),
-            $student[ 'first_name' ] . ' ' . $student[ 'family_name' ], 1, 0);
+            $student[ 'FirstName' ] . ' ' . $student[ 'FamilyName' ], 1, 0);
         for ($i = 0; $i < 5; $i++) {
             $x = $this->GetX();
             $y = $this->GetY();
