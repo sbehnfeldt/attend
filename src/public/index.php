@@ -1,4 +1,6 @@
 <?php
+namespace Attend;
+
 
 use Slim\Container;
 use Slim\App;
@@ -15,21 +17,18 @@ $config = bootstrap();
 $dependencies = new Container([
     'settings' => $config
 ]);
-$app          = new App(new $dependencies);
 
-$engine   = new PropelEngine();
-$host     = $config[ 'db' ][ 'host' ];
-$dbname   = $config[ 'db' ][ 'dbname' ];
-$user     = $config[ 'db' ][ 'uname' ];
-$password = $config[ 'db' ][ 'pword' ];
-$engine->connect($host, $dbname, $user, $password);
+$app = new App(new $dependencies);
+
+$engine = new PropelEngine();
+$engine->connect($config[ 'db' ]);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Routing for Web App Pages
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 $app->get('/', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    $loader = new Twig_Loader_Filesystem('../templates');
-    $twig   = new Twig_Environment($loader, array(
+    $loader = new \Twig_Loader_Filesystem('../templates');
+    $twig   = new \Twig_Environment($loader, array(
         'cache' => false
     ));
 
@@ -39,8 +38,8 @@ $app->get('/', function (ServerRequestInterface $request, ResponseInterface $res
 });
 
 $app->get('/attendance', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    $loader = new Twig_Loader_Filesystem('../templates');
-    $twig   = new Twig_Environment($loader, array(
+    $loader = new \Twig_Loader_Filesystem('../templates');
+    $twig   = new \Twig_Environment($loader, array(
         'cache' => false
     ));
 
@@ -50,8 +49,8 @@ $app->get('/attendance', function (ServerRequestInterface $request, ResponseInte
 });
 
 $app->get('/enrollment', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    $loader = new Twig_Loader_Filesystem('../templates');
-    $twig   = new Twig_Environment($loader, array(
+    $loader = new \Twig_Loader_Filesystem('../templates');
+    $twig   = new \Twig_Environment($loader, array(
         'cache' => false
     ));
 
@@ -61,8 +60,8 @@ $app->get('/enrollment', function (ServerRequestInterface $request, ResponseInte
 });
 
 $app->get('/classrooms', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
-    $loader = new Twig_Loader_Filesystem('../templates');
-    $twig   = new Twig_Environment($loader, array(
+    $loader = new \Twig_Loader_Filesystem('../templates');
+    $twig   = new \Twig_Environment($loader, array(
         'cache' => false
     ));
 
@@ -78,71 +77,173 @@ $app->get('/classrooms', function (ServerRequestInterface $request, ResponseInte
 // Classrooms
 $app->get('/api/classrooms/{id}',
     function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        return $engine->getClassroomById($request, $response, $args);
+        $resource = $engine->getClassroomById($args[ 'id' ]);
+        if (null === $resource) {
+            return $response->withStatus(404, 'Not Found');
+        }
+        $response = $response->withStatus(200, 'OK');
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode($resource));
+
+        return $response;
     });
 
 $app->get('/api/classrooms',
     function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        return $engine->getClassrooms($request, $response, $args);
+        $results = $engine->getClassrooms();
+
+        $response = $response->withStatus(200, 'OK');
+        $response = $response->withHeader('Content-type', 'application/json');
+        $response->getBody()->write(json_encode($results));
+
+        return $response;
     });
 
 $app->post('/api/classrooms',
     function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        return $engine->postClassroom($request, $response, $args);
+        $results = $engine->postClassroom($request->getParsedBody());
+        if (null === $results) {
+            return $response->withStatus(404, 'Not Found');
+        }
+
+        $response = $response->withStatus(201, 'Created');
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode($results));
+
+        return $response;
     });
 
 $app->put('/api/classrooms/{id}',
     function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        return $engine->putClassroomById($request, $response, $args);
+        $results = $engine->putClassroomById($args[ 'id' ], $request->getParsedBody());
+        if (null === $results) {
+            return $response->withStatus(404, 'Not Found');
+        }
+        $response = $response->withStatus(200, 'OK');
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode($results));
+
+        return $response;
     });
 
 $app->delete('/api/classrooms/{id}',
     function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        return $engine->deleteClassroomById($request, $response, $args);
+        if ( ! $engine->deleteClassroomById($args[ 'id' ])) {
+            $response = $response->withStatus(404, 'Not Found');
+
+            return $response;
+        }
+        $response = $response->withStatus(204, 'No Content');
+        $response = $response->withHeader('Content-Type', 'application/json');
+
+        return $response;
     });
 
 
 // Students
 $app->get('/api/students/{id}',
     function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        return $engine->getStudentById($request, $response, $args);
+        $results = $engine->getStudentById($args[ 'id' ]);
+        if (null === $results) {
+            return $response->withStatus(404, 'Not Found');
+        }
+        $response = $response->withStatus(200, 'OK');
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode($results));
+
+        return $response;
     });
 
 $app->get('/api/students',
     function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        return $engine->getStudents($request, $response, $args);
+        $results  = $engine->getStudents();
+        $response = $response->withStatus(200, 'OK');
+        $response = $response->withHeader('Content-type', 'application/json');
+        $response->getBody()->write(json_encode($results));
+
+        return $response;
     });
 
 $app->post('/api/students',
     function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        return $engine->postStudent($request, $response, $args);
+        $id       = $engine->postStudent($request->getParsedBody());
+        $response = $response->withStatus(201, 'Created');
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode($id));
+
+        return $response;
     });
 
-$app->put('/api/students',
+$app->put('/api/students/{id}',
     function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        return $engine->putStudentById($request, $response, $args);
+        if ( ! $engine->putStudentById($args[ 'id' ], $request->getParsedBody())) {
+            return $response->withStatus(404, 'Not Found');
+        }
+        $response = $response->withStatus(200, 'OK');
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode($args[ 'id' ]));
+
+        return $response;
     });
 
 $app->delete('/api/students/{id}',
     function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        return $engine->deleteStudentById($request, $response, $args);
+        if ( ! $engine->deleteStudentById($args[ 'id' ])) {
+            $response = $response->withStatus(404, 'Not Found');
+
+            return $response;
+        }
+        $response = $response->withStatus(204, 'No Content');
+        $response = $response->withHeader('Content-Type', 'application/json');
+
+        return $response;
     });
 
 
 // Schedules
 $app->get('/api/schedules/{id}',
     function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        return $engine->getScheduleById($request, $response, $args);
+        $results = $engine->getScheduleById($args[ 'id' ]);
+        if (null === $results) {
+            return $response->withStatus(404, 'Not Found');
+        }
+        $response = $response->withStatus(200, 'OK');
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode($results));
+
+        return $response;
     });
 
 $app->get('/api/schedules',
     function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        return $engine->getSchedules($request, $response, $args);
+        $results  = $engine->getSchedules($request, $response, $args);
+        $response = $response->withStatus(200, 'OK');
+        $response = $response->withHeader('Content-type', 'application/json');
+        $response->getBody()->write(json_encode($results));
+
+        return $response;
     });
 
 $app->post('/api/schedules',
     function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        return $engine->postSchedule($request, $response, $args);
+        $id       = $engine->postStudent($request->getParsedBody());
+        $response = $response->withStatus(201, 'Created');
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode($id));
+
+        return $response;
+    });
+
+$app->put('/api/schedules/{id}',
+    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
+        if ( ! $engine->putScheduleById($args[ 'id' ], $request->getParsedBody())) {
+            return $response->withStatus(404, 'Not Found');
+        }
+        $response = $response->withStatus(200, 'OK');
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode($args[ 'id' ]));
+
+        return $response;
     });
 
 $app->delete('/api/schedules/{id}',

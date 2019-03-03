@@ -1,5 +1,5 @@
 <?php
-
+namespace Attend;
 
 class AttendancePdf extends AttendPdf
 {

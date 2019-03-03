@@ -15,8 +15,8 @@
 
                     'success': function ( json ) {
                         console.log( json );
-                        for ( var i = 0; i < json.Classrooms.length; i++ ) {
-                            table.row.add( json.Classrooms[ i ] );
+                        for ( var i = 0; i < json.length; i++ ) {
+                            table.row.add( json[ i ] );
                         }
                         table.draw();
                         Attend.doneLoading();
@@ -266,28 +266,40 @@
                 "dataType": "json",
                 "success" : function ( json ) {
                     console.log( json );
-                    $.ajax( {
-                        'url'   : "api/classrooms/" + json,
-                        "method": "get",
+                    if ( !data.ordering ) {
+                        // If ordering not specified, it defaults to current max + 1,
+                        // so table is fine; just add new row
+                        ClassroomsTab.insert( json );
+                    } else {
+                        // If ordering IS specified, ordering of other classrooms may be affected;
+                        // so, reload entire table.
+                        ClassroomsTab.reload( json );
+                    }
+                    Attend.doneLoading();
 
-                        "success": function ( json ) {
-                            console.log( json );
-                            if ( !data.ordering ) {
-                                // If ordering not specified, it defaults to current max + 1,
-                                // so table is fine; just add new row
-                                ClassroomsTab.insert( json );
-                            } else {
-                                // If ordering IS specified, ordering of other classrooms may be affected;
-                                // so, reload entire table.
-                                ClassroomsTab.reload( json );
-                            }
-                            Attend.doneLoading();
-                        },
-                        "error"  : function ( xhr ) {
-                            console.log( xhr );
-                            Attend.doneLoading();
-                        }
-                    } );
+//                    $.ajax( {
+//                        'url'   : "api/classrooms/" + json,
+//                        "method": "get",
+//
+//                        "success": function ( json ) {
+//                            console.log( json );
+//                            if ( !data.ordering ) {
+//                                // If ordering not specified, it defaults to current max + 1,
+//                                // so table is fine; just add new row
+//                                ClassroomsTab.insert( json );
+//                            } else {
+//                                // If ordering IS specified, ordering of other classrooms may be affected;
+//                                // so, reload entire table.
+//                                ClassroomsTab.reload( json );
+//                            }
+//                            Attend.doneLoading();
+//                        },
+//                        "error"  : function ( xhr ) {
+//                            console.log( xhr );
+//                            Attend.doneLoading();
+//                        }
+//                    } );
+
                 },
                 "error"   : function ( xhr ) {
                     console.log( xhr );

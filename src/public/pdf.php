@@ -1,20 +1,20 @@
 <?php
-include('../lib/bootstrap.php');
+namespace Attend;
+
 
 define('FPDF_FONTPATH', '../font/');
+
+include('../lib/bootstrap.php');
+$config = bootstrap();
+
+
 if (array_key_exists('attendance', $_GET)) {
     $pdf = new AttendancePdf();
 
 } else if (array_key_exists('signin', $_GET)) {
     $pdf = new SigninPdf();
 }
-$pdo = new PDO('mysql:host=' . $config[ 'db' ][ 'host' ] . ';dbname=' . $config[ 'db' ][ 'dbname' ] . ';charset=' . $config[ 'db' ][ 'charset' ],
-    $config[ 'db' ][ 'uname' ], $config[ 'db' ][ 'pword' ], [
-        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-    ]);
-
-$pdf->setPdo($pdo);
-
+$pdf->setEngine(new PropelEngine());
+$pdf->getEngine()->connect($config[ 'db' ]);
 $pdf->setWeekOf($_GET[ 'week' ]);
 $pdf->Output();

@@ -1,4 +1,5 @@
 <?php
+namespace Attend;
 
 
 class AttendPdf extends FPDF
@@ -6,6 +7,10 @@ class AttendPdf extends FPDF
 
     /** @var  PDO $pdo */
     protected $pdo;
+
+    /** @var  IDatabaseEngine */
+    protected $engine;
+
     protected $classes;
     protected $students;
     protected $schedules;
@@ -33,7 +38,7 @@ class AttendPdf extends FPDF
     /** @var  int */
     protected $headerHeight;
 
-    /** @var  DateTime */
+    /** @var  \DateTime */
     protected $weekOf;
 
     public function __construct($orientation = 'P', $unit = 'mm', $size = 'A4')
@@ -45,6 +50,23 @@ class AttendPdf extends FPDF
         $this->weekOf       = new DateTime();
         parent::__construct($orientation, $unit, $size);
     }
+
+    /**
+     * @return IDatabaseEngine
+     */
+    public function getEngine() : IDatabaseEngine
+    {
+        return $this->engine;
+    }
+
+    /**
+     * @param IDatabaseEngine $engine
+     */
+    public function setEngine(IDatabaseEngine $engine)
+    {
+        $this->engine = $engine;
+    }
+
 
     /**
      * @return array
@@ -71,7 +93,7 @@ class AttendPdf extends FPDF
     }
 
     /**
-     * @param PDO $pdo
+     * @param \PDO $pdo
      */
     public function setPdo($pdo)
     {
@@ -128,7 +150,7 @@ class AttendPdf extends FPDF
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getWeekOf()
     {
@@ -140,7 +162,7 @@ class AttendPdf extends FPDF
      */
     public function setWeekOf($weekOf)
     {
-        $this->weekOf = new DateTime($weekOf);
+        $this->weekOf = new \DateTime($weekOf);
     }
 
     /**
@@ -182,7 +204,7 @@ class AttendPdf extends FPDF
         // starts at some point in the future of $startDate.  This is needed so that users may enroll students
         // in advance.
         $composite = null;
-        $cur       = new DateTime($this->getWeekOf()->format('Y-m-d'));
+        $cur       = new \DateTime($this->getWeekOf()->format('Y-m-d'));
         foreach ($this->getDayAbbrevs() as $i => $day) {
             if (null == $sched) {
                 $composite[ $day ] = null;
@@ -195,7 +217,7 @@ class AttendPdf extends FPDF
             }
 
             // Prepare for the next day: see if the student's next schedule goes into effect
-            $cur->add(new DateInterval('P1D'));
+            $cur->add(new \DateInterval('P1D'));
             if ($index < count($schedules)) {
                 if ($cur >= $schedules[ $index ][ 'startDate' ]) {
                     $sched = $schedules[ $index ];
@@ -212,8 +234,10 @@ class AttendPdf extends FPDF
     protected function prepare()
     {
         $this->classes = [];
-        $repo          = new \Attend\ClassroomsRepository($this->getPdo());
-        $classes       = $repo->select();
+
+
+        $classes = $this->getEngine()->getClassrooms();
+
         for ($i = 0; $i < count($classes); $i++) {
             $class                           = $classes[ $i ];
             $class[ 'students' ]             = [];
@@ -221,8 +245,10 @@ class AttendPdf extends FPDF
         }
 
         $this->students = [];
-        $repo           = new \Attend\StudentsRepository($this->getPdo());
-        $students       = $repo->select();
+//        $repo           = new \Attend\StudentsRepository($this->getPdo());
+//        $students       = $repo->select();
+        $query    = new \Attend\Database\StudentQuery();
+        $students = $query->find();
         for ($i = 0; $i < count($students); $i++) {
             $student                            = $students[ $i ];
             $student[ 'schedules' ]             = [];
@@ -234,8 +260,10 @@ class AttendPdf extends FPDF
 
 
         $this->schedules = [];
-        $repo            = new \Attend\SchedulesRepository($this->getPdo());
-        $schedules       = $repo->select();
+//        $repo            = new \Attend\SchedulesRepository($this->getPdo());
+//        $schedules       = $repo->select();
+        $query     = new \Attend\Database\ScheduleQuery();
+        $schedules = $query->find();
         for ($i = 0; $i < count($schedules); $i++) {
             $schedule                             = $schedules[ $i ];
             $this->schedules[ $schedule[ 'id' ] ] = $schedule;

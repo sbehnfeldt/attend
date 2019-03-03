@@ -115,8 +115,8 @@
 
                     'success': function ( json ) {
                         console.log( json );
-                        for ( var i = 0; i < json.Students.length; i++ ) {
-                            table.row.add( json.Students[ i ] );
+                        for ( var i = 0; i < json.length; i++ ) {
+                            table.row.add( json[ i ] );
                         }
                         table.draw();
                         Attend.doneLoading();
@@ -639,7 +639,7 @@
             'dataType': 'json',
             'success' : function ( json ) {
                 console.log( json );
-                Classrooms.load( json.Classrooms );
+                Classrooms.load( json );
                 checkClassrooms();
                 Attend.doneLoading();
             },
@@ -657,7 +657,7 @@
             'dataType': 'json',
             'success' : function ( json ) {
                 console.log( json );
-                Schedules.load( json.Schedules );
+                Schedules.load( json );
                 Attend.doneLoading();
             },
             'error'   : function ( xhr ) {
