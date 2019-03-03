@@ -139,17 +139,8 @@ class AttendancePdf extends AttendPdf
 
         $this->Cell($this->colWidths[ 0 ], $this->rowHeight,
             $student[ 'FamilyName' ] . ', ' . $student[ 'FirstName' ], 1, 0);
-
         $thisWeek = clone $this->getWeekOf();
-        $i        = $student[ 'schedules' ][ 0 ];
-        $temp     = $this->schedules[ $i ];
-        $temp     = $temp[ 'StartDate' ];
-        $temp     = explode('T', $temp);
-        $temp     = $temp[ 0 ];
-
-        $today = \DateTime::createFromFormat('Y-m-d', $temp);
-
-
+        $today    = new \DateTime($this->schedules[ $student[ 'schedules' ][ 0 ] ][ 'StartDate' ]);
         $notes    = [
             'HD'  => 0,
             'HDL' => 0,
@@ -158,8 +149,7 @@ class AttendancePdf extends AttendPdf
         $j        = 0;
         for ($i = 0; $i < 5; $i++) {
             while (($j + 1) < count($student[ 'schedules' ])) {
-                $next = \DateTime::createFromFormat('Y-m-d',
-                    $this->schedules[ $student[ 'schedules' ][ $j + 1 ] ][ 'StartDate' ]);
+                $next = new \DateTime($this->schedules[ $student[ 'schedules' ][ $j + 1 ] ][ 'StartDate' ]);
                 if ($next > $thisWeek) {
                     break;
                 }
