@@ -2,6 +2,7 @@
 namespace Attend;
 
 
+use Attend\PropelEngine\PropelEngine;
 use Slim\Container;
 use Slim\App;
 use Psr\Http\Message\ServerRequestInterface;

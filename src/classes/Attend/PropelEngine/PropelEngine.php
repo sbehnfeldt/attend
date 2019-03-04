@@ -1,6 +1,8 @@
 <?php
-namespace Attend;
+namespace Attend\PropelEngine;
 
+
+use Attend\IDatabaseEngine;
 
 class PropelEngine implements IDatabaseEngine
 {

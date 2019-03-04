@@ -2,6 +2,8 @@
 namespace Attend;
 
 
+use Attend\PropelEngine\PropelEngine;
+
 define('FPDF_FONTPATH', '../font/');
 
 include('../lib/bootstrap.php');

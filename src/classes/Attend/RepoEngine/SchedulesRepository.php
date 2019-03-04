@@ -1,6 +1,6 @@
 <?php
 
-namespace Attend;
+namespace Attend\RepoEngine;
 
 
 class SchedulesRepository extends Repository
