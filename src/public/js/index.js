@@ -54,21 +54,21 @@
                     console.log( json );
                     for ( var i = 0; i < json.length; i++ ) {
                         var student = json[ i ];
-                        if ( "1" !== student.enrolled ) continue;
+                        if ( 1 !== student.Enrolled ) continue;
 
-                        if ( !(student.classroom_id in Students.students) ) {
-                            Students.students[ student.classroom_id ] = [];
+                        if ( !(student.ClassroomId in Students.students) ) {
+                            Students.students[ student.ClassroomId ] = [];
                         }
-                        Students.students[ student.classroom_id ].push( student );
+                        Students.students[ student.ClassroomId ].push( student );
                     }
 
                     for ( i = 0; i < Students.students.length; i++ ) {
                         if ( !Students.students[ i ] ) continue;
                         Students.students[ i ].sort( function ( a, b ) {
-                            if ( a.family_name > b.family_name ) return 1;
-                            if ( a.family_name < b.family_name ) return -1;
-                            if ( a.first_name > b.first_name ) return 1;
-                            if ( a.first_name < b.first_name ) return -1;
+                            if ( a.FamilyName > b.FamilyName ) return 1;
+                            if ( a.FamilyName < b.FamilyName ) return -1;
+                            if ( a.FirstName > b.FirstName ) return 1;
+                            if ( a.FirstName < b.FirstName ) return -1;
                             return 0;
                         } );
                     }
@@ -103,10 +103,10 @@
                     console.log( json );
                     for ( var i = 0; i < json.length; i++ ) {
                         var sched = json[ i ];
-                        if ( !( sched.student_id in Schedules.schedules) ) {
-                            Schedules.schedules[ sched.student_id ] = [];
+                        if ( !( sched.StudentId in Schedules.schedules) ) {
+                            Schedules.schedules[ sched.StudentId ] = [];
                         }
-                        Schedules.schedules[ sched.student_id ].push( sched );
+                        Schedules.schedules[ sched.StudentId ].push( sched );
                     }
                     AttendanceTab.build();
                     SigninTab.build();
@@ -161,6 +161,7 @@
         }
 
         function buildAttendanceTables( classrooms, students, schedules ) {
+            console.log( 'Building attendance tables' );
             $attendance.empty();
             Attend.loadAnother();
 
@@ -204,9 +205,9 @@
             $tr.append( $( '<th>Summary</th>' ) );
             $thead.append( $tr );
 
-            if ( students[ classroom.id ] ) {
-                for ( var i = 0; i < students[ classroom.id ].length; i++ ) {
-                    var $tr = buildStudentRow( students[ classroom.id ][ i ], schedules );
+            if ( students[ classroom.Id ] ) {
+                for ( var i = 0; i < students[ classroom.Id ].length; i++ ) {
+                    var $tr = buildStudentRow( students[ classroom.Id ][ i ], schedules );
                     $tbody.append( $tr );
                 }
             }
@@ -223,14 +224,14 @@
                 [ 0x0010, 0x0200, 0x4000 ]
             ];
 
-            var sched = schedules[ student.id ][ schedules[ student.id ].length - 1 ].schedule;
+            var sched = schedules[ student.Id ][ schedules[ student.Id ].length - 1 ].Schedule;
             var notes = {
                 'FD' : 0,
                 'HDL': 0,
                 'HD' : 0
             };
             var $tr   = $( '<tr>' );
-            $tr.append( $( '<td>' ).text( student.family_name + ', ' + student.first_name ) );
+            $tr.append( $( '<td>' ).text( student.FamilyName + ', ' + student.FirstName ) );
             for ( var i = 0; i < 5; i++ ) {
                 var $cell = buildDayCell( sched, decoder[ i ] );
                 $tr.append( $cell.td );
@@ -292,6 +293,7 @@
         };
     })();
 
+
     var SigninTab = (function () {
         var $tab,
             $weekOf,
@@ -329,6 +331,7 @@
         }
 
         function buildSigninTables( classrooms, students, schedules ) {
+            console.log( "Building sign-in tables" );
             $signin.empty();
             Attend.loadAnother();
 
@@ -369,9 +372,9 @@
             }
             $thead.append( $tr );
 
-            if ( students[ classroom.id ] ) {
-                for ( var i = 0; i < students[ classroom.id ].length; i++ ) {
-                    var $tr = buildStudentRow( students[ classroom.id ][ i ], schedules );
+            if ( students[ classroom.Id ] ) {
+                for ( var i = 0; i < students[ classroom.Id ].length; i++ ) {
+                    var $tr = buildStudentRow( students[ classroom.Id ][ i ], schedules );
                     $tbody.append( $tr );
                 }
             }
@@ -387,9 +390,9 @@
                 [ 0x0010, 0x0200, 0x4000 ]
             ];
 
-            var sched = schedules[ student.id ][ schedules[ student.id ].length - 1 ].schedule;
+            var sched = schedules[ student.Id ][ schedules[ student.Id ].length - 1 ].Schedule;
             var $tr   = $( '<tr>' );
-            $tr.append( $( '<td>' ).text( student.family_name + ', ' + student.first_name ) );
+            $tr.append( $( '<td>' ).text( student.FamilyName + ', ' + student.FirstName ) );
             for ( var i = 0; i < 5; i++ ) {
                 var $td = buildDayCell( sched, decoder[ i ] );
                 $tr.append( $td );
@@ -416,9 +419,9 @@
         $( '#tabs' ).tabs();
         AttendanceTab.init( '#attendance-tab' );
         SigninTab.init( '#signin-tab' );
-//        Classrooms.load();
-//        Students.load();
-//        Schedules.load();
+        Classrooms.load();
+        Students.load();
+        Schedules.load();
     } );
 
 
