@@ -491,9 +491,10 @@
 
                 "dataType": "json",
                 "success" : function ( json ) {
+                    console.log( json );
                     Attend.loadAnother();
                     $.ajax( {
-                        'url'    : 'api/students/' + json,
+                        'url'    : 'api/students/' + json.Id,
                         'method' : 'get',
                         'success': function ( json ) {
                             console.log( json );
@@ -508,7 +509,7 @@
                                 "dataType": "json",
                                 "success" : function ( json ) {
                                     $.ajax( {
-                                        'url'    : 'api/schedules/' + json,
+                                        'url'    : 'api/schedules/' + json.Id,
                                         'method' : 'get',
                                         'success': function ( json ) {
                                             console.log( json );

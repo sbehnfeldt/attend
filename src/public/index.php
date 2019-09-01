@@ -227,7 +227,7 @@ $app->get('/api/schedules',
 
 $app->post('/api/schedules',
     function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        $id       = $engine->postStudent($request->getParsedBody());
+        $id       = $engine->postSchedule($request->getParsedBody());
         $response = $response->withStatus(201, 'Created');
         $response = $response->withHeader('Content-Type', 'application/json');
         $response->getBody()->write(json_encode($id));

@@ -7,6 +7,16 @@
     <script src="js/index.js"></script>
 {% endblock %}
 
+{% block styles %}
+    {{ parent() }}
+    <style>
+        a.pdf {
+            color: green;
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+
 {% block main %}
 
     <div id="tabs">
@@ -22,7 +32,7 @@
                 <h2>Attendance</h2>
                 <div class="controls">
                     Week Of: <input type="text" name="week-of"/>
-                    <a id="pdf-attendance" href="pdf.php?attendance" target="_blank">PDF</a>
+                    <a class="pdf" id="pdf-attendance" href="pdf.php?attendance" target="_blank">PDF</a>
                 </div>
             </header>
 
@@ -34,7 +44,7 @@
                 <h2>Sign In</h2>
                 <div class="controls">
                     Week Of: <input type="text" name="week-of"/>
-                    <a id="pdf-signin" href="pdf.php?signin" target="_blank">PDF</a>
+                    <a class="pdf" id="pdf-signin" href="pdf.php?signin" target="_blank">PDF</a>
                 </div>
             </header>
 
