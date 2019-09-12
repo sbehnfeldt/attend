@@ -127,6 +127,7 @@
                     }
                 } );
             },
+            "order"  : [ [ 1, 'asc' ] ],
             "select" : true,
             "columns": [
                 { "data": "Id" },
