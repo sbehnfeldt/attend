@@ -241,7 +241,7 @@
         function redrawRow( newData ) {
             table.rows().every( function ( /* rowIdx, tableLoop, rowLoop */ ) {
                 var data = this.data();
-                if ( data.id == newData.id ) {
+                if ( data.Id == newData.Id ) {
                     this.data( newData );
                 }
             } );
@@ -438,14 +438,16 @@
                 student,
                 map;
 
-            id      = $self.find( '[name=id]' ).val();
+//            id      = $self.find( '[name=id]' ).val();
+            id      = $studentId.val();
             student = {
                 "FamilyName" : $familyName.val(),
                 "FirstName"  : $firstName.val(),
                 "Enrolled"   : ('on' === $enrolled.val()) ? 1 : 0,
-                "ClassroomId": JSON.stringify( {
-                    'data': ($classrooms.val() ? $classrooms.val() : null)
-                } )
+//                "ClassroomId": JSON.stringify( {
+//                    'data': ($classrooms.val() ? $classrooms.val() : null)
+//                } )
+                "ClassroomId": $classrooms.val() ? $classrooms.val() : null
             };
 
             map = 0;
@@ -473,8 +475,8 @@
                 } else {
                     // Update student, add new schedule
                     update( id, student, {
-                        start_date: $startDate.val(),
-                        schedule  : map
+                        StartDate: $startDate.val(),
+                        Schedule : map
                     } );
                 }
             }
@@ -555,16 +557,17 @@
                 "method": "put",
                 "data"  : student,
 
-                "success": function () {
-                    student.id           = id;
-                    student.classroom_id = JSON.parse( student.classroom_id ).data;
+                "success": function ( json ) {
+                    student.Id = id;
+//                    student.ClassroomId = JSON.parse( student.ClassroomId ).data;
+
                     EnrollmentTab.redrawRow( student );
                     if ( schedule ) {
-                        schedule.student_id = id;
+                        schedule.StudentId = id;
 
                         var d1 = $startDate.val();
                         for ( var i = 0; i < Schedules.records[ id ].length; i++ ) {
-                            if ( d1 === Schedules.records[ id ][ i ].start_date ) {
+                            if ( d1 === Schedules.records[ id ][ i ].StartDate ) {
                                 break;
                             }
                         }
