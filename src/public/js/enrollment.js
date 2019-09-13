@@ -414,7 +414,7 @@
             $list.removeClass( 'hidden' );
             for ( var i = 0; i < Schedules.records[ student.Id ].length; i++ ) {
                 var s = Schedules.records[ student.Id ][ i ];
-                $opt  = $( '<option>' ).text( s.StartDate ).val( s.Id );
+                $opt  = $( '<option>' ).text( s.StartDate.split( 'T' )[ 0 ] ).val( s.Id );
                 $list.append( $opt );
             }
             $list.trigger( 'change' );
@@ -438,15 +438,11 @@
                 student,
                 map;
 
-//            id      = $self.find( '[name=id]' ).val();
             id      = $studentId.val();
             student = {
                 "FamilyName" : $familyName.val(),
                 "FirstName"  : $firstName.val(),
-                "Enrolled"   : ('on' === $enrolled.val()) ? 1 : 0,
-//                "ClassroomId": JSON.stringify( {
-//                    'data': ($classrooms.val() ? $classrooms.val() : null)
-//                } )
+                "Enrolled"   : (true === $enrolled.prop( 'checked' )) ? 1 : 0,
                 "ClassroomId": $classrooms.val() ? $classrooms.val() : null
             };
 
@@ -559,7 +555,6 @@
 
                 "success": function ( json ) {
                     student.Id = id;
-//                    student.ClassroomId = JSON.parse( student.ClassroomId ).data;
 
                     EnrollmentTab.redrawRow( student );
                     if ( schedule ) {
@@ -567,16 +562,16 @@
 
                         var d1 = $startDate.val();
                         for ( var i = 0; i < Schedules.records[ id ].length; i++ ) {
-                            if ( d1 === Schedules.records[ id ][ i ].StartDate ) {
+                            if ( d1 === Schedules.records[ id ][ i ].StartDate.split( 'T' )[ 0 ] ) {
                                 break;
                             }
                         }
                         if ( i < Schedules.records[ id ].length ) {
                             // Update existing schedule
-                            schedule.id = Schedules.records[ id ][ i ].id;
+                            schedule.Id = Schedules.records[ id ][ i ].Id;
                             Attend.loadAnother();
                             $.ajax( {
-                                "url"   : "api/schedules/" + schedule.id,
+                                "url"   : "api/schedules/" + schedule.Id,
                                 "method": "put",
                                 "data"  : schedule,
 
@@ -602,7 +597,7 @@
                                 "dataType": "json",
                                 "success" : function ( json ) {
                                     console.log( json );
-                                    schedule.id = json;
+                                    schedule.Id = json.Id;
                                     Schedules.insert( schedule );
                                     Attend.doneLoading();
                                 },
