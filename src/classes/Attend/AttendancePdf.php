@@ -114,6 +114,14 @@ class AttendancePdf extends AttendPdf
                 }
             }
         }
+
+        // Output a few blank rows, for drop-ins
+        for ($i = 0; $i < 3; $i++) {
+            for ($j = 0; $j < 7; $j++) {
+                $this->Cell($this->colWidths[ $j ], $this->rowHeight, '', 1, 0);
+            }
+            $this->ln();
+        }
         $this->outputStudentCount($totals);
     }
 

@@ -120,6 +120,22 @@ class SigninPdf extends AttendPdf
         foreach ($class[ 'students' ] as $studentId) {
             $this->outputStudent($studentId);
         }
+
+        // Output a few blank rows, for drop-ins
+        for ($j = 0; $j < 3; $j++) {
+            $this->Cell($this->colWidths[ 0 ], $this->rowHeight, '', 1, 0);
+            for ($i = 0; $i < 5; $i++) {
+                $x = $this->GetX();
+                $y = $this->GetY();
+                $this->SetDrawColor(175, 175, 175);
+                $this->Line($x, $y + ($this->getRowHeight() / 2), $x + $this->colWidths[ $i + 1 ],
+                    $y + ($this->getRowHeight() / 2));
+                $this->SetDrawColor(0, 0, 0);
+                $this->Cell($this->colWidths[ $i + 1 ] / 2, $this->getRowHeight(), "", 1, 0, 'C', false);
+                $this->Cell($this->colWidths[ $i + 1 ] / 2, $this->getRowHeight(), "", 1, 0, 'C', false);
+            }
+            $this->ln();
+        }
     }
 
     private function outputStudent($studentId)
