@@ -12,14 +12,14 @@ use Psr\Http\Message\ResponseInterface;
  * Main Script
  ********************************************************************************/
 
-require('../lib/bootstrap.php');
+require '../lib/bootstrap.php';
 $config = bootstrap();
 
 $dependencies = new Container([
     'settings' => $config
 ]);
 
-$app = new App(new $dependencies);
+$app = new App($dependencies);
 
 $engine = new PropelEngine();
 $engine->connect($config[ 'db' ]);
