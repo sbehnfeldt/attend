@@ -337,7 +337,7 @@
     })( '#classroom-props-dlg' );
 
     $( function () {
-        $( '#tabs' ).tabs();
+        $( '#tabs' ).tabs().show();
     } );
 
 })( this, jQuery );

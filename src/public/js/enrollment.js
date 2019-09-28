@@ -629,7 +629,6 @@
 
 
     $( function () {
-        $( '#tabs' ).tabs();
 
         Attend.loadAnother();
         $.ajax( {
@@ -667,5 +666,6 @@
             }
         } )
     } );
+    $( '#tabs' ).tabs().show();
 
 })( this, jQuery );
