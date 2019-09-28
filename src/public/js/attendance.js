@@ -16,7 +16,7 @@
 
         let $weekOf = $( 'input[name=week-of]' );
         $weekOf.datepicker();
-        $( 'td' ).each( function ( idx, td ) {
+        $( 'table.attendance-table td' ).each( function ( idx, td ) {
             if ( !$( this ).text().trim() ) {
                 $( this ).addClass( 'dark' );
             }

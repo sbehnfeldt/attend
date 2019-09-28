@@ -150,7 +150,37 @@
                 </div>
             </header>
 
-            <section class="attendance-page-signin"></section>
+            <section class="attendance-page-signin">
+                {% for classroom in classrooms %}
+                    <h3>{{ classroom.label }}</h3>
+
+                    <table class="signin-table table table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Mon</th>
+                            <th>Tue</th>
+                            <th>Wed</th>
+                            <th>Thu</th>
+                            <th>Fri</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for student in classroom.getStudents %}
+                            {% set notes = {'FD' : 0, 'HD' : 0, 'HDL' : 0 } %}
+                            <tr>
+                                <td>{{ student.getFamilyName }}, {{ student.getFirstName }}</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endfor %}
+            </section>
         </section>
     </div>
 {% endblock %}
