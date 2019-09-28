@@ -149,7 +149,7 @@ $app->get('/attendance', function (ServerRequestInterface $request, ResponseInte
     $query      = new ClassroomQuery();
     $classrooms = $query->find();
     $response->getBody()->write($twig->render('attendance.html.twig', [
-        'weekOf'     => $weekOf->format('Y-m-d'),
+        'weekOf'     => $weekOf->format('Y/m/d'),
         'classrooms' => $classrooms
     ]));
 
