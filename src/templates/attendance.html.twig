@@ -1,0 +1,157 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Attend | Attendance{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script src="js/attendance.js"></script>
+{% endblock %}
+
+{% block styles %}
+    {{ parent() }}
+    <style>
+        a.pdf {
+            color: green;
+            text-decoration: underline;
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+
+    <div id="tabs">
+        <ul>
+            <li><a href="#attendance-tab">Attendance</a></li>
+            <li><a href="#signin-tab">Sign-In</a></li>
+        </ul>
+
+        <!-- Attendance Tab -->
+        <section id="attendance-tab">
+
+            <header class="page-header">
+                <h2>Attendance</h2>
+                <div class="controls">
+                    Week Of: <input type="text" name="week-of" value="{{ weekOf }}"/>
+                    <a class="pdf" id="pdf-attendance" href="pdf.php?attendance" target="_blank">PDF</a>
+                </div>
+            </header>
+
+            <section class="attendance-page-schedules">
+                {% for classroom in classrooms %}
+                    <h3>{{ classroom.label }}</h3>
+
+                    <table class="attendance-table table table-striped table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Mon</th>
+                            <th>Tue</th>
+                            <th>Wed</th>
+                            <th>Thu</th>
+                            <th>Fri</th>
+                            <th>Summary</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for student in classroom.getStudents %}
+                            {% set notes = {'FD' : 0, 'HD' : 0, 'HDL' : 0 } %}
+                            <tr>
+                                <td>{{ student.getFamilyName }}, {{ student.getFirstName }}</td>
+                                <td>{% set t = schedule(weekOf, student.getSchedules, 0 ) %}
+                                    {% if 'FD' == t %}
+                                        {% set notes = {'FD' : notes.FD  + 1, 'HD' : notes.HD, 'HDL' : notes.HDL } %}
+                                    {% elseif 'HD' == t %}
+                                        {% set notes = {'FD' : notes.FD, 'HD' : notes.HD + 1, 'HDL' : notes.HDL } %}
+                                    {% elseif 'HDL' == t %}
+                                        {% set notes = {'FD' : notes.FD, 'HD' : notes.HD, 'HDL' : notes.HDL + 1} %}
+                                    {% else %}
+                                        {#no op#}
+                                    {% endif %}
+                                    {{ t }}
+                                </td>
+                                <td>{% set t = schedule(weekOf, student.getSchedules, 1 ) %}
+                                    {% if 'FD' == t %}
+                                        {% set notes = {'FD' : notes.FD  + 1, 'HD' : notes.HD, 'HDL' : notes.HDL } %}
+                                    {% elseif 'HD' == t %}
+                                        {% set notes = {'FD' : notes.FD, 'HD' : notes.HD + 1, 'HDL' : notes.HDL } %}
+                                    {% elseif 'HDL' == t %}
+                                        {% set notes = {'FD' : notes.FD, 'HD' : notes.HD, 'HDL' : notes.HDL + 1} %}
+                                    {% else %}
+                                        {#no op#}
+                                    {% endif %}
+                                    {{ t }}
+                                </td>
+                                <td>{% set t = schedule(weekOf, student.getSchedules, 2 ) %}
+                                    {% if 'FD' == t %}
+                                        {% set notes = {'FD' : notes.FD  + 1, 'HD' : notes.HD, 'HDL' : notes.HDL } %}
+                                    {% elseif 'HD' == t %}
+                                        {% set notes = {'FD' : notes.FD, 'HD' : notes.HD + 1, 'HDL' : notes.HDL } %}
+                                    {% elseif 'HDL' == t %}
+                                        {% set notes = {'FD' : notes.FD, 'HD' : notes.HD, 'HDL' : notes.HDL + 1} %}
+                                    {% else %}
+                                        {#no op#}
+                                    {% endif %}
+                                    {{ t }}
+                                </td>
+                                <td>{% set t = schedule(weekOf, student.getSchedules, 3 ) %}
+                                    {% if 'FD' == t %}
+                                        {% set notes = {'FD' : notes.FD  + 1, 'HD' : notes.HD, 'HDL' : notes.HDL } %}
+                                    {% elseif 'HD' == t %}
+                                        {% set notes = {'FD' : notes.FD, 'HD' : notes.HD + 1, 'HDL' : notes.HDL } %}
+                                    {% elseif 'HDL' == t %}
+                                        {% set notes = {'FD' : notes.FD, 'HD' : notes.HD, 'HDL' : notes.HDL + 1} %}
+                                    {% else %}
+                                        {#no op#}
+                                    {% endif %}
+                                    {{ t }}
+                                </td>
+                                <td>{% set t = schedule(weekOf, student.getSchedules, 4 ) %}
+                                    {% if 'FD' == t %}
+                                        {% set notes = {'FD' : notes.FD  + 1, 'HD' : notes.HD, 'HDL' : notes.HDL } %}
+                                    {% elseif 'HD' == t %}
+                                        {% set notes = {'FD' : notes.FD, 'HD' : notes.HD + 1, 'HDL' : notes.HDL } %}
+                                    {% elseif 'HDL' == t %}
+                                        {% set notes = {'FD' : notes.FD, 'HD' : notes.HD, 'HDL' : notes.HDL + 1} %}
+                                    {% else %}
+                                        {#no op#}
+                                    {% endif %}
+                                    {{ t }}
+                                </td>
+                                <td>{% set summary  = [] %}
+                                    {% if notes.FD %}
+                                        {% set summary = summary|merge([notes.FD ~ 'FD']) %}
+                                    {% endif %}
+                                    {% if notes.HD %}
+                                        {% set summary = summary|merge([notes.HD ~ 'HD']) %}
+                                    {% endif %}
+                                    {% if notes.HDL %}
+                                        {% set summary = summary|merge([notes.HDL ~ 'HDL']) %}
+                                    {% endif %}
+                                    {{ summary|join(',') }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+
+                        </tbody>
+                    </table>
+
+                    </ul>
+
+                {% endfor %}
+            </section>
+        </section>
+
+        <section id="signin-tab">
+            <header class="page-header">
+                <h2>Sign In</h2>
+                <div class="controls">
+                    Week Of: <input type="text" name="week-of"/>
+                    <a class="pdf" id="pdf-signin" href="pdf.php?signin" target="_blank">PDF</a>
+                </div>
+            </header>
+
+            <section class="attendance-page-signin"></section>
+        </section>
+    </div>
+{% endblock %}
+

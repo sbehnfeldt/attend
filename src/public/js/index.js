@@ -416,12 +416,12 @@
 
     $( function () {
         console.log( "Index page ready" );
-        $( '#tabs' ).tabs();
         AttendanceTab.init( '#attendance-tab' );
         SigninTab.init( '#signin-tab' );
         Classrooms.load();
         Students.load();
         Schedules.load();
+        $( '#tabs' ).tabs().show();
     } );
 
 

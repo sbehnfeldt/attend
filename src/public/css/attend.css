@@ -134,3 +134,7 @@ button.disabled span {
         transform: rotate(360deg);
     }
 }
+
+#tabs {
+    display: none;
+}
