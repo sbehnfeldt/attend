@@ -136,6 +136,13 @@ $app->get('/attendance', function (ServerRequestInterface $request, ResponseInte
 
     }));
 
+    $twig->addFunction(new TwigFunction('getDate', function ($weekOf, $d) {
+        $weekOf = new \DateTime($weekOf);
+        $weekOf->add(new \DateInterval(sprintf('P%dD', $d)));
+
+        return $weekOf->format('M j');
+    }));
+
     $weekOf = new \DateTime('now');
     $weekOf = getMonday($weekOf);
 
