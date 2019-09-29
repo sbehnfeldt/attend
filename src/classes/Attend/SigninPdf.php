@@ -89,6 +89,7 @@ class SigninPdf extends AttendPdf
         $this->SetFont('Arial', '', 10);
         $this->AliasNbPages();
         $this->colWidths = [55, 45, 45, 45, 45, 45];
+        $this->SetFillColor(200);
 
         foreach ($this->classes as $class) {
             usort($class[ 'students' ], function ($id1, $id2) {
@@ -166,8 +167,8 @@ class SigninPdf extends AttendPdf
             $this->Line($x, $y + ($this->getRowHeight() / 2), $x + $this->colWidths[ $i + 1 ],
                 $y + ($this->getRowHeight() / 2));
             $this->SetDrawColor(0, 0, 0);
-            $this->Cell($this->colWidths[ $i + 1 ] / 2, $this->getRowHeight(), "", 1, 0, 'C', false);
-            $this->Cell($this->colWidths[ $i + 1 ] / 2, $this->getRowHeight(), "", 1, 0, 'C', false);
+            $this->Cell($this->colWidths[ $i + 1 ] / 2, $this->getRowHeight(), "", 1, 0, 'C', $this->getDark($i));
+            $this->Cell($this->colWidths[ $i + 1 ] / 2, $this->getRowHeight(), "", 1, 0, 'C', $this->getDark($i));
         }
         $this->ln();
     }

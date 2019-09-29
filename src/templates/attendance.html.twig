@@ -80,12 +80,26 @@
         <section id="signin-tab">
             <header class="page-header">
                 <h2>Sign In</h2>
-                <div class="controls">
-                    Week Of: <input type="text" name="week-of" value="{{ weekOf.format( 'm/d/Y') }}"/>
-                    <a class="pdf" id="pdf-attendance" href="pdf.php?signin&week={{ weekOf.format( 'm/d/Y') }}"
-                       target="_blank">PDF</a>
-
-                </div>
+                <form action="">
+                    <div class="controls">
+                        Week Of: <input type="text" name="week-of" value="{{ weekOf.format( 'm/d/Y') }}"/>
+                        <a class="pdf" id="pdf-attendance" href="pdf.php?signin&week={{ weekOf.format( 'm/d/Y') }}"
+                           target="_blank">PDF</a>
+                        <div class="options">
+                            <div>Print Options</div>
+                            <div>Dark Days</div>
+                            <div><input type="checkbox" name="dark[]" value="0"> Monday</div>
+                            <div><input type="checkbox" name="dark[]" value="1"> Tuesday</div>
+                            <div><input type="checkbox" name="dark[]" value="2"> Wednesday</div>
+                            <div><input type="checkbox" name="dark[]" value="3"> Thursday</div>
+                            <div><input type="checkbox" name="dark[]" value="4"> Friday</div>
+                        </div>
+                        <div>
+                            <button name="options">Options</button>
+                            <button name="pdf">PDF</button>
+                        </div>
+                    </div>
+                </form>
             </header>
 
             <section class="attendance-page-signin">

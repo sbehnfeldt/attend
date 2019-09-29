@@ -14,6 +14,7 @@ class AttendPdf extends \FPDF
     protected $classes;
     protected $students;
     protected $schedules;
+    protected $dark;
     protected static $decoder = [
         [0x0001, 0x0020, 0x0400],
         [0x0002, 0x0040, 0x0800],
@@ -48,6 +49,7 @@ class AttendPdf extends \FPDF
         $this->headerHeight = 5;
         $this->rowHeight    = 10;
         $this->weekOf       = new \DateTime();
+        $this->dark         = [false, false, false, false, false];
         parent::__construct($orientation, $unit, $size);
     }
 
@@ -165,6 +167,21 @@ class AttendPdf extends \FPDF
         $this->weekOf = new \DateTime($weekOf);
     }
 
+    public function setDark($i)
+    {
+        $this->dark[ $i ] = true;
+    }
+
+    public function clearDark($i)
+    {
+        $this->dark[ $i ] = false;
+    }
+
+    public function getDark($i)
+    {
+        return $this->dark[ $i ];
+    }
+
     /**
      * @return array
      */
@@ -234,7 +251,7 @@ class AttendPdf extends \FPDF
     protected function prepare()
     {
         $this->classes = [];
-        $classes = $this->getEngine()->getClassrooms();
+        $classes       = $this->getEngine()->getClassrooms();
         for ($i = 0; $i < count($classes); $i++) {
             $class                           = $classes[ $i ];
             $class[ 'students' ]             = [];

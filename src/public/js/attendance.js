@@ -1,6 +1,27 @@
 ;(function ( global, $ ) {
     'use strict';
 
+    let SigninTab = (function ( selector ) {
+        let $tab     = $( selector );
+        let $form    = $tab.find( 'form' );
+        let $weekOf  = $form.find( 'input[name=week-of]' );
+        let $dark    = $form.find( 'input[type=checkbox]' );
+        let $options = $form.find( 'button[name=options]' );
+        let $pdf     = $form.find( 'button[name=pdf]' );
+
+        $options.on( 'click', function () {
+            alert( "Options" );
+        } );
+        $pdf.on( 'click', function () {
+            window.location = 'signin.php?week=' + $weekOf.val() + '&' + $dark.serialize();
+        } );
+        $form.on( 'submit', function () {
+            return false;
+        } );
+
+    })( '#signin-tab' );
+
+
     $( function () {
         console.log( 'Document loaded.' );
         $( 'table.attendance-table' ).DataTable( {
