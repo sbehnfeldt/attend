@@ -83,74 +83,20 @@ $app->get('/attendance', function (ServerRequestInterface $request, ResponseInte
     $twig   = new \Twig_Environment($loader, array(
         'cache' => false
     ));
-    $notes  = [
-        'FD'  => 0,
-        'HD'  => 0,
-        'HDL' => 0
-    ];
-    $twig->addGlobal('notes', $notes);
-    $foo = 1;
 
-    $twig->addFunction(new TwigFunction('schedule', function ($weekOf, $schedules, $day) use ($notes, $foo) {
-        $decoder = [
-            [0x0001, 0x0020, 0x0400],
-            [0x0002, 0x0040, 0x0800],
-            [0x0004, 0x0080, 0x1000],
-            [0x0008, 0x0100, 0x2000],
-            [0x0010, 0x0200, 0x4000]
-        ][ $day ];
-        $foo++;
+    // Get the text version of the date, suitable for column header
+    $twig->addFunction(new TwigFunction('getDate', function (\DateTime $weekOf, int $d) {
+        $w = new \DateTime($weekOf->format('Y/m/d'));
+        $w->add(new \DateInterval(sprintf('P%dD', $d)));
 
-
-        // TODO: Instead of taking just the most recent schedule, search through them for the one matching the week of
-        $code = $schedules[ $schedules->count() - 1 ]->getSchedule();
-
-        if (($code & $decoder[ 0 ]) && ($code & $decoder[ 2 ])) {
-            $notes[ 'FD' ]++;
-
-            return 'FD';
-        } else if ($code & $decoder[ 0 ]) {
-            if ($code & $decoder[ 1 ]) {
-                $notes[ 'HDL' ]++;
-
-                return 'HDL';
-            } else {
-                $notes[ 'HD' ]++;
-
-                return 'HD';
-            }
-
-        } else if ($code & $decoder[ 2 ]) {
-            if ($code & $decoder[ 1 ]) {
-                $notes[ 'HDL' ]++;
-
-                return 'HDL';
-            } else {
-                $notes[ 'HD' ]++;
-
-                return 'HD';
-            }
-        } else {
-            return '';
-        }
-
-    }));
-
-    $twig->addFunction(new TwigFunction('getDate', function ($weekOf, $d) {
-        $weekOf = new \DateTime($weekOf);
-        $weekOf->add(new \DateInterval(sprintf('P%dD', $d)));
-
-        return $weekOf->format('M j');
+        return $w->format('M j');
     }));
 
     $weekOf = new \DateTime('now');
     $weekOf = getMonday($weekOf);
-
-    $query      = new ClassroomQuery();
-    $classrooms = $query->find();
     $response->getBody()->write($twig->render('attendance.html.twig', [
-        'weekOf'     => $weekOf->format('Y/m/d'),
-        'classrooms' => $classrooms
+        'classrooms' => ClassroomQuery::create()->find(),
+        'weekOf'     => $weekOf
     ]));
 
     return $response;
