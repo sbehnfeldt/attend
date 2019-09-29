@@ -94,6 +94,12 @@ button.disabled span {
 
 form div.options {
     display: none;
+    padding: 5px;
+}
+
+form div.options div.col-xs-12,
+form div.options div.col-md-3 {
+    border: 1px solid #222222;
 }
 
 #loading {
