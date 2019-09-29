@@ -34,7 +34,7 @@ function getMonday(\DateTime $d)
         case 6:  // Saturday
             $d = $d->add(new \DateInterval('P2D'));
             break;
-        case 6:  // Saturday
+        case 7:  // Sunday
             $d = $d->add(new \DateInterval('P1D'));
             break;
 
