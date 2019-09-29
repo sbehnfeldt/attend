@@ -10,7 +10,7 @@
         let $pdf     = $form.find( 'button[name=pdf]' );
 
         $options.on( 'click', function () {
-            alert( "Options" );
+            $form.find( '.options' ).toggle();
         } );
         $pdf.on( 'click', function () {
             window.location = 'signin.php?week=' + $weekOf.val() + '&' + $dark.serialize();

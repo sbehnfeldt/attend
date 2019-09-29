@@ -92,6 +92,10 @@ button.disabled span {
     background-color: #777;
 }
 
+form div.options {
+    display: none;
+}
+
 #loading {
     position: fixed;
     top: 0;

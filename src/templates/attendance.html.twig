@@ -83,8 +83,6 @@
                 <form action="">
                     <div class="controls">
                         Week Of: <input type="text" name="week-of" value="{{ weekOf.format( 'm/d/Y') }}"/>
-                        <a class="pdf" id="pdf-attendance" href="pdf.php?signin&week={{ weekOf.format( 'm/d/Y') }}"
-                           target="_blank">PDF</a>
                         <div class="options">
                             <div>Print Options</div>
                             <div>Dark Days</div>
@@ -95,8 +93,8 @@
                             <div><input type="checkbox" name="dark[]" value="4"> Friday</div>
                         </div>
                         <div>
-                            <button name="options">Options</button>
                             <button name="pdf">PDF</button>
+                            <button name="options">Options</button>
                         </div>
                     </div>
                 </form>
