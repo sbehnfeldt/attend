@@ -126,8 +126,7 @@ class PropelEngine implements IDatabaseEngine
         $resource->setFamilyName($body[ 'FamilyName' ]);
         $resource->setFirstName($body[ 'FirstName' ]);
         $resource->setEnrolled($body[ 'Enrolled' ]);
-        $temp = json_decode($body[ 'ClassroomId' ]);
-        $resource->setClassroomId($temp->data);
+        $resource->setClassroomId($body[ 'ClassroomId' ]);
         $resource->save();
 
         return $resource->toArray();
