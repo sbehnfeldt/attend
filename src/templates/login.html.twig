@@ -1,0 +1,94 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login</title>
+    <style>
+        html {
+            box-sizing: border-box;
+            font-size: 20px;
+            line-height: 1.6;
+            font-family: Arial, sans-serif;
+            color: #878787;
+        }
+
+        *, *::before, *::after {
+            box-sizing: inherit;
+            padding: 0;
+            margin: 0;
+        }
+
+        main {
+            margin: 1rem auto;
+            width: 90%;
+            max-width: 100%;
+        }
+
+        form {
+        }
+
+        select, option, input, label, button {
+            padding: 0.2rem 1rem;
+            font-size: 1.2rem;
+            color: inherit;
+        }
+
+        input[type=checkbox] {
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
+        .form-box {
+            margin: auto;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .form-box input[type=text],
+        .form-box input[type=password] {
+            flex-basis: 100%;
+        }
+
+        .form-box label {
+            display: none;
+        }
+
+        .form-box label.always {
+            display: initial;
+        }
+
+        .form-box button {
+
+        }
+    </style>
+</head>
+<body>
+Login, please
+<main>
+    <form action="login.php">
+        <input type="text" name="route" value="{{ route }}">
+
+        <div class="form-box">
+            <label for="">Name</label>
+            <input type="text" name="username" placeholder="User Name">
+        </div>
+
+        <div class="form-box">
+            <label for="">Password</label>
+            <input type="password" name="password" placeholder="Password">
+        </div>
+
+        <div class="form-box">
+            <input type="checkbox" name="remember" placeholder="Remember Me">
+            <label class="always" for="">Remember Me</label>
+        </div>
+
+        <div class="form-box">
+            <button>Submit</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>

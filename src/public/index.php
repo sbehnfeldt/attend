@@ -1,14 +1,16 @@
 <?php
+
 namespace Attend;
 
 
-use Attend\Database\ClassroomQuery;
-use Attend\PropelEngine\PropelEngine;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Container;
 use Slim\App;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
+use Slim\Route;
 use Twig\TwigFunction;
+use Attend\PropelEngine\PropelEngine;
+use Attend\Database\ClassroomQuery;
 
 
 // Find the DateTime object representing the Monday closest to the input date
@@ -52,35 +54,60 @@ function getMonday(\DateTime $d)
  ********************************************************************************/
 
 require '../lib/bootstrap.php';
-$config                          = bootstrap();
-$config[ 'displayErrorDetails' ] = true;
-$dependencies                    = new Container([
+$config = bootstrap();
+$config['displayErrorDetails'] = true;
+$config['determineRouteBeforeAppMiddleware'] = true;
+$dependencies = new Container([
     'settings' => $config
 ]);
+$dependencies['errorHandler'] = function ($c) {
+    return function (Request $request, Response $response, \Exception $exception) use ($c) {
+        return $response->withStatus(500)
+            ->withHeader('Content-Type', 'text/html')
+            ->write('Something went wrong!');
+    };
+};
 
 $app = new App($dependencies);
 
 $engine = new PropelEngine();
-$engine->connect($config[ 'db' ]);
+$engine->connect($config['db']);
+
+
+// Middleware to ensure user is logged in
+$login = function (Request $request, Response $response, $next) {
+    if (empty($_SESSION['account'])) {
+        $loader = new \Twig_Loader_Filesystem('../templates');
+        $twig = new \Twig_Environment($loader, array(
+            'cache' => false
+        ));
+
+        $response->getBody()->write($twig->render('login.html.twig', [
+            'route' => $_SERVER['CONTEXT_PREFIX'] . $request->getAttribute('route')->getPattern()
+        ]));
+        return $response;
+    }
+    $response = $next($request, $response);
+    return $response;
+};
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Routing for Web App Pages
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-$app->get('/', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
+$app->get('/', function (Request $request, Response $response, array $args) {
     $loader = new \Twig_Loader_Filesystem('../templates');
-    $twig   = new \Twig_Environment($loader, array(
+    $twig = new \Twig_Environment($loader, array(
         'cache' => false
     ));
-
     $response->getBody()->write($twig->render('index.html.twig', []));
-
     return $response;
-});
+})->add($login);
 
 
-$app->get('/attendance', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
+$app->get('/attendance', function (Request $request, Response $response, array $args) {
     $loader = new \Twig_Loader_Filesystem('../templates');
-    $twig   = new \Twig_Environment($loader, array(
+    $twig = new \Twig_Environment($loader, array(
         'cache' => false
     ));
 
@@ -88,7 +115,6 @@ $app->get('/attendance', function (ServerRequestInterface $request, ResponseInte
     $twig->addFunction(new TwigFunction('getDate', function (\DateTime $weekOf, int $d) {
         $w = new \DateTime($weekOf->format('Y/m/d'));
         $w->add(new \DateInterval(sprintf('P%dD', $d)));
-
         return $w->format('M j');
     }));
 
@@ -96,34 +122,32 @@ $app->get('/attendance', function (ServerRequestInterface $request, ResponseInte
     $weekOf = getMonday($weekOf);
     $response->getBody()->write($twig->render('attendance.html.twig', [
         'classrooms' => ClassroomQuery::create()->find(),
-        'weekOf'     => $weekOf
+        'weekOf' => $weekOf
     ]));
-
     return $response;
-});
+})->add($login);
 
 
-$app->get('/enrollment', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
+$app->get('/enrollment', function (Request $request, Response $response, array $args) {
     $loader = new \Twig_Loader_Filesystem('../templates');
-    $twig   = new \Twig_Environment($loader, array(
+    $twig = new \Twig_Environment($loader, array(
         'cache' => false
     ));
 
     $response->getBody()->write($twig->render('enrollment.html.twig', []));
-
     return $response;
-});
+})->add($login);
 
-$app->get('/classrooms', function (ServerRequestInterface $request, ResponseInterface $response, array $args) {
+
+$app->get('/classrooms', function (Request $request, Response $response, array $args) {
     $loader = new \Twig_Loader_Filesystem('../templates');
-    $twig   = new \Twig_Environment($loader, array(
+    $twig = new \Twig_Environment($loader, array(
         'cache' => false
     ));
-
     $response->getBody()->write($twig->render('classrooms.html.twig', []));
-
     return $response;
-});
+})->add($login);
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Routing for API
@@ -131,8 +155,8 @@ $app->get('/classrooms', function (ServerRequestInterface $request, ResponseInte
 
 // Classrooms
 $app->get('/api/classrooms/{id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        $resource = $engine->getClassroomById($args[ 'id' ]);
+    function (Request $request, Response $response, array $args) use ($engine) {
+        $resource = $engine->getClassroomById($args['id']);
         if (null === $resource) {
             return $response->withStatus(404, 'Not Found');
         }
@@ -144,7 +168,7 @@ $app->get('/api/classrooms/{id}',
     });
 
 $app->get('/api/classrooms',
-    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
+    function (Request $request, Response $response, array $args) use ($engine) {
         $results = $engine->getClassrooms();
 
         $response = $response->withStatus(200, 'OK');
@@ -155,7 +179,7 @@ $app->get('/api/classrooms',
     });
 
 $app->post('/api/classrooms',
-    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
+    function (Request $request, Response $response, array $args) use ($engine) {
         $results = $engine->postClassroom($request->getParsedBody());
         if (null === $results) {
             return $response->withStatus(404, 'Not Found');
@@ -169,8 +193,8 @@ $app->post('/api/classrooms',
     });
 
 $app->put('/api/classrooms/{id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        $results = $engine->putClassroomById($args[ 'id' ], $request->getParsedBody());
+    function (Request $request, Response $response, array $args) use ($engine) {
+        $results = $engine->putClassroomById($args['id'], $request->getParsedBody());
         if (null === $results) {
             return $response->withStatus(404, 'Not Found');
         }
@@ -182,8 +206,8 @@ $app->put('/api/classrooms/{id}',
     });
 
 $app->delete('/api/classrooms/{id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        if ( ! $engine->deleteClassroomById($args[ 'id' ])) {
+    function (Request $request, Response $response, array $args) use ($engine) {
+        if (!$engine->deleteClassroomById($args['id'])) {
             $response = $response->withStatus(404, 'Not Found');
 
             return $response;
@@ -197,8 +221,8 @@ $app->delete('/api/classrooms/{id}',
 
 // Students
 $app->get('/api/students/{id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        $results = $engine->getStudentById($args[ 'id' ]);
+    function (Request $request, Response $response, array $args) use ($engine) {
+        $results = $engine->getStudentById($args['id']);
         if (null === $results) {
             return $response->withStatus(404, 'Not Found');
         }
@@ -210,8 +234,8 @@ $app->get('/api/students/{id}',
     });
 
 $app->get('/api/students',
-    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        $results  = $engine->getStudents();
+    function (Request $request, Response $response, array $args) use ($engine) {
+        $results = $engine->getStudents();
         $response = $response->withStatus(200, 'OK');
         $response = $response->withHeader('Content-type', 'application/json');
         $response->getBody()->write(json_encode($results));
@@ -220,8 +244,8 @@ $app->get('/api/students',
     });
 
 $app->post('/api/students',
-    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        $id       = $engine->postStudent($request->getParsedBody());
+    function (Request $request, Response $response, array $args) use ($engine) {
+        $id = $engine->postStudent($request->getParsedBody());
         $response = $response->withStatus(201, 'Created');
         $response = $response->withHeader('Content-Type', 'application/json');
         $response->getBody()->write(json_encode($id));
@@ -230,20 +254,20 @@ $app->post('/api/students',
     });
 
 $app->put('/api/students/{id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        if ( ! $engine->putStudentById($args[ 'id' ], $request->getParsedBody())) {
+    function (Request $request, Response $response, array $args) use ($engine) {
+        if (!$engine->putStudentById($args['id'], $request->getParsedBody())) {
             return $response->withStatus(404, 'Not Found');
         }
         $response = $response->withStatus(200, 'OK');
         $response = $response->withHeader('Content-Type', 'application/json');
-        $response->getBody()->write(json_encode($args[ 'id' ]));
+        $response->getBody()->write(json_encode($args['id']));
 
         return $response;
     });
 
 $app->delete('/api/students/{id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        if ( ! $engine->deleteStudentById($args[ 'id' ])) {
+    function (Request $request, Response $response, array $args) use ($engine) {
+        if (!$engine->deleteStudentById($args['id'])) {
             $response = $response->withStatus(404, 'Not Found');
 
             return $response;
@@ -257,8 +281,8 @@ $app->delete('/api/students/{id}',
 
 // Schedules
 $app->get('/api/schedules/{id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        $results = $engine->getScheduleById($args[ 'id' ]);
+    function (Request $request, Response $response, array $args) use ($engine) {
+        $results = $engine->getScheduleById($args['id']);
         if (null === $results) {
             return $response->withStatus(404, 'Not Found');
         }
@@ -270,8 +294,8 @@ $app->get('/api/schedules/{id}',
     });
 
 $app->get('/api/schedules',
-    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        $results  = $engine->getSchedules($request, $response, $args);
+    function (Request $request, Response $response, array $args) use ($engine) {
+        $results = $engine->getSchedules($request, $response, $args);
         $response = $response->withStatus(200, 'OK');
         $response = $response->withHeader('Content-type', 'application/json');
         $response->getBody()->write(json_encode($results));
@@ -280,8 +304,8 @@ $app->get('/api/schedules',
     });
 
 $app->post('/api/schedules',
-    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        $id       = $engine->postSchedule($request->getParsedBody());
+    function (Request $request, Response $response, array $args) use ($engine) {
+        $id = $engine->postSchedule($request->getParsedBody());
         $response = $response->withStatus(201, 'Created');
         $response = $response->withHeader('Content-Type', 'application/json');
         $response->getBody()->write(json_encode($id));
@@ -290,19 +314,19 @@ $app->post('/api/schedules',
     });
 
 $app->put('/api/schedules/{id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
-        if ( ! $engine->putScheduleById($args[ 'id' ], $request->getParsedBody())) {
+    function (Request $request, Response $response, array $args) use ($engine) {
+        if (!$engine->putScheduleById($args['id'], $request->getParsedBody())) {
             return $response->withStatus(404, 'Not Found');
         }
         $response = $response->withStatus(200, 'OK');
         $response = $response->withHeader('Content-Type', 'application/json');
-        $response->getBody()->write(json_encode($args[ 'id' ]));
+        $response->getBody()->write(json_encode($args['id']));
 
         return $response;
     });
 
 $app->delete('/api/schedules/{id}',
-    function (ServerRequestInterface $request, ResponseInterface $response, array $args) use ($engine) {
+    function (Request $request, Response $response, array $args) use ($engine) {
         return $engine->deleteScheduleById($request, $response, $args);
     });
 
