@@ -24,11 +24,13 @@
 
             <tbody>
             {% for a in accounts %}
-                <td>{{ a.Id }}</td>
-                <td>{{ a.Username }}</td>
-                <td>{{ a.Pwhash }}</td>
-                <td>{{ a.Email }}</td>
-                <td>{{ a.Role }}</td>
+                <tr data-account="{{ a.toJson }}">
+                    <td>{{ a.Id }}</td>
+                    <td>{{ a.Username }}</td>
+                    <td>{{ a.Pwhash }}</td>
+                    <td>{{ a.Email }}</td>
+                    <td>{{ a.Role }}</td>
+                </tr>
             {% endfor %}
             </tbody>
         </table>
@@ -36,6 +38,7 @@
 
     <section class="dialog" id="accountPropsDlg" title="Account Properties">
         <form action="">
+            <input type="hidden" name="id">
             <div class="form-box">
                 <label for="">Username</label>
                 <input type="text" name="username" placeholder="Username">

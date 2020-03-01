@@ -362,4 +362,24 @@ $app->post('/api/accounts', function (Request $request, Response $response, arra
 
     return $response;
 });
+
+$app->put('/api/accounts/{id}', function (Request $request, Response $response, array $args = []) {
+    // Insert a new record into the Accounts table
+    $body = $request->getParsedBody();
+    $acct = AccountQuery::create()->findPk($body['id']);
+
+    $acct->setUsername($body['username']);
+    $acct->setEmail($body['email']);
+    if (!empty($body['password'])) {
+        $acct->setPwhash(password_hash($body['password'], PASSWORD_BCRYPT));
+    }
+    $acct->setRole($body['role']);
+    $acct->save();
+
+    $response = $response->withStatus(200, 'OK');
+    $response = $response->withHeader('Content-Type', 'application/json');
+    $response->getBody()->write(json_encode($acct->getId()));
+
+    return $response;
+});
 $app->run();

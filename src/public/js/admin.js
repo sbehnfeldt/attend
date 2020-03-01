@@ -19,8 +19,15 @@
                     }
                 }, {
                     text: 'Update',
+                    extend: 'selected',
                     action: function (e, dt, node, config) {
-                        alert("Update")
+                        console.log(dt);
+                        var selected = dt.rows({selected: true}).indexes();
+                        if (1 < selected.length) {
+                            alert("Can edit only 1 record at a time");
+                        } else {
+                            AcctDlg.clear().populate($(dt.rows(selected[0]).nodes()[0]).data('account')).open();
+                        }
                     }
                 }, {
                     text: 'Delete',
@@ -40,6 +47,7 @@
     let AcctDlg = (function () {
         let $dlg;
         let $form,
+            $id,
             $username,
             $password,
             $email,
@@ -48,6 +56,7 @@
         function init(selector) {
             $dlg = $(selector);
             $form = $dlg.find('form');
+            $id = $dlg.find('input[name=id]');
             $username = $form.find('input[name=username]');
             $password = $form.find('input[name=password]');
             $email = $form.find('input[name=email]');
@@ -60,24 +69,41 @@
                     Submit: function () {
                         console.log($dlg.find('form').serialize());
                         console.log($dlg.find('form').serializeArray());
-                        $.ajax({
-                            url: 'api/accounts',
-                            method: 'post',
-                            data: $dlg.find('form').serialize(),
+                        if ($id.val()) {
+                            $.ajax({
+                                url: 'api/accounts/' + $id.val(),
+                                method: 'put',
+                                data: $dlg.find('form').serialize(),
 
-                            success: function (success) {
-                                console.log('success');
-                                console.log(success);
-                            },
-                            error: function (xhr) {
-                                console.log('error');
-                                console.log(xhr);
-                            }
-                        });
+                                success: function (success) {
+                                    console.log('success');
+                                    console.log(success);
+                                },
+                                error: function (xhr) {
+                                    console.log('error');
+                                    console.log(xhr);
+                                }
+                            });
+
+                        } else {
+                            $.ajax({
+                                url: 'api/accounts',
+                                method: 'post',
+                                data: $dlg.find('form').serialize(),
+
+                                success: function (success) {
+                                    console.log('success');
+                                    console.log(success);
+                                },
+                                error: function (xhr) {
+                                    console.log('error');
+                                    console.log(xhr);
+                                }
+                            });
+                        }
                         $dlg.dialog('close');
                     },
                     Cancel: function () {
-                        alert("Cancel");
                         $dlg.dialog('close');
                     }
                 }
@@ -85,11 +111,23 @@
         }
 
         function clear() {
-            $username.val('');
-            $password.val('');
-            $email.val('');
-            $role.val('');
+            $id.val(undefined);
+            $username.val(undefined);
+            $password.val(undefined);
+            $email.val(undefined);
+            $role.val(undefined);
+            return this;
+        }
 
+        function populate(acct) {
+            console.log(acct);
+            $id.val(acct.Id);
+            console.log($id.val());
+            $username.val(acct.Username);
+
+            $password.val('');
+            $email.val(acct.Email);
+            $role.val(acct.Role);
             return this;
         }
 
@@ -100,6 +138,7 @@
         return {
             init: init,
             clear: clear,
+            populate: populate,
             open: open
         };
     })();
