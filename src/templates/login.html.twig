@@ -11,7 +11,7 @@
             font-size: 20px;
             line-height: 1.6;
             font-family: Arial, sans-serif;
-            color: #878787;
+            color: #474747;
         }
 
         *, *::before, *::after {
@@ -23,7 +23,15 @@
         main {
             margin: 1rem auto;
             width: 90%;
-            max-width: 100%;
+            max-width: 1000px;
+
+            background-color: #bae3f2;
+            padding: 2rem 3rem;
+            border: 2px double blue;
+        }
+
+        main p {
+            margin-bottom: 1.5rem;
         }
 
         form {
@@ -48,10 +56,15 @@
             margin-bottom: auto;
         }
 
-        .form-box {
+        .form-box,
+        .form-box1 {
+            padding: 0.5rem 0;
             margin: auto;
+        }
+
+        .form-box {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
         }
 
         .form-box input[type=text],
@@ -79,13 +92,46 @@
             color: orangered;
         }
 
+        @media all and (min-width: 500px) {
+            .form-box label {
+                display: block;
+            }
+        }
+
+        @media all and (min-width: 600px) {
+            .form-box {
+                flex-direction: row;
+            }
+
+            .form-box label {
+                flex-basis: 9rem;
+                flex-grow: 0;
+                flex-shrink: 0;
+            }
+
+            .form-box input {
+                flex-basis: 0;
+                flex-grow: 1;
+                flex-shrink: 1;
+            }
+
+            .form-box button {
+                margin-left: 9rem;
+            }
+
+            .form-box1 {
+
+            }
+
+        }
+
     </style>
 </head>
 <body>
-Login, please
 <main>
+    <p>Please enter your login username and password</p>
     <form action="login.php" method="post">
-        <input type="text" name="route" value="{{ route }}">
+        <input type="hidden" name="route" value="{{ route }}">
 
         <div class="form-box">
             <label for="">Name</label>
@@ -101,7 +147,7 @@ Login, please
             <p>Invalid credentials. Please check your username and password and try again.</p>
         </div>
 
-        <div class="form-box">
+        <div class="form-box1" style="display: none">
             <input type="checkbox" name="remember" {% if remember %}checked{% endif %}>
             <label class="always" for="">Remember Me</label>
         </div>
