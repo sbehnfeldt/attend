@@ -35,6 +35,14 @@
             color: inherit;
         }
 
+        input.invalid {
+            background-color: pink;
+        }
+
+        input.invalid::placeholder {
+            color: orangered;
+        }
+
         input[type=checkbox] {
             margin-top: auto;
             margin-bottom: auto;
@@ -62,26 +70,39 @@
         .form-box button {
 
         }
+
+        .invalid-credentials {
+            display: none;
+            margin: 5px;
+            padding: 20px;
+            background-color: pink;
+            color: orangered;
+        }
+
     </style>
 </head>
 <body>
 Login, please
 <main>
-    <form action="login.php">
+    <form action="login.php" method="post">
         <input type="text" name="route" value="{{ route }}">
 
         <div class="form-box">
             <label for="">Name</label>
-            <input type="text" name="username" placeholder="User Name">
+            <input type="text" name="username" placeholder="User Name" value="{{ username }}">
         </div>
 
         <div class="form-box">
             <label for="">Password</label>
-            <input type="password" name="password" placeholder="Password">
+            <input type="password" name="password" placeholder="Password" value="{{ password }}">
+        </div>
+
+        <div class="invalid-credentials">
+            <p>Invalid credentials. Please check your username and password and try again.</p>
         </div>
 
         <div class="form-box">
-            <input type="checkbox" name="remember" placeholder="Remember Me">
+            <input type="checkbox" name="remember" {% if remember %}checked{% endif %}>
             <label class="always" for="">Remember Me</label>
         </div>
 
@@ -90,5 +111,8 @@ Login, please
         </div>
     </form>
 </main>
+
+<script type="application/javascript" src="js/jquery-1.11.0.min.js"></script>
+<script src="js/login.js"></script>
 </body>
 </html>
