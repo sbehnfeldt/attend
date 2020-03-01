@@ -15,7 +15,7 @@
                 buttons: [{
                     text: 'New',
                     action: function (e, dt, node, config) {
-                        AcctDlg.open();
+                        AcctDlg.clear().open();
                     }
                 }, {
                     text: 'Update',
@@ -39,9 +39,21 @@
 
     let AcctDlg = (function () {
         let $dlg;
+        let $form,
+            $username,
+            $password,
+            $email,
+            $role;
 
         function init(selector) {
-            $dlg = $(selector).dialog({
+            $dlg = $(selector);
+            $form = $dlg.find('form');
+            $username = $form.find('input[name=username]');
+            $password = $form.find('input[name=password]');
+            $email = $form.find('input[name=email]');
+            $role = $form.find('select[name=role]');
+
+            $dlg.dialog({
                 modal: true,
                 autoOpen: false,
                 buttons: {
@@ -72,12 +84,22 @@
             });
         }
 
+        function clear() {
+            $username.val('');
+            $password.val('');
+            $email.val('');
+            $role.val('');
+
+            return this;
+        }
+
         function open() {
             $dlg.dialog('open');
         }
 
         return {
             init: init,
+            clear: clear,
             open: open
         };
     })();
