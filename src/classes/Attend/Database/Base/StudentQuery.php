@@ -172,11 +172,7 @@ abstract class StudentQuery extends ModelCriteria
             return $this->findPkComplex($key, $con);
         }
 
-        if ((null !== ($obj = StudentTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([
-                $key,
-                '__toString'
-            ]) ? (string)$key : $key)))
-        ) {
+        if ((null !== ($obj = StudentTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string)$key : $key)))) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -211,8 +207,7 @@ abstract class StudentQuery extends ModelCriteria
             /** @var ChildStudent $obj */
             $obj = new ChildStudent();
             $obj->hydrate($row);
-            StudentTableMap::addInstanceToPool($obj,
-                null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string)$key : $key);
+            StudentTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string)$key : $key);
         }
         $stmt->closeCursor();
 
@@ -230,7 +225,7 @@ abstract class StudentQuery extends ModelCriteria
     protected function findPkComplex($key, ConnectionInterface $con)
     {
         // As the query uses a PK condition, no limit(1) is necessary.
-        $criteria    = $this->isKeepQuery() ? clone $this : $this;
+        $criteria = $this->isKeepQuery() ? clone $this : $this;
         $dataFetcher = $criteria
             ->filterByPrimaryKey($key)
             ->doSelect($con);
@@ -254,7 +249,7 @@ abstract class StudentQuery extends ModelCriteria
             $con = Propel::getServiceContainer()->getReadConnection($this->getDbName());
         }
         $this->basePreSelect($con);
-        $criteria    = $this->isKeepQuery() ? clone $this : $this;
+        $criteria = $this->isKeepQuery() ? clone $this : $this;
         $dataFetcher = $criteria
             ->filterByPrimaryKeys($keys)
             ->doSelect($con);
@@ -310,12 +305,12 @@ abstract class StudentQuery extends ModelCriteria
     {
         if (is_array($id)) {
             $useMinMax = false;
-            if (isset($id[ 'min' ])) {
-                $this->addUsingAlias(StudentTableMap::COL_ID, $id[ 'min' ], Criteria::GREATER_EQUAL);
+            if (isset($id['min'])) {
+                $this->addUsingAlias(StudentTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($id[ 'max' ])) {
-                $this->addUsingAlias(StudentTableMap::COL_ID, $id[ 'max' ], Criteria::LESS_EQUAL);
+            if (isset($id['max'])) {
+                $this->addUsingAlias(StudentTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -401,12 +396,12 @@ abstract class StudentQuery extends ModelCriteria
     {
         if (is_array($enrolled)) {
             $useMinMax = false;
-            if (isset($enrolled[ 'min' ])) {
-                $this->addUsingAlias(StudentTableMap::COL_ENROLLED, $enrolled[ 'min' ], Criteria::GREATER_EQUAL);
+            if (isset($enrolled['min'])) {
+                $this->addUsingAlias(StudentTableMap::COL_ENROLLED, $enrolled['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($enrolled[ 'max' ])) {
-                $this->addUsingAlias(StudentTableMap::COL_ENROLLED, $enrolled[ 'max' ], Criteria::LESS_EQUAL);
+            if (isset($enrolled['max'])) {
+                $this->addUsingAlias(StudentTableMap::COL_ENROLLED, $enrolled['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -444,12 +439,12 @@ abstract class StudentQuery extends ModelCriteria
     {
         if (is_array($classroomId)) {
             $useMinMax = false;
-            if (isset($classroomId[ 'min' ])) {
-                $this->addUsingAlias(StudentTableMap::COL_CLASSROOM_ID, $classroomId[ 'min' ], Criteria::GREATER_EQUAL);
+            if (isset($classroomId['min'])) {
+                $this->addUsingAlias(StudentTableMap::COL_CLASSROOM_ID, $classroomId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($classroomId[ 'max' ])) {
-                $this->addUsingAlias(StudentTableMap::COL_CLASSROOM_ID, $classroomId[ 'max' ], Criteria::LESS_EQUAL);
+            if (isset($classroomId['max'])) {
+                $this->addUsingAlias(StudentTableMap::COL_CLASSROOM_ID, $classroomId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -484,8 +479,7 @@ abstract class StudentQuery extends ModelCriteria
             }
 
             return $this
-                ->addUsingAlias(StudentTableMap::COL_CLASSROOM_ID, $classroom->toKeyValue('PrimaryKey', 'Id'),
-                    $comparison);
+                ->addUsingAlias(StudentTableMap::COL_CLASSROOM_ID, $classroom->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
             throw new PropelException('filterByClassroom() only accepts arguments of type \Attend\Database\Classroom or Collection');
         }
@@ -501,7 +495,7 @@ abstract class StudentQuery extends ModelCriteria
      */
     public function joinClassroom($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
-        $tableMap    = $this->getTableMap();
+        $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('Classroom');
 
         // create a ModelJoin object for this join
@@ -574,7 +568,7 @@ abstract class StudentQuery extends ModelCriteria
      */
     public function joinAttendance($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
-        $tableMap    = $this->getTableMap();
+        $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('Attendance');
 
         // create a ModelJoin object for this join
@@ -647,7 +641,7 @@ abstract class StudentQuery extends ModelCriteria
      */
     public function joinSchedule($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
-        $tableMap    = $this->getTableMap();
+        $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('Schedule');
 
         // create a ModelJoin object for this join

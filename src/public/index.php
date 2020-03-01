@@ -3,11 +3,15 @@
 namespace Attend;
 
 
+use Attend\Database\Account;
+use Attend\Database\AccountQuery;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Container;
 use Slim\App;
 use Slim\Route;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
 use Attend\PropelEngine\PropelEngine;
 use Attend\Database\ClassroomQuery;
@@ -77,8 +81,8 @@ $engine->connect($config['db']);
 // Middleware to ensure user is logged in
 $login = function (Request $request, Response $response, $next) {
     if (empty($_SESSION['account'])) {
-        $loader = new \Twig_Loader_Filesystem('../templates');
-        $twig = new \Twig_Environment($loader, array(
+        $loader = new FilesystemLoader('../templates');
+        $twig = new Environment($loader, array(
             'cache' => false
         ));
 
@@ -96,8 +100,8 @@ $login = function (Request $request, Response $response, $next) {
 // Routing for Web App Pages
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 $app->get('/', function (Request $request, Response $response, array $args) {
-    $loader = new \Twig_Loader_Filesystem('../templates');
-    $twig = new \Twig_Environment($loader, array(
+    $loader = new FilesystemLoader('../templates');
+    $twig = new Environment($loader, array(
         'cache' => false
     ));
     $response->getBody()->write($twig->render('index.html.twig', []));
@@ -106,8 +110,8 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 
 
 $app->get('/attendance', function (Request $request, Response $response, array $args) {
-    $loader = new \Twig_Loader_Filesystem('../templates');
-    $twig = new \Twig_Environment($loader, array(
+    $loader = new FilesystemLoader('../templates');
+    $twig = new Environment($loader, array(
         'cache' => false
     ));
 
@@ -129,8 +133,8 @@ $app->get('/attendance', function (Request $request, Response $response, array $
 
 
 $app->get('/enrollment', function (Request $request, Response $response, array $args) {
-    $loader = new \Twig_Loader_Filesystem('../templates');
-    $twig = new \Twig_Environment($loader, array(
+    $loader = new FilesystemLoader('../templates');
+    $twig = new Environment($loader, array(
         'cache' => false
     ));
 
@@ -140,11 +144,23 @@ $app->get('/enrollment', function (Request $request, Response $response, array $
 
 
 $app->get('/classrooms', function (Request $request, Response $response, array $args) {
-    $loader = new \Twig_Loader_Filesystem('../templates');
-    $twig = new \Twig_Environment($loader, array(
+    $loader = new FilesystemLoader('../templates');
+    $twig = new Environment($loader, array(
         'cache' => false
     ));
     $response->getBody()->write($twig->render('classrooms.html.twig', []));
+    return $response;
+})->add($login);
+
+$app->get('/admin', function (Request $request, Response $response, array $args) {
+    $accounts = AccountQuery::create()->find();
+    $loader = new FilesystemLoader('../templates');
+    $twig = new Environment($loader, array(
+        'cache' => false
+    ));
+    $response->getBody()->write($twig->render('admin.html.twig', [
+        'accounts' => $accounts
+    ]));
     return $response;
 })->add($login);
 
@@ -330,5 +346,20 @@ $app->delete('/api/schedules/{id}',
         return $engine->deleteScheduleById($request, $response, $args);
     });
 
+$app->post('/api/accounts', function (Request $request, Response $response, array $args = []) {
+    // Insert a new record into the Accounts table
+    $body = $request->getParsedBody();
+    $acct = new Account();
+    $acct->setUsername($body['username']);
+    $acct->setEmail($body['email']);
+    $acct->setPwhash(password_hash($body['password'], PASSWORD_BCRYPT));
+    $acct->setRole($body['role']);
+    $acct->save();
 
+    $response = $response->withStatus(201, 'Created');
+    $response = $response->withHeader('Content-Type', 'application/json');
+    $response->getBody()->write(json_encode($acct->getId()));
+
+    return $response;
+});
 $app->run();

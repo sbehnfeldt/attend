@@ -152,11 +152,7 @@ abstract class ClassroomQuery extends ModelCriteria
             return $this->findPkComplex($key, $con);
         }
 
-        if ((null !== ($obj = ClassroomTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([
-                $key,
-                '__toString'
-            ]) ? (string)$key : $key)))
-        ) {
+        if ((null !== ($obj = ClassroomTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string)$key : $key)))) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -191,8 +187,7 @@ abstract class ClassroomQuery extends ModelCriteria
             /** @var ChildClassroom $obj */
             $obj = new ChildClassroom();
             $obj->hydrate($row);
-            ClassroomTableMap::addInstanceToPool($obj,
-                null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string)$key : $key);
+            ClassroomTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string)$key : $key);
         }
         $stmt->closeCursor();
 
@@ -210,7 +205,7 @@ abstract class ClassroomQuery extends ModelCriteria
     protected function findPkComplex($key, ConnectionInterface $con)
     {
         // As the query uses a PK condition, no limit(1) is necessary.
-        $criteria    = $this->isKeepQuery() ? clone $this : $this;
+        $criteria = $this->isKeepQuery() ? clone $this : $this;
         $dataFetcher = $criteria
             ->filterByPrimaryKey($key)
             ->doSelect($con);
@@ -234,7 +229,7 @@ abstract class ClassroomQuery extends ModelCriteria
             $con = Propel::getServiceContainer()->getReadConnection($this->getDbName());
         }
         $this->basePreSelect($con);
-        $criteria    = $this->isKeepQuery() ? clone $this : $this;
+        $criteria = $this->isKeepQuery() ? clone $this : $this;
         $dataFetcher = $criteria
             ->filterByPrimaryKeys($keys)
             ->doSelect($con);
@@ -290,12 +285,12 @@ abstract class ClassroomQuery extends ModelCriteria
     {
         if (is_array($id)) {
             $useMinMax = false;
-            if (isset($id[ 'min' ])) {
-                $this->addUsingAlias(ClassroomTableMap::COL_ID, $id[ 'min' ], Criteria::GREATER_EQUAL);
+            if (isset($id['min'])) {
+                $this->addUsingAlias(ClassroomTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($id[ 'max' ])) {
-                $this->addUsingAlias(ClassroomTableMap::COL_ID, $id[ 'max' ], Criteria::LESS_EQUAL);
+            if (isset($id['max'])) {
+                $this->addUsingAlias(ClassroomTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -356,12 +351,12 @@ abstract class ClassroomQuery extends ModelCriteria
     {
         if (is_array($ordering)) {
             $useMinMax = false;
-            if (isset($ordering[ 'min' ])) {
-                $this->addUsingAlias(ClassroomTableMap::COL_ORDERING, $ordering[ 'min' ], Criteria::GREATER_EQUAL);
+            if (isset($ordering['min'])) {
+                $this->addUsingAlias(ClassroomTableMap::COL_ORDERING, $ordering['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($ordering[ 'max' ])) {
-                $this->addUsingAlias(ClassroomTableMap::COL_ORDERING, $ordering[ 'max' ], Criteria::LESS_EQUAL);
+            if (isset($ordering['max'])) {
+                $this->addUsingAlias(ClassroomTableMap::COL_ORDERING, $ordering['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -399,12 +394,12 @@ abstract class ClassroomQuery extends ModelCriteria
     {
         if (is_array($createdAt)) {
             $useMinMax = false;
-            if (isset($createdAt[ 'min' ])) {
-                $this->addUsingAlias(ClassroomTableMap::COL_CREATED_AT, $createdAt[ 'min' ], Criteria::GREATER_EQUAL);
+            if (isset($createdAt['min'])) {
+                $this->addUsingAlias(ClassroomTableMap::COL_CREATED_AT, $createdAt['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($createdAt[ 'max' ])) {
-                $this->addUsingAlias(ClassroomTableMap::COL_CREATED_AT, $createdAt[ 'max' ], Criteria::LESS_EQUAL);
+            if (isset($createdAt['max'])) {
+                $this->addUsingAlias(ClassroomTableMap::COL_CREATED_AT, $createdAt['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -442,12 +437,12 @@ abstract class ClassroomQuery extends ModelCriteria
     {
         if (is_array($updatedAt)) {
             $useMinMax = false;
-            if (isset($updatedAt[ 'min' ])) {
-                $this->addUsingAlias(ClassroomTableMap::COL_UPDATED_AT, $updatedAt[ 'min' ], Criteria::GREATER_EQUAL);
+            if (isset($updatedAt['min'])) {
+                $this->addUsingAlias(ClassroomTableMap::COL_UPDATED_AT, $updatedAt['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($updatedAt[ 'max' ])) {
-                $this->addUsingAlias(ClassroomTableMap::COL_UPDATED_AT, $updatedAt[ 'max' ], Criteria::LESS_EQUAL);
+            if (isset($updatedAt['max'])) {
+                $this->addUsingAlias(ClassroomTableMap::COL_UPDATED_AT, $updatedAt['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -494,7 +489,7 @@ abstract class ClassroomQuery extends ModelCriteria
      */
     public function joinStudent($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
-        $tableMap    = $this->getTableMap();
+        $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('Student');
 
         // create a ModelJoin object for this join

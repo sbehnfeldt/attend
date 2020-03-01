@@ -108,17 +108,11 @@ class ClassroomTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array(
-        self::TYPE_PHPNAME   => array('Id', 'Label', 'Ordering', 'CreatedAt', 'UpdatedAt',),
+        self::TYPE_PHPNAME => array('Id', 'Label', 'Ordering', 'CreatedAt', 'UpdatedAt',),
         self::TYPE_CAMELNAME => array('id', 'label', 'ordering', 'createdAt', 'updatedAt',),
-        self::TYPE_COLNAME   => array(
-            ClassroomTableMap::COL_ID,
-            ClassroomTableMap::COL_LABEL,
-            ClassroomTableMap::COL_ORDERING,
-            ClassroomTableMap::COL_CREATED_AT,
-            ClassroomTableMap::COL_UPDATED_AT,
-        ),
+        self::TYPE_COLNAME => array(ClassroomTableMap::COL_ID, ClassroomTableMap::COL_LABEL, ClassroomTableMap::COL_ORDERING, ClassroomTableMap::COL_CREATED_AT, ClassroomTableMap::COL_UPDATED_AT,),
         self::TYPE_FIELDNAME => array('id', 'label', 'ordering', 'created_at', 'updated_at',),
-        self::TYPE_NUM       => array(0, 1, 2, 3, 4,)
+        self::TYPE_NUM => array(0, 1, 2, 3, 4,)
     );
 
     /**
@@ -128,17 +122,11 @@ class ClassroomTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array(
-        self::TYPE_PHPNAME   => array('Id' => 0, 'Label' => 1, 'Ordering' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4,),
+        self::TYPE_PHPNAME => array('Id' => 0, 'Label' => 1, 'Ordering' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4,),
         self::TYPE_CAMELNAME => array('id' => 0, 'label' => 1, 'ordering' => 2, 'createdAt' => 3, 'updatedAt' => 4,),
-        self::TYPE_COLNAME   => array(
-            ClassroomTableMap::COL_ID         => 0,
-            ClassroomTableMap::COL_LABEL      => 1,
-            ClassroomTableMap::COL_ORDERING   => 2,
-            ClassroomTableMap::COL_CREATED_AT => 3,
-            ClassroomTableMap::COL_UPDATED_AT => 4,
-        ),
+        self::TYPE_COLNAME => array(ClassroomTableMap::COL_ID => 0, ClassroomTableMap::COL_LABEL => 1, ClassroomTableMap::COL_ORDERING => 2, ClassroomTableMap::COL_CREATED_AT => 3, ClassroomTableMap::COL_UPDATED_AT => 4,),
         self::TYPE_FIELDNAME => array('id' => 0, 'label' => 1, 'ordering' => 2, 'created_at' => 3, 'updated_at' => 4,),
-        self::TYPE_NUM       => array(0, 1, 2, 3, 4,)
+        self::TYPE_NUM => array(0, 1, 2, 3, 4,)
     );
 
     /**
@@ -204,23 +192,11 @@ class ClassroomTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[ TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id',
-                TableMap::TYPE_PHPNAME, $indexType) ] === null
-        ) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[ TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id',
-            TableMap::TYPE_PHPNAME,
-            $indexType) ] || is_scalar($row[ TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id',
-            TableMap::TYPE_PHPNAME, $indexType) ]) || is_callable([
-            $row[ TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id',
-                TableMap::TYPE_PHPNAME, $indexType) ],
-            '__toString'
-        ]) ? (string)$row[ TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id',
-            TableMap::TYPE_PHPNAME,
-            $indexType) ] : $row[ TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id',
-            TableMap::TYPE_PHPNAME, $indexType) ];
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string)$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -237,9 +213,9 @@ class ClassroomTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return (int)$row[ $indexType == TableMap::TYPE_NUM
+        return (int)$row[$indexType == TableMap::TYPE_NUM
             ? 0 + $offset
-            : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType) ];
+            : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -267,9 +243,9 @@ class ClassroomTableMap extends TableMap
      * One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
+     * @return array           (Classroom object, last column rank)
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Classroom object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
@@ -324,6 +300,7 @@ class ClassroomTableMap extends TableMap
 
         return $results;
     }
+
     /**
      * Add all the columns needed to create a new object.
      *
@@ -333,7 +310,6 @@ class ClassroomTableMap extends TableMap
      *
      * @param Criteria $criteria object containing the columns to add.
      * @param string $alias optional table alias
-     *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
@@ -372,7 +348,7 @@ class ClassroomTableMap extends TableMap
     public static function buildTableMap()
     {
         $dbMap = Propel::getServiceContainer()->getDatabaseMap(ClassroomTableMap::DATABASE_NAME);
-        if ( ! $dbMap->hasTable(ClassroomTableMap::TABLE_NAME)) {
+        if (!$dbMap->hasTable(ClassroomTableMap::TABLE_NAME)) {
             $dbMap->addTableObject(new ClassroomTableMap());
         }
     }
@@ -382,8 +358,7 @@ class ClassroomTableMap extends TableMap
      *
      * @param mixed $values Criteria or Classroom object or primary key or array of primary keys
      *              which is used to create the DELETE statement
-     * @param  ConnectionInterface $con the connection to use
-     *
+     * @param ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
      *                         if supported by native driver or if emulated using Propel.
      * @throws PropelException Any exceptions caught during processing will be
@@ -410,7 +385,7 @@ class ClassroomTableMap extends TableMap
 
         if ($values instanceof Criteria) {
             ClassroomTableMap::clearInstancePool();
-        } elseif ( ! is_object($values)) { // it's a primary key, or an array of pks
+        } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array)$values as $singleval) {
                 ClassroomTableMap::removeInstanceFromPool($singleval);
             }
@@ -435,7 +410,6 @@ class ClassroomTableMap extends TableMap
      *
      * @param mixed $criteria Criteria or Classroom object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
-     *
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
@@ -453,7 +427,7 @@ class ClassroomTableMap extends TableMap
         }
 
         if ($criteria->containsKey(ClassroomTableMap::COL_ID) && $criteria->keyContainsValue(ClassroomTableMap::COL_ID)) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ClassroomTableMap::COL_ID.')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ClassroomTableMap::COL_ID . ')');
         }
 
 

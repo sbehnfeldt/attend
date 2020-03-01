@@ -152,11 +152,7 @@ abstract class ScheduleQuery extends ModelCriteria
             return $this->findPkComplex($key, $con);
         }
 
-        if ((null !== ($obj = ScheduleTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([
-                $key,
-                '__toString'
-            ]) ? (string)$key : $key)))
-        ) {
+        if ((null !== ($obj = ScheduleTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string)$key : $key)))) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -191,8 +187,7 @@ abstract class ScheduleQuery extends ModelCriteria
             /** @var ChildSchedule $obj */
             $obj = new ChildSchedule();
             $obj->hydrate($row);
-            ScheduleTableMap::addInstanceToPool($obj,
-                null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string)$key : $key);
+            ScheduleTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string)$key : $key);
         }
         $stmt->closeCursor();
 
@@ -210,7 +205,7 @@ abstract class ScheduleQuery extends ModelCriteria
     protected function findPkComplex($key, ConnectionInterface $con)
     {
         // As the query uses a PK condition, no limit(1) is necessary.
-        $criteria    = $this->isKeepQuery() ? clone $this : $this;
+        $criteria = $this->isKeepQuery() ? clone $this : $this;
         $dataFetcher = $criteria
             ->filterByPrimaryKey($key)
             ->doSelect($con);
@@ -234,7 +229,7 @@ abstract class ScheduleQuery extends ModelCriteria
             $con = Propel::getServiceContainer()->getReadConnection($this->getDbName());
         }
         $this->basePreSelect($con);
-        $criteria    = $this->isKeepQuery() ? clone $this : $this;
+        $criteria = $this->isKeepQuery() ? clone $this : $this;
         $dataFetcher = $criteria
             ->filterByPrimaryKeys($keys)
             ->doSelect($con);
@@ -290,12 +285,12 @@ abstract class ScheduleQuery extends ModelCriteria
     {
         if (is_array($id)) {
             $useMinMax = false;
-            if (isset($id[ 'min' ])) {
-                $this->addUsingAlias(ScheduleTableMap::COL_ID, $id[ 'min' ], Criteria::GREATER_EQUAL);
+            if (isset($id['min'])) {
+                $this->addUsingAlias(ScheduleTableMap::COL_ID, $id['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($id[ 'max' ])) {
-                $this->addUsingAlias(ScheduleTableMap::COL_ID, $id[ 'max' ], Criteria::LESS_EQUAL);
+            if (isset($id['max'])) {
+                $this->addUsingAlias(ScheduleTableMap::COL_ID, $id['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -333,12 +328,12 @@ abstract class ScheduleQuery extends ModelCriteria
     {
         if (is_array($studentId)) {
             $useMinMax = false;
-            if (isset($studentId[ 'min' ])) {
-                $this->addUsingAlias(ScheduleTableMap::COL_STUDENT_ID, $studentId[ 'min' ], Criteria::GREATER_EQUAL);
+            if (isset($studentId['min'])) {
+                $this->addUsingAlias(ScheduleTableMap::COL_STUDENT_ID, $studentId['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($studentId[ 'max' ])) {
-                $this->addUsingAlias(ScheduleTableMap::COL_STUDENT_ID, $studentId[ 'max' ], Criteria::LESS_EQUAL);
+            if (isset($studentId['max'])) {
+                $this->addUsingAlias(ScheduleTableMap::COL_STUDENT_ID, $studentId['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -374,12 +369,12 @@ abstract class ScheduleQuery extends ModelCriteria
     {
         if (is_array($schedule)) {
             $useMinMax = false;
-            if (isset($schedule[ 'min' ])) {
-                $this->addUsingAlias(ScheduleTableMap::COL_SCHEDULE, $schedule[ 'min' ], Criteria::GREATER_EQUAL);
+            if (isset($schedule['min'])) {
+                $this->addUsingAlias(ScheduleTableMap::COL_SCHEDULE, $schedule['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($schedule[ 'max' ])) {
-                $this->addUsingAlias(ScheduleTableMap::COL_SCHEDULE, $schedule[ 'max' ], Criteria::LESS_EQUAL);
+            if (isset($schedule['max'])) {
+                $this->addUsingAlias(ScheduleTableMap::COL_SCHEDULE, $schedule['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -417,12 +412,12 @@ abstract class ScheduleQuery extends ModelCriteria
     {
         if (is_array($startDate)) {
             $useMinMax = false;
-            if (isset($startDate[ 'min' ])) {
-                $this->addUsingAlias(ScheduleTableMap::COL_START_DATE, $startDate[ 'min' ], Criteria::GREATER_EQUAL);
+            if (isset($startDate['min'])) {
+                $this->addUsingAlias(ScheduleTableMap::COL_START_DATE, $startDate['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($startDate[ 'max' ])) {
-                $this->addUsingAlias(ScheduleTableMap::COL_START_DATE, $startDate[ 'max' ], Criteria::LESS_EQUAL);
+            if (isset($startDate['max'])) {
+                $this->addUsingAlias(ScheduleTableMap::COL_START_DATE, $startDate['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -458,12 +453,12 @@ abstract class ScheduleQuery extends ModelCriteria
     {
         if (is_array($enteredAt)) {
             $useMinMax = false;
-            if (isset($enteredAt[ 'min' ])) {
-                $this->addUsingAlias(ScheduleTableMap::COL_ENTERED_AT, $enteredAt[ 'min' ], Criteria::GREATER_EQUAL);
+            if (isset($enteredAt['min'])) {
+                $this->addUsingAlias(ScheduleTableMap::COL_ENTERED_AT, $enteredAt['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($enteredAt[ 'max' ])) {
-                $this->addUsingAlias(ScheduleTableMap::COL_ENTERED_AT, $enteredAt[ 'max' ], Criteria::LESS_EQUAL);
+            if (isset($enteredAt['max'])) {
+                $this->addUsingAlias(ScheduleTableMap::COL_ENTERED_AT, $enteredAt['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -498,8 +493,7 @@ abstract class ScheduleQuery extends ModelCriteria
             }
 
             return $this
-                ->addUsingAlias(ScheduleTableMap::COL_STUDENT_ID, $student->toKeyValue('PrimaryKey', 'Id'),
-                    $comparison);
+                ->addUsingAlias(ScheduleTableMap::COL_STUDENT_ID, $student->toKeyValue('PrimaryKey', 'Id'), $comparison);
         } else {
             throw new PropelException('filterByStudent() only accepts arguments of type \Attend\Database\Student or Collection');
         }
@@ -515,7 +509,7 @@ abstract class ScheduleQuery extends ModelCriteria
      */
     public function joinStudent($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
-        $tableMap    = $this->getTableMap();
+        $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('Student');
 
         // create a ModelJoin object for this join

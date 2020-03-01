@@ -108,17 +108,11 @@ class ScheduleTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array(
-        self::TYPE_PHPNAME   => array('Id', 'StudentId', 'Schedule', 'StartDate', 'EnteredAt',),
+        self::TYPE_PHPNAME => array('Id', 'StudentId', 'Schedule', 'StartDate', 'EnteredAt',),
         self::TYPE_CAMELNAME => array('id', 'studentId', 'schedule', 'startDate', 'enteredAt',),
-        self::TYPE_COLNAME   => array(
-            ScheduleTableMap::COL_ID,
-            ScheduleTableMap::COL_STUDENT_ID,
-            ScheduleTableMap::COL_SCHEDULE,
-            ScheduleTableMap::COL_START_DATE,
-            ScheduleTableMap::COL_ENTERED_AT,
-        ),
+        self::TYPE_COLNAME => array(ScheduleTableMap::COL_ID, ScheduleTableMap::COL_STUDENT_ID, ScheduleTableMap::COL_SCHEDULE, ScheduleTableMap::COL_START_DATE, ScheduleTableMap::COL_ENTERED_AT,),
         self::TYPE_FIELDNAME => array('id', 'student_id', 'schedule', 'start_date', 'entered_at',),
-        self::TYPE_NUM       => array(0, 1, 2, 3, 4,)
+        self::TYPE_NUM => array(0, 1, 2, 3, 4,)
     );
 
     /**
@@ -128,35 +122,11 @@ class ScheduleTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array(
-        self::TYPE_PHPNAME   => array(
-            'Id'        => 0,
-            'StudentId' => 1,
-            'Schedule'  => 2,
-            'StartDate' => 3,
-            'EnteredAt' => 4,
-        ),
-        self::TYPE_CAMELNAME => array(
-            'id'        => 0,
-            'studentId' => 1,
-            'schedule'  => 2,
-            'startDate' => 3,
-            'enteredAt' => 4,
-        ),
-        self::TYPE_COLNAME   => array(
-            ScheduleTableMap::COL_ID         => 0,
-            ScheduleTableMap::COL_STUDENT_ID => 1,
-            ScheduleTableMap::COL_SCHEDULE   => 2,
-            ScheduleTableMap::COL_START_DATE => 3,
-            ScheduleTableMap::COL_ENTERED_AT => 4,
-        ),
-        self::TYPE_FIELDNAME => array(
-            'id'         => 0,
-            'student_id' => 1,
-            'schedule'   => 2,
-            'start_date' => 3,
-            'entered_at' => 4,
-        ),
-        self::TYPE_NUM       => array(0, 1, 2, 3, 4,)
+        self::TYPE_PHPNAME => array('Id' => 0, 'StudentId' => 1, 'Schedule' => 2, 'StartDate' => 3, 'EnteredAt' => 4,),
+        self::TYPE_CAMELNAME => array('id' => 0, 'studentId' => 1, 'schedule' => 2, 'startDate' => 3, 'enteredAt' => 4,),
+        self::TYPE_COLNAME => array(ScheduleTableMap::COL_ID => 0, ScheduleTableMap::COL_STUDENT_ID => 1, ScheduleTableMap::COL_SCHEDULE => 2, ScheduleTableMap::COL_START_DATE => 3, ScheduleTableMap::COL_ENTERED_AT => 4,),
+        self::TYPE_FIELDNAME => array('id' => 0, 'student_id' => 1, 'schedule' => 2, 'start_date' => 3, 'entered_at' => 4,),
+        self::TYPE_NUM => array(0, 1, 2, 3, 4,)
     );
 
     /**
@@ -213,23 +183,11 @@ class ScheduleTableMap extends TableMap
     public static function getPrimaryKeyHashFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[ TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id',
-                TableMap::TYPE_PHPNAME, $indexType) ] === null
-        ) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[ TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id',
-            TableMap::TYPE_PHPNAME,
-            $indexType) ] || is_scalar($row[ TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id',
-            TableMap::TYPE_PHPNAME, $indexType) ]) || is_callable([
-            $row[ TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id',
-                TableMap::TYPE_PHPNAME, $indexType) ],
-            '__toString'
-        ]) ? (string)$row[ TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id',
-            TableMap::TYPE_PHPNAME,
-            $indexType) ] : $row[ TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id',
-            TableMap::TYPE_PHPNAME, $indexType) ];
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string)$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -246,9 +204,9 @@ class ScheduleTableMap extends TableMap
      */
     public static function getPrimaryKeyFromRow($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
-        return (int)$row[ $indexType == TableMap::TYPE_NUM
+        return (int)$row[$indexType == TableMap::TYPE_NUM
             ? 0 + $offset
-            : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType) ];
+            : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -276,9 +234,9 @@ class ScheduleTableMap extends TableMap
      * One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
+     * @return array           (Schedule object, last column rank)
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
-     * @return array           (Schedule object, last column rank)
      */
     public static function populateObject($row, $offset = 0, $indexType = TableMap::TYPE_NUM)
     {
@@ -333,6 +291,7 @@ class ScheduleTableMap extends TableMap
 
         return $results;
     }
+
     /**
      * Add all the columns needed to create a new object.
      *
@@ -342,7 +301,6 @@ class ScheduleTableMap extends TableMap
      *
      * @param Criteria $criteria object containing the columns to add.
      * @param string $alias optional table alias
-     *
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
@@ -381,7 +339,7 @@ class ScheduleTableMap extends TableMap
     public static function buildTableMap()
     {
         $dbMap = Propel::getServiceContainer()->getDatabaseMap(ScheduleTableMap::DATABASE_NAME);
-        if ( ! $dbMap->hasTable(ScheduleTableMap::TABLE_NAME)) {
+        if (!$dbMap->hasTable(ScheduleTableMap::TABLE_NAME)) {
             $dbMap->addTableObject(new ScheduleTableMap());
         }
     }
@@ -391,8 +349,7 @@ class ScheduleTableMap extends TableMap
      *
      * @param mixed $values Criteria or Schedule object or primary key or array of primary keys
      *              which is used to create the DELETE statement
-     * @param  ConnectionInterface $con the connection to use
-     *
+     * @param ConnectionInterface $con the connection to use
      * @return int             The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
      *                         if supported by native driver or if emulated using Propel.
      * @throws PropelException Any exceptions caught during processing will be
@@ -419,7 +376,7 @@ class ScheduleTableMap extends TableMap
 
         if ($values instanceof Criteria) {
             ScheduleTableMap::clearInstancePool();
-        } elseif ( ! is_object($values)) { // it's a primary key, or an array of pks
+        } elseif (!is_object($values)) { // it's a primary key, or an array of pks
             foreach ((array)$values as $singleval) {
                 ScheduleTableMap::removeInstanceFromPool($singleval);
             }
@@ -444,7 +401,6 @@ class ScheduleTableMap extends TableMap
      *
      * @param mixed $criteria Criteria or Schedule object containing data that is used to create the INSERT statement.
      * @param ConnectionInterface $con the ConnectionInterface connection to use
-     *
      * @return mixed           The new primary key.
      * @throws PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
@@ -462,7 +418,7 @@ class ScheduleTableMap extends TableMap
         }
 
         if ($criteria->containsKey(ScheduleTableMap::COL_ID) && $criteria->keyContainsValue(ScheduleTableMap::COL_ID)) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ScheduleTableMap::COL_ID.')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ScheduleTableMap::COL_ID . ')');
         }
 
 

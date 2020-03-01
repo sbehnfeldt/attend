@@ -4,6 +4,24 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ---------------------------------------------------------------------
+-- accounts
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `accounts`;
+
+CREATE TABLE `accounts`
+(
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `username` VARCHAR(45) NOT NULL,
+    `pwhash` VARCHAR(60) NOT NULL,
+    `email` VARCHAR(255),
+    `role` VARCHAR(45),
+    PRIMARY KEY (`id`),
+    UNIQUE INDEX `id_UNIQUE` (`id`),
+    UNIQUE INDEX `username_UNIQUE` (`username`)
+) ENGINE=InnoDB;
+
+-- ---------------------------------------------------------------------
 -- attendance
 -- ---------------------------------------------------------------------
 

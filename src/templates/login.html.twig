@@ -4,7 +4,8 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Login</title>
+    <link rel="stylesheet" href="css/attend.css">
+    <title>Attend | Login</title>
     <style>
         html {
             box-sizing: border-box;
@@ -56,34 +57,6 @@
             margin-bottom: auto;
         }
 
-        .form-box,
-        .form-box1 {
-            padding: 0.5rem 0;
-            margin: auto;
-        }
-
-        .form-box {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-box input[type=text],
-        .form-box input[type=password] {
-            flex-basis: 100%;
-        }
-
-        .form-box label {
-            display: none;
-        }
-
-        .form-box label.always {
-            display: initial;
-        }
-
-        .form-box button {
-
-        }
-
         .invalid-credentials {
             display: none;
             margin: 5px;
@@ -92,38 +65,6 @@
             color: orangered;
         }
 
-        @media all and (min-width: 500px) {
-            .form-box label {
-                display: block;
-            }
-        }
-
-        @media all and (min-width: 600px) {
-            .form-box {
-                flex-direction: row;
-            }
-
-            .form-box label {
-                flex-basis: 9rem;
-                flex-grow: 0;
-                flex-shrink: 0;
-            }
-
-            .form-box input {
-                flex-basis: 0;
-                flex-grow: 1;
-                flex-shrink: 1;
-            }
-
-            .form-box button {
-                margin-left: 9rem;
-            }
-
-            .form-box1 {
-
-            }
-
-        }
 
     </style>
 </head>
@@ -133,6 +74,10 @@
     <form action="login.php" method="post">
         <input type="hidden" name="route" value="{{ route }}">
 
+        <div class="invalid-credentials">
+            <p>Invalid credentials. Please check your username and password and try again.</p>
+        </div>
+
         <div class="form-box">
             <label for="">Name</label>
             <input type="text" name="username" placeholder="User Name" value="{{ username }}">
@@ -141,10 +86,6 @@
         <div class="form-box">
             <label for="">Password</label>
             <input type="password" name="password" placeholder="Password" value="{{ password }}">
-        </div>
-
-        <div class="invalid-credentials">
-            <p>Invalid credentials. Please check your username and password and try again.</p>
         </div>
 
         <div class="form-box1" style="display: none">

@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Attend | Admin{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script src="js/admin.js"></script>
+{% endblock %}
+
+{% block main %}
+    <p>This page allows administrators to manage authorized to use Attend.</p>
+
+    <section>
+        <table class="display compact">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>Hash</th>
+                <th>Email</th>
+                <th>Role</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for a in accounts %}
+                <td>{{ a.Id }}</td>
+                <td>{{ a.Username }}</td>
+                <td>{{ a.Pwhash }}</td>
+                <td>{{ a.Email }}</td>
+                <td>{{ a.Role }}</td>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+
+    <hr>
+
+    <section class="dialog" id="accountPropsDlg" title="Account Properties">
+        <form action="">
+            <div class="form-box">
+                <label for="">Username</label>
+                <input type="text" name="username" placeholder="Username">
+            </div>
+            <div class="form-box">
+                <label for="">Password</label>
+                <input type="password" name="password" placeholder="Password">
+            </div>
+            <div class="form-box">
+                <label for="">Email</label>
+                <input type="email" name="email" placeholder="Email address">
+            </div>
+            <div class="form-box">
+                <label for="">Role</label>
+                <select name="role" id="">
+                    <option value="">Select a role</option>
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+        </form>
+    </section>
+{% endblock %}

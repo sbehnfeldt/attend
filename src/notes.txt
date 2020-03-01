@@ -1,15 +1,28 @@
 ; Generate the schema.xml
-vendor\bin\propel reverse --schema-name=attend --database-name=attend --namespace=attend "mysql:host=localhost;dbname=attend;user=attend;password=attend"
+; vendor\bin\propel reverse --config-dir=../ --schema-name=alpha --namespace=beta --output-dir=gamma --database-name=delta attend
+; --config-dir: directory containing the propel.json or similar config file
+; --output-dir: directory to create the output xml file
+; --schema-name: name of the xml file to generate (does not require the extension, but MUST end in 'schema.xml')
+; --namespace: value for the "namespace" attribute of <database> and <table> elements in generated schema file.
+; --database-name: value for the "name" attribute of the <database> element in generated schema file.
+cls && vendor\bin\propel reverse --config-dir=../ --schema-name=attend-schema --database-name=attend --namespace=Attend\Database attend
+
 ; TODO: Change the value of the phpName attribute of every table element to singular.
 ; TODO: Correct value of namespace attributes in database and table elements, as necessary
 
 ; Generate the schema map from schema xml
-cls && vendor\bin\propel sql:build --config-dir=generated-reversed-database --schema-dir=generated-reversed-database --output-dir=generated-reversed-database --overwrite
+; vendor\bin\propel sql:build --config-dir=../ --schema-dir=gamma --output-dir=epsilon
+; --config-dir: directory containing the propel.json or similar config file
+; --schema-dir: directory containing the "*schema.xml" input files
+; --output-dir: directory to create the sql and map files.
+cls && vendor\bin\propel sql:build  --config-dir=../ --schema-dir=generated-reversed-database --output-dir=generated-reversed-database --overwrite
 
 
 cls && vendor\bin\propel help model:build
-cls && vendor\bin\propel model:build --config-dir=generated-reversed-database --schema-dir=generated-reversed-database --output-dir=classes/Attend/Database
+cls && vendor\bin\propel model:build --config-dir=../ --schema-dir=generated-reversed-database --output-dir=classes/Attend/Database
 
 
 cls && vendor\bin\propel help convert
 cls && vendor\bin\propel convert --config-dir=generated-reversed-database --output-dir=lib
+
+

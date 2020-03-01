@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<database name="attend" defaultIdMethod="native" namespace="Attend\Database" defaultPhpNamingMethod="underscore">
-    <table name="attendance" idMethod="native" phpName="Attendance" namespace="">
+<database name="attend" defaultIdMethod="native" defaultPhpNamingMethod="underscore">
+    <table name="accounts" idMethod="native" phpName="Account" namespace="Attend\Database">
+        <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="username" phpName="Username" type="VARCHAR" size="45" required="true"/>
+        <column name="pwhash" phpName="Pwhash" type="VARCHAR" size="60" required="true"/>
+        <column name="email" phpName="Email" type="VARCHAR" size="255"/>
+        <column name="role" phpName="Role" type="VARCHAR" size="45"/>
+        <unique name="id_UNIQUE">
+            <unique-column name="id"/>
+        </unique>
+        <unique name="username_UNIQUE">
+            <unique-column name="username"/>
+        </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+    <table name="attendance" idMethod="native" phpName="Attendance" namespace="Attend\Database">
         <column name="id" phpName="Id" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true"
                 autoIncrement="true" required="true"/>
         <column name="student_id" phpName="StudentId" type="INTEGER" size="10" sqlType="int(10) unsigned"
@@ -20,7 +36,7 @@
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
     </table>
-    <table name="classrooms" idMethod="native" phpName="Classroom" namespace="">
+    <table name="classrooms" idMethod="native" phpName="Classroom" namespace="Attend\Database">
         <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="label" phpName="Label" type="VARCHAR" size="45" required="true"/>
         <column name="ordering" phpName="Ordering" type="INTEGER"/>
@@ -36,7 +52,7 @@
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
     </table>
-    <table name="schedules" idMethod="native" phpName="Schedule" namespace="">
+    <table name="schedules" idMethod="native" phpName="Schedule" namespace="Attend\Database">
         <column name="id" phpName="Id" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true"
                 autoIncrement="true" required="true"/>
         <column name="student_id" phpName="StudentId" type="INTEGER" size="10" sqlType="int(10) unsigned"
@@ -61,7 +77,7 @@
             <parameter name="Engine" value="InnoDB"/>
         </vendor>
     </table>
-    <table name="students" idMethod="native" phpName="Student" namespace="">
+    <table name="students" idMethod="native" phpName="Student" namespace="Attend\Database">
         <column name="id" phpName="Id" type="INTEGER" size="10" sqlType="int(10) unsigned" primaryKey="true"
                 autoIncrement="true" required="true"/>
         <column name="family_name" phpName="FamilyName" type="VARCHAR" size="45" required="true"/>

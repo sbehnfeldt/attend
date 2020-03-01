@@ -17,7 +17,7 @@ $accounts = [
         'username' => 'stephen',
         'password' => 'temp-password',
         'email' => 'stephen@behnfeldt.pro',
-        'role' => 'user'
+        'role' => 'admin'
     ]
 ];
 

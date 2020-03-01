@@ -20,10 +20,45 @@ button.disabled span {
     color: #aaa;
 }
 
+
+.form-box,
+.form-box1 {
+    padding: 0.5rem 0;
+    margin: auto;
+}
+
+.form-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-box input[type=text],
+.form-box input[type=password] {
+    flex-basis: 100%;
+}
+
+.form-box label {
+    display: none;
+}
+
+.form-box label.always {
+    display: initial;
+}
+
+.form-box button {
+
+}
+
+
+.dialog {
+    display: none;
+}
+
 .attendance-page-signin table th:not(:first-of-type),
 .attendance-page-schedules table th:not(:first-of-type) {
     text-align: center;
 }
+
 .hidden {
     display: none;
 }
@@ -41,6 +76,8 @@ button.disabled span {
 }
 
 .ui-dialog input[type=text],
+.ui-dialog input[type=email],
+.ui-dialog input[type=password],
 .ui-dialog input[type=number],
 .ui-dialog select {
     display: block;
@@ -136,6 +173,45 @@ form div.options div.col-md-3 {
     animation: spin 2s linear infinite;
 }
 
+#tabs {
+    display: none;
+}
+
+
+@media all and (min-width: 500px) {
+    .form-box label {
+        display: block;
+    }
+}
+
+
+@media all and (min-width: 600px) {
+    .form-box {
+        flex-direction: row;
+    }
+
+    .form-box label {
+        flex-basis: 9rem;
+        flex-grow: 0;
+        flex-shrink: 0;
+    }
+
+    .form-box input {
+        flex-basis: 0;
+        flex-grow: 1;
+        flex-shrink: 1;
+    }
+
+    .form-box button {
+        margin-left: 9rem;
+    }
+
+    .form-box1 {
+
+    }
+}
+
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -143,8 +219,4 @@ form div.options div.col-md-3 {
     100% {
         transform: rotate(360deg);
     }
-}
-
-#tabs {
-    display: none;
 }
