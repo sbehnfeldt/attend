@@ -364,7 +364,7 @@ $app->post('/api/accounts', function (Request $request, Response $response, arra
 });
 
 $app->put('/api/accounts/{id}', function (Request $request, Response $response, array $args = []) {
-    // Insert a new record into the Accounts table
+    // Update an existing record in the Accounts table
     $body = $request->getParsedBody();
     $acct = AccountQuery::create()->findPk($body['id']);
 
