@@ -19,7 +19,7 @@ function bootstrap(string $configFile = '../config.ini')
         }
     }
     session_save_path('../sessions');
-    if ( ! session_start()) {
+    if (!session_start()) {
         die('Cannot start session');
     }
 
@@ -28,6 +28,35 @@ function bootstrap(string $configFile = '../config.ini')
     }
     ini_set('display_errors', 'Off');
 
+
+    $host = $config['db']['host'];
+    $dbname = $config['db']['dbname'];
+    $user = $config['db']['uname'];
+    $password = $config['db']['pword'];
+
+    $serviceContainer = \Propel\Runtime\Propel::getServiceContainer();
+    $serviceContainer->checkVersion('2.0.0-dev');
+    $serviceContainer->setAdapterClass('attend', 'mysql');
+    $manager = new \Propel\Runtime\Connection\ConnectionManagerSingle();
+    $manager->setConfiguration(array(
+        'classname' => 'Propel\\Runtime\\Connection\\ConnectionWrapper',
+        'dsn' => "mysql:host=$host;dbname=$dbname",
+        'user' => $user,
+        'password' => $password,
+        'attributes' =>
+            array(
+                'ATTR_EMULATE_PREPARES' => false,
+                'ATTR_TIMEOUT' => 30,
+            ),
+        'model_paths' =>
+            array(
+                0 => 'src',
+                1 => 'vendor',
+            ),
+    ));
+    $manager->setName('attend');
+    $serviceContainer->setConnectionManager('attend', $manager);
+    $serviceContainer->setDefaultDatasource('attend');
 
     return $config;
 }

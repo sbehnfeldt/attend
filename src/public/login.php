@@ -3,23 +3,10 @@
 namespace Attend;
 
 
+use Attend\Database\AccountQuery;
+
 require_once '../lib/bootstrap.php';
 $config = bootstrap();
-
-$accounts = [
-    'david' => [
-        'username' => 'david',
-        'password' => 'temp-password',
-        'email' => 'david.galli@camelotschool.net',
-        'role' => 'user'
-    ],
-    'stephen' => [
-        'username' => 'stephen',
-        'password' => 'temp-password',
-        'email' => 'stephen@behnfeldt.pro',
-        'role' => 'admin'
-    ]
-];
 
 if (!empty($_POST['username'])) {
     $username = $_POST['username'];
@@ -38,25 +25,27 @@ try {
         ]));
     }
 
-    if (!array_key_exists($username, $accounts)) {
+    $acct = AccountQuery::create()->findOneByUsername($username);
+    if (!$acct) {
         header('Content-Type: application/json');
         die (json_encode([
             'unauthorized' => true
         ]));
     }
 
-    $account = $accounts[$username];
-    if ($password !== $account['password']) {
+    if (!password_verify($password, $acct->getPwhash())) {
         header('Content-Type: application/json');
         die (json_encode([
             'unauthorized' => true
         ]));
     }
 } catch (\Exception $e) {
-
+    die (json_encode([
+        'unauthorized' => true
+    ]));
 }
 
-$_SESSION['account'] = $account;
+$_SESSION['account'] = $acct;
 
 header('Content-Type: application/json');
 die(json_encode([
