@@ -96,6 +96,28 @@ $login = function (Request $request, Response $response, $next) {
 };
 
 
+$adminOnly = function (Request $request, Response $response, $next) {
+    $loader = new FilesystemLoader('../templates');
+    $twig = new Environment($loader, array(
+        'cache' => false
+    ));
+    if (empty($_SESSION['account'])) {
+        $response->getBody()->write($twig->render('login.html.twig', [
+            'route' => $_SERVER['CONTEXT_PREFIX'] . $request->getAttribute('route')->getPattern()
+        ]));
+        return $response;
+    }
+
+    if ('admin' !== $_SESSION['account']->getRole()) {
+        $response = $response->withStatus(403);
+        $response->getBody()->write($twig->render('403.html.twig'));
+        return $response;
+    }
+    $response = $next($request, $response);
+    return $response;
+};
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Routing for Web App Pages
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -162,7 +184,7 @@ $app->get('/admin', function (Request $request, Response $response, array $args)
         'accounts' => $accounts
     ]));
     return $response;
-})->add($login);
+})->add($login)->add($adminOnly);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
