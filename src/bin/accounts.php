@@ -95,13 +95,9 @@ function showUser($username)
     if (!$acct) {
         die(sprintf('Unknown user "%s"', $username));
     }
-    try {
-        echo($acct->getUsername() . "\n");
-        echo($acct->getEmail() . "\n");
-        echo($acct->getRole() . "\n");
-    } catch (PropelException $e) {
-        die("Error showing user: " . $e->getMessage() . "\n");
-    }
+    echo($acct->getUsername() . "\n");
+    echo($acct->getEmail() . "\n");
+    echo($acct->getRole() . "\n");
 }
 
 
@@ -109,13 +105,9 @@ function showAllUsers()
 {
     $accts = AccountQuery::create()->find();
     foreach ($accts as $acct) {
-        try {
-            echo($acct->getUsername() . "\n");
-            echo($acct->getEmail() . "\n");
-            echo($acct->getRole() . "\n\n");
-        } catch (PropelException $e) {
-            echo("Error showing user: " . $e->getMessage() . "\n");
-        }
+        echo($acct->getUsername() . "\n");
+        echo($acct->getEmail() . "\n");
+        echo($acct->getRole() . "\n\n");
     }
 }
 
