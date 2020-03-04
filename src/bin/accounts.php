@@ -3,8 +3,13 @@
 namespace Attend;
 
 use Attend\Database\Account;
+use Attend\Database\AccountQuery;
 use Propel\Runtime\Exception\PropelException;
 
+
+/**
+ *
+ */
 function usage()
 {
     echo "Manage Attend user and admin accounts\n";
@@ -27,6 +32,12 @@ function usage()
 }
 
 
+/**
+ * @param $username
+ * @param $password
+ * @param $email
+ * @param $role
+ */
 function addUser($username, $password, $email, $role)
 {
     if (!$username) {
@@ -57,9 +68,21 @@ function addUser($username, $password, $email, $role)
 }
 
 
+/**
+ * @param $username
+ */
 function delUser($username)
 {
-    echo "TODO: Delete user $username\n";
+    $acct = AccountQuery::create()->findOneByUsername($username);
+    if (!$acct) {
+        die(sprintf('Unknown user "%s"', $username));
+    }
+    try {
+        $acct->delete();
+        echo(sprintf('User "%s" deleted', $username));
+    } catch (PropelException $e) {
+        die("Error deleting user: " . $e->getMessage() . "\n");
+    }
 }
 
 
