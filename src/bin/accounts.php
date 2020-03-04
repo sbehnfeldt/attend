@@ -89,18 +89,31 @@ function delUser($username)
 }
 
 
+/**
+ * @param $username
+ */
 function showUser($username)
 {
     $acct = AccountQuery::create()->findOneByUsername($username);
     if (!$acct) {
         die(sprintf('Unknown user "%s"', $username));
     }
-    try {
+    echo($acct->getUsername() . "\n");
+    echo($acct->getEmail() . "\n");
+    echo($acct->getRole() . "\n");
+}
+
+
+/**
+ *
+ */
+function showAllUsers()
+{
+    $accts = AccountQuery::create()->find();
+    foreach ($accts as $acct) {
         echo($acct->getUsername() . "\n");
         echo($acct->getEmail() . "\n");
-        echo($acct->getRole() . "\n");
-    } catch (PropelException $e) {
-        die("Error deleting user: " . $e->getMessage() . "\n");
+        echo($acct->getRole() . "\n\n");
     }
 }
 
@@ -121,7 +134,11 @@ switch ($command) {
         break;
 
     case 'show':
-        showUser($argv[2]);
+        if (empty($argv[2])) {
+            showAllUsers();
+        } else {
+            showUser($argv[2]);
+        }
         break;
 
     case 'help':
