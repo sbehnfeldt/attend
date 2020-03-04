@@ -19,12 +19,15 @@ function usage()
     echo "where [command] is required and one of:\n";
     echo "   add: Add a new account\n";
     echo "   del: Remove an account\n";
+    echo "   show: Show an account\n";
     echo "\n";
     echo "and {args} are arguments, specific to the command\n";
     echo "\n";
     echo "add [username] [password] [email] [role]\n";
     echo "\n";
     echo "del [username]\n";
+    echo "\n";
+    echo "show [username]\n";
     echo "\n";
 
 
@@ -86,6 +89,22 @@ function delUser($username)
 }
 
 
+function showUser($username)
+{
+    $acct = AccountQuery::create()->findOneByUsername($username);
+    if (!$acct) {
+        die(sprintf('Unknown user "%s"', $username));
+    }
+    try {
+        echo($acct->getUsername() . "\n");
+        echo($acct->getEmail() . "\n");
+        echo($acct->getRole() . "\n");
+    } catch (PropelException $e) {
+        die("Error deleting user: " . $e->getMessage() . "\n");
+    }
+}
+
+
 require_once('../lib/bootstrap.php');
 bootstrap();
 
@@ -101,7 +120,11 @@ switch ($command) {
         delUser($argv[2]);
         break;
 
-    case '--help':
+    case 'show':
+        showUser($argv[2]);
+        break;
+
+    case 'help':
         usage();
         exit();
         break;
