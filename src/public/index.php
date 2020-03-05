@@ -87,6 +87,7 @@ $login = function (Request $request, Response $response, $next) {
         ));
 
         $response->getBody()->write($twig->render('login.html.twig', [
+            'account' => $_SESSION['account'],
             'route' => $_SERVER['CONTEXT_PREFIX'] . $request->getAttribute('route')->getPattern()
         ]));
         return $response;
@@ -110,7 +111,9 @@ $adminOnly = function (Request $request, Response $response, $next) {
 
     if ('admin' !== $_SESSION['account']->getRole()) {
         $response = $response->withStatus(403);
-        $response->getBody()->write($twig->render('403.html.twig'));
+        $response->getBody()->write($twig->render('403.html.twig', [
+            'account' => $_SESSION['account']
+        ]));
         return $response;
     }
     $response = $next($request, $response);
@@ -126,7 +129,9 @@ $app->get('/', function (Request $request, Response $response, array $args) {
     $twig = new Environment($loader, array(
         'cache' => false
     ));
-    $response->getBody()->write($twig->render('index.html.twig', []));
+    $response->getBody()->write($twig->render('index.html.twig', [
+        'account' => $_SESSION['account'],
+    ]));
     return $response;
 })->add($login);
 
@@ -147,6 +152,7 @@ $app->get('/attendance', function (Request $request, Response $response, array $
     $weekOf = new \DateTime('now');
     $weekOf = getMonday($weekOf);
     $response->getBody()->write($twig->render('attendance.html.twig', [
+        'account' => $_SESSION['account'],
         'classrooms' => ClassroomQuery::create()->find(),
         'weekOf' => $weekOf
     ]));
@@ -160,7 +166,9 @@ $app->get('/enrollment', function (Request $request, Response $response, array $
         'cache' => false
     ));
 
-    $response->getBody()->write($twig->render('enrollment.html.twig', []));
+    $response->getBody()->write($twig->render('enrollment.html.twig', [
+        'account' => $_SESSION['account'],
+    ]));
     return $response;
 })->add($login);
 
@@ -170,7 +178,9 @@ $app->get('/classrooms', function (Request $request, Response $response, array $
     $twig = new Environment($loader, array(
         'cache' => false
     ));
-    $response->getBody()->write($twig->render('classrooms.html.twig', []));
+    $response->getBody()->write($twig->render('classrooms.html.twig', [
+        'account' => $_SESSION['account'],
+    ]));
     return $response;
 })->add($login);
 
@@ -181,6 +191,7 @@ $app->get('/admin', function (Request $request, Response $response, array $args)
         'cache' => false
     ));
     $response->getBody()->write($twig->render('admin.html.twig', [
+        'account' => $_SESSION['account'],
         'accounts' => $accounts
     ]));
     return $response;

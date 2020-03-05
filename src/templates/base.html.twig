@@ -40,7 +40,9 @@
                 <li><a href="attendance">Attendance</a></li>
                 <li><a href="enrollment">Enrollment</a></li>
                 <li><a href="classrooms">Classrooms</a></li>
-                <li><a href="admin">Admin</a></li>
+                {% if 'admin' == account.role %}
+                    <li><a href="admin">Admin</a></li>
+                {% endif %}
             </ul>
             <ul class="tabs nav navbar-nav navbar-right" role="menu">
                 <li><a href="profile">Profile</a></li>
