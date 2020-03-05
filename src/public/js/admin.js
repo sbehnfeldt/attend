@@ -147,6 +147,7 @@
     // Document ready handler
     $(function () {
         console.log('Document ready');
+        $('#tabs').tabs().show();
     });
 
     AcctsTable.init('#acctsTable');

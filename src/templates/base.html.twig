@@ -5,6 +5,7 @@
     {% block styles %}
 
         <link rel="stylesheet" type="text/css" href="css/jquery-ui.css">
+{#        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">#}
         <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css">
         <link rel="stylesheet" type="text/css"
               href="https://cdn.datatables.net/buttons/1.6.1/css/buttons.dataTables.min.css">
@@ -19,40 +20,43 @@
 
 <body>
 
-<div id="loading">
-    <div id="loading-image"></div>
-</div>
+<header>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                        aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/attend">Attend</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="tabs nav navbar-nav" role="menu">
+                    <li><a href="attendance">Attendance</a></li>
+                    <li><a href="enrollment">Enrollment</a></li>
+                    <li><a href="classrooms">Classrooms</a></li>
+                    {% if 'admin' == account.role %}
+                        <li><a href="admin">Admin</a></li>
+                    {% endif %}
+                </ul>
+                <ul class="tabs nav navbar-nav navbar-right" role="menu">
+                    <li><a href="profile">Profile</a></li>
+                    <li><a href="logout.php">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
 
-<nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                    aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/attend">Attend</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-            <ul class="tabs nav navbar-nav" role="menu">
-                <li><a href="attendance">Attendance</a></li>
-                <li><a href="enrollment">Enrollment</a></li>
-                <li><a href="classrooms">Classrooms</a></li>
-                {% if 'admin' == account.role %}
-                    <li><a href="admin">Admin</a></li>
-                {% endif %}
-            </ul>
-            <ul class="tabs nav navbar-nav navbar-right" role="menu">
-                <li><a href="profile">Profile</a></li>
-                <li><a href="logout.php">Logout</a></li>
-            </ul>
-        </div>
+<main class="container">
+    <div id="loading">
+        <div id="loading-image"></div>
     </div>
-</nav>
-
-<main class="container">{% block main %}Insert Content Here{% endblock %}</main>
+    {% block main %}Insert Content Here{% endblock %}
+</main>
 
 {% block scripts %}
     <script type="application/javascript" src="js/jquery-1.11.0.min.js"></script>
