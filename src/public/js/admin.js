@@ -143,13 +143,31 @@
         };
     })();
 
+    let DatabaseTab = (function () {
+        let $backupForm;
+
+        function init(selector) {
+            $backupForm = $(selector);
+            $backupForm.find('button').on('click', function (e) {
+                e.preventDefault();
+                $('form').submit();
+            });
+        }
+
+        return {
+            init: init
+        };
+    })();
+
 
     // Document ready handler
     $(function () {
         console.log('Document ready');
+
+        AcctsTable.init('#acctsTable');
+        AcctDlg.init('#accountPropsDlg');
+        DatabaseTab.init('#database-tab');
         $('#tabs').tabs().show();
     });
 
-    AcctsTable.init('#acctsTable');
-    AcctDlg.init('#accountPropsDlg');
 })(this, jQuery);

@@ -5,11 +5,11 @@ namespace Attend;
 
 use Attend\Database\Account;
 use Attend\Database\AccountQuery;
+use Attend\Database\Exporter;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Container;
 use Slim\App;
-use Slim\Route;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
@@ -196,6 +196,19 @@ $app->get('/admin', function (Request $request, Response $response, array $args)
     ]));
     return $response;
 })->add($login)->add($adminOnly);
+
+
+$app->get('/backup-db', function (Request $request, Response $response, array $args) {
+    $exporter = new Exporter();
+    $data = $exporter();
+    $data = json_encode($data);
+    $filename = "attend-db-export-" . date('Y-m-d_H-i-s') . '.json';
+
+    $response = $response->withHeader('Content-Type', 'application/octet-stream');
+    $response = $response->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
+    $response->getBody()->write($data);
+    return $response;
+});
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

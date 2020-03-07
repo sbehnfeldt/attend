@@ -9,41 +9,36 @@
 
 {% block main %}
     <div id="tabs">
-
         <ul>
-            <li>
-                <a href="#users-tab">Users</a>
-            </li>
+            <li><a href="#database-tab">Database</a></li>
+            <li><a href="#users-tab">Users</a></li>
         </ul>
 
-        <section id="users-tab" class="tab">
+        <section class="tab" id="users-tab">
             <p>This page allows administrators to manage authorized to use Attend.</p>
-            <section>
-                <table id="acctsTable" class="display compact">
-                    <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Username</th>
-                        <th>Hash</th>
-                        <th>Email</th>
-                        <th>Role</th>
+            <table id="acctsTable" class="display compact">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Username</th>
+                    <th>Hash</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for a in accounts %}
+                    <tr data-account="{{ a.toJson }}">
+                        <td>{{ a.Id }}</td>
+                        <td>{{ a.Username }}</td>
+                        <td>{{ a.Pwhash }}</td>
+                        <td>{{ a.Email }}</td>
+                        <td>{{ a.Role }}</td>
                     </tr>
-                    </thead>
-
-                    <tbody>
-                    {% for a in accounts %}
-                        <tr data-account="{{ a.toJson }}">
-                            <td>{{ a.Id }}</td>
-                            <td>{{ a.Username }}</td>
-                            <td>{{ a.Pwhash }}</td>
-                            <td>{{ a.Email }}</td>
-                            <td>{{ a.Role }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </section>
-
+                {% endfor %}
+                </tbody>
+            </table>
             <section class="dialog" id="accountPropsDlg" title="Account Properties">
                 <form action="">
                     <input type="hidden" name="id">
@@ -69,6 +64,12 @@
                     </div>
                 </form>
             </section>
+        </section>
+
+        <section class="tab" id="database-tab">
+            <form action="backup-db">
+                <button name="backup">Backup</button>
+            </form>
         </section>
     </div>
 {% endblock %}
