@@ -144,13 +144,48 @@
     })();
 
     let DatabaseTab = (function () {
-        let $backupForm;
+        let $tab,
+            $backupForm,
+            $restoreForm;
 
         function init(selector) {
-            $backupForm = $(selector);
+            $tab = $(selector);
+            $backupForm = $tab.find('form[name=backup-db]');
+            $restoreForm = $tab.find('form[name=restore-db]');
+
             $backupForm.find('button').on('click', function (e) {
                 e.preventDefault();
-                $('form').submit();
+                $backupForm.submit();
+            });
+
+            $restoreForm.on('submit', function () {
+                Attend.loadAnother();
+                try {
+                    // let formData = new FormData($restoreForm[0]);
+                    $.ajax({
+                        url: 'restore-db',
+                        method: 'post',
+                        data: new FormData($restoreForm[0]),
+                        processData: false,
+                        contentType: false,
+
+                        success: function (data) {
+                            console.log(data);
+                            alert("Success");
+                            Attend.doneLoading();
+                        },
+                        error: function (xhr) {
+                            console.log(xhr);
+                            alert("Error");
+                            Attend.doneLoading();
+                        }
+                    });
+                } catch (e) {
+                    console.log(e);
+                    alert('Exception');
+                    Attend.doneLoading();
+                }
+                return false;
             });
         }
 

@@ -210,6 +210,10 @@ $app->get('/backup-db', function (Request $request, Response $response, array $a
     return $response;
 });
 
+$app->post('/restore-db', function (Request $request, Response $response, array $args) {
+    return $response;
+});
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Routing for API

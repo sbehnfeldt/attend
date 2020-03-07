@@ -67,8 +67,15 @@
         </section>
 
         <section class="tab" id="database-tab">
-            <form action="backup-db">
+            <form name="backup-db" action="backup-db">
+                <p>Export database to a local JSON file</p>
                 <button name="backup">Backup</button>
+            </form>
+            <hr>
+            <form name="restore-db" action="restore-db">
+                <p>Restore database from a previously-exorted JSON file</p>
+                <input type="file" name="json_file">
+                <button name="restore">Restore</button>
             </form>
         </section>
     </div>
