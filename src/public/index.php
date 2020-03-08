@@ -5,7 +5,14 @@ namespace Attend;
 
 use Attend\Database\Account;
 use Attend\Database\AccountQuery;
+use Attend\Database\Attendance;
+use Attend\Database\AttendanceQuery;
+use Attend\Database\Classroom;
 use Attend\Database\Exporter;
+use Attend\Database\Schedule;
+use Attend\Database\ScheduleQuery;
+use Attend\Database\Student;
+use Attend\Database\StudentQuery;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Container;
@@ -211,6 +218,73 @@ $app->get('/backup-db', function (Request $request, Response $response, array $a
 });
 
 $app->post('/restore-db', function (Request $request, Response $response, array $args) {
+    if (empty($_FILES['restore-file']) || empty($_FILES['restore-file']['tmp_name'])) {
+        $response = $response->withStatus(400);
+        $response->getBody()->write('Missing json file');
+        return $response;
+    }
+    $json = json_decode(file_get_contents($_FILES['restore-file']['tmp_name']), true);
+
+    AccountQuery::create()->find()->delete();
+    $acctMap = [];
+    foreach ($json['accounts'] as $j) {
+        $acct = new Account();
+        $acct->setUsername($j['Username']);
+        $acct->setEmail($j['Email']);
+        $acct->setPwhash($j['Pwhash']);
+        $acct->setRole($j['Role']);
+        $acct->save();
+        $acctMap[$j['Id']] = $acct->getId();
+    }
+
+    ClassroomQuery::create()->find()->delete();
+    $classroomMap = [];
+    foreach ($json['classrooms'] as $j) {
+        $classroom = new Classroom();
+        $classroom->setLabel($j['Label']);
+        $classroom->setOrdering($j['Ordering']);
+        $classroom->setCreatedAt($j['CreatedAt']);
+        $classroom->setUpdatedAt($j['UpdatedAt']);
+        $classroom->save();
+        $classroomMap[$j['Id']] = $classroom->getId();
+    }
+
+    StudentQuery::create()->find()->delete();
+    $studentMap = [];
+    foreach ($json['students'] as $j) {
+        $student = new Student();
+        $student->setFirstName($j['FirstName']);
+        $student->setFamilyName($j['FamilyName']);
+        $student->setEnrolled($j['Enrolled']);
+        $student->setClassroomId($classroomMap[$j['ClassroomId']]);
+        $student->save();
+        $studentMap[$j['Id']] = $student->getId();
+    }
+
+    ScheduleQuery::create()->find()->delete();
+    $scheduleMap = [];
+    foreach ($json['schedules'] as $j) {
+        $schedule = new Schedule();
+        $schedule->setSchedule($j['Schedule']);
+        $schedule->setStartDate($j['StartDate']);
+        $schedule->setEnteredAt($j['EnteredAt']);
+        $schedule->setStudentId($studentMap[$j['StudentId']]);
+        $schedule->save();
+        $scheduleMap[$j['Id']] = $schedule->getId();
+    }
+
+    AttendanceQuery::create()->find()->delete();
+    $attendanceMap = [];
+    foreach ($json['attendance'] as $j) {
+        $attendance = new Attendance();
+        $attendance->setStudentId($studentMap[$j['StudentId']]);
+        $attendance->setCheckIn($j['CheckIn']);
+        $attendance->setCheckOut($j['CheckOut']);
+        $attendance->save();
+        $attendanceMap[$j['Id']] = $attendance->getId();
+    }
+
+
     return $response;
 });
 

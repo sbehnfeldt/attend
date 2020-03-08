@@ -170,8 +170,8 @@
                         contentType: false,
 
                         success: function (data) {
+                            console.log("Success");
                             console.log(data);
-                            alert("Success");
                             Attend.doneLoading();
                         },
                         error: function (xhr) {
