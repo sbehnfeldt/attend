@@ -105,5 +105,21 @@ CREATE TABLE `students`
         ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
+-- ---------------------------------------------------------------------
+-- token_auths
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `token_auths`;
+
+CREATE TABLE `token_auths`
+(
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `cookie_hash` VARCHAR(255) NOT NULL,
+    `expires` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `account_id` INTEGER NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE INDEX `id_UNIQUE` (`id`)
+) ENGINE=InnoDB;
+
 # This restores the fkey checks, after having unset them earlier
 SET FOREIGN_KEY_CHECKS = 1;
