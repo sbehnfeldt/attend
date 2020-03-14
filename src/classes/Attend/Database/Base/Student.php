@@ -1148,25 +1148,25 @@ abstract class Student implements ActiveRecordInterface
         }
     }
 
-     /**
+    /**
      * Populate the current object from a string, using a given parser format
      * <code>
      * $book = new Book();
      * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
      * </code>
-      *
-      * You can specify the key type of the array by additionally passing one
-      * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
-      * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
-      * The default key type is the column's TableMap::TYPE_PHPNAME.
-      *
-      * @param mixed $parser A AbstractParser instance,
-      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
-      * @param string $data The source data to import from
-      * @param string $keyType The type of keys the array uses.
-      *
-      * @return $this|\Attend\Database\Student The current object, for fluid interface
-      */
+     *
+     * You can specify the key type of the array by additionally passing one
+     * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
+     * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
+     * The default key type is the column's TableMap::TYPE_PHPNAME.
+     *
+     * @param mixed $parser A AbstractParser instance,
+     *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
+     * @param string $data The source data to import from
+     * @param string $keyType The type of keys the array uses.
+     *
+     * @return $this|\Attend\Database\Student The current object, for fluid interface
+     */
     public function importFrom($parser, $data, $keyType = TableMap::TYPE_PHPNAME)
     {
         if (!$parser instanceof AbstractParser) {

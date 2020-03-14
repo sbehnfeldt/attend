@@ -1049,9 +1049,9 @@ abstract class Account implements ActiveRecordInterface
      * Unlike buildCriteria() this method includes the primary key values regardless
      * of whether or not they have been modified.
      *
-     * @return Criteria The Criteria object containing value(s) for primary key(s).
      * @throws LogicException if no primary key is defined
      *
+     * @return Criteria The Criteria object containing value(s) for primary key(s).
      */
     public function buildPkeyCriteria()
     {

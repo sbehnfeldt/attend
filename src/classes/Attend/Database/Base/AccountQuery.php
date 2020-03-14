@@ -154,9 +154,9 @@ abstract class AccountQuery extends ModelCriteria
      * @param mixed $key Primary key to use for the query
      * @param ConnectionInterface $con A connection object
      *
-     * @return ChildAccount A model object, or null if the key is not found
      * @throws \Propel\Runtime\Exception\PropelException
      *
+     * @return ChildAccount A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
