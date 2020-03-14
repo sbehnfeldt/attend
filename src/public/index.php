@@ -13,6 +13,8 @@ use Attend\Database\Schedule;
 use Attend\Database\ScheduleQuery;
 use Attend\Database\Student;
 use Attend\Database\StudentQuery;
+use Attend\Database\Token;
+use Attend\Database\TokenQuery;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Container;
@@ -86,19 +88,34 @@ $engine->connect($config['db']);
 
 
 // Middleware to ensure user is logged in
-$login = function (Request $request, Response $response, $next) {
+$authenticate = function (Request $request, Response $response, $next) {
     if (empty($_SESSION['account'])) {
+        // Check for "remember me" cookies, validate if found
+        if (!empty($_COOKIE["account_id"]) && !empty($_COOKIE["token"])) {
+            $tokens = TokenQuery::create()->filterByAccountId($_COOKIE['account_id']);
+            /** @var Token $token */
+            foreach ($tokens as $token) {
+                if (password_verify($_COOKIE["token"], $token->getCookieHash()) && $token->getExpires() >= date("Y-m-d H:i:s", time())) {
+                    $_SESSION['account'] = AccountQuery::create()->findPk($_COOKIE['account_id']);
+                    break;
+                }
+            }
+        }
+    }
+
+    if (empty($_SESSION['account'])) {
+        // Not authenticated: neither by session nor "remember me" cookies
         $loader = new FilesystemLoader('../templates');
         $twig = new Environment($loader, array(
             'cache' => false
         ));
-
         $response->getBody()->write($twig->render('login.html.twig', [
-            'account' => $_SESSION['account'],
             'route' => $_SERVER['CONTEXT_PREFIX'] . $request->getAttribute('route')->getPattern()
         ]));
         return $response;
     }
+
+    // User is authenticated
     $response = $next($request, $response);
     return $response;
 };
@@ -140,7 +157,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
         'account' => $_SESSION['account'],
     ]));
     return $response;
-})->add($login);
+})->add($authenticate);
 
 
 $app->get('/attendance', function (Request $request, Response $response, array $args) {
@@ -164,7 +181,7 @@ $app->get('/attendance', function (Request $request, Response $response, array $
         'weekOf' => $weekOf
     ]));
     return $response;
-})->add($login);
+})->add($authenticate);
 
 
 $app->get('/enrollment', function (Request $request, Response $response, array $args) {
@@ -177,7 +194,7 @@ $app->get('/enrollment', function (Request $request, Response $response, array $
         'account' => $_SESSION['account'],
     ]));
     return $response;
-})->add($login);
+})->add($authenticate);
 
 
 $app->get('/classrooms', function (Request $request, Response $response, array $args) {
@@ -189,7 +206,7 @@ $app->get('/classrooms', function (Request $request, Response $response, array $
         'account' => $_SESSION['account'],
     ]));
     return $response;
-})->add($login);
+})->add($authenticate);
 
 $app->get('/admin', function (Request $request, Response $response, array $args) {
     $accounts = AccountQuery::create()->find();
@@ -202,7 +219,7 @@ $app->get('/admin', function (Request $request, Response $response, array $args)
         'accounts' => $accounts
     ]));
     return $response;
-})->add($login)->add($adminOnly);
+})->add($authenticate)->add($adminOnly);
 
 
 $app->get('/backup-db', function (Request $request, Response $response, array $args) {

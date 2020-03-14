@@ -70,6 +70,9 @@
 </head>
 <body>
 <main>
+    <div id="loading">
+        <div id="loading-image"></div>
+    </div>
     <p>Please enter your login username and password</p>
     <form action="login.php" method="post">
         <input type="hidden" name="route" value="{{ route }}">
@@ -88,7 +91,7 @@
             <input type="password" name="password" placeholder="Password" value="{{ password }}">
         </div>
 
-        <div class="form-box1" style="display: none">
+        <div class="form-box1">
             <input type="checkbox" name="remember" {% if remember %}checked{% endif %}>
             <label class="always" for="">Remember Me</label>
         </div>
@@ -100,6 +103,7 @@
 </main>
 
 <script type="application/javascript" src="js/jquery-1.11.0.min.js"></script>
+<script src="js/attend.js"></script>
 <script src="js/login.js"></script>
 </body>
 </html>

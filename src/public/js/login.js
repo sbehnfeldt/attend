@@ -11,7 +11,7 @@
         let $submit = $('button');
 
         $form.on('submit', function () {
-            console.log('submit');
+            Attend.loadAnother();
             $invalid.hide();
             $.ajax({
                 url: 'login.php',
@@ -33,15 +33,18 @@
                                 $password.removeClass('invalid');
                             }
                         }
+                        Attend.doneLoading();
                     } else if (response['unauthorized']) {
                         $username.removeClass('invalid');
                         $password.removeClass('invalid');
                         $invalid.show();
+                        Attend.doneLoading();
                     } else {
                         window.location.href = response['Location'];
                     }
                 },
                 error: function (xhr) {
+                    Attend.doneLoading();
                     console.log(xhr);
                 }
             });
