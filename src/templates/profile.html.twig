@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Attend | Profile{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    {#    <script src="js/prfile.js"></script>#}
+{% endblock %}
+
+
+{% block main %}
+    <h1>Profile</h1>
+    <div class="form-box">
+        <label for="">Username: </label>
+        <span>{{ account.username }}</span>
+    </div>
+    <div class="form-box">
+        <label for="">Email Address:</label>
+        <span>{{ account.email }}</span>
+    </div>
+
+
+{% endblock %}

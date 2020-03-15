@@ -221,6 +221,19 @@ $app->get('/admin', function (Request $request, Response $response, array $args)
     return $response;
 })->add($authenticate)->add($adminOnly);
 
+$app->get('/profile', function (Request $request, Response $response) {
+    $loader = new FilesystemLoader('../templates');
+    $twig = new Environment($loader, array(
+        'cache' => false
+    ));
+
+    $response->getBody()->write($twig->render('profile.html.twig', [
+        'account' => $_SESSION['account']
+    ]));
+
+    return $response;
+})->add($authenticate);
+
 
 $app->get('/backup-db', function (Request $request, Response $response, array $args) {
     $exporter = new Exporter();
