@@ -86,9 +86,18 @@ abstract class LoginAttempt implements ActiveRecordInterface
     /**
      * The value for the pass field.
      *
-     * @var        int
+     * Note: this column has a database default value of: '1'
+     * @var        string
      */
     protected $pass;
+
+    /**
+     * The value for the note field.
+     *
+     * Note: this column has a database default value of: 'OK'
+     * @var        string
+     */
+    protected $note;
 
     /**
      * Flag to prevent endless save loop, if this object is referenced
@@ -106,6 +115,8 @@ abstract class LoginAttempt implements ActiveRecordInterface
      */
     public function applyDefaultValues()
     {
+        $this->pass = '1';
+        $this->note = 'OK';
     }
 
     /**
@@ -378,11 +389,21 @@ abstract class LoginAttempt implements ActiveRecordInterface
     /**
      * Get the [pass] column value.
      *
-     * @return int
+     * @return string
      */
     public function getPass()
     {
         return $this->pass;
+    }
+
+    /**
+     * Get the [note] column value.
+     *
+     * @return string
+     */
+    public function getNote()
+    {
+        return $this->note;
     }
 
     /**
@@ -448,13 +469,13 @@ abstract class LoginAttempt implements ActiveRecordInterface
     /**
      * Set the value of [pass] column.
      *
-     * @param int $v new value
+     * @param string $v new value
      * @return $this|\Attend\Database\LoginAttempt The current object (for fluent API support)
      */
     public function setPass($v)
     {
         if ($v !== null) {
-            $v = (int)$v;
+            $v = (string)$v;
         }
 
         if ($this->pass !== $v) {
@@ -466,6 +487,26 @@ abstract class LoginAttempt implements ActiveRecordInterface
     } // setPass()
 
     /**
+     * Set the value of [note] column.
+     *
+     * @param string $v new value
+     * @return $this|\Attend\Database\LoginAttempt The current object (for fluent API support)
+     */
+    public function setNote($v)
+    {
+        if ($v !== null) {
+            $v = (string)$v;
+        }
+
+        if ($this->note !== $v) {
+            $this->note = $v;
+            $this->modifiedColumns[LoginAttemptTableMap::COL_NOTE] = true;
+        }
+
+        return $this;
+    } // setNote()
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -475,6 +516,14 @@ abstract class LoginAttempt implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues()
     {
+        if ($this->pass !== '1') {
+            return false;
+        }
+
+        if ($this->note !== 'OK') {
+            return false;
+        }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     } // hasOnlyDefaultValues()
@@ -514,7 +563,10 @@ abstract class LoginAttempt implements ActiveRecordInterface
             $this->username = (null !== $col) ? (string)$col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : LoginAttemptTableMap::translateFieldName('Pass', TableMap::TYPE_PHPNAME, $indexType)];
-            $this->pass = (null !== $col) ? (int)$col : null;
+            $this->pass = (null !== $col) ? (string)$col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : LoginAttemptTableMap::translateFieldName('Note', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->note = (null !== $col) ? (string)$col : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -523,7 +575,7 @@ abstract class LoginAttempt implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 4; // 4 = LoginAttemptTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 5; // 5 = LoginAttemptTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\Attend\\Database\\LoginAttempt'), 0, $e);
@@ -736,6 +788,9 @@ abstract class LoginAttempt implements ActiveRecordInterface
         if ($this->isColumnModified(LoginAttemptTableMap::COL_PASS)) {
             $modifiedColumns[':p' . $index++] = 'pass';
         }
+        if ($this->isColumnModified(LoginAttemptTableMap::COL_NOTE)) {
+            $modifiedColumns[':p' . $index++] = 'note';
+        }
 
         $sql = sprintf(
             'INSERT INTO login_attempts (%s) VALUES (%s)',
@@ -757,7 +812,10 @@ abstract class LoginAttempt implements ActiveRecordInterface
                         $stmt->bindValue($identifier, $this->username, PDO::PARAM_STR);
                         break;
                     case 'pass':
-                        $stmt->bindValue($identifier, $this->pass, PDO::PARAM_INT);
+                        $stmt->bindValue($identifier, $this->pass, PDO::PARAM_STR);
+                        break;
+                    case 'note':
+                        $stmt->bindValue($identifier, $this->note, PDO::PARAM_STR);
                         break;
                 }
             }
@@ -833,6 +891,9 @@ abstract class LoginAttempt implements ActiveRecordInterface
             case 3:
                 return $this->getPass();
                 break;
+            case 4:
+                return $this->getNote();
+                break;
             default:
                 return null;
                 break;
@@ -866,6 +927,7 @@ abstract class LoginAttempt implements ActiveRecordInterface
             $keys[1] => $this->getAttemptedAt(),
             $keys[2] => $this->getUsername(),
             $keys[3] => $this->getPass(),
+            $keys[4] => $this->getNote(),
         );
         if ($result[$keys[1]] instanceof \DateTimeInterface) {
             $result[$keys[1]] = $result[$keys[1]]->format('c');
@@ -921,6 +983,9 @@ abstract class LoginAttempt implements ActiveRecordInterface
             case 3:
                 $this->setPass($value);
                 break;
+            case 4:
+                $this->setNote($value);
+                break;
         } // switch()
 
         return $this;
@@ -958,6 +1023,9 @@ abstract class LoginAttempt implements ActiveRecordInterface
         }
         if (array_key_exists($keys[3], $arr)) {
             $this->setPass($arr[$keys[3]]);
+        }
+        if (array_key_exists($keys[4], $arr)) {
+            $this->setNote($arr[$keys[4]]);
         }
     }
 
@@ -1011,6 +1079,9 @@ abstract class LoginAttempt implements ActiveRecordInterface
         }
         if ($this->isColumnModified(LoginAttemptTableMap::COL_PASS)) {
             $criteria->add(LoginAttemptTableMap::COL_PASS, $this->pass);
+        }
+        if ($this->isColumnModified(LoginAttemptTableMap::COL_NOTE)) {
+            $criteria->add(LoginAttemptTableMap::COL_NOTE, $this->note);
         }
 
         return $criteria;
@@ -1101,6 +1172,7 @@ abstract class LoginAttempt implements ActiveRecordInterface
         $copyObj->setAttemptedAt($this->getAttemptedAt());
         $copyObj->setUsername($this->getUsername());
         $copyObj->setPass($this->getPass());
+        $copyObj->setNote($this->getNote());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
@@ -1140,6 +1212,7 @@ abstract class LoginAttempt implements ActiveRecordInterface
         $this->attempted_at = null;
         $this->username = null;
         $this->pass = null;
+        $this->note = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();

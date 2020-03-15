@@ -23,11 +23,13 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLoginAttemptQuery orderByAttemptedAt($order = Criteria::ASC) Order by the attempted_at column
  * @method     ChildLoginAttemptQuery orderByUsername($order = Criteria::ASC) Order by the username column
  * @method     ChildLoginAttemptQuery orderByPass($order = Criteria::ASC) Order by the pass column
+ * @method     ChildLoginAttemptQuery orderByNote($order = Criteria::ASC) Order by the note column
  *
  * @method     ChildLoginAttemptQuery groupById() Group by the id column
  * @method     ChildLoginAttemptQuery groupByAttemptedAt() Group by the attempted_at column
  * @method     ChildLoginAttemptQuery groupByUsername() Group by the username column
  * @method     ChildLoginAttemptQuery groupByPass() Group by the pass column
+ * @method     ChildLoginAttemptQuery groupByNote() Group by the note column
  *
  * @method     ChildLoginAttemptQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildLoginAttemptQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -43,20 +45,23 @@ use Propel\Runtime\Exception\PropelException;
  * @method     ChildLoginAttempt findOneById(int $id) Return the first ChildLoginAttempt filtered by the id column
  * @method     ChildLoginAttempt findOneByAttemptedAt(string $attempted_at) Return the first ChildLoginAttempt filtered by the attempted_at column
  * @method     ChildLoginAttempt findOneByUsername(string $username) Return the first ChildLoginAttempt filtered by the username column
- * @method     ChildLoginAttempt findOneByPass(int $pass) Return the first ChildLoginAttempt filtered by the pass column *
+ * @method     ChildLoginAttempt findOneByPass(string $pass) Return the first ChildLoginAttempt filtered by the pass column
+ * @method     ChildLoginAttempt findOneByNote(string $note) Return the first ChildLoginAttempt filtered by the note column *
  * @method     ChildLoginAttempt requirePk($key, ConnectionInterface $con = null) Return the ChildLoginAttempt by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLoginAttempt requireOne(ConnectionInterface $con = null) Return the first ChildLoginAttempt matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildLoginAttempt requireOneById(int $id) Return the first ChildLoginAttempt filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLoginAttempt requireOneByAttemptedAt(string $attempted_at) Return the first ChildLoginAttempt filtered by the attempted_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLoginAttempt requireOneByUsername(string $username) Return the first ChildLoginAttempt filtered by the username column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildLoginAttempt requireOneByPass(int $pass) Return the first ChildLoginAttempt filtered by the pass column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildLoginAttempt requireOneByPass(string $pass) Return the first ChildLoginAttempt filtered by the pass column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildLoginAttempt requireOneByNote(string $note) Return the first ChildLoginAttempt filtered by the note column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildLoginAttempt[]|ObjectCollection find(ConnectionInterface $con = null) Return ChildLoginAttempt objects based on current ModelCriteria
  * @method     ChildLoginAttempt[]|ObjectCollection findById(int $id) Return ChildLoginAttempt objects filtered by the id column
  * @method     ChildLoginAttempt[]|ObjectCollection findByAttemptedAt(string $attempted_at) Return ChildLoginAttempt objects filtered by the attempted_at column
  * @method     ChildLoginAttempt[]|ObjectCollection findByUsername(string $username) Return ChildLoginAttempt objects filtered by the username column
- * @method     ChildLoginAttempt[]|ObjectCollection findByPass(int $pass) Return ChildLoginAttempt objects filtered by the pass column
+ * @method     ChildLoginAttempt[]|ObjectCollection findByPass(string $pass) Return ChildLoginAttempt objects filtered by the pass column
+ * @method     ChildLoginAttempt[]|ObjectCollection findByNote(string $note) Return ChildLoginAttempt objects filtered by the note column
  * @method     ChildLoginAttempt[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  *
  */
@@ -155,7 +160,7 @@ abstract class LoginAttemptQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, attempted_at, username, pass FROM login_attempts WHERE id = :p0';
+        $sql = 'SELECT id, attempted_at, username, pass, note FROM login_attempts WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -359,40 +364,49 @@ abstract class LoginAttemptQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByPass(1234); // WHERE pass = 1234
-     * $query->filterByPass(array(12, 34)); // WHERE pass IN (12, 34)
-     * $query->filterByPass(array('min' => 12)); // WHERE pass > 12
+     * $query->filterByPass('fooValue');   // WHERE pass = 'fooValue'
+     * $query->filterByPass('%fooValue%', Criteria::LIKE); // WHERE pass LIKE '%fooValue%'
      * </code>
      *
-     * @param mixed $pass The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string $pass The value to use as filter.
      * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this|ChildLoginAttemptQuery The current query, for fluid interface
      */
     public function filterByPass($pass = null, $comparison = null)
     {
-        if (is_array($pass)) {
-            $useMinMax = false;
-            if (isset($pass['min'])) {
-                $this->addUsingAlias(LoginAttemptTableMap::COL_PASS, $pass['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($pass['max'])) {
-                $this->addUsingAlias(LoginAttemptTableMap::COL_PASS, $pass['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
+        if (null === $comparison) {
+            if (is_array($pass)) {
                 $comparison = Criteria::IN;
             }
         }
 
         return $this->addUsingAlias(LoginAttemptTableMap::COL_PASS, $pass, $comparison);
+    }
+
+    /**
+     * Filter the query on the note column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByNote('fooValue');   // WHERE note = 'fooValue'
+     * $query->filterByNote('%fooValue%', Criteria::LIKE); // WHERE note LIKE '%fooValue%'
+     * </code>
+     *
+     * @param string $note The value to use as filter.
+     * @param string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this|ChildLoginAttemptQuery The current query, for fluid interface
+     */
+    public function filterByNote($note = null, $comparison = null)
+    {
+        if (null === $comparison) {
+            if (is_array($note)) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(LoginAttemptTableMap::COL_NOTE, $note, $comparison);
     }
 
     /**

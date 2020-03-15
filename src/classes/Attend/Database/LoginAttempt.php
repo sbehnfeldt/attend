@@ -1,8 +1,8 @@
 <?php
 
-namespace Attend\Database\Attend\Database;
+namespace Attend\Database;
 
-use Attend\Database\Attend\Database\Base\LoginAttempt as BaseLoginAttempt;
+use Attend\Database\Base\LoginAttempt as BaseLoginAttempt;
 
 /**
  * Skeleton subclass for representing a row from the 'login_attempts' table.

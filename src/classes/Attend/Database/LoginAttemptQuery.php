@@ -1,8 +1,8 @@
 <?php
 
-namespace Attend\Database\Attend\Database;
+namespace Attend\Database;
 
-use Attend\Database\Attend\Database\Base\LoginAttemptQuery as BaseLoginAttemptQuery;
+use Attend\Database\Base\LoginAttemptQuery as BaseLoginAttemptQuery;
 
 /**
  * Skeleton subclass for performing query and update operations on the 'login_attempts' table.

@@ -71,7 +71,8 @@ CREATE TABLE `login_attempts`
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `attempted_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `username` VARCHAR(45),
-    `pass` TINYINT NOT NULL,
+    `pass` binary(1) DEFAULT '1' NOT NULL,
+    `note` VARCHAR(45) DEFAULT 'OK' NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB;

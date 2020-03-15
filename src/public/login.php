@@ -4,6 +4,7 @@ namespace Attend;
 
 
 use Attend\Database\AccountQuery;
+use Attend\Database\LoginAttempt;
 use Attend\Database\Token;
 use Attend\Database\TokenQuery;
 use Monolog\Handler\StreamHandler;
@@ -30,8 +31,16 @@ function getToken($length)
 $config = bootstrap();
 $logger = new Logger('logins');
 $logger->pushHandler(new StreamHandler('../logs/security.log'));
+
 if (empty($_POST['username']) || empty($_POST['password'])) {
-    $logger->info('Invalid login attempt');
+    $note = 'Invalid login attempt';
+    $attempt = new LoginAttempt();
+    $attempt->setAttemptedAt(time());
+    $attempt->setPass(0);
+    $attempt->setNote($note);
+    $attempt->save();
+    $logger->info($note);
+
     header('Content-Type: application/json');
     die (json_encode([
         'invalid' => true,
@@ -45,7 +54,15 @@ $password = $_POST['password'];
 $acct = AccountQuery::create()->findOneByUsername($username);
 if (!$acct) {
     // User not found
-    $logger->info(sprintf('Login denied: no account for user "%s"', $username));
+    $note = sprintf('Login denied: no account for user "%s"', $username);
+    $attempt = new LoginAttempt();
+    $attempt->setUsername($username);
+    $attempt->setAttemptedAt(time());
+    $attempt->setPass(0);
+    $attempt->setNote($note);
+    $attempt->save();
+    $logger->info($note);
+
     header('Content-Type: application/json');
     die (json_encode([
         'unauthorized' => true
@@ -54,14 +71,28 @@ if (!$acct) {
 
 if (!password_verify($password, $acct->getPwhash())) {
     // Wrong password
-    $logger->info(sprintf('Login denied: incorrect password for user "%s"', $username));
+    $note = sprintf('Login denied: incorrect password for user "%s"', $username);
+    $attempt = new LoginAttempt();
+    $attempt->setUsername($username);
+    $attempt->setAttemptedAt(time());
+    $attempt->setPass(0);
+    $attempt->setNote($note);
+    $attempt->save();
+    $logger->info($note);
+
     header('Content-Type: application/json');
     die (json_encode([
         'unauthorized' => true
     ]));
 }
-$logger->info(sprintf('User "%s" successfully logged in', $username));
+
+
 // User authenticated
+$logger->info(sprintf('User "%s" successfully logged in', $username));
+$attempt = new LoginAttempt();
+$attempt->setUsername($username);
+$attempt->setAttemptedAt(time());
+$attempt->save();
 $_SESSION['account'] = $acct;
 if (empty($_POST['remember'])) {
     // Clear any current auth cookie

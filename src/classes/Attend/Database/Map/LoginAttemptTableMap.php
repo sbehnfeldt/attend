@@ -59,7 +59,7 @@ class LoginAttemptTableMap extends TableMap
     /**
      * The total number of columns
      */
-    const NUM_COLUMNS = 4;
+    const NUM_COLUMNS = 5;
 
     /**
      * The number of lazy-loaded columns
@@ -69,7 +69,7 @@ class LoginAttemptTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    const NUM_HYDRATE_COLUMNS = 4;
+    const NUM_HYDRATE_COLUMNS = 5;
 
     /**
      * the column name for the id field
@@ -92,6 +92,11 @@ class LoginAttemptTableMap extends TableMap
     const COL_PASS = 'login_attempts.pass';
 
     /**
+     * the column name for the note field
+     */
+    const COL_NOTE = 'login_attempts.note';
+
+    /**
      * The default string format for model objects of the related table
      */
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -103,11 +108,11 @@ class LoginAttemptTableMap extends TableMap
      * e.g. self::$fieldNames[self::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array(
-        self::TYPE_PHPNAME => array('Id', 'AttemptedAt', 'Username', 'Pass',),
-        self::TYPE_CAMELNAME => array('id', 'attemptedAt', 'username', 'pass',),
-        self::TYPE_COLNAME => array(LoginAttemptTableMap::COL_ID, LoginAttemptTableMap::COL_ATTEMPTED_AT, LoginAttemptTableMap::COL_USERNAME, LoginAttemptTableMap::COL_PASS,),
-        self::TYPE_FIELDNAME => array('id', 'attempted_at', 'username', 'pass',),
-        self::TYPE_NUM => array(0, 1, 2, 3,)
+        self::TYPE_PHPNAME => array('Id', 'AttemptedAt', 'Username', 'Pass', 'Note',),
+        self::TYPE_CAMELNAME => array('id', 'attemptedAt', 'username', 'pass', 'note',),
+        self::TYPE_COLNAME => array(LoginAttemptTableMap::COL_ID, LoginAttemptTableMap::COL_ATTEMPTED_AT, LoginAttemptTableMap::COL_USERNAME, LoginAttemptTableMap::COL_PASS, LoginAttemptTableMap::COL_NOTE,),
+        self::TYPE_FIELDNAME => array('id', 'attempted_at', 'username', 'pass', 'note',),
+        self::TYPE_NUM => array(0, 1, 2, 3, 4,)
     );
 
     /**
@@ -117,11 +122,11 @@ class LoginAttemptTableMap extends TableMap
      * e.g. self::$fieldKeys[self::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array(
-        self::TYPE_PHPNAME => array('Id' => 0, 'AttemptedAt' => 1, 'Username' => 2, 'Pass' => 3,),
-        self::TYPE_CAMELNAME => array('id' => 0, 'attemptedAt' => 1, 'username' => 2, 'pass' => 3,),
-        self::TYPE_COLNAME => array(LoginAttemptTableMap::COL_ID => 0, LoginAttemptTableMap::COL_ATTEMPTED_AT => 1, LoginAttemptTableMap::COL_USERNAME => 2, LoginAttemptTableMap::COL_PASS => 3,),
-        self::TYPE_FIELDNAME => array('id' => 0, 'attempted_at' => 1, 'username' => 2, 'pass' => 3,),
-        self::TYPE_NUM => array(0, 1, 2, 3,)
+        self::TYPE_PHPNAME => array('Id' => 0, 'AttemptedAt' => 1, 'Username' => 2, 'Pass' => 3, 'Note' => 4,),
+        self::TYPE_CAMELNAME => array('id' => 0, 'attemptedAt' => 1, 'username' => 2, 'pass' => 3, 'note' => 4,),
+        self::TYPE_COLNAME => array(LoginAttemptTableMap::COL_ID => 0, LoginAttemptTableMap::COL_ATTEMPTED_AT => 1, LoginAttemptTableMap::COL_USERNAME => 2, LoginAttemptTableMap::COL_PASS => 3, LoginAttemptTableMap::COL_NOTE => 4,),
+        self::TYPE_FIELDNAME => array('id' => 0, 'attempted_at' => 1, 'username' => 2, 'pass' => 3, 'note' => 4,),
+        self::TYPE_NUM => array(0, 1, 2, 3, 4,)
     );
 
     /**
@@ -144,7 +149,8 @@ class LoginAttemptTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('attempted_at', 'AttemptedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('username', 'Username', 'VARCHAR', false, 45, null);
-        $this->addColumn('pass', 'Pass', 'TINYINT', true, null, null);
+        $this->addColumn('pass', 'Pass', 'VARCHAR', true, 1, '1');
+        $this->addColumn('note', 'Note', 'VARCHAR', true, 45, 'OK');
     } // initialize()
 
     /**
@@ -298,11 +304,13 @@ class LoginAttemptTableMap extends TableMap
             $criteria->addSelectColumn(LoginAttemptTableMap::COL_ATTEMPTED_AT);
             $criteria->addSelectColumn(LoginAttemptTableMap::COL_USERNAME);
             $criteria->addSelectColumn(LoginAttemptTableMap::COL_PASS);
+            $criteria->addSelectColumn(LoginAttemptTableMap::COL_NOTE);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.attempted_at');
             $criteria->addSelectColumn($alias . '.username');
             $criteria->addSelectColumn($alias . '.pass');
+            $criteria->addSelectColumn($alias . '.note');
         }
     }
 
