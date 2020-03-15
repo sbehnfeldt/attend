@@ -6,6 +6,8 @@ namespace Attend;
 use Attend\Database\AccountQuery;
 use Attend\Database\Token;
 use Attend\Database\TokenQuery;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 require_once '../lib/bootstrap.php';
 
@@ -25,10 +27,11 @@ function getToken($length)
     return $token;
 }
 
-
 $config = bootstrap();
-
+$logger = new Logger('logins');
+$logger->pushHandler(new StreamHandler('../logs/security.log'));
 if (empty($_POST['username']) || empty($_POST['password'])) {
+    $logger->info('Invalid login attempt');
     header('Content-Type: application/json');
     die (json_encode([
         'invalid' => true,
@@ -42,6 +45,7 @@ $password = $_POST['password'];
 $acct = AccountQuery::create()->findOneByUsername($username);
 if (!$acct) {
     // User not found
+    $logger->info(sprintf('Login denied: no account for user "%s"', $username));
     header('Content-Type: application/json');
     die (json_encode([
         'unauthorized' => true
@@ -50,12 +54,13 @@ if (!$acct) {
 
 if (!password_verify($password, $acct->getPwhash())) {
     // Wrong password
+    $logger->info(sprintf('Login denied: incorrect password for user "%s"', $username));
     header('Content-Type: application/json');
     die (json_encode([
         'unauthorized' => true
     ]));
 }
-
+$logger->info(sprintf('User "%s" successfully logged in', $username));
 // User authenticated
 $_SESSION['account'] = $acct;
 if (empty($_POST['remember'])) {
