@@ -194,6 +194,24 @@
         };
     })();
 
+    let SecurityTab = (function () {
+        let $tab,
+            $table;
+
+        function init(selector) {
+            $tab = $(selector);
+            $table = $tab.find('table');
+            console.log($table.length);
+            $table.DataTable({
+                order: [[1, 'desc']]
+            });
+        }
+
+        return {
+            init: init
+        };
+    })();
+
 
     // Document ready handler
     $(function () {
@@ -202,6 +220,7 @@
         AcctsTable.init('#acctsTable');
         AcctDlg.init('#accountPropsDlg');
         DatabaseTab.init('#database-tab');
+        SecurityTab.init('#security-tab');
         $('#tabs').tabs().show();
     });
 

@@ -10,8 +10,9 @@
 {% block main %}
     <div id="tabs">
         <ul>
-            <li><a href="#database-tab">Database</a></li>
             <li><a href="#users-tab">Users</a></li>
+            <li><a href="#database-tab">Database</a></li>
+            <li><a href="#security-tab">Security</a></li>
         </ul>
 
         <section class="tab" id="users-tab">
@@ -77,6 +78,30 @@
                 <input type="file" name="restore-file">
                 <button name="restore">Restore</button>
             </form>
+        </section>
+
+        <section class="tab" id="security-tab">
+            <h2>Login Attempts</h2>
+            <table class="compact display">
+                <thead>
+                <tr>
+                    <td>Username</td>
+                    <td>Attempted At</td>
+                    <td>Pass</td>
+                    <td>Note</td>
+                </tr>
+                </thead>
+                <tbody>
+                {% for login in logins %}
+                    <tr>
+                        <td>{{ login.Username }}</td>
+                        <td>{{ login.AttemptedAt|date }}</td>
+                        <td>{{ login.Pass }}</td>
+                        <td>{{ login.Note }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
         </section>
     </div>
 {% endblock %}

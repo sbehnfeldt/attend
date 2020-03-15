@@ -9,6 +9,7 @@ use Attend\Database\Attendance;
 use Attend\Database\AttendanceQuery;
 use Attend\Database\Classroom;
 use Attend\Database\Exporter;
+use Attend\Database\LoginAttemptQuery;
 use Attend\Database\Schedule;
 use Attend\Database\ScheduleQuery;
 use Attend\Database\Student;
@@ -210,13 +211,15 @@ $app->get('/classrooms', function (Request $request, Response $response, array $
 
 $app->get('/admin', function (Request $request, Response $response, array $args) {
     $accounts = AccountQuery::create()->find();
+    $logins = LoginAttemptQuery::create()->find();
     $loader = new FilesystemLoader('../templates');
     $twig = new Environment($loader, array(
         'cache' => false
     ));
     $response->getBody()->write($twig->render('admin.html.twig', [
         'account' => $_SESSION['account'],
-        'accounts' => $accounts
+        'accounts' => $accounts,
+        'logins' => $logins
     ]));
     return $response;
 })->add($authenticate)->add($adminOnly);
