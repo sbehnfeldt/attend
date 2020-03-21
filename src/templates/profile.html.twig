@@ -4,7 +4,7 @@
 
 {% block scripts %}
     {{ parent() }}
-    {#    <script src="js/prfile.js"></script>#}
+    <script src="js/profile.js"></script>
 {% endblock %}
 
 
@@ -16,7 +16,12 @@
     </div>
     <div class="form-box">
         <label for="">Email Address:</label>
-        <span>{{ account.email }}</span>
+        <input type="email" name="email" placeholder="Enter email address" value="{{ account.email }}"
+               data-value="{{ account.email }}">
+    </div>
+
+    <div class="form-box">
+        <button name="submit">Update</button>
     </div>
 
 

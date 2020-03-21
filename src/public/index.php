@@ -321,6 +321,22 @@ $app->post('/restore-db', function (Request $request, Response $response, array 
     return $response;
 });
 
+$app->post('/profile', function (Request $request, Response $response) {
+    /** @var Account $account */
+    $data = [];
+    $account = $_SESSION['account'];
+    $body = $request->getParsedBody();
+    if (array_key_exists('email', $body)) {
+        $account->setEmail($body['email']);
+        $data['email'] = $body['email'];
+        $account->save();
+    }
+
+    $response = $response->withHeader('Content-Type', 'application/json');
+    $response->getBody()->write(json_encode($data));
+    return $response;
+})->add($authenticate);
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Routing for API
