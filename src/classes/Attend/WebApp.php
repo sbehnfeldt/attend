@@ -9,43 +9,50 @@ use Attend\Database\ClassroomQuery;
 use Attend\Database\LoginAttemptQuery;
 use Attend\Database\Token;
 use Attend\Database\TokenQuery;
+use DateInterval;
+use DateTime;
+use Exception;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
-use Twig\TwigFunction;
 
 
 // Find the DateTime object representing the Monday closest to the input date
-function getMonday(\DateTime $d)
+/**
+ * @param DateTime $d
+ * @return DateTime
+ * @throws Exception
+ */
+function getMonday(DateTime $d)
 {
     $dw = $d->format('N');
     switch ($dw) {
         case 1:
             break;
         case 2:  // Tuesday
-            $d = $d->sub(new \DateInterval('P1D'));
+            $d = $d->sub(new DateInterval('P1D'));
             break;
         case 3:  // Wednesday
-            $d = $d->sub(new \DateInterval('P2D'));
+            $d = $d->sub(new DateInterval('P2D'));
             break;
         case 4:  // Thursday
-            $d = $d->sub(new \DateInterval('P3D'));
+            $d = $d->sub(new DateInterval('P3D'));
             break;
 
         case 5:  // Friday
-            $d = $d->add(new \DateInterval('P3D'));
+            $d = $d->add(new DateInterval('P3D'));
             break;
         case 6:  // Saturday
-            $d = $d->add(new \DateInterval('P2D'));
+            $d = $d->add(new DateInterval('P2D'));
             break;
         case 7:  // Sunday
-            $d = $d->add(new \DateInterval('P1D'));
+            $d = $d->add(new DateInterval('P1D'));
             break;
 
         default:
-            throw new \Exception(sprintf('Unknown day of the week "%d"', $dw));
+            throw new Exception(sprintf('Unknown day of the week "%d"', $dw));
             break;
     }
 
@@ -100,6 +107,7 @@ class WebApp extends App
             return $response;
         };
 
+        // Middleware to restrict admin-only pages to admins only
         $adminOnly = function (Request $request, Response $response, $next) {
             $loader = new FilesystemLoader('../templates');
             $twig = new Environment($loader, array(
@@ -125,33 +133,23 @@ class WebApp extends App
 
 
         $this->get('/', function (Request $request, Response $response, array $args) {
-            $loader = new FilesystemLoader('../templates');
-            $twig = new Environment($loader, array(
-                'cache' => false
-            ));
-            $response->getBody()->write($twig->render('index.html.twig', [
-                'account' => $_SESSION['account'],
+            /** @var callable $render */
+            $render = $this->get('render');
+            $response->getBody()->write($render('index.html.twig', [
+                'account' => $_SESSION['account']
             ]));
             return $response;
         })->add($authenticate);
 
 
         $this->get('/attendance', function (Request $request, Response $response, array $args) {
-            $loader = new FilesystemLoader('../templates');
-            $twig = new Environment($loader, array(
-                'cache' => false
-            ));
-
             // Get the text version of the date, suitable for column header
-            $twig->addFunction(new TwigFunction('getDate', function (\DateTime $weekOf, int $d) {
-                $w = new \DateTime($weekOf->format('Y/m/d'));
-                $w->add(new \DateInterval(sprintf('P%dD', $d)));
-                return $w->format('M j');
-            }));
-
-            $weekOf = new \DateTime('now');
+            $weekOf = new DateTime('now');
             $weekOf = getMonday($weekOf);
-            $response->getBody()->write($twig->render('attendance.html.twig', [
+
+            /** @var callable $render */
+            $render = $this->get('render');
+            $response->getBody()->write($render('attendance.html.twig', [
                 'account' => $_SESSION['account'],
                 'classrooms' => ClassroomQuery::create()->find(),
                 'weekOf' => $weekOf
@@ -161,12 +159,9 @@ class WebApp extends App
 
 
         $this->get('/enrollment', function (Request $request, Response $response, array $args) {
-            $loader = new FilesystemLoader('../templates');
-            $twig = new Environment($loader, array(
-                'cache' => false
-            ));
-
-            $response->getBody()->write($twig->render('enrollment.html.twig', [
+            /** @var callable $render */
+            $render = $this->get('render');
+            $response->getBody()->write($render('enrollment.html.twig', [
                 'account' => $_SESSION['account'],
             ]));
             return $response;
@@ -174,24 +169,22 @@ class WebApp extends App
 
 
         $this->get('/classrooms', function (Request $request, Response $response, array $args) {
-            $loader = new FilesystemLoader('../templates');
-            $twig = new Environment($loader, array(
-                'cache' => false
-            ));
-            $response->getBody()->write($twig->render('classrooms.html.twig', [
+            /** @var callable $render */
+            $render = $this->get('render');
+            $response->getBody()->write($render('classrooms.html.twig', [
                 'account' => $_SESSION['account'],
             ]));
             return $response;
         })->add($authenticate);
 
+
         $this->get('/admin', function (Request $request, Response $response, array $args) {
             $accounts = AccountQuery::create()->find();
             $logins = LoginAttemptQuery::create()->find();
-            $loader = new FilesystemLoader('../templates');
-            $twig = new Environment($loader, array(
-                'cache' => false
-            ));
-            $response->getBody()->write($twig->render('admin.html.twig', [
+
+            /** @var callable $render */
+            $render = $this->get('render');
+            $response->getBody()->write($render('admin.html.twig', [
                 'account' => $_SESSION['account'],
                 'accounts' => $accounts,
                 'logins' => $logins
@@ -199,13 +192,11 @@ class WebApp extends App
             return $response;
         })->add($authenticate)->add($adminOnly);
 
-        $this->get('/profile', function (Request $request, Response $response) {
-            $loader = new FilesystemLoader('../templates');
-            $twig = new Environment($loader, array(
-                'cache' => false
-            ));
 
-            $response->getBody()->write($twig->render('profile.html.twig', [
+        $this->get('/profile', function (Request $request, Response $response) {
+            /** @var callable $render */
+            $render = $this->get('render');
+            $response->getBody()->write($render('profile.html.twig', [
                 'account' => $_SESSION['account']
             ]));
 
@@ -215,5 +206,4 @@ class WebApp extends App
 
         return $this;
     }
-
 }
