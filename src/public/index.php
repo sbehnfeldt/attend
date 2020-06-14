@@ -3,64 +3,9 @@
 namespace Attend;
 
 
-use Attend\Database\Account;
-use Attend\Database\AccountQuery;
-use Attend\Database\Attendance;
-use Attend\Database\AttendanceQuery;
-use Attend\Database\Classroom;
-use Attend\Database\Exporter;
-use Attend\Database\LoginAttemptQuery;
-use Attend\Database\Schedule;
-use Attend\Database\ScheduleQuery;
-use Attend\Database\Student;
-use Attend\Database\StudentQuery;
-use Attend\Database\Token;
-use Attend\Database\TokenQuery;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Slim\Container;
-use Slim\App;
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
-use Twig\TwigFunction;
-use Attend\PropelEngine\PropelEngine;
-use Attend\Database\ClassroomQuery;
-
-
-// Find the DateTime object representing the Monday closest to the input date
-function getMonday(\DateTime $d)
-{
-    $dw = $d->format('N');
-    switch ($dw) {
-        case 1:
-            break;
-        case 2:  // Tuesday
-            $d = $d->sub(new \DateInterval('P1D'));
-            break;
-        case 3:  // Wednesday
-            $d = $d->sub(new \DateInterval('P2D'));
-            break;
-        case 4:  // Thursday
-            $d = $d->sub(new \DateInterval('P3D'));
-            break;
-
-        case 5:  // Friday
-            $d = $d->add(new \DateInterval('P3D'));
-            break;
-        case 6:  // Saturday
-            $d = $d->add(new \DateInterval('P2D'));
-            break;
-        case 7:  // Sunday
-            $d = $d->add(new \DateInterval('P1D'));
-            break;
-
-        default:
-            throw new \Exception(sprintf('Unknown day of the week "%d"', $dw));
-            break;
-    }
-
-    return $d;
-}
 
 
 /********************************************************************************
@@ -78,290 +23,139 @@ $dependencies['errorHandler'] = function ($c) {
     return function (Request $request, Response $response, \Exception $exception) use ($c) {
         return $response->withStatus(500)
             ->withHeader('Content-Type', 'text/html')
-            ->write('Something went wrong!');
+            ->write($exception->getMessage());
     };
 };
 
-$app = new App($dependencies);
-
-$engine = new PropelEngine();
-$engine->connect($config['db']);
+$app = new WebApp($dependencies);
 
 
-// Middleware to ensure user is logged in
-$authenticate = function (Request $request, Response $response, $next) {
-    if (empty($_SESSION['account'])) {
-        // Check for "remember me" cookies, validate if found
-        if (!empty($_COOKIE["account_id"]) && !empty($_COOKIE["token"])) {
-            $tokens = TokenQuery::create()->filterByAccountId($_COOKIE['account_id']);
-            /** @var Token $token */
-            foreach ($tokens as $token) {
-                if (password_verify($_COOKIE["token"], $token->getCookieHash()) && $token->getExpires() >= date("Y-m-d H:i:s", time())) {
-                    $_SESSION['account'] = AccountQuery::create()->findPk($_COOKIE['account_id']);
-                    break;
-                }
-            }
-        }
-    }
-
-    if (empty($_SESSION['account'])) {
-        // Not authenticated: neither by session nor "remember me" cookies
-        $loader = new FilesystemLoader('../templates');
-        $twig = new Environment($loader, array(
-            'cache' => false
-        ));
-        $response->getBody()->write($twig->render('login.html.twig', [
-            'route' => $_SERVER['CONTEXT_PREFIX'] . $request->getAttribute('route')->getPattern()
-        ]));
-        return $response;
-    }
-
-    // User is authenticated
-    $response = $next($request, $response);
-    return $response;
-};
-
-
-$adminOnly = function (Request $request, Response $response, $next) {
-    $loader = new FilesystemLoader('../templates');
-    $twig = new Environment($loader, array(
-        'cache' => false
-    ));
-    if (empty($_SESSION['account'])) {
-        $response->getBody()->write($twig->render('login.html.twig', [
-            'route' => $_SERVER['CONTEXT_PREFIX'] . $request->getAttribute('route')->getPattern()
-        ]));
-        return $response;
-    }
-
-    if ('admin' !== $_SESSION['account']->getRole()) {
-        $response = $response->withStatus(403);
-        $response->getBody()->write($twig->render('403.html.twig', [
-            'account' => $_SESSION['account']
-        ]));
-        return $response;
-    }
-    $response = $next($request, $response);
-    return $response;
-};
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Routing for Web App Pages
-////////////////////////////////////////////////////////////////////////////////////////////////////
-$app->get('/', function (Request $request, Response $response, array $args) {
-    $loader = new FilesystemLoader('../templates');
-    $twig = new Environment($loader, array(
-        'cache' => false
-    ));
-    $response->getBody()->write($twig->render('index.html.twig', [
-        'account' => $_SESSION['account'],
-    ]));
-    return $response;
-})->add($authenticate);
-
-
-$app->get('/attendance', function (Request $request, Response $response, array $args) {
-    $loader = new FilesystemLoader('../templates');
-    $twig = new Environment($loader, array(
-        'cache' => false
-    ));
-
-    // Get the text version of the date, suitable for column header
-    $twig->addFunction(new TwigFunction('getDate', function (\DateTime $weekOf, int $d) {
-        $w = new \DateTime($weekOf->format('Y/m/d'));
-        $w->add(new \DateInterval(sprintf('P%dD', $d)));
-        return $w->format('M j');
-    }));
-
-    $weekOf = new \DateTime('now');
-    $weekOf = getMonday($weekOf);
-    $response->getBody()->write($twig->render('attendance.html.twig', [
-        'account' => $_SESSION['account'],
-        'classrooms' => ClassroomQuery::create()->find(),
-        'weekOf' => $weekOf
-    ]));
-    return $response;
-})->add($authenticate);
+//$app->get('/backup-db', function (Request $request, Response $response, array $args) {
+//    $exporter = new Exporter();
+//    $data = $exporter();
+//    $data = json_encode($data);
+//    $filename = "attend-db-export-" . date('Y-m-d_H-i-s') . '.json';
+//
+//    $response = $response->withHeader('Content-Type', 'application/octet-stream');
+//    $response = $response->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
+//    $response->getBody()->write($data);
+//    return $response;
+//});
+//
+//$app->post('/restore-db', function (Request $request, Response $response, array $args) {
+//    if (empty($_FILES['restore-file']) || empty($_FILES['restore-file']['tmp_name'])) {
+//        $response = $response->withStatus(400);
+//        $response->getBody()->write('Missing json file');
+//        return $response;
+//    }
+//    $json = json_decode(file_get_contents($_FILES['restore-file']['tmp_name']), true);
+//
+//    AccountQuery::create()->find()->delete();
+//    $acctMap = [];
+//    foreach ($json['accounts'] as $j) {
+//        $acct = new Account();
+//        $acct->setUsername($j['Username']);
+//        $acct->setEmail($j['Email']);
+//        $acct->setPwhash($j['Pwhash']);
+//        $acct->setRole($j['Role']);
+//        $acct->save();
+//        $acctMap[$j['Id']] = $acct->getId();
+//    }
+//
+//    ClassroomQuery::create()->find()->delete();
+//    $classroomMap = [];
+//    foreach ($json['classrooms'] as $j) {
+//        $classroom = new Classroom();
+//        $classroom->setLabel($j['Label']);
+//        $classroom->setOrdering($j['Ordering']);
+//        $classroom->setCreatedAt($j['CreatedAt']);
+//        $classroom->setUpdatedAt($j['UpdatedAt']);
+//        $classroom->save();
+//        $classroomMap[$j['Id']] = $classroom->getId();
+//    }
+//
+//    StudentQuery::create()->find()->delete();
+//    $studentMap = [];
+//    foreach ($json['students'] as $j) {
+//        $student = new Student();
+//        $student->setFirstName($j['FirstName']);
+//        $student->setFamilyName($j['FamilyName']);
+//        $student->setEnrolled($j['Enrolled']);
+//        $student->setClassroomId($classroomMap[$j['ClassroomId']]);
+//        $student->save();
+//        $studentMap[$j['Id']] = $student->getId();
+//    }
+//
+//    ScheduleQuery::create()->find()->delete();
+//    $scheduleMap = [];
+//    foreach ($json['schedules'] as $j) {
+//        $schedule = new Schedule();
+//        $schedule->setSchedule($j['Schedule']);
+//        $schedule->setStartDate($j['StartDate']);
+//        $schedule->setEnteredAt($j['EnteredAt']);
+//        $schedule->setStudentId($studentMap[$j['StudentId']]);
+//        $schedule->save();
+//        $scheduleMap[$j['Id']] = $schedule->getId();
+//    }
+//
+//    AttendanceQuery::create()->find()->delete();
+//    $attendanceMap = [];
+//    foreach ($json['attendance'] as $j) {
+//        $attendance = new Attendance();
+//        $attendance->setStudentId($studentMap[$j['StudentId']]);
+//        $attendance->setCheckIn($j['CheckIn']);
+//        $attendance->setCheckOut($j['CheckOut']);
+//        $attendance->save();
+//        $attendanceMap[$j['Id']] = $attendance->getId();
+//    }
+//
+//
+//    return $response;
+//});
 
 
-$app->get('/enrollment', function (Request $request, Response $response, array $args) {
-    $loader = new FilesystemLoader('../templates');
-    $twig = new Environment($loader, array(
-        'cache' => false
-    ));
-
-    $response->getBody()->write($twig->render('enrollment.html.twig', [
-        'account' => $_SESSION['account'],
-    ]));
-    return $response;
-})->add($authenticate);
-
-
-$app->get('/classrooms', function (Request $request, Response $response, array $args) {
-    $loader = new FilesystemLoader('../templates');
-    $twig = new Environment($loader, array(
-        'cache' => false
-    ));
-    $response->getBody()->write($twig->render('classrooms.html.twig', [
-        'account' => $_SESSION['account'],
-    ]));
-    return $response;
-})->add($authenticate);
-
-$app->get('/admin', function (Request $request, Response $response, array $args) {
-    $accounts = AccountQuery::create()->find();
-    $logins = LoginAttemptQuery::create()->find();
-    $loader = new FilesystemLoader('../templates');
-    $twig = new Environment($loader, array(
-        'cache' => false
-    ));
-    $response->getBody()->write($twig->render('admin.html.twig', [
-        'account' => $_SESSION['account'],
-        'accounts' => $accounts,
-        'logins' => $logins
-    ]));
-    return $response;
-})->add($authenticate)->add($adminOnly);
-
-$app->get('/profile', function (Request $request, Response $response) {
-    $loader = new FilesystemLoader('../templates');
-    $twig = new Environment($loader, array(
-        'cache' => false
-    ));
-
-    $response->getBody()->write($twig->render('profile.html.twig', [
-        'account' => $_SESSION['account']
-    ]));
-
-    return $response;
-})->add($authenticate);
+//$app->post('/profile/email', function (Request $request, Response $response) {
+//    /** @var Account $account */
+//    $data = [];
+//    $account = $_SESSION['account'];
+//    $body = $request->getParsedBody();
+//
+//    if (array_key_exists('email', $body)) {
+//        $account->setEmail($body['email']);
+//        $data['email'] = $body['email'];
+//        $account->save();
+//    }
+//
+//
+//    $response = $response->withHeader('Content-Type', 'application/json');
+//    $response->getBody()->write(json_encode($data));
+//    return $response;
+//})->add($authenticate);
 
 
-$app->get('/backup-db', function (Request $request, Response $response, array $args) {
-    $exporter = new Exporter();
-    $data = $exporter();
-    $data = json_encode($data);
-    $filename = "attend-db-export-" . date('Y-m-d_H-i-s') . '.json';
-
-    $response = $response->withHeader('Content-Type', 'application/octet-stream');
-    $response = $response->withHeader('Content-Disposition', 'attachment; filename="' . $filename . '"');
-    $response->getBody()->write($data);
-    return $response;
-});
-
-$app->post('/restore-db', function (Request $request, Response $response, array $args) {
-    if (empty($_FILES['restore-file']) || empty($_FILES['restore-file']['tmp_name'])) {
-        $response = $response->withStatus(400);
-        $response->getBody()->write('Missing json file');
-        return $response;
-    }
-    $json = json_decode(file_get_contents($_FILES['restore-file']['tmp_name']), true);
-
-    AccountQuery::create()->find()->delete();
-    $acctMap = [];
-    foreach ($json['accounts'] as $j) {
-        $acct = new Account();
-        $acct->setUsername($j['Username']);
-        $acct->setEmail($j['Email']);
-        $acct->setPwhash($j['Pwhash']);
-        $acct->setRole($j['Role']);
-        $acct->save();
-        $acctMap[$j['Id']] = $acct->getId();
-    }
-
-    ClassroomQuery::create()->find()->delete();
-    $classroomMap = [];
-    foreach ($json['classrooms'] as $j) {
-        $classroom = new Classroom();
-        $classroom->setLabel($j['Label']);
-        $classroom->setOrdering($j['Ordering']);
-        $classroom->setCreatedAt($j['CreatedAt']);
-        $classroom->setUpdatedAt($j['UpdatedAt']);
-        $classroom->save();
-        $classroomMap[$j['Id']] = $classroom->getId();
-    }
-
-    StudentQuery::create()->find()->delete();
-    $studentMap = [];
-    foreach ($json['students'] as $j) {
-        $student = new Student();
-        $student->setFirstName($j['FirstName']);
-        $student->setFamilyName($j['FamilyName']);
-        $student->setEnrolled($j['Enrolled']);
-        $student->setClassroomId($classroomMap[$j['ClassroomId']]);
-        $student->save();
-        $studentMap[$j['Id']] = $student->getId();
-    }
-
-    ScheduleQuery::create()->find()->delete();
-    $scheduleMap = [];
-    foreach ($json['schedules'] as $j) {
-        $schedule = new Schedule();
-        $schedule->setSchedule($j['Schedule']);
-        $schedule->setStartDate($j['StartDate']);
-        $schedule->setEnteredAt($j['EnteredAt']);
-        $schedule->setStudentId($studentMap[$j['StudentId']]);
-        $schedule->save();
-        $scheduleMap[$j['Id']] = $schedule->getId();
-    }
-
-    AttendanceQuery::create()->find()->delete();
-    $attendanceMap = [];
-    foreach ($json['attendance'] as $j) {
-        $attendance = new Attendance();
-        $attendance->setStudentId($studentMap[$j['StudentId']]);
-        $attendance->setCheckIn($j['CheckIn']);
-        $attendance->setCheckOut($j['CheckOut']);
-        $attendance->save();
-        $attendanceMap[$j['Id']] = $attendance->getId();
-    }
-
-
-    return $response;
-});
-
-
-$app->post('/profile/email', function (Request $request, Response $response) {
-    /** @var Account $account */
-    $data = [];
-    $account = $_SESSION['account'];
-    $body = $request->getParsedBody();
-
-    if (array_key_exists('email', $body)) {
-        $account->setEmail($body['email']);
-        $data['email'] = $body['email'];
-        $account->save();
-    }
-
-
-    $response = $response->withHeader('Content-Type', 'application/json');
-    $response->getBody()->write(json_encode($data));
-    return $response;
-})->add($authenticate);
-
-
-$app->post('/profile/password', function (Request $request, Response $response) {
-    $data = [];
-    $account = $_SESSION['account'];
-    $body = $request->getParsedBody();
-    if (array_key_exists('pwOld', $body) && array_key_exists('pwNew', $body)) {
-        if (!password_verify($body['pwOld'], $account->getPwhash())) {
-            $data['msg'] = 'Incorrect current password';
-        } else {
-            $account->setPwhash(password_hash($body['pwNew'], PASSWORD_DEFAULT));
-            $account->save();
-            $data['msg'] = 'OK';
-        }
-    }
-
-    $response = $response->withHeader('Content-Type', 'application/json');
-    $response->getBody()->write(json_encode($data));
-    return $response;
-})->add($authenticate);
+//$app->post('/profile/password', function (Request $request, Response $response) {
+//    $data = [];
+//    $account = $_SESSION['account'];
+//    $body = $request->getParsedBody();
+//    if (array_key_exists('pwOld', $body) && array_key_exists('pwNew', $body)) {
+//        if (!password_verify($body['pwOld'], $account->getPwhash())) {
+//            $data['msg'] = 'Incorrect current password';
+//        } else {
+//            $account->setPwhash(password_hash($body['pwNew'], PASSWORD_DEFAULT));
+//            $account->save();
+//            $data['msg'] = 'OK';
+//        }
+//    }
+//
+//    $response = $response->withHeader('Content-Type', 'application/json');
+//    $response->getBody()->write(json_encode($data));
+//    return $response;
+//})->add($authenticate);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Routing for API
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//$app->run();
+$app->routes();
 $app->run();
