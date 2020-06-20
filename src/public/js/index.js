@@ -336,7 +336,7 @@
             Attend.loadAnother();
 
             for ( var i = 0; i < classrooms.length; i++ ) {
-                $signin.append( $( '<h3>' ).text( classrooms[ i ].label ) );
+                $signin.append($('<h3>').text(classrooms[i].Label));
                 var $table = buildSigninTable( classrooms[ i ], students, schedules );
 
                 $table.DataTable( {
