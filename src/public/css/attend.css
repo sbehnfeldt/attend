@@ -1,6 +1,14 @@
+:root {
+    --primary-color: rgba(13, 10, 139, 0.75);
+}
+
+* {
+    box-sizing: border-box;
+}
+
 body {
-    padding-top: 70px;
     margin-bottom: 50px;
+    font-family: 'Roboto', sans-serif;
 }
 
 input.invalid {

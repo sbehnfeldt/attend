@@ -1,0 +1,166 @@
+/* Based on "Pure CSS Hamburger Menu & Overlay" by Traversy Media, Apr 4, 2019.
+   https://www.youtube.com/watch?v=DZg6UfS5zYg
+*/
+header {
+    /*position: fixed;*/
+}
+
+nav {
+    /*position: fixed;   !* Relative to the viewport.  Stays at the top, always *!*/
+    /*z-index: 1;*/
+    /*top: 0;*/
+    /*left: 0;*/
+    width: 100%;
+    height: 60px;
+    /*height: 100%;*/
+
+    /*background-color: var(--primary-color);*/
+
+    background-color: lightblue;
+}
+
+ul.menu {
+    list-style: none;
+}
+
+nav.navbar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+nav.navbar input.toggler {
+    /*position: absolute;*/
+    top: 0;
+    left: 0;
+    z-index: 2;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    opacity: 0;
+}
+
+/* Hamburger icon container */
+.navbar .hamburger {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 60px;
+    height: 60px;
+    padding: 1rem;
+    background: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* The three hamburger "patties" */
+.navbar .hamburger > div {
+    position: relative;
+    width: 100%;
+    height: 2px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .3s ease;
+}
+
+.navbar .hamburger > div:before,
+.navbar .hamburger > div:after {
+    content: '';
+    position: absolute;;
+    z-index: 1;
+    width: 100%;
+    height: 2px;
+    background: inherit;
+}
+
+
+/* Moves 1st "hamburger patty" up */
+.navbar .hamburger > div:before {
+    top: -10px;
+}
+
+/* Moves 3rd "hamburger patty" down */
+.navbar .hamburger > div:after {
+    top: 10px;
+}
+
+/* Toggler animate */
+.toggler:checked + .hamburger > div {
+    transform: rotate(135deg);
+}
+
+/* Turn hamburger patties into an "X" */
+.toggler:checked + .hamburger > div:before,
+.toggler:checked + .hamburger > div:after {
+    top: 0;
+    transform: rotate(90deg);
+}
+
+/* Rotate on hover when checked */
+.toggler:checked:hover + .hamburger > div {
+    transform: rotate(225deg);
+}
+
+
+.navbar .menu {
+    /*position: fixed;*/
+
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+nav.navbar ul.menu.main-menu:last-of-type {
+    /*align-items: flex-end;*/
+}
+
+nav.navbar ul.menu li.menu-item {
+    /*height: 0;*/
+}
+
+
+@media all and (min-width: 600px) {
+    nav.navbar input.toggler {
+        display: none;
+    }
+
+    .navbar .hamburger {
+        display: none;
+    }
+
+
+    nav.navbar {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    nav.navbar ul.menu {
+        display: flex;
+        flex-direction: row;
+        padding: 0;
+        margin: 0;
+    }
+
+    nav.navbar ul.menu li.menu-item {
+        height: initial;
+        margin: 0;
+
+    }
+
+    nav.navbar ul.menu li.menu-item a {
+        color: white;
+        text-decoration: none;
+        border: 1px solid #1c94c4;
+        padding: 1rem 3rem;
+    }
+
+    nav.navbar ul.menu li.menu-item a:hover {
+        background-color: #369;
+    }
+}
