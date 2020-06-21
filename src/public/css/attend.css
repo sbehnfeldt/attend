@@ -219,6 +219,9 @@ form div.options div.col-md-3 {
     }
 }
 
+tr.dailies td {
+    background-color: lightskyblue;
+}
 
 @keyframes spin {
     0% {
@@ -228,3 +231,4 @@ form div.options div.col-md-3 {
         transform: rotate(360deg);
     }
 }
+
