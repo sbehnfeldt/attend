@@ -167,7 +167,7 @@
             Attend.loadAnother();
 
             for ( var i = 0; i < classrooms.length; i++ ) {
-                $attendance.append($('<h3>').text(classrooms[i].label));
+                $attendance.append($('<h3>').text(classrooms[i].Label));
                 var $table = buildAttendanceTable2(classrooms[i], students[classrooms[i].Id], schedules);
                 $table.find('td').each(function () {
                     if (!$(this).text().trim().length) {
