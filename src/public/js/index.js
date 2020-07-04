@@ -1,5 +1,6 @@
 ;(function ( global, $ ) {
     'use strict';
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
     var Classrooms = (function () {
         var classrooms = [];
@@ -166,125 +167,112 @@
             Attend.loadAnother();
 
             for ( var i = 0; i < classrooms.length; i++ ) {
-                $attendance.append( $( '<h3>' ).text( classrooms[ i ].label ) );
-                var $table = buildAttendanceTable( classrooms[ i ], students, schedules );
+                $attendance.append($('<h3>').text(classrooms[i].Label));
+                var $table = buildAttendanceTable2(classrooms[i], students[classrooms[i].Id], schedules);
+                $table.find('td').each(function () {
+                    if (!$(this).text().trim().length) {
+                        ($(this).addClass('dark'));
+                    }
+                });
 
-                $table.DataTable( {
+                $table.DataTable({
                     'searching': false,
-                    'paging'   : false,
-                    'ordering' : false,
-                    'info'     : false
-                } );
+                    'paging': false,
+                    'ordering': false,
+                    'info': false
+                });
 
-                $attendance.append( $table );
+                $attendance.append($table);
             }
             Attend.doneLoading();
         }
 
-        function buildAttendanceTable( classroom, students, schedules ) {
-            var days   = [ 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri' ];
-            var months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
+        function buildAttendanceTable2(classroom, students, schedules) {
+            let notes;
+            let dailies = [0, 0, 0, 0, 0];
 
-            var $table = $( '<table class="table table-striped table-bordered">' );
-            var $thead = $( '<thead>' );
-            $table.append( $thead );
 
-            var $tbody = $( '<tbody>' );
-            $table.append( $tbody );
+            Handlebars.registerHelper('decode', function (i, sched) {
+                var decoder = [
+                    [0x0001, 0x0020, 0x0400],
+                    [0x0002, 0x0040, 0x0800],
+                    [0x0004, 0x0080, 0x1000],
+                    [0x0008, 0x0100, 0x2000],
+                    [0x0010, 0x0200, 0x4000]
+                ];
+                let r;
+                if (0 === i) {
+                    notes = {
+                        'HD': 0,
+                        'FD': 0,
+                        'HDL': 0
+                    };
+                }
 
-            var $tr = $( '<tr>' );
-            $tr.append( $( '<th>Name</th>' ) );
+                if ((sched & decoder[i][0]) && (sched & decoder[i][2])) {
+                    r = 'FD';
+                } else if (sched & decoder[i][0]) {
+                    if (sched & decoder[i][1]) {
+                        r = 'HDL';
+                    } else {
+                        r = 'HD';
+                    }
+
+                } else if (sched & decoder[i][2]) {
+                    if (sched & decoder[i][1]) {
+                        r = 'HDL';
+                    } else {
+                        r = 'HD';
+                    }
+                } else {
+                    r = '';
+                }
+                if (r) {
+                    notes[r]++;
+                    dailies[i]++;
+                }
+                return r;
+            });
+            Handlebars.registerHelper('summary', function () {
+                var summary = [];
+                if (notes['FD']) {
+                    summary.push(notes['FD'] + 'FD');
+                }
+                if (notes['HD']) {
+                    summary.push(notes['HD'] + 'HD');
+                }
+                if (notes['HDL']) {
+                    summary.push(notes['HDL'] + 'HDL');
+                }
+                return summary.join();
+            });
+
+            Handlebars.registerHelper('dailies', function (i) {
+                return dailies[i];
+            });
+
+            for (let i = 0; i < students.length; i++) {
+                for (let j in schedules) {
+                    if (schedules[j][0].StudentId === students[i].Id) {
+                        students[i].Schedule = schedules[j][0];
+                        break;   // Break inner loop, next student
+                    }
+                }
+            }
+
+            var source = document.getElementById("attendance-table").innerHTML;
+            var template = Handlebars.compile(source);
+            var context = {students: students, dates: []};
 
             var weekOf = $weekOf.val();
-            var cur    = new Date( weekOf );
-            for ( var i = 0; i < 5; i++ ) {
-                cur = cur.addDays( 1 );
-                $tr.append( $( '<th>' + days[ cur.getDay() ] + '<br/>' + months[ cur.getMonth() ] + ' ' + cur.getDate() + '</th>' ) );
+            var cur = new Date(weekOf);
+            for (var i = 0; i < 5; i++) {
+                cur = cur.addDays(1);
+                context.dates[i] = months[cur.getMonth()] + ' ' + cur.getDate();
             }
 
-            $tr.append( $( '<th>Summary</th>' ) );
-            $thead.append( $tr );
-
-            if ( students[ classroom.Id ] ) {
-                for ( var i = 0; i < students[ classroom.Id ].length; i++ ) {
-                    var $tr = buildStudentRow( students[ classroom.Id ][ i ], schedules );
-                    $tbody.append( $tr );
-                }
-            }
-            return $table;
-        }
-
-
-        function buildStudentRow( student, schedules ) {
-            var decoder = [
-                [ 0x0001, 0x0020, 0x0400 ],
-                [ 0x0002, 0x0040, 0x0800 ],
-                [ 0x0004, 0x0080, 0x1000 ],
-                [ 0x0008, 0x0100, 0x2000 ],
-                [ 0x0010, 0x0200, 0x4000 ]
-            ];
-
-            var sched = schedules[ student.Id ][ schedules[ student.Id ].length - 1 ].Schedule;
-            var notes = {
-                'FD' : 0,
-                'HDL': 0,
-                'HD' : 0
-            };
-            var $tr   = $( '<tr>' );
-            $tr.append( $( '<td>' ).text( student.FamilyName + ', ' + student.FirstName ) );
-            for ( var i = 0; i < 5; i++ ) {
-                var $cell = buildDayCell( sched, decoder[ i ] );
-                $tr.append( $cell.td );
-                if ( $cell.p ) {
-                    notes[ $cell.p ]++;
-                }
-            }
-            var summary = [];
-            if ( notes[ 'FD' ] ) {
-                summary.push( notes[ 'FD' ] + 'FD' );
-            }
-            if ( notes[ 'HD' ] ) {
-                summary.push( notes[ 'HD' ] + 'HD' );
-            }
-            if ( notes[ 'HDL' ] ) {
-                summary.push( notes[ 'HDL' ] + 'HDL' );
-            }
-            $tr.append( $( '<td>' ).text( summary.join() ) );
-            return $tr;
-        }
-
-
-        function buildDayCell( sched, decoder ) {
-            var $td = $( '<td>' );
-            var p;
-            if ( ( sched & decoder[ 0 ]) && (sched & decoder[ 2 ]) ) {
-                $td.text( 'FD' );
-                p = 'FD';
-            } else if ( sched & decoder[ 0 ] ) {
-                if ( sched & decoder[ 1 ] ) {
-                    $td.text( 'HDL' );
-                    p = 'HDL';
-                } else {
-                    $td.text( 'HD' );
-                    p = 'HD';
-                }
-
-            } else if ( sched & decoder[ 2 ] ) {
-                if ( sched & decoder[ 1 ] ) {
-                    $td.text( 'HDL' );
-                    p = 'HDL';
-                } else {
-                    $td.text( 'HD' );
-                    p = 'HD';
-                }
-            } else {
-                $td.addClass( 'dark' );
-                p = '';
-            }
-            return {
-                'td': $td,
-                'p' : p
-            };
+            var html = template(context);
+            return $(html);
         }
 
         return {
@@ -336,76 +324,39 @@
             Attend.loadAnother();
 
             for ( var i = 0; i < classrooms.length; i++ ) {
-                $signin.append( $( '<h3>' ).text( classrooms[ i ].label ) );
-                var $table = buildSigninTable( classrooms[ i ], students, schedules );
+                $signin.append($('<h3>').text(classrooms[i].Label));
+                var $table = buildSigninTable(classrooms[i], students[classrooms[i].Id], schedules);
 
                 $table.DataTable( {
                     'searching': false,
-                    'paging'   : false,
-                    'ordering' : false,
-                    'info'     : false
-                } );
+                    'paging': false,
+                    'ordering': false,
+                    'info': false
+                });
 
-                $signin.append( $table );
+                $signin.append($table);
             }
             Attend.doneLoading();
         }
 
-        function buildSigninTable( classroom, students, schedules ) {
-            var days   = [ 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri' ];
-            var months = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
-            var $table = $( '<table class="table table-striped table-bordered">' );
-            var $thead = $( '<thead>' );
-            $table.append( $thead );
 
-            var $tbody = $( '<tbody>' );
-            $table.append( $tbody );
+        function buildSigninTable(classroom, students) {
 
-            var $tr = $( '<tr>' );
-            $tr.append( $( '<th>Name</th>' ) );
+            var source = document.getElementById("signin-table").innerHTML;
+            var template = Handlebars.compile(source);
+            var context = {students: students, dates: []};
 
             var weekOf = $weekOf.val();
-            var cur    = new Date( weekOf );
-            for ( var i = 0; i < 5; i++ ) {
-                cur = cur.addDays( 1 );
-                $tr.append( $( '<th>' + days[ cur.getDay() ] + '<br/>' + months[ cur.getMonth() ] + ' ' + cur.getDate() + '</th>' ) );
-            }
-            $thead.append( $tr );
-
-            if ( students[ classroom.Id ] ) {
-                for ( var i = 0; i < students[ classroom.Id ].length; i++ ) {
-                    var $tr = buildStudentRow( students[ classroom.Id ][ i ], schedules );
-                    $tbody.append( $tr );
-                }
-            }
-            return $table;
-        }
-
-        function buildStudentRow( student, schedules ) {
-            var decoder = [
-                [ 0x0001, 0x0020, 0x0400 ],
-                [ 0x0002, 0x0040, 0x0800 ],
-                [ 0x0004, 0x0080, 0x1000 ],
-                [ 0x0008, 0x0100, 0x2000 ],
-                [ 0x0010, 0x0200, 0x4000 ]
-            ];
-
-            var sched = schedules[ student.Id ][ schedules[ student.Id ].length - 1 ].Schedule;
-            var $tr   = $( '<tr>' );
-            $tr.append( $( '<td>' ).text( student.FamilyName + ', ' + student.FirstName ) );
-            for ( var i = 0; i < 5; i++ ) {
-                var $td = buildDayCell( sched, decoder[ i ] );
-                $tr.append( $td );
+            var cur = new Date(weekOf);
+            for (var i = 0; i < 5; i++) {
+                cur = cur.addDays(1);
+                context.dates[i] = months[cur.getMonth()] + ' ' + cur.getDate();
             }
 
-            return $tr;
+            var html = template(context);
+            return $(html);
         }
 
-        function buildDayCell( sched, decoder ) {
-            var $td = $( '<td>' );
-
-            return $td;
-        }
 
         return {
             'init' : init,
