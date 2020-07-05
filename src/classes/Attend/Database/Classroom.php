@@ -17,4 +17,20 @@ use Attend\Database\Base\Classroom as BaseClassroom;
 class Classroom extends BaseClassroom
 {
 
+    /**
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function getDailyTotals()
+    {
+        $totals = [0, 0, 0, 0, 0];
+        $students = $this->getStudents();
+        for ($i = 0; $i < count($totals); $i++) {
+            foreach ($students as $student) {
+                if ($student->attendsOnDayOfWeek($i)) {
+                    $totals[$i]++;
+                }
+            }
+        }
+        return $totals;
+    }
 }
