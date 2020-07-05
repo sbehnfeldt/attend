@@ -86,9 +86,23 @@ class Student extends BaseStudent
             $summary[] = $this->notes['HD'] . 'HD';
         }
         if ($this->notes['HDL']) {
-            $summary[] = $this->notes[ 'HDL' ] . 'HDL';
+            $summary[] = $this->notes['HDL'] . 'HDL';
         }
 
         return implode(',', $summary);
+    }
+
+
+    /**
+     * @param int $dayOf
+     * @return bool
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function attendsOnDayOfWeek(int $dayOf): bool
+    {
+        $decoder = Student::$decoder[$dayOf];
+        $code = $this->getSchedules()[$this->getSchedules()->count() - 1]->getSchedule();
+
+        return (($code & $decoder[0]) || ($code & $decoder[2]));
     }
 }

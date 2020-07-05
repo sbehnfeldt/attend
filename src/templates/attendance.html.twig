@@ -39,6 +39,7 @@
 
             <section class="attendance-page-schedules">
                 {% for classroom in classrooms %}
+                    {% set summary = classroom.getDailyTotals %}
                     <h3>{{ classroom.label }}</h3>
 
                     <table class="attendance-table table table-striped table-bordered">
@@ -64,14 +65,22 @@
                                 <td>{{ student.writeSchedule( weekOf, 3 ) }}</td>
                                 <td>{{ student.writeSchedule( weekOf, 4 ) }}</td>
                                 <td>{{ student.writeSummary }}</td>
-
                             </tr>
                         {% endfor %}
 
                         </tbody>
+                        <tfoot>
+                        <tr class="dailies">
+                            <td>Summary</td>
+                            <td>{{ summary.0 }}</td>
+                            <td>{{ summary.1 }}</td>
+                            <td>{{ summary.2 }}</td>
+                            <td>{{ summary.3 }}</td>
+                            <td>{{ summary.4 }}</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        </tfoot>
                     </table>
-
-                    </ul>
 
                 {% endfor %}
             </section>
