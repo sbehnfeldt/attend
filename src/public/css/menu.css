@@ -1,166 +1,239 @@
-/* Based on "Pure CSS Hamburger Menu & Overlay" by Traversy Media, Apr 4, 2019.
-   https://www.youtube.com/watch?v=DZg6UfS5zYg
-*/
-header {
-    /*position: fixed;*/
-}
+/* Based on:
+ "Pure CSS Hamburger Menu & OveralY" by Traversy Media. April 4, 2019.  https://www.youtube.com/watch?v=DZg6UfS5zYg&t=1622s,
+ "How to build a CSS ONLY Animated Hamburger Menu | Tutorial 2019" by Tyler Potts.  May 23, 2019.  https://www.youtube.com/watch?v=kKRpeFk613I
+ */
 
-nav {
-    /*position: fixed;   !* Relative to the viewport.  Stays at the top, always *!*/
-    /*z-index: 1;*/
-    /*top: 0;*/
-    /*left: 0;*/
+/* Main navigation bar */
+nav.main {
+    /* Position and Layout */
+    position: fixed; /* Keep main nav fixed at top of view port, irrespective of scrolling */
+
+    box-sizing: border-box;
     width: 100%;
-    height: 60px;
-    /*height: 100%;*/
+    height: 50px;
 
-    /*background-color: var(--primary-color);*/
-
-    background-color: lightblue;
-}
-
-ul.menu {
-    list-style: none;
-}
-
-nav.navbar {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+
+    /* Styling */
+    background-image: linear-gradient(90deg, var(--primary), var(--secondary));
 }
 
-nav.navbar input.toggler {
-    /*position: absolute;*/
+/* Checkbox toggles the main menu on and off */
+nav.main input.toggle {
+    /* Position and layout  */
+    position: absolute; /* Positioned relative to main nav */
+    z-index: 999;
     top: 0;
+    bottom: 0;
+    right: 0;
     left: 0;
-    z-index: 2;
+
+    /* Display and Visibility */
+    opacity: 0;
+
+    /* Box Model */
+    width: 50px; /* Nice big target to click on */
+    height: 50px;
+
+    /* Background */
     cursor: pointer;
+}
+
+
+/* The 3-line hamburger menu "icon" */
+nav.main div.hamburger {
+
+    /* Position and layout */
+    position: absolute; /* Positioned relative to the main nav  */
+    z-index: 998;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+
+    /* Display and visibility */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+    /* Animation */
+    transition: transform 0.3s ease;
+
+    /* Box model */
+    box-sizing: border-box;
     width: 50px;
     height: 50px;
-    opacity: 0;
+    padding: 10px;
 }
 
-/* Hamburger icon container */
-.navbar .hamburger {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    width: 60px;
-    height: 60px;
-    padding: 1rem;
-    background: var(--primary-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+/* Any of the three horizontal lines comprising the hamburger icon */
+nav.main div.hamburger .bar {
+    position: relative;;
+    z-index: 5;
 
-/* The three hamburger "patties" */
-.navbar .hamburger > div {
-    position: relative;
+    /* Animation */
+    transition: transform 0.2s linear;
+
+    /* Box model */
     width: 100%;
-    height: 2px;
-    background-color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all .3s ease;
+    height: 3px;
+
+    /* Background */
+    background: var(--light);
 }
 
-.navbar .hamburger > div:before,
-.navbar .hamburger > div:after {
+nav.main div.hamburger .bar::before,
+nav.main div.hamburger .bar::after {
     content: '';
-    position: absolute;;
-    z-index: 1;
-    width: 100%;
-    height: 2px;
-    background: inherit;
-}
 
-
-/* Moves 1st "hamburger patty" up */
-.navbar .hamburger > div:before {
+    /* Position and layout */
+    position: absolute;
     top: -10px;
+
+    /* Animation */
+    transition: all 0.2s linear;
+
+    /* Box model */
+    width: 100%;
+    height: 3px;
+
+    /* Background */
+    background: var(--light);
 }
 
-/* Moves 3rd "hamburger patty" down */
-.navbar .hamburger > div:after {
+
+nav.main div.hamburger .bar::after {
     top: 10px;
 }
 
-/* Toggler animate */
-.toggler:checked + .hamburger > div {
-    transform: rotate(135deg);
+/* When the user hovers over the toggle box, rotate the hamburger menu */
+.main .toggle:hover + .hamburger {
+    transform: rotate(-25deg);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%
 }
 
-/* Turn hamburger patties into an "X" */
-.toggler:checked + .hamburger > div:before,
-.toggler:checked + .hamburger > div:after {
+.main .toggle:checked + .hamburger {
+    transform: rotate(45deg);
+}
+
+/* Transform the "hamburger" into an X when the toggle is checked (and, ergo, menu is open*/
+.main .toggle:checked + .hamburger .bar::before,
+.main .toggle:checked + .hamburger .bar::after {
     top: 0;
     transform: rotate(90deg);
 }
 
-/* Rotate on hover when checked */
-.toggler:checked:hover + .hamburger > div {
-    transform: rotate(225deg);
+
+.main .toggle:checked:hover + .hamburger {
+    transform: rotate(135deg);
 }
 
 
-.navbar .menu {
-    /*position: fixed;*/
+/* The Main Menu */
+nav.main ul.main-menu.nav-menu {
+    /* Position and layout */
+    position: absolute;
+    z-index: 999;
+    top: 30px;
+    left: 0;
 
-    overflow: hidden;
+    /* Display and visibility */
     display: flex;
+    flex-direction: column;
+    opacity: .85;
+    overflow: hidden;
+
     align-items: center;
     justify-content: center;
+
+    /* Box model */
+    width: 100%;
+
+    /* Background */
+    background-color: var(--secondary);
+    background-image: linear-gradient(90deg, var(--primary), var(--secondary));
 }
 
-nav.navbar ul.menu.main-menu:last-of-type {
-    /*align-items: flex-end;*/
+
+nav.main ul.main-menu.nav-menu li.menu-item {
+
+    /* Animation */
+    transition: height .4s ease;
+
+    /* Box model */
+    height: 0;
+    width: 100%;
+    padding: 0;
+
+    /* Background and typography */
+    font-size: 1.5rem;
+    list-style: none;
+    color: white;
+    text-align: center;
 }
 
-nav.navbar ul.menu li.menu-item {
-    /*height: 0;*/
+nav.main ul.main-menu.nav-menu li.menu-item a {
+    text-decoration: none;
+    color: var(--light);
 }
 
+nav.main ul.main-menu.nav-menu li.menu-item:hover a {
+
+    /* Animation */
+    transition: color 0.4s ease;
+
+    /* Box model */
+    width: 100%;
+    border-bottom: 2px solid var(--primary);
+
+    text-decoration: none;
+    text-align: center;
+}
+
+nav.main .toggle:checked ~ ul.main-menu.nav-menu li.menu-item {
+    height: 50px;
+}
 
 @media all and (min-width: 600px) {
-    nav.navbar input.toggler {
+    nav.main input.toggle {
         display: none;
     }
 
-    .navbar .hamburger {
+    nav.main div.hamburger {
         display: none;
     }
 
-
-    nav.navbar {
+    nav.main ul.menu.main-menu.nav-menu {
+        top: 0;
+        height: 100%;
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: flex-start;
+        flex-grow: 0;
     }
 
-    nav.navbar ul.menu {
-        display: flex;
-        flex-direction: row;
-        padding: 0;
-        margin: 0;
+    nav.main ul.menu.main-menu.nav-menu li.menu-item {
+        width: 150px;
+        height: auto;
     }
 
-    nav.navbar ul.menu li.menu-item {
-        height: initial;
-        margin: 0;
-
+    nav.main ul.menu.main-menu.nav-menu li.menu-item a {
+        color: var(--secondary);
+        border-bottom: none;
     }
 
-    nav.navbar ul.menu li.menu-item a {
-        color: white;
-        text-decoration: none;
-        border: 1px solid #1c94c4;
-        padding: 1rem 3rem;
+    nav.main ul.menu.main-menu.nav-menu li.menu-item a:hover {
+        position: relative;
+        top: -3px;
+        right: -3px;
+        border-bottom: 3px solid var(--secondary);
+        color: var(--secondary);
     }
+}
 
-    nav.navbar ul.menu li.menu-item a:hover {
-        background-color: #369;
-    }
+@media all and (min-width: 1200px) {
+
 }

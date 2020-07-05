@@ -1,5 +1,9 @@
 :root {
-    --primary-color: rgba(13, 10, 139, 0.75);
+    --primary: #00ceff;
+    --secondary: #171717;
+    --light: #f3f3f3;
+    --font-stack: 'Roboto', 'Helvetica', sans-serif;
+    --hamburger-height: 60px;
 }
 
 * {
@@ -7,8 +11,14 @@
 }
 
 body {
-    margin-bottom: 50px;
+    /*margin-bottom: 50px;*/
     font-family: 'Roboto', sans-serif;
+}
+
+main.container {
+    position: absolute;
+    top: var(--hamburger-height);
+    z-index: -1;
 }
 
 input.invalid {
