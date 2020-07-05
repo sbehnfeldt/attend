@@ -3,6 +3,7 @@
 namespace Attend;
 
 
+use Attend\PropelEngine\PropelEngine;
 use DateInterval;
 use DateTime;
 use Exception;
