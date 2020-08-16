@@ -16,7 +16,7 @@ nav.main {
     flex-direction: column;
 
     /* Styling */
-    background-image: linear-gradient(90deg, var(--primary), var(--secondary));
+    /*background-image: linear-gradient(90deg, var(--primary), var(--secondary));*/
 }
 
 /* Checkbox toggles the main menu on and off */
@@ -153,8 +153,8 @@ nav.main ul.main-menu.nav-menu {
     width: 100%;
 
     /* Background */
-    background-color: var(--secondary);
-    background-image: linear-gradient(90deg, var(--primary), var(--secondary));
+    background-color: var(--primary);
+    /*background-image: linear-gradient(90deg, var(--primary), var(--secondary));*/
 }
 
 
