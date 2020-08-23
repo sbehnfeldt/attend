@@ -9,131 +9,17 @@ nav.main {
     position: fixed; /* Keep main nav fixed at top of view port, irrespective of scrolling */
 
     box-sizing: border-box;
-    width: 100%;
-    height: 50px;
+
+    width: 100%; /* Otherwise, grows only to the width of its content */
 
     display: flex;
-    flex-direction: column;
 
     /* Styling */
-    /*background-image: linear-gradient(90deg, var(--primary), var(--secondary));*/
+    background: var(--primary);
 }
-
-/* Checkbox toggles the main menu on and off */
-nav.main input.toggle {
-    /* Position and layout  */
-    position: absolute; /* Positioned relative to main nav */
-    z-index: 999;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-
-    /* Display and Visibility */
-    opacity: 0;
-
-    /* Box Model */
-    width: 50px; /* Nice big target to click on */
-    height: 50px;
-
-    /* Background */
-    cursor: pointer;
-}
-
-
-/* The 3-line hamburger menu "icon" */
-nav.main div.hamburger {
-
-    /* Position and layout */
-    position: absolute; /* Positioned relative to the main nav  */
-    z-index: 998;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-
-    /* Display and visibility */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-
-    /* Animation */
-    transition: transform 0.3s ease;
-
-    /* Box model */
-    box-sizing: border-box;
-    width: 50px;
-    height: 50px;
-    padding: 10px;
-}
-
-/* Any of the three horizontal lines comprising the hamburger icon */
-nav.main div.hamburger .bar {
-    position: relative;;
-    z-index: 5;
-
-    /* Animation */
-    transition: transform 0.2s linear;
-
-    /* Box model */
-    width: 100%;
-    height: 3px;
-
-    /* Background */
-    background: var(--light);
-}
-
-nav.main div.hamburger .bar::before,
-nav.main div.hamburger .bar::after {
-    content: '';
-
-    /* Position and layout */
-    position: absolute;
-    top: -10px;
-
-    /* Animation */
-    transition: all 0.2s linear;
-
-    /* Box model */
-    width: 100%;
-    height: 3px;
-
-    /* Background */
-    background: var(--light);
-}
-
-
-nav.main div.hamburger .bar::after {
-    top: 10px;
-}
-
-/* When the user hovers over the toggle box, rotate the hamburger menu */
-.main .toggle:hover + .hamburger {
-    transform: rotate(-25deg);
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%
-}
-
-.main .toggle:checked + .hamburger {
-    transform: rotate(45deg);
-}
-
-/* Transform the "hamburger" into an X when the toggle is checked (and, ergo, menu is open*/
-.main .toggle:checked + .hamburger .bar::before,
-.main .toggle:checked + .hamburger .bar::after {
-    top: 0;
-    transform: rotate(90deg);
-}
-
-
-.main .toggle:checked:hover + .hamburger {
-    transform: rotate(135deg);
-}
-
 
 /* The Main Menu */
-nav.main ul.main-menu.nav-menu {
+nav.main ul.menu.main-menu.nav-menu {
     /* Position and layout */
     position: absolute;
     z-index: 999;
@@ -157,8 +43,7 @@ nav.main ul.main-menu.nav-menu {
     /*background-image: linear-gradient(90deg, var(--primary), var(--secondary));*/
 }
 
-
-nav.main ul.main-menu.nav-menu li.menu-item {
+nav.main ul.menu.main-menu.nav-menu li.menu-item {
 
     /* Animation */
     transition: height .4s ease;
@@ -175,12 +60,12 @@ nav.main ul.main-menu.nav-menu li.menu-item {
     text-align: center;
 }
 
-nav.main ul.main-menu.nav-menu li.menu-item a {
+nav.main ul.menu.main-menu.nav-menu li.menu-item a {
     text-decoration: none;
     color: var(--light);
 }
 
-nav.main ul.main-menu.nav-menu li.menu-item:hover a {
+nav.main ul.menu.main-menu.nav-menu li.menu-item:hover a {
 
     /* Animation */
     transition: color 0.4s ease;
@@ -193,18 +78,141 @@ nav.main ul.main-menu.nav-menu li.menu-item:hover a {
     text-align: center;
 }
 
-nav.main .toggle:checked ~ ul.main-menu.nav-menu li.menu-item {
-    height: 50px;
-}
 
-@media all and (min-width: 600px) {
-    nav.main input.toggle {
-        display: none;
+@media all and (max-width: 600px) {
+
+    nav.main {
+        flex-direction: column;
     }
 
+    /* Checkbox toggles the main menu on and off */
+    nav.main input.toggle {
+        /* Position and layout  */
+        position: absolute; /* Positioned relative to main nav */
+        z-index: 999;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+
+        /* Display and Visibility */
+        opacity: 0;
+
+        /* Box Model */
+        width: 50px; /* Nice big target to click on */
+        height: 50px;
+
+        /* Background */
+        cursor: pointer;
+    }
+
+
+    /* The 3-line hamburger menu "icon" */
+    nav.main div.hamburger {
+
+        /* Position and layout */
+        /*position: absolute; !* Positioned relative to the main nav  *!*/
+        z-index: 998;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+
+        /* Display and visibility */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+
+        /* Animation */
+        transition: transform 0.3s ease;
+
+        /* Box model */
+        box-sizing: border-box;
+        width: 50px;
+        height: 50px;
+        padding: 10px;
+    }
+
+    /* Any of the three horizontal lines comprising the hamburger icon */
+    nav.main div.hamburger div.bar {
+        position: relative;;
+        z-index: 5;
+
+        /* Animation */
+        transition: transform 0.2s linear;
+
+        /* Box model */
+        width: 100%;
+        height: 3px;
+
+        /* Background */
+        background: var(--light);
+    }
+
+    nav.main div.hamburger div.bar::before,
+    nav.main div.hamburger div.bar::after {
+        content: '';
+
+        /* Position and layout */
+        position: absolute;
+        top: -10px;
+
+        /* Animation */
+        transition: all 0.2s linear;
+
+        /* Box model */
+        width: 100%;
+        height: 3px;
+
+        /* Background */
+        background: var(--light);
+    }
+
+
+    nav.main div.hamburger div.bar::after {
+        top: 10px;
+    }
+
+    /* When the user hovers over the toggle box, rotate the hamburger menu */
+    nav.main .toggle:hover + div.hamburger {
+        transform: rotate(-25deg);
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%
+    }
+
+    nav.main .toggle:checked + div.hamburger {
+        transform: rotate(45deg);
+    }
+
+    /* Transform the "hamburger" into an X when the toggle is checked (and, ergo, menu is open*/
+    nav.main .toggle:checked + div.hamburger div.bar::before,
+    nav.main .toggle:checked + div.hamburger div.bar::after {
+        top: 0;
+        transform: rotate(90deg);
+    }
+
+
+    nav.main .toggle:checked:hover + div.hamburger {
+        transform: rotate(135deg);
+    }
+
+    nav.main input.toggle:checked ~ ul.menu.main-menu.nav-menu li.menu-item {
+        height: 50px;
+    }
+}
+
+
+@media all and (min-width: 600px) {
+    nav.main {
+        height: 2em;
+    }
+
+    nav.main input.toggle,
     nav.main div.hamburger {
         display: none;
     }
+
 
     nav.main ul.menu.main-menu.nav-menu {
         top: 0;
