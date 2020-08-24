@@ -1,7 +1,8 @@
 :root {
-    --primary: #00ceff;
-    --secondary: #171717;
-    --light: #f3f3f3;
+    --primary: #0f4c75;
+    --secondary: #3282b8;
+    --light: #bbe1fa;
+    --dark: #1b262c;
     --font-stack: 'Roboto', 'Helvetica', sans-serif;
     --hamburger-height: 60px;
 }

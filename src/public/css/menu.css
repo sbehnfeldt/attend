@@ -1,5 +1,5 @@
 /* Based on:
- "Pure CSS Hamburger Menu & OveralY" by Traversy Media. April 4, 2019.  https://www.youtube.com/watch?v=DZg6UfS5zYg&t=1622s,
+ "Pure CSS Hamburger Menu & Overlay" by Traversy Media. April 4, 2019.  https://www.youtube.com/watch?v=DZg6UfS5zYg&t=1622s,
  "How to build a CSS ONLY Animated Hamburger Menu | Tutorial 2019" by Tyler Potts.  May 23, 2019.  https://www.youtube.com/watch?v=kKRpeFk613I
  */
 
@@ -18,67 +18,9 @@ nav.main {
     background: var(--primary);
 }
 
-/* The Main Menu */
-nav.main ul.menu.main-menu.nav-menu {
-    /* Position and layout */
-    position: absolute;
-    z-index: 999;
-    top: 30px;
-    left: 0;
-
-    /* Display and visibility */
-    display: flex;
-    flex-direction: column;
-    opacity: .85;
-    overflow: hidden;
-
-    align-items: center;
-    justify-content: center;
-
-    /* Box model */
-    width: 100%;
-
-    /* Background */
-    background-color: var(--primary);
-    /*background-image: linear-gradient(90deg, var(--primary), var(--secondary));*/
-}
-
-nav.main ul.menu.main-menu.nav-menu li.menu-item {
-
-    /* Animation */
-    transition: height .4s ease;
-
-    /* Box model */
-    height: 0;
-    width: 100%;
-    padding: 0;
-
-    /* Background and typography */
-    font-size: 1.5rem;
-    list-style: none;
-    color: white;
-    text-align: center;
-}
-
-nav.main ul.menu.main-menu.nav-menu li.menu-item a {
-    text-decoration: none;
-    color: var(--light);
-}
-
-nav.main ul.menu.main-menu.nav-menu li.menu-item:hover a {
-
-    /* Animation */
-    transition: color 0.4s ease;
-
-    /* Box model */
-    width: 100%;
-    border-bottom: 2px solid var(--primary);
-
-    text-decoration: none;
-    text-align: center;
-}
-
-
+/*
+ * Mobile Layout and Styling
+ */
 @media all and (max-width: 600px) {
 
     nav.main {
@@ -89,7 +31,7 @@ nav.main ul.menu.main-menu.nav-menu li.menu-item:hover a {
     nav.main input.toggle {
         /* Position and layout  */
         position: absolute; /* Positioned relative to main nav */
-        z-index: 999;
+        z-index: 999; /* On top of all nav things */
         top: 0;
         bottom: 0;
         right: 0;
@@ -112,7 +54,7 @@ nav.main ul.menu.main-menu.nav-menu li.menu-item:hover a {
 
         /* Position and layout */
         /*position: absolute; !* Positioned relative to the main nav  *!*/
-        z-index: 998;
+        z-index: 998; /* Under toggle, on top of menu bar */
         top: 0;
         right: 0;
         left: 0;
@@ -137,7 +79,6 @@ nav.main ul.menu.main-menu.nav-menu li.menu-item:hover a {
     /* Any of the three horizontal lines comprising the hamburger icon */
     nav.main div.hamburger div.bar {
         position: relative;;
-        z-index: 5;
 
         /* Animation */
         transition: transform 0.2s linear;
@@ -177,7 +118,6 @@ nav.main ul.menu.main-menu.nav-menu li.menu-item:hover a {
     /* When the user hovers over the toggle box, rotate the hamburger menu */
     nav.main .toggle:hover + div.hamburger {
         transform: rotate(-25deg);
-        background: rgba(255, 255, 255, 0.1);
         border-radius: 50%
     }
 
@@ -200,6 +140,66 @@ nav.main ul.menu.main-menu.nav-menu li.menu-item:hover a {
     nav.main input.toggle:checked ~ ul.menu.main-menu.nav-menu li.menu-item {
         height: 50px;
     }
+
+    /* The Main Menu */
+    nav.main ul.menu.main-menu.nav-menu {
+        /* Position and layout */
+        position: absolute;
+        z-index: 997; /* Under hamburger menu */
+
+        /* Display and visibility */
+        display: flex;
+        flex-direction: column;
+        opacity: .85;
+        overflow: hidden;
+
+        align-items: center;
+        justify-content: center;
+
+        /* Box model */
+        margin: 0;
+        width: 100%;
+        padding-top: 10px;
+
+        /* Background */
+        background-color: var(--primary);
+    }
+
+    nav.main ul.menu.main-menu.nav-menu li.menu-item {
+
+        /* Animation */
+        transition: height .4s ease;
+
+        /* Box model */
+        height: 0;
+        width: 100%;
+        padding: 0;
+
+        /* Background and typography */
+        font-size: 1.5rem;
+        list-style: none;
+        color: white;
+        text-align: center;
+    }
+
+    nav.main ul.menu.main-menu.nav-menu li.menu-item a {
+        text-decoration: none;
+        color: var(--light);
+    }
+
+    nav.main ul.menu.main-menu.nav-menu li.menu-item:hover a {
+
+        /* Animation */
+        transition: color 0.4s ease;
+
+        /* Box model */
+        width: 100%;
+        border-bottom: 2px solid var(--primary);
+
+        text-decoration: none;
+        text-align: center;
+    }
+
 }
 
 
