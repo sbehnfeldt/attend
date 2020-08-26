@@ -173,7 +173,6 @@ nav.main {
         /* Box model */
         height: 0;
         width: 100%;
-        padding: 0;
 
         /* Background and typography */
         font-size: 1.5rem;
@@ -187,15 +186,15 @@ nav.main {
         color: var(--light);
     }
 
-    nav.main ul.menu.main-menu.nav-menu li.menu-item:hover a {
+    nav.main ul.menu.main-menu.nav-menu li.menu-item a:hover {
 
         /* Animation */
         transition: color 0.4s ease;
 
         /* Box model */
-        width: 100%;
-        border-bottom: 2px solid var(--primary);
+        border-bottom: 2px solid var(--light);
 
+        /* Style */
         text-decoration: none;
         text-align: center;
     }
