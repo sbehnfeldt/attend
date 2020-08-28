@@ -18,6 +18,24 @@ nav.main {
     background: var(--primary);
 }
 
+
+nav.main ul.menu.main-menu.nav-menu {
+    display: flex;
+    margin: 0;
+
+}
+
+nav.main ul.menu.main-menu.nav-menu li.menu-item {
+    list-style: none;
+}
+
+
+nav.main ul.menu.main-menu.nav-menu li.menu-item a {
+    text-decoration: none;
+    color: var(--light);
+}
+
+
 /*
  * Mobile Layout and Styling
  */
@@ -141,6 +159,7 @@ nav.main {
         height: 50px;
     }
 
+
     /* The Main Menu */
     nav.main ul.menu.main-menu.nav-menu {
         /* Position and layout */
@@ -148,7 +167,6 @@ nav.main {
         z-index: 997; /* Under hamburger menu */
 
         /* Display and visibility */
-        display: flex;
         flex-direction: column;
         opacity: .85;
         overflow: hidden;
@@ -181,10 +199,6 @@ nav.main {
         text-align: center;
     }
 
-    nav.main ul.menu.main-menu.nav-menu li.menu-item a {
-        text-decoration: none;
-        color: var(--light);
-    }
 
     nav.main ul.menu.main-menu.nav-menu li.menu-item a:hover {
 
@@ -214,9 +228,12 @@ nav.main {
 
 
     nav.main ul.menu.main-menu.nav-menu {
+
         top: 0;
         height: 100%;
-        display: flex;
+        border: 1px solid yellow;
+
+        /* Contents */
         flex-direction: row;
         justify-content: flex-start;
         flex-grow: 0;
@@ -228,16 +245,17 @@ nav.main {
     }
 
     nav.main ul.menu.main-menu.nav-menu li.menu-item a {
-        color: var(--secondary);
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        color: var(--light);
         border-bottom: none;
     }
 
     nav.main ul.menu.main-menu.nav-menu li.menu-item a:hover {
         position: relative;
-        top: -3px;
-        right: -3px;
-        border-bottom: 3px solid var(--secondary);
-        color: var(--secondary);
+        color: var(--dark);
+        background-color: var(--light);
     }
 }
 
