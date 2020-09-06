@@ -14,17 +14,20 @@ html {
   font-size: 62.5%; // 1rem = 10px
 
   // Order is important!
+  @include respond(phone) { // width < 600px?
+    font-size: 50%; // 1 rem = 8px, 8/16 = .5625
+  }
+  @include respond(tab-port) { // width < 900px?
+    font-size: 56.25%; // 1rem = 9px, 9/16 = .5625
+  }
   @include respond(tab-land) { // width < 1200px?
     font-size: 56.25%; // 1rem = 9px, 9/16 = .5625
   }
-  @include respond(tab-port) { // width < 900px?
-    font-size: 50%; // 1rem = 8px, 8/16 = .5
-  }
-  @include respond(phone) { // width < 600px?
-    //font-size: 50%; not necessary, since same value as previous breakpoint
-  }
+  //@include respond(desktop) { // width < 1200px?
+  //  font-size: 56.25%; // 1rem = 9px, 9/16 = .5625
+  //}
   @include respond(big-desktop) { // width > 1800px
-    font-size: 75%; // 1rem = 12px, 12/16 = .75
+    font-size: 75%; // 1rem = 12px, 18/16 = .75
   }
 
 }

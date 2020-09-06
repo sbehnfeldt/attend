@@ -53,10 +53,13 @@ nav.main {
       }
 
       & ~ ul {
-        padding-top: 1rem;
+        padding-top: 2 * $hamburger-height / 3;
+        @include respond(tab-land) {
+          padding-top: initial;
+        }
 
         li.menu-item {
-          height: $hamburger-height;
+          height: 2 * $hamburger-height / 3;
         }
       }
     }
@@ -156,6 +159,7 @@ nav.main {
           width: 100%;
           padding: 2rem .5rem;
           color: $text-color-light;
+          font-size: 2rem;
         }
 
         &:hover {
