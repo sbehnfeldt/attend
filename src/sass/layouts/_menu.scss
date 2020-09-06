@@ -14,7 +14,7 @@ nav.main {
     z-index: 1000;
 
     // Checkbox toggles the main menu on and off
-    & input.toggle {
+    input.toggle {
         position: absolute;
         top: 0;
         left: 0;
@@ -46,14 +46,18 @@ nav.main {
                 transform: rotate(135deg);
             }
 
-            & ~ ul.menu.main-menu.nav-menu li.menu-item {
-                height: 50px;
+            & ~ ul {
+                padding-top: 1rem;
+
+                li.menu-item {
+                    height: $hamburger-height;
+                }
             }
         }
     }
 
     // The 3-line hamburger menu "icon"
-    & div.hamburger {
+    div.hamburger {
         top: 0;
         right: 0;
         width: $hamburger-height;
@@ -92,68 +96,48 @@ nav.main {
             }
         }
     }
+
+    // The Main Menu
+    ul {
+        position: absolute;
+        margin: 0;
+        width: 100%;
+        padding: 0;
+        z-index: 997;
+
+        //opacity: .85;
+        overflow: hidden;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        background-color: $primary;
+
+        li {
+            height: 0;
+            width: 100%;
+            font-size: 1.5rem;
+            list-style: none;
+            color: white;
+            text-align: center;
+            transition: height .4s ease;
+
+            a {
+                text-decoration: none;
+                color: $text-color-light;
+
+                &:hover {
+                    border-bottom: 2px solid $text-color-light;
+                    transition: border .2s ease;
+                    text-decoration: none;
+                    text-align: center;
+                }
+            }
+        }
+    }
 }
-
-
-
-/* The Main Menu */
-nav.main ul {
-    /* Position and layout */
-    position: absolute;
-    z-index: 997; /* Under hamburger menu */
-
-    /* Display and visibility */
-    display: flex;
-    flex-direction: column;
-    opacity: .85;
-    overflow: hidden;
-
-    align-items: center;
-    justify-content: center;
-
-    /* Box model */
-    margin: 0;
-    width: 100%;
-    padding-top: 10px;
-
-    /* Background */
-    background-color: $primary;
-}
-
-nav.main ul li {
-
-    /* Animation */
-    transition: height .4s ease;
-
-    /* Box model */
-    height: 0;
-    width: 100%;
-
-    /* Background and typography */
-    font-size: 1.5rem;
-    list-style: none;
-    color: white;
-    text-align: center;
-}
-
-nav.main ul li a {
-    text-decoration: none;
-    color: $text-color-light;
-}
-
-nav.main ul li a:hover {
-
-    /* Animation */
-    transition: border .2s ease;
-
-    /* Box model */
-    border-bottom: 2px solid $text-color-light;
-
-    /* Style */
-    text-decoration: none;
-    text-align: center;
-}
-
 
 @media all and (min-width: 600px) {
     nav.main {
@@ -164,7 +148,6 @@ nav.main ul li a:hover {
     nav.main div.hamburger {
         display: none;
     }
-
 
     nav.main ul {
 
