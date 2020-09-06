@@ -23,6 +23,33 @@ nav.main {
         width: $hamburger-height;
         height: $hamburger-height;
         cursor: pointer;
+
+        // When the user hovers over the toggle box, rotate the hamburger menu
+        &:hover + div.hamburger {
+            transform: rotate(-25deg);
+            border-radius: 50%
+        }
+
+        &:checked {
+            & + div.hamburger {
+                transform: rotate(45deg);
+
+                // Transform the "hamburger" into an X when the toggle is checked (and, ergo, menu is open)
+                & div.bar::before,
+                & div.bar::after {
+                    top: 0;
+                    transform: rotate(90deg);
+                }
+            }
+
+            &:hover + div.hamburger {
+                transform: rotate(135deg);
+            }
+
+            & ~ ul.menu.main-menu.nav-menu li.menu-item {
+                height: 50px;
+            }
+        }
     }
 
     // The 3-line hamburger menu "icon"
@@ -67,31 +94,6 @@ nav.main {
     }
 }
 
-
-/* When the user hovers over the toggle box, rotate the hamburger menu */
-nav.main .toggle:hover + div.hamburger {
-    transform: rotate(-25deg);
-    border-radius: 50%
-}
-
-nav.main .toggle:checked + div.hamburger {
-    transform: rotate(45deg);
-}
-
-/* Transform the "hamburger" into an X when the toggle is checked (and, ergo, menu is open*/
-nav.main .toggle:checked + div.hamburger div.bar::before,
-nav.main .toggle:checked + div.hamburger div.bar::after {
-    top: 0;
-    transform: rotate(90deg);
-}
-
-nav.main .toggle:checked:hover + div.hamburger {
-    transform: rotate(135deg);
-}
-
-nav.main input.toggle:checked ~ ul.menu.main-menu.nav-menu li.menu-item {
-    height: 50px;
-}
 
 
 /* The Main Menu */
