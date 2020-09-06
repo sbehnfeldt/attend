@@ -5,178 +5,171 @@
 
 /* Main navigation bar */
 nav.main {
-    position: fixed;
+  position: fixed;
+  height: $hamburger-height;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: $primary;
+  z-index: 1000;
+  @include respond(tab-land) {
+    //height: 12rem;
+  }
+
+  // Checkbox toggles the main menu on and off
+  input.toggle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1002;
+    opacity: 0;
+    width: $hamburger-height;
     height: $hamburger-height;
+    cursor: pointer;
+    @include respond(tab-land) {
+      display: none;
+    }
+
+    // When the user hovers over the toggle box, rotate the hamburger menu
+    &:hover + div.hamburger {
+      transform: rotate(-25deg);
+      border-radius: 50%
+    }
+
+    &:checked {
+      & + div.hamburger {
+        transform: rotate(45deg);
+
+        // Transform the "hamburger" into an X when the toggle is checked (and, ergo, menu is open)
+        & div.bar::before,
+        & div.bar::after {
+          top: 0;
+          transform: rotate(90deg);
+        }
+      }
+
+      &:hover + div.hamburger {
+        transform: rotate(135deg);
+      }
+
+      & ~ ul {
+        padding-top: 1rem;
+
+        li.menu-item {
+          height: $hamburger-height;
+        }
+      }
+    }
+  }
+
+  // The 3-line hamburger menu "icon"
+  div.hamburger {
+    top: 0;
+    right: 0;
+    width: $hamburger-height;
+    height: $hamburger-height;
+    padding: 1rem;
+    z-index: 1001;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease;
+    @include respond(tab-land) {
+      display: none;
+    }
+
+    // Any of the three horizontal lines comprising the hamburger icon
+    & div.bar {
+      position: relative;
+      width: 100%;
+      height: 3px;
+      transition: transform 0.2s linear;
+      background: $text-color-light;
+
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 3px;
+        transition: all 0.2s linear;
+        background: $text-color-light;
+      }
+
+      &::before {
+        top: -1rem;
+      }
+
+      &::after {
+        top: 1rem;
+      }
+    }
+  }
+
+  // The Main Menu
+  ul {
+    position: absolute;
+    margin: 0;
     width: 100%;
+    padding: 0;
+    z-index: 997;
+
+    //opacity: .85;
+    overflow: hidden;
+
     display: flex;
     flex-direction: column;
-    background: $primary;
-    z-index: 1000;
+    align-items: center;
+    justify-content: center;
 
-    // Checkbox toggles the main menu on and off
-    input.toggle {
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 1002;
-        opacity: 0;
-        width: $hamburger-height;
-        height: $hamburger-height;
-        cursor: pointer;
+    background-color: $primary;
 
-        // When the user hovers over the toggle box, rotate the hamburger menu
-        &:hover + div.hamburger {
-            transform: rotate(-25deg);
-            border-radius: 50%
-        }
+    @include respond(tab-land) {
+      top: 0;
+      height: initial;
+      //border: 1px solid yellow;
 
-        &:checked {
-            & + div.hamburger {
-                transform: rotate(45deg);
-
-                // Transform the "hamburger" into an X when the toggle is checked (and, ergo, menu is open)
-                & div.bar::before,
-                & div.bar::after {
-                    top: 0;
-                    transform: rotate(90deg);
-                }
-            }
-
-            &:hover + div.hamburger {
-                transform: rotate(135deg);
-            }
-
-            & ~ ul {
-                padding-top: 1rem;
-
-                li.menu-item {
-                    height: $hamburger-height;
-                }
-            }
-        }
+      /* Contents */
+      flex-direction: row;
+      justify-content: flex-start;
+      flex-grow: 0;
     }
 
-    // The 3-line hamburger menu "icon"
-    div.hamburger {
-        top: 0;
-        right: 0;
-        width: $hamburger-height;
-        height: $hamburger-height;
-        padding: 1rem;
-        z-index: 1001;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        transition: transform 0.3s ease;
-
-        // Any of the three horizontal lines comprising the hamburger icon
-        & div.bar {
-            position: relative;
-            width: 100%;
-            height: 3px;
-            transition: transform 0.2s linear;
-            background: $text-color-light;
-
-            &::before,
-            &::after {
-                content: '';
-                position: absolute;
-                width: 100%;
-                height: 3px;
-                transition: all 0.2s linear;
-                background: $text-color-light;
-            }
-
-            &::before {
-                top: -1rem;
-            }
-
-            &::after {
-                top: 1rem;
-            }
-        }
-    }
-
-    // The Main Menu
-    ul {
-        position: absolute;
-        margin: 0;
-        width: 100%;
-        padding: 0;
-        z-index: 997;
-
-        //opacity: .85;
-        overflow: hidden;
-
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-
-        background-color: $primary;
-
-        li {
-            height: 0;
-            width: 100%;
-            font-size: 1.5rem;
-            list-style: none;
-            color: white;
-            text-align: center;
-            transition: height .4s ease;
-
-            a {
-                text-decoration: none;
-                color: $text-color-light;
-
-                &:hover {
-                    border-bottom: 2px solid $text-color-light;
-                    transition: border .2s ease;
-                    text-decoration: none;
-                    text-align: center;
-                }
-            }
-        }
-    }
-}
-
-@media all and (min-width: 600px) {
-    nav.main {
-        height: 2em;
-    }
-
-    nav.main input.toggle,
-    nav.main div.hamburger {
-        display: none;
-    }
-
-    nav.main ul {
-
-        top: 0;
-        height: 100%;
-        border: 1px solid yellow;
-
-        /* Contents */
-        flex-direction: row;
-        justify-content: flex-start;
-        flex-grow: 0;
-    }
-
-    nav.main ul li {
+    li {
+      height: 0;
+      width: 100%;
+      font-size: 1.5rem;
+      list-style: none;
+      color: white;
+      text-align: center;
+      transition: height .4s ease;
+      @include respond(tab-land) {
         width: 150px;
         height: auto;
-    }
+      }
 
-    nav.main ul li a {
-        display: inline-block;
-        width: 100%;
-        height: 100%;
+      a {
+        text-decoration: none;
         color: $text-color-light;
-        border-bottom: none;
-    }
+        @include respond(tab-land) {
+          display: inline-block;
+          width: 100%;
+          padding: 2rem .5rem;
+          color: $text-color-light;
+        }
 
-    nav.main ul li a:hover {
-        position: relative;
-        color: $primary-dark;
-        background-color: $text-color-light;
+        &:hover {
+          border-bottom: 2px solid $text-color-light;
+          transition: border .2s ease;
+          text-decoration: none;
+          text-align: center;
+          @include respond(tab-land) {
+            position: relative;
+            color: $primary-dark;
+            background-color: $text-color-light;
+          }
+        }
+      }
     }
+  }
 }
