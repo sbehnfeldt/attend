@@ -1,0 +1,236 @@
+/* Based on:
+ "Pure CSS Hamburger Menu & Overlay" by Traversy Media. April 4, 2019.  https://www.youtube.com/watch?v=DZg6UfS5zYg&t=1622s,
+ "How to build a CSS ONLY Animated Hamburger Menu | Tutorial 2019" by Tyler Potts.  May 23, 2019.  https://www.youtube.com/watch?v=kKRpeFk613I
+ */
+
+/* Main navigation bar */
+nav.main {
+    /* Position and Layout */
+    position: fixed; /* Keep main nav fixed at top of view port, irrespective of scrolling */
+
+
+    width: 100%; /* Otherwise, grows only to the width of its content */
+
+    display: flex;
+    flex-direction: column;
+
+    /* Styling */
+    background: var(--primary);
+}
+
+
+/* Checkbox toggles the main menu on and off */
+nav.main input.toggle {
+    /* Position and layout  */
+    position: absolute; /* Positioned relative to main nav */
+    z-index: 999; /* On top of all nav things */
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+
+    /* Display and Visibility */
+    opacity: 0;
+
+    /* Box Model */
+    width: 50px; /* Nice big target to click on */
+    height: 50px;
+
+    /* Background */
+    cursor: pointer;
+}
+
+
+/* The 3-line hamburger menu "icon" */
+nav.main div.hamburger {
+
+    /* Position and layout */
+    /*position: absolute; !* Positioned relative to the main nav  *!*/
+    z-index: 998; /* Under toggle, on top of menu bar */
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+
+    /* Display and visibility */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+    /* Animation */
+    transition: transform 0.3s ease;
+
+    /* Box model */
+    box-sizing: border-box;
+    width: 50px;
+    height: 50px;
+    padding: 10px;
+}
+
+/* Any of the three horizontal lines comprising the hamburger icon */
+nav.main div.hamburger div.bar {
+    position: relative;;
+
+    /* Animation */
+    transition: transform 0.2s linear;
+
+    /* Box model */
+    width: 100%;
+    height: 3px;
+
+    /* Background */
+    background: var(--light);
+}
+
+nav.main div.hamburger div.bar::before,
+nav.main div.hamburger div.bar::after {
+    content: '';
+
+    /* Position and layout */
+    position: absolute;
+    top: -10px;
+
+    /* Animation */
+    transition: all 0.2s linear;
+
+    /* Box model */
+    width: 100%;
+    height: 3px;
+
+    /* Background */
+    background: var(--light);
+}
+
+
+nav.main div.hamburger div.bar::after {
+    top: 10px;
+}
+
+/* When the user hovers over the toggle box, rotate the hamburger menu */
+nav.main .toggle:hover + div.hamburger {
+    transform: rotate(-25deg);
+    border-radius: 50%
+}
+
+nav.main .toggle:checked + div.hamburger {
+    transform: rotate(45deg);
+}
+
+/* Transform the "hamburger" into an X when the toggle is checked (and, ergo, menu is open*/
+nav.main .toggle:checked + div.hamburger div.bar::before,
+nav.main .toggle:checked + div.hamburger div.bar::after {
+    top: 0;
+    transform: rotate(90deg);
+}
+
+nav.main .toggle:checked:hover + div.hamburger {
+    transform: rotate(135deg);
+}
+
+nav.main input.toggle:checked ~ ul.menu.main-menu.nav-menu li.menu-item {
+    height: 50px;
+}
+
+
+/* The Main Menu */
+nav.main ul {
+    /* Position and layout */
+    position: absolute;
+    z-index: 997; /* Under hamburger menu */
+
+    /* Display and visibility */
+    display: flex;
+    flex-direction: column;
+    opacity: .85;
+    overflow: hidden;
+
+    align-items: center;
+    justify-content: center;
+
+    /* Box model */
+    margin: 0;
+    width: 100%;
+    padding-top: 10px;
+
+    /* Background */
+    background-color: var(--primary);
+}
+
+nav.main ul li {
+
+    /* Animation */
+    transition: height .4s ease;
+
+    /* Box model */
+    height: 0;
+    width: 100%;
+
+    /* Background and typography */
+    font-size: 1.5rem;
+    list-style: none;
+    color: white;
+    text-align: center;
+}
+
+nav.main ul li a {
+    text-decoration: none;
+    color: var(--light);
+}
+
+nav.main ul li a:hover {
+
+    /* Animation */
+    transition: border .2s ease;
+
+    /* Box model */
+    border-bottom: 2px solid var(--light);
+
+    /* Style */
+    text-decoration: none;
+    text-align: center;
+}
+
+
+@media all and (min-width: 600px) {
+    nav.main {
+        height: 2em;
+    }
+
+    nav.main input.toggle,
+    nav.main div.hamburger {
+        display: none;
+    }
+
+
+    nav.main ul {
+
+        top: 0;
+        height: 100%;
+        border: 1px solid yellow;
+
+        /* Contents */
+        flex-direction: row;
+        justify-content: flex-start;
+        flex-grow: 0;
+    }
+
+    nav.main ul li {
+        width: 150px;
+        height: auto;
+    }
+
+    nav.main ul li a {
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        color: var(--light);
+        border-bottom: none;
+    }
+
+    nav.main ul li a:hover {
+        position: relative;
+        color: var(--dark);
+        background-color: var(--light);
+    }
+}

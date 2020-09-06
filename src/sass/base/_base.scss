@@ -1,0 +1,35 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  // This defines what 1rem is: 62.5% of "the root font size"
+  // The default root font size (set by the browser) is 16px,
+  // but may be overridden by users.  So, 1 rem is 62.5% of the root font size,
+  // whether that is the browser default or overridden by user
+  font-size: 62.5%; // 1rem = 10px
+
+  // Order is important!
+  @include respond(tab-land) { // width < 1200px?
+    font-size: 56.25%; // 1rem = 9px, 9/16 = .5625
+  }
+  @include respond(tab-port) { // width < 900px?
+    font-size: 50%; // 1rem = 8px, 8/16 = .5
+  }
+  @include respond(phone) { // width < 600px?
+    //font-size: 50%; not necessary, since same value as previous breakpoint
+  }
+  @include respond(big-desktop) { // width > 1800px
+    font-size: 75%; // 1rem = 12px, 12/16 = .75
+  }
+
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  box-sizing: border-box;
+}
