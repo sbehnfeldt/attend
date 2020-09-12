@@ -12,54 +12,52 @@ nav.main {
   flex-direction: column;
   background: $primary;
   z-index: 1000;
-  @include respond(tab-land) {
-    //height: 12rem;
-  }
 
   // Checkbox toggles the main menu on and off
   input.toggle {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1002;
-    opacity: 0;
-    width: $hamburger-height;
-    height: $hamburger-height;
-    cursor: pointer;
-    @include respond(tab-land) {
-      display: none;
-    }
+    display: none;
 
-    // When the user hovers over the toggle box, rotate the hamburger menu
-    &:hover + div.hamburger {
-      transform: rotate(-25deg);
-      border-radius: 50%
-    }
+    @include respond(small) {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1002;
+      width: $hamburger-height;
+      height: $hamburger-height;
+      opacity: 0;
+      cursor: pointer;
 
-    &:checked {
-      & + div.hamburger {
-        transform: rotate(45deg);
-
-        // Transform the "hamburger" into an X when the toggle is checked (and, ergo, menu is open)
-        & div.bar::before,
-        & div.bar::after {
-          top: 0;
-          transform: rotate(90deg);
-        }
-      }
-
+      // When the user hovers over the toggle box, rotate the hamburger menu
       &:hover + div.hamburger {
-        transform: rotate(135deg);
+        transform: rotate(-25deg);
+        border-radius: 50%
       }
 
-      & ~ ul {
-        padding-top: 2 * $hamburger-height / 3;
-        @include respond(tab-land) {
-          padding-top: initial;
+      &:checked {
+        & + div.hamburger {
+          transform: rotate(45deg);
+
+          // Transform the "hamburger" into an X when the toggle is checked (and, ergo, menu is open)
+          & div.bar::before,
+          & div.bar::after {
+            top: 0;
+            transform: rotate(90deg);
+          }
         }
 
-        li.menu-item {
-          height: 2 * $hamburger-height / 3;
+        &:hover + div.hamburger {
+          transform: rotate(135deg);
+        }
+
+        & ~ ul.menu {
+          padding-top: 2 * $hamburger-height / 3;
+          //padding-bottom: 25rem;
+
+
+          li.menu-item {
+            height: 2 * $hamburger-height / 3;
+          }
         }
       }
     }
@@ -67,110 +65,117 @@ nav.main {
 
   // The 3-line hamburger menu "icon"
   div.hamburger {
-    top: 0;
-    right: 0;
-    width: $hamburger-height;
-    height: $hamburger-height;
-    padding: 1rem;
-    z-index: 1001;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.3s ease;
-    @include respond(tab-land) {
-      display: none;
-    }
+    display: none;
 
-    // Any of the three horizontal lines comprising the hamburger icon
-    & div.bar {
-      position: relative;
-      width: 100%;
-      height: 3px;
-      transition: transform 0.2s linear;
-      background: $text-color-light;
+    @include respond(small) {
+      top: 0;
+      right: 0;
+      width: $hamburger-height;
+      height: $hamburger-height;
+      padding: 1rem;
+      z-index: 1001;
 
-      &::before,
-      &::after {
-        content: '';
-        position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.3s ease;
+
+
+      // Any of the three horizontal lines comprising the hamburger icon
+      & div.bar {
+        display: initial;
+        position: relative;
         width: 100%;
         height: 3px;
-        transition: all 0.2s linear;
+        transition: transform 0.2s linear;
         background: $text-color-light;
-      }
 
-      &::before {
-        top: -1rem;
-      }
+        &::before,
+        &::after {
+          content: '';
+          position: absolute;
+          width: 100%;
+          height: 3px;
+          transition: all 0.2s linear;
+          background: $text-color-light;
+        }
 
-      &::after {
-        top: 1rem;
+        &::before {
+          top: -1rem;
+        }
+
+        &::after {
+          top: 1rem;
+        }
       }
     }
   }
+
 
   // The Main Menu
   ul {
     position: absolute;
     margin: 0;
+    top: 0;
+    height: initial;
     width: 100%;
     padding: 0;
     z-index: 997;
-
-    //opacity: .85;
     overflow: hidden;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
     background-color: $primary;
+    transition: all .4s ease;
 
-    @include respond(tab-land) {
-      top: 0;
-      height: initial;
-      //border: 1px solid yellow;
+    /* Contents */
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-grow: 0;
 
-      /* Contents */
-      flex-direction: row;
-      justify-content: flex-start;
-      flex-grow: 0;
+    @include respond(small) {
+      flex-direction: column;
+      justify-content: center;
     }
 
     li {
-      height: 0;
-      width: 100%;
+      width: 150px;
+      height: auto;
+
       font-size: 1.5rem;
       list-style: none;
       color: white;
       text-align: center;
       transition: height .4s ease;
-      @include respond(tab-land) {
-        width: 150px;
-        height: auto;
+      @include respond(small) {
+        width: 100%;
+        height: 0;
       }
 
       a {
+        display: inline-block;
+        width: 100%;
+        //height: 100%;
+        padding: 1.5rem .5rem;
+
         text-decoration: none;
         color: $text-color-light;
-        @include respond(tab-land) {
-          display: inline-block;
-          width: 100%;
-          padding: 2rem .5rem;
-          color: $text-color-light;
-          font-size: 2rem;
+        font-size: 2rem;
+        @include respond(small) {
+          padding: 0;
+          width: initial;
         }
 
         &:hover {
-          border-bottom: 2px solid $text-color-light;
-          transition: border .2s ease;
-          text-decoration: none;
-          text-align: center;
-          @include respond(tab-land) {
-            position: relative;
-            color: $primary-dark;
-            background-color: $text-color-light;
+          color: $primary-dark;
+          background-color: $text-color-light;
+
+          @include respond(small) {
+            border-bottom: 2px solid $text-color-light;
+            color: inherit;
+            background-color: inherit;
+            text-decoration: none;
+            text-align: center;
           }
         }
       }

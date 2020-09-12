@@ -15,42 +15,33 @@
 
 /*
   MEDIA QUERY MANAGER
- [0 - 600]px: Phone
- 600 - 900px: Tablet (Portrait)
- 900 - 1200px: Table (Landscape)
- 1200-1800 : Desktop
- 1800+ : Big Desktop
 
  $breakpoint argument choices:
- - phone
- - tab-port
- - tab-land
- - big-desktop
-  1em = 16px
+ - default: over 1200px (desktop)
+ - large: under 1200px (tablet landscape)
+ - medium: under 900px (tablet portrait)
+ - small: under 600px (phone)
+   1em = 16px
  */
 @mixin respond($breakpoint) {
-  @if $breakpoint == tab-port {
-    @media(min-width: 37.5em) {
+  // 1200px / 16px = 75em
+  @if $breakpoint == large {
+    @media(max-width: 75em) {
       @content
     }
-    // 600px / 16px
   }
-  @if $breakpoint == tab-land {
-    @media(min-width: 56.25em) {
+
+  // 900px / 16px = 56.26em
+  @if $breakpoint == medium {
+    @media(max-width: 56.25em) {
       @content
     }
-    // 900px / 16p
   }
-  @if $breakpoint == desktop {
-    @media(min-width: 75em) {
+
+  @if $breakpoint == small {
+    // 600px / 16px = 37.5em
+    @media(max-width: 37.5em) {
       @content
     }
-    // 1200px / 16px
-  }
-  @if $breakpoint == big-desktop {
-    @media(min-width: 112.5em) {
-      @content
-    }
-    // 1800px
   }
 }
