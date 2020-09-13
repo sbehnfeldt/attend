@@ -15,7 +15,7 @@
             <li><a href="#teachers">Teachers</a></li>
         </ul>
 
-        <section id="classrooms-tab">
+        <section class="tab" id="classrooms-tab">
             <table class="display compact">
                 <thead>
                 <tr>
@@ -29,34 +29,25 @@
                 <tbody></tbody>
             </table>
 
-            <div class="row">
-                <div class="col-xs-6 record-buttons"></div>
-                <div class="col-xs-6 table-buttons"><span class="pull-right"></span></div>
-
+            <div class="buttons">
+                <div class="record-buttons"></div>
+                <div class="table-buttons"></div>
             </div>
 
             <div id="classroom-props-dlg" title="Add/Edit Classroom">
                 <form>
                     <p class="update-tips"></p>
                     <input class="hidden" name="Id">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <label>Classroom Name</label>
-                            <input type="text" name="Label" class="required">
-                        </div>
-                    </div>
+                    <label>Classroom Name</label>
+                    <input type="text" name="Label" class="required">
 
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <label>Order</label>
-                            <input type="number" name="Ordering">
-                        </div>
-                    </div>
+                    <label>Order</label>
+                    <input type="number" name="Ordering">
                 </form>
             </div>
         </section>
 
-        <section id="teachers">
+        <section class="tab" id="teachers">
             <h2>Teachers</h2>
         </section>
     </div>
