@@ -74,67 +74,6 @@ button.disabled span {
     display: none;
 }
 
-.ui-dialog {
-    display: none;
-}
-
-.ui-dialog hr {
-    border-top: 3px solid #aaa;
-}
-
-.ui-dialog div.row {
-    margin-bottom: 20px;
-}
-
-.ui-dialog input[type=text],
-.ui-dialog input[type=email],
-.ui-dialog input[type=password],
-.ui-dialog input[type=number],
-.ui-dialog select {
-    display: block;
-    width: 100%;
-    border-radius: 10px;
-    background-image: linear-gradient(#fff 0%, #c7f85B 100%);
-}
-
-/* Remove the blue border around the input with the focus; instead, indicate focus with the same styling
- as the buttons have.  (Might be a good candidate for  LESS/SASS) */
-.ui-dialog button:focus,
-.ui-dialog input:focus,
-.ui-dialog select:focus {
-    outline-style: none;
-    box-shadow: none;
-    background-image: linear-gradient(#fff 0%, #67f80B 100%);
-}
-
-.ui-dialog input.modified,
-.ui-dialog select.modified {
-    background-color: lightgoldenrodyellow;
-    background-image: none;
-}
-
-.ui-dialog .required.missing {
-    background-color: pink;
-    background-image: none;
-    color: red;
-}
-
-.ui-dialog table {
-    width: 100%;
-}
-
-.ui-dialog table td:not(:first-of-type) {
-    border: 1px solid #888;
-}
-
-.ui-dialog table td input[type=checkbox] {
-    text-align: center;
-    width: 100%;
-}
-
-.ui-dialog table button {
-    width: 100%;
-}
 
 .dark {
     background-color: #777;
@@ -154,39 +93,6 @@ form div.options div.col-md-3 {
     display: none;
 }
 
-
-@media all and (min-width: 500px) {
-    .form-box label {
-        display: block;
-    }
-}
-
-
-@media all and (min-width: 600px) {
-    .form-box {
-        flex-direction: row;
-    }
-
-    .form-box label {
-        flex-basis: 9rem;
-        flex-grow: 0;
-        flex-shrink: 0;
-    }
-
-    .form-box input {
-        flex-basis: 0;
-        flex-grow: 1;
-        flex-shrink: 1;
-    }
-
-    .form-box button {
-        margin-left: 9rem;
-    }
-
-    .form-box1 {
-
-    }
-}
 
 tr.dailies td {
     background-color: lightskyblue;

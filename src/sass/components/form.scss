@@ -1,0 +1,87 @@
+form {
+
+  input[type=text],
+  input[type=email],
+  input[type=password],
+  input[type=number],
+  select {
+    display: block;
+    width: 100%;
+    border-radius: 10px;
+    background-image: linear-gradient(#fff 0%, #c7f85B 100%);
+  }
+
+  button:focus,
+  input:focus,
+  select:focus {
+    outline-style: none;
+    box-shadow: none;
+    background-image: linear-gradient(#fff 0%, #67f80B 100%);
+  }
+
+  input.modified,
+  select.modified {
+    background-color: lightgoldenrodyellow;
+    background-image: none;
+  }
+
+  .required.missing {
+    background-color: pink;
+    background-image: none;
+    color: red;
+  }
+
+  table {
+    td {
+
+      &:not(:first-of-type) {
+        border: 1px solid #888;
+      }
+
+      input[type=checkbox] {
+        text-align: center;
+        width: 100%;
+      }
+    }
+
+  }
+
+  hr {
+    border-top: 3px solid #aaa;
+  }
+}
+
+@media all and (min-width: 500px) {
+  .form-box label {
+    display: block;
+  }
+}
+
+
+@media all and (min-width: 600px) {
+  .form-box {
+    flex-direction: row;
+  }
+
+  .form-box label {
+    flex-basis: 9rem;
+    flex-grow: 0;
+    flex-shrink: 0;
+  }
+
+  .form-box input {
+    flex-basis: 0;
+    flex-grow: 1;
+    flex-shrink: 1;
+  }
+
+  .form-box button {
+    margin-left: 9rem;
+  }
+
+  .form-box1 {
+
+  }
+}
+
+
