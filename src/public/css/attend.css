@@ -32,39 +32,6 @@ button.disabled span {
 }
 
 
-.form-box,
-.form-box1 {
-    padding: 0.5rem 0;
-    margin: auto;
-}
-
-.form-box {
-    display: flex;
-    flex-direction: column;
-}
-
-.form-box input[type=text],
-.form-box input[type=password] {
-    flex-basis: 100%;
-}
-
-.form-box label {
-    display: none;
-}
-
-.form-box label.always {
-    display: initial;
-}
-
-.form-box button {
-
-}
-
-
-.dialog {
-    display: none;
-}
-
 .attendance-page-signin table th:not(:first-of-type),
 .attendance-page-schedules table th:not(:first-of-type) {
     text-align: center;
@@ -74,10 +41,6 @@ button.disabled span {
     display: none;
 }
 
-
-.dark {
-    background-color: #777;
-}
 
 form div.options {
     display: none;
@@ -94,7 +57,4 @@ form div.options div.col-md-3 {
 }
 
 
-tr.dailies td {
-    background-color: lightskyblue;
-}
 
