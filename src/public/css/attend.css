@@ -6,13 +6,6 @@
 
 
 
-input.invalid {
-    background-color: pink;
-}
-
-input.invalid::placeholder {
-    color: orangered;
-}
 
 button {
     border: 2px double #494949;
