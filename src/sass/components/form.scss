@@ -1,4 +1,5 @@
 form {
+  font-size: 1.6rem;
 
   input[type=text],
   input[type=email],
@@ -23,6 +24,10 @@ form {
   select.modified {
     background-color: lightgoldenrodyellow;
     background-image: none;
+  }
+
+  .hidden {
+    display: none;
   }
 
   .required.missing {

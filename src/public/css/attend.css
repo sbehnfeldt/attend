@@ -37,10 +37,6 @@ button.disabled span {
     text-align: center;
 }
 
-.hidden {
-    display: none;
-}
-
 
 form div.options {
     display: none;
