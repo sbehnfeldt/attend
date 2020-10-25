@@ -2,6 +2,9 @@ form {
 
   font-size: 1.6rem;
 
+  display: flex;
+  flex-direction: column;
+
   section {
     margin: 1rem 2rem;
   }
@@ -9,6 +12,28 @@ form {
   .form-box {
     margin: 1.5rem 2rem;
 
+    display: flex;
+    flex-direction: row;
+
+    label {
+      padding-right: .5rem;
+      font-size: 2.6rem;
+
+      flex-basis: 15rem;
+      flex-shrink: 0;
+      flex-grow: 0;
+      vertical-align: center;
+      text-align: right;
+
+      &::after {
+        content: ":";
+      }
+    }
+
+    button {
+      margin: auto;
+      padding: .5rem 2rem;
+    }
 
     input[type=text],
     input[type=email],
@@ -16,23 +41,37 @@ form {
     input[type=number],
     select {
       display: block;
-      width: 100%;
-      border-radius: 10px;
-      background-image: linear-gradient(#fff 0%, #c7f85B 100%);
       padding: .5rem;
+      border-radius: 10px;
+      flex-basis: 9rem;
+      flex-grow: 1;
+
+      //background-image: linear-gradient(#fff 0%, #c7f85B 100%);
+      color: $text-color-dark;
+      background-color: $primary-extra-pale;
+
+
+      transform: scaleX(.95);
+      transition: transform .2s;
+
+      &::placeholder {
+        font-style: italic;
+        color: $text-color;
+      }
     }
 
-    button:focus,
     input:focus,
     select:focus {
+      color: $text-color-dark;
+      background-image: linear-gradient(#fff 0%, $primary-light 100%);
       outline-style: none;
       box-shadow: none;
-      background-image: linear-gradient(#fff 0%, #67f80B 100%);
+      transform: scaleX(1);
     }
 
     input.modified,
     select.modified {
-      background-color: lightgoldenrodyellow;
+      background-color: $text-color;
       background-image: none;
     }
 
@@ -50,6 +89,21 @@ form {
       color: red;
     }
   }
+
+  .form-box1 {
+    padding-left: 15rem;
+
+    label {
+      padding-left: .5rem;
+      font-size: 1.5rem;
+      text-align: left;
+
+      &::after {
+        content: "";
+      }
+    }
+  }
+
 
   table {
     width: 100%;
@@ -82,38 +136,4 @@ form {
     }
   }
 }
-
-@media all and (min-width: 500px) {
-  .form-box label {
-    display: block;
-  }
-}
-
-
-@media all and (min-width: 600px) {
-  .form-box {
-    flex-direction: row;
-  }
-
-  .form-box label {
-    flex-basis: 9rem;
-    flex-grow: 0;
-    flex-shrink: 0;
-  }
-
-  .form-box input {
-    flex-basis: 0;
-    flex-grow: 1;
-    flex-shrink: 1;
-  }
-
-  .form-box button {
-    margin-left: 9rem;
-  }
-
-  .form-box1 {
-
-  }
-}
-
 

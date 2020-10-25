@@ -23,6 +23,7 @@ cls && vendor\bin\propel model:build --config-dir=../ --schema-dir=generated-rev
 
 
 cls && vendor\bin\propel help convert
-cls && vendor\bin\propel convert --config-dir=generated-reversed-database --output-dir=lib
+; cls && vendor\bin\propel convert --config-dir=generated-reversed-database --output-dir=lib
+cls && vendor\bin\propel convert --config-dir=../ --output-dir=lib
 
 

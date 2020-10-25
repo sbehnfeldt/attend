@@ -4,69 +4,20 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="css/attend.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/login.css">
     <title>Attend | Login</title>
-    <style>
-        html {
-            box-sizing: border-box;
-            font-size: 20px;
-            line-height: 1.6;
-            font-family: Arial, sans-serif;
-            color: #474747;
-        }
-
-        *, *::before, *::after {
-            box-sizing: inherit;
-            padding: 0;
-            margin: 0;
-        }
-
-        main {
-            margin: 1rem auto;
-            width: 90%;
-            max-width: 1000px;
-
-            background-color: #bae3f2;
-            padding: 2rem 3rem;
-            border: 2px double blue;
-        }
-
-        main p {
-            margin-bottom: 1.5rem;
-        }
-
-        form {
-        }
-
-        select, option, input, label, button {
-            padding: 0.2rem 1rem;
-            font-size: 1.2rem;
-            color: inherit;
-        }
-
-        input[type=checkbox] {
-            margin-top: auto;
-            margin-bottom: auto;
-        }
-
-        .invalid-credentials {
-            display: none;
-            margin: 5px;
-            padding: 20px;
-            background-color: pink;
-            color: orangered;
-        }
-
-
-    </style>
 </head>
+
 <body>
 <main>
     <div id="loading">
         <div id="loading-image"></div>
     </div>
-    <p>Please enter your login username and password</p>
-    <form action="login.php" method="post">
+
+    <form class="login-form" action="login.php" method="post">
+        <p>Please enter your login username and password:</p>
         <input type="hidden" name="route" value="{{ route }}">
 
         <div class="invalid-credentials">
@@ -83,7 +34,7 @@
             <input type="password" name="password" placeholder="Password" value="{{ password }}">
         </div>
 
-        <div class="form-box1">
+        <div class="form-box form-box1">
             <input type="checkbox" name="remember" {% if remember %}checked{% endif %}>
             <label class="always" for="">Remember Me</label>
         </div>
