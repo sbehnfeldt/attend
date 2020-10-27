@@ -1,47 +1,11 @@
 :root {
-    --primary: #00ceff;
-    --secondary: #171717;
-    --light: #f3f3f3;
+    --secondary: #3282b8;
+    --dark: #1b262c;
     --font-stack: 'Roboto', 'Helvetica', sans-serif;
-    --hamburger-height: 60px;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    /*margin-bottom: 50px;*/
-    font-family: 'Roboto', sans-serif;
 }
 
 
-/* There is a lot going on here. */
-main.container {
-    position: absolute; /* Removed from normal flow; so space allotted for it. Positioned relative to closest positioned ancestor. */
 
-    /* Width of an element with Position "absolute" does not seem to expand to its parent's width;
-    * rather, it seems to expand to the width of its own content.  Setting the width seems to require
-    * specifying both the "left" and "right" properties.
-    */
-    left: 0;
-    right: 0;
-    max-width: 1000px;
-    top: calc(var(--hamburger-height) + 20px);
-
-    /* Margin "auto" does not, by itself, center elements with position "absolute".  Left and right properties must also be set*/
-    margin: 0 auto;
-
-    z-index: -1;
-}
-
-input.invalid {
-    background-color: pink;
-}
-
-input.invalid::placeholder {
-    color: orangered;
-}
 
 button {
     border: 2px double #494949;
@@ -61,113 +25,11 @@ button.disabled span {
 }
 
 
-.form-box,
-.form-box1 {
-    padding: 0.5rem 0;
-    margin: auto;
-}
-
-.form-box {
-    display: flex;
-    flex-direction: column;
-}
-
-.form-box input[type=text],
-.form-box input[type=password] {
-    flex-basis: 100%;
-}
-
-.form-box label {
-    display: none;
-}
-
-.form-box label.always {
-    display: initial;
-}
-
-.form-box button {
-
-}
-
-
-.dialog {
-    display: none;
-}
-
 .attendance-page-signin table th:not(:first-of-type),
 .attendance-page-schedules table th:not(:first-of-type) {
     text-align: center;
 }
 
-.hidden {
-    display: none;
-}
-
-.ui-dialog {
-    display: none;
-}
-
-.ui-dialog hr {
-    border-top: 3px solid #aaa;
-}
-
-.ui-dialog div.row {
-    margin-bottom: 20px;
-}
-
-.ui-dialog input[type=text],
-.ui-dialog input[type=email],
-.ui-dialog input[type=password],
-.ui-dialog input[type=number],
-.ui-dialog select {
-    display: block;
-    width: 100%;
-    border-radius: 10px;
-    background-image: linear-gradient(#fff 0%, #c7f85B 100%);
-}
-
-/* Remove the blue border around the input with the focus; instead, indicate focus with the same styling
- as the buttons have.  (Might be a good candidate for  LESS/SASS) */
-.ui-dialog button:focus,
-.ui-dialog input:focus,
-.ui-dialog select:focus {
-    outline-style: none;
-    box-shadow: none;
-    background-image: linear-gradient(#fff 0%, #67f80B 100%);
-}
-
-.ui-dialog input.modified,
-.ui-dialog select.modified {
-    background-color: lightgoldenrodyellow;
-    background-image: none;
-}
-
-.ui-dialog .required.missing {
-    background-color: pink;
-    background-image: none;
-    color: red;
-}
-
-.ui-dialog table {
-    width: 100%;
-}
-
-.ui-dialog table td:not(:first-of-type) {
-    border: 1px solid #888;
-}
-
-.ui-dialog table td input[type=checkbox] {
-    text-align: center;
-    width: 100%;
-}
-
-.ui-dialog table button {
-    width: 100%;
-}
-
-.dark {
-    background-color: #777;
-}
 
 form div.options {
     display: none;
@@ -179,88 +41,9 @@ form div.options div.col-md-3 {
     border: 1px solid #222222;
 }
 
-#loading {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 99;
-
-    display: none;
-    width: 100%;
-    height: 100%;
-
-    opacity: .7;
-    background-color: #fff;
-    text-align: center;
-    vertical-align: center;
-
-}
-
-#loading-image {
-    position: relative;
-    top: 50%;
-    z-index: 100;
-    display: block;
-    margin: 0 auto;
-
-    border: 16px solid #f3f3f3; /* Light grey */
-    border-top: 16px solid blue;
-    border-bottom: 16px solid blue;
-    border-radius: 50%;
-
-    width: 120px;
-    height: 120px;
-    animation: spin 2s linear infinite;
-}
-
 #tabs {
     display: none;
 }
 
 
-@media all and (min-width: 500px) {
-    .form-box label {
-        display: block;
-    }
-}
-
-
-@media all and (min-width: 600px) {
-    .form-box {
-        flex-direction: row;
-    }
-
-    .form-box label {
-        flex-basis: 9rem;
-        flex-grow: 0;
-        flex-shrink: 0;
-    }
-
-    .form-box input {
-        flex-basis: 0;
-        flex-grow: 1;
-        flex-shrink: 1;
-    }
-
-    .form-box button {
-        margin-left: 9rem;
-    }
-
-    .form-box1 {
-
-    }
-}
-
-tr.dailies td {
-    background-color: lightskyblue;
-}
-
-@keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-}
 

@@ -53,9 +53,6 @@ $dependencies[ 'dbEngine' ] = function($c) {
 };
 
 $app = new WebApp($dependencies);
-
-
-$app->routes();
 try {
     $app->run();
 } catch (Throwable $t) {

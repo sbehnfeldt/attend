@@ -1,0 +1,15 @@
+$primary: #0f4c75;
+$primary-light: lighten($primary, 25%);
+$primary-dark: darken($primary, 25%);
+$primary-pale: #bbe1fa;
+$primary-extra-pale: #d5f2fa;
+
+$text-color-light: #bbe1fa;
+$text-color: #6f8ffa;
+$text-color-dark: #352cfa;
+
+
+$navbar-z-index: 999;
+
+// Height of "hamburger" menu, used to coordinate with other menu-related elements
+$hamburger-height: 50px;

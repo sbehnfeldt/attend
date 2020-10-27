@@ -1,0 +1,139 @@
+form {
+
+  font-size: 1.6rem;
+
+  display: flex;
+  flex-direction: column;
+
+  section {
+    margin: 1rem 2rem;
+  }
+
+  .form-box {
+    margin: 1.5rem 2rem;
+
+    display: flex;
+    flex-direction: row;
+
+    label {
+      padding-right: .5rem;
+      font-size: 2.6rem;
+
+      flex-basis: 15rem;
+      flex-shrink: 0;
+      flex-grow: 0;
+      vertical-align: center;
+      text-align: right;
+
+      &::after {
+        content: ":";
+      }
+    }
+
+    button {
+      margin: auto;
+      padding: .5rem 2rem;
+    }
+
+    input[type=text],
+    input[type=email],
+    input[type=password],
+    input[type=number],
+    select {
+      display: block;
+      padding: .5rem;
+      border-radius: 10px;
+      flex-basis: 9rem;
+      flex-grow: 1;
+
+      //background-image: linear-gradient(#fff 0%, #c7f85B 100%);
+      color: $text-color-dark;
+      background-color: $primary-extra-pale;
+
+
+      transform: scaleX(.95);
+      transition: transform .2s;
+
+      &::placeholder {
+        font-style: italic;
+        color: $text-color;
+      }
+    }
+
+    input:focus,
+    select:focus {
+      color: $text-color-dark;
+      background-image: linear-gradient(#fff 0%, $primary-light 100%);
+      outline-style: none;
+      box-shadow: none;
+      transform: scaleX(1);
+    }
+
+    input.modified,
+    select.modified {
+      background-color: $text-color;
+      background-image: none;
+    }
+
+    input.invalid {
+      background-color: pink;
+    }
+
+    input.invalid::placeholder {
+      color: orangered;
+    }
+
+    .required.missing {
+      background-color: pink;
+      background-image: none;
+      color: red;
+    }
+  }
+
+  .form-box1 {
+    padding-left: 15rem;
+
+    label {
+      padding-left: .5rem;
+      font-size: 1.5rem;
+      text-align: left;
+
+      &::after {
+        content: "";
+      }
+    }
+  }
+
+
+  table {
+    width: 100%;
+
+    tr {
+      border: 1px solid gray;
+
+      td, th {
+        margin: 0;
+        padding: 0;
+
+        &:not(:first-of-type) {
+          border: 1px solid #888;
+        }
+
+        button {
+          width: 100%;
+        }
+
+        input[type=checkbox] {
+          text-align: center;
+          width: 100%;
+        }
+      }
+    }
+
+
+    hr {
+      border-top: 3px solid #aaa;
+    }
+  }
+}
+

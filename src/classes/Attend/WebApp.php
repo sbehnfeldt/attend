@@ -17,6 +17,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
+use Twig\TwigFunction;
 
 
 // Find the DateTime object representing the Monday closest to the input date
@@ -62,20 +63,61 @@ function getMonday(DateTime $d)
 
 class WebApp extends App
 {
+    /** @var Environment|null */
+    private $twig;
+
     public function __construct($container = [])
     {
         parent::__construct($container);
+        $this->twig = null;
+    }
+
+    /**
+     * @return Environment|null
+     */
+    public function getTwig(): Environment
+    {
+        if (!$this->twig) {
+            $f = new TwigFunction('getDate', function (DateTime $weekOf, int $d) {
+                $w = new DateTime($weekOf->format('Y/m/d'));
+                $w->add(new DateInterval(sprintf('P%dD', $d)));
+                return $w->format('M j');
+            });
+
+            if ($this->getContainer()->has('twig')) {
+                $this->twig = $this->getContainer()->get('twig');
+                $this->twig->addFunction($f);
+            }
+
+            if (!$this->twig) {
+                $loader = new FilesystemLoader('../templates');
+                $this->twig = new Environment($loader, array(
+                    'cache' => false
+                ));
+                $this->twig->addFunction($f);
+            }
+        }
+        return $this->twig;
+    }
+
+    /**
+     * @param Environment|null $twig
+     */
+    public function setTwig(Environment $twig)
+    {
+        $this->twig = $twig;
     }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Routing for Web App Pages
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    public function routes()
+    public function run($silent = false)
     {
+        $web = $this;
 
         // Middleware to ensure user is logged in
-        $authenticate = function (Request $request, Response $response, $next) {
+        $authenticate = function (Request $request, Response $response, $next) use ($web) {
             if (empty($_SESSION['account'])) {
                 // Check for "remember me" cookies, validate if found
                 if (!empty($_COOKIE["account_id"]) && !empty($_COOKIE["token"])) {
@@ -132,24 +174,20 @@ class WebApp extends App
         };
 
 
-        $this->get('/', function (Request $request, Response $response, array $args) {
-            /** @var callable $render */
-            $render = $this->get('render');
-            $response->getBody()->write($render('index.html.twig', [
+        $this->get('/', function (Request $request, Response $response, array $args) use ($web) {
+            $response->getBody()->write($web->getTwig()->render('index.html.twig', [
                 'account' => $_SESSION['account']
             ]));
             return $response;
         })->add($authenticate);
 
 
-        $this->get('/attendance', function (Request $request, Response $response, array $args) {
+        $this->get('/attendance', function (Request $request, Response $response, array $args) use ($web) {
             // Get the text version of the date, suitable for column header
             $weekOf = new DateTime('now');
             $weekOf = getMonday($weekOf);
 
-            /** @var callable $render */
-            $render = $this->get('render');
-            $response->getBody()->write($render('attendance.html.twig', [
+            $response->getBody()->write($web->getTwig()->render('attendance.html.twig', [
                 'account' => $_SESSION['account'],
                 'classrooms' => ClassroomQuery::create()->find(),
                 'weekOf' => $weekOf
@@ -158,33 +196,27 @@ class WebApp extends App
         })->add($authenticate);
 
 
-        $this->get('/enrollment', function (Request $request, Response $response, array $args) {
-            /** @var callable $render */
-            $render = $this->get('render');
-            $response->getBody()->write($render('enrollment.html.twig', [
+        $this->get('/enrollment', function (Request $request, Response $response, array $args) use ($web) {
+            $response->getBody()->write($web->getTwig()->render('enrollment.html.twig', [
                 'account' => $_SESSION['account'],
             ]));
             return $response;
         })->add($authenticate);
 
 
-        $this->get('/classrooms', function (Request $request, Response $response, array $args) {
-            /** @var callable $render */
-            $render = $this->get('render');
-            $response->getBody()->write($render('classrooms.html.twig', [
+        $this->get('/classrooms', function (Request $request, Response $response, array $args) use ($web) {
+            $response->getBody()->write($web->getTwig()->render('classrooms.html.twig', [
                 'account' => $_SESSION['account'],
             ]));
             return $response;
         })->add($authenticate);
 
 
-        $this->get('/admin', function (Request $request, Response $response, array $args) {
+        $this->get('/admin', function (Request $request, Response $response, array $args) use ($web) {
             $accounts = AccountQuery::create()->find();
             $logins = LoginAttemptQuery::create()->find();
 
-            /** @var callable $render */
-            $render = $this->get('render');
-            $response->getBody()->write($render('admin.html.twig', [
+            $response->getBody()->write($web->getTwig()->render('admin.html.twig', [
                 'account' => $_SESSION['account'],
                 'accounts' => $accounts,
                 'logins' => $logins
@@ -193,17 +225,14 @@ class WebApp extends App
         })->add($authenticate)->add($adminOnly);
 
 
-        $this->get('/profile', function (Request $request, Response $response) {
-            /** @var callable $render */
-            $render = $this->get('render');
-            $response->getBody()->write($render('profile.html.twig', [
+        $this->get('/profile', function (Request $request, Response $response) use ($web) {
+            $response->getBody()->write($web->getTwig()->render('profile.html.twig', [
                 'account' => $_SESSION['account']
             ]));
 
             return $response;
         })->add($authenticate);
 
-
-        return $this;
+        parent::run($silent);
     }
 }

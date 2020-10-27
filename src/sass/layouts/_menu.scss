@@ -1,0 +1,188 @@
+/* Based on:
+ "Pure CSS Hamburger Menu & Overlay" by Traversy Media. April 4, 2019.  https://www.youtube.com/watch?v=DZg6UfS5zYg&t=1622s,
+ "How to build a CSS ONLY Animated Hamburger Menu | Tutorial 2019" by Tyler Potts.  May 23, 2019.  https://www.youtube.com/watch?v=kKRpeFk613I
+ */
+
+/* Main navigation bar */
+nav.main {
+  position: fixed;
+  height: $hamburger-height;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: $primary;
+  z-index: 1000;
+
+  // Checkbox toggles the main menu on and off
+  input.toggle {
+    display: none;
+  }
+
+  // The 3-line hamburger menu "icon"
+  div.hamburger {
+    display: none;
+  }
+
+
+  // The Main Menu
+  ul {
+    position: absolute;
+    margin: 0;
+    top: 0;
+    height: initial;
+    width: 100%;
+    padding: 0;
+    z-index: 997;
+    overflow: hidden;
+
+    background-color: $primary;
+    transition: all .4s ease;
+
+    /* Contents */
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-grow: 0;
+
+    @include respond(small) {
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    li {
+      width: 150px;
+      height: auto;
+
+      font-size: 1.5rem;
+      list-style: none;
+      color: white;
+      text-align: center;
+      transition: height .4s ease;
+
+      @include respond(small) {
+        width: 100%;
+        height: 0;
+      }
+
+      a {
+        display: inline-block;
+        width: 100%;
+        padding: 1.5rem .5rem;
+
+        text-decoration: none;
+        color: $text-color-light;
+        font-size: 2rem;
+
+        @include respond(small) {
+          padding: 0;
+          width: initial;
+        }
+
+        &:hover {
+          color: $primary-dark;
+          background-color: $text-color-light;
+
+          @include respond(small) {
+            border-bottom: 2px solid $text-color-light;
+            color: inherit;
+            background-color: inherit;
+            text-decoration: none;
+            text-align: center;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+@include respond(small) {
+
+  nav.main {
+    input.toggle {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1002;
+      width: $hamburger-height;
+      height: $hamburger-height;
+      opacity: 0;
+      cursor: pointer;
+
+      // When the user hovers over the toggle box, rotate the hamburger menu
+      &:hover + div.hamburger {
+        transform: rotate(-25deg);
+        border-radius: 50%
+      }
+
+      &:checked {
+        & + div.hamburger {
+          transform: rotate(45deg);
+
+          // Transform the "hamburger" into an X when the toggle is checked (and, ergo, menu is open)
+          & div.bar::before,
+          & div.bar::after {
+            top: 0;
+            transform: rotate(90deg);
+          }
+        }
+
+        &:hover + div.hamburger {
+          transform: rotate(135deg);
+        }
+
+        & ~ ul.menu {
+          padding-top: 2 * $hamburger-height / 3;
+
+          li.menu-item {
+            height: 2 * $hamburger-height / 3;
+          }
+        }
+      }
+    }
+
+    div.hamburger {
+      top: 0;
+      right: 0;
+      width: $hamburger-height;
+      height: $hamburger-height;
+      padding: 1rem;
+      z-index: 1001;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.3s ease;
+
+      // Any of the three horizontal lines comprising the hamburger icon
+      & div.bar {
+        display: initial;
+        position: relative;
+        width: 100%;
+        height: 3px;
+        transition: transform 0.2s linear;
+        background: $text-color-light;
+
+        &::before,
+        &::after {
+          content: '';
+          position: absolute;
+          width: 100%;
+          height: 3px;
+          transition: all 0.2s linear;
+          background: $text-color-light;
+        }
+
+        &::before {
+          top: -1rem;
+        }
+
+        &::after {
+          top: 1rem;
+        }
+      }
+    }
+  }
+}
