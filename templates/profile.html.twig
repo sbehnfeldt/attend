@@ -1,0 +1,56 @@
+{% extends 'partials/base.html.twig' %}
+
+{% block title %}Attend | Profile{% endblock %}
+
+{% block scripts %}
+    {{ parent() }}
+    <script src="js/profile.js"></script>
+{% endblock %}
+
+
+{% block main %}
+    <h1>Profile</h1>
+
+    <div class="form-box">
+        <label for="">Username: </label>
+        <span>{{ account.username }}</span>
+    </div>
+
+    <form id="updateEmail">
+        <div class="form-box">
+            <label for="">Email Address</label>
+            <input type="email" name="email" placeholder="Enter email address" value="{{ account.email }}"
+                   data-value="{{ account.email }}">
+        </div>
+        <div class="form-box">
+            <button name="updateEmail">Update</button>
+        </div>
+    </form>
+
+
+    <form action="" id="changePassword">
+        <h2>Change Password</h2>
+
+        <div class="form-box">
+            <label for="">Old Password</label>
+            <input type="password" name="oldpassword" placeholder="Enter current password">
+        </div>
+
+        <div class="form-box">
+            <label for="">New Password</label>
+            <input type="password" name="newpassword" placeholder="Enter new password">
+        </div>
+
+        <div class="form-box">
+            <label for="">Repeat New Password</label>
+            <input type="password" name="repeatpassword" placeholder="Repeat new password">
+        </div>
+
+        <div class="form-box">
+            <button name="changePassword">Update</button>
+        </div>
+    </form>
+
+
+
+{% endblock %}

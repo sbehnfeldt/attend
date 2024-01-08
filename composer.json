@@ -1,0 +1,19 @@
+{
+    "name": "smidgen/attend",
+    "require": {
+        "propel/propel": "^2.0@beta",
+        "twig/twig": "^3.0",
+        "slim/slim": "^3.0",
+        "monolog/monolog": "^2.0",
+        "robmorgan/phinx": "^0.12.7",
+        "ext-json": "*",
+        "ext-pdo": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "classes/"
+        }
+    },
+    "require-dev": {
+    }
+}

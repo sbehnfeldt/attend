@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<database name="attend" defaultIdMethod="native" namespace="\flapjack\attend\database"
+          defaultPhpNamingMethod="underscore">
+    <table name="accounts" idMethod="native" phpName="Account">
+        <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="username" phpName="Username" type="VARCHAR" size="31" required="true"/>
+        <column name="pwhash" phpName="Pwhash" type="VARCHAR" size="63" required="true"/>
+        <column name="email" phpName="Email" type="VARCHAR" size="255" required="true"/>
+        <column name="role" phpName="Role" type="VARCHAR" size="31" required="true"/>
+        <unique name="username">
+            <unique-column name="username"/>
+        </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+    <table name="attendance" idMethod="native" phpName="Attendance">
+        <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="student_id" phpName="StudentId" type="INTEGER" required="true"/>
+        <column name="check_in" phpName="CheckIn" type="TIMESTAMP" required="true"/>
+        <column name="check_out" phpName="CheckOut" type="TIMESTAMP" required="true"/>
+        <foreign-key foreignTable="students" name="attendance_ibfk_1" onDelete="CASCADE">
+            <reference local="student_id" foreign="id"/>
+        </foreign-key>
+        <index name="student_id">
+            <index-column name="student_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+    <table name="classrooms" idMethod="native" phpName="Classroom">
+        <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="label" phpName="Label" type="VARCHAR" size="63" description="Human-readable name of the classroom"
+                required="true"/>
+        <column name="ordering" phpName="Ordering" type="INTEGER" description="Order among all classrooms"
+                required="true"/>
+        <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" required="true"/>
+        <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" required="true"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+    <table name="group_members" idMethod="native" phpName="GroupMember">
+        <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="group_id" phpName="GroupId" type="INTEGER" required="true"/>
+        <column name="account_id" phpName="AccountId" type="INTEGER" required="true"/>
+        <foreign-key foreignTable="groups" name="group_members_ibfk_1" onDelete="CASCADE">
+            <reference local="group_id" foreign="id"/>
+        </foreign-key>
+        <foreign-key foreignTable="accounts" name="group_members_ibfk_2" onDelete="CASCADE">
+            <reference local="account_id" foreign="id"/>
+        </foreign-key>
+        <index name="group_id">
+            <index-column name="group_id"/>
+        </index>
+        <index name="account_id">
+            <index-column name="account_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+    <table name="group_permissions" idMethod="native" phpName="GroupPermission">
+        <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="group_id" phpName="GroupId" type="INTEGER" required="true"/>
+        <column name="permission_id" phpName="PermissionId" type="INTEGER" required="true"/>
+        <foreign-key foreignTable="groups" name="group_permissions_ibfk_1" onDelete="CASCADE">
+            <reference local="group_id" foreign="id"/>
+        </foreign-key>
+        <foreign-key foreignTable="permissions" name="group_permissions_ibfk_2" onDelete="CASCADE">
+            <reference local="permission_id" foreign="id"/>
+        </foreign-key>
+        <index name="group_id">
+            <index-column name="group_id"/>
+        </index>
+        <index name="permission_id">
+            <index-column name="permission_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+    <table name="groups" idMethod="native" phpName="Group">
+        <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="name" phpName="Name" type="VARCHAR" size="127" description="Human-readable name of the group"
+                required="true"/>
+        <column name="description" phpName="Description" type="VARCHAR" size="1024"
+                description="Description of the role or purpose of the group" required="true" defaultValue=""/>
+        <unique name="name">
+            <unique-column name="name"/>
+        </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+    <table name="individual_permissions" idMethod="native" phpName="IndividualPermission">
+        <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="account_id" phpName="AccountId" type="INTEGER" required="true"/>
+        <column name="permissions_id" phpName="PermissionsId" type="INTEGER" required="true"/>
+        <foreign-key foreignTable="accounts" name="individual_permissions_ibfk_1" onDelete="CASCADE">
+            <reference local="account_id" foreign="id"/>
+        </foreign-key>
+        <foreign-key foreignTable="permissions" name="individual_permissions_ibfk_2" onDelete="CASCADE">
+            <reference local="permissions_id" foreign="id"/>
+        </foreign-key>
+        <index name="account_id">
+            <index-column name="account_id"/>
+        </index>
+        <index name="permissions_id">
+            <index-column name="permissions_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+    <table name="login_attempts" idMethod="native" phpName="LoginAttempt">
+        <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="attempted_at" phpName="AttemptedAt" type="TIMESTAMP" required="true"/>
+        <column name="username" phpName="Username" type="VARCHAR" size="63" required="true"/>
+        <column name="pass" phpName="Pass" type="BOOLEAN" size="1" required="true"/>
+        <column name="note" phpName="Note" type="VARCHAR" size="255" required="true"/>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+    <table name="permissions" idMethod="native" phpName="Permission">
+        <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="slug" phpName="Slug" type="VARCHAR" size="127"
+                description="Human-readable mnemonic for the permission name" required="true"/>
+        <column name="description" phpName="Description" type="VARCHAR" size="1024"
+                description="Description of what the permission permits" required="true" defaultValue=""/>
+        <unique name="slug">
+            <unique-column name="slug"/>
+        </unique>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+    <table name="schedules" idMethod="native" phpName="Schedule">
+        <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="student_id" phpName="StudentId" type="INTEGER" required="true"/>
+        <column name="schedule" phpName="Schedule" type="INTEGER" required="true"/>
+        <column name="start_date" phpName="StartDate" type="TIMESTAMP" required="true"/>
+        <column name="entered_at" phpName="EnteredAt" type="TIMESTAMP" required="true"/>
+        <foreign-key foreignTable="students" name="schedules_ibfk_1" onDelete="CASCADE">
+            <reference local="student_id" foreign="id"/>
+        </foreign-key>
+        <index name="student_id">
+            <index-column name="student_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+    <table name="students" idMethod="native" phpName="Student">
+        <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="family_name" phpName="FamilyName" type="VARCHAR" size="255" required="true"/>
+        <column name="first_name" phpName="FirstName" type="VARCHAR" size="255" required="true"/>
+        <column name="enrolled" phpName="Enrolled" type="BOOLEAN" size="1" required="true"/>
+        <column name="classroom_id" phpName="ClassroomId" type="INTEGER" required="true"/>
+        <foreign-key foreignTable="classrooms" name="students_ibfk_1" onDelete="CASCADE">
+            <reference local="classroom_id" foreign="id"/>
+        </foreign-key>
+        <index name="classroom_id">
+            <index-column name="classroom_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+    <table name="token_auths" idMethod="native" phpName="TokenAuth">
+        <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
+        <column name="cookie_hash" phpName="CookieHash" type="VARCHAR" size="255" required="true"/>
+        <column name="expires" phpName="Expires" type="TIMESTAMP" required="true"/>
+        <column name="account_id" phpName="AccountId" type="INTEGER" required="true"/>
+        <foreign-key foreignTable="accounts" name="token_auths_ibfk_1" onDelete="CASCADE">
+            <reference local="account_id" foreign="id"/>
+        </foreign-key>
+        <index name="account_id">
+            <index-column name="account_id"/>
+        </index>
+        <vendor type="mysql">
+            <parameter name="Engine" value="InnoDB"/>
+        </vendor>
+    </table>
+</database>

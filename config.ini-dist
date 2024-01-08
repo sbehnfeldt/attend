@@ -1,0 +1,6 @@
+[db]
+host=localhost
+dbname=attend
+uname=attend
+pword=attend
+charset='utf8mb4'
