@@ -1,0 +1,30 @@
+.tab {
+
+    header {
+        margin-bottom: 3rem;
+    }
+
+    section.table {
+        div.table {
+            margin-top: 3rem;
+            border-top: 3px solid $primary;
+            padding-top: 3rem;
+
+            table {
+            }
+        }
+    }
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+
+    .record-buttons {
+    }
+
+    .table-buttons {
+    }
+}

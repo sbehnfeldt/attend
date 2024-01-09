@@ -1,0 +1,29 @@
+ul.selectable {
+    margin-top: 1rem;
+    width: 25%;
+    list-style: none;
+
+    li {
+        border-top: 1px solid gray;
+
+        &:last-child {
+            border-bottom: 1px solid gray;
+        }
+
+        a {
+            padding: 1.5rem;
+            display: block;
+            text-decoration: none;
+
+
+            &:hover {
+                background-color: lightgreen;
+            }
+
+            &.selected {
+                color: greenyellow;
+                background-color: forestgreen;
+            }
+        }
+    }
+}

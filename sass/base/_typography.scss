@@ -1,0 +1,34 @@
+html {
+    // "font-size" property not only sets the size of the font,
+    // but also the size of font-relative units, such as rem and em.
+    // A percentage value is relative to the parent element's font size.
+    //
+    // In the html{} rule set, it is relative to the default font size,
+    // which the browser sets at 16px, but it may be overridden by the
+    // user.
+    //
+    // The font-size in the html{} rule set also defines rem for the entire
+    // document, so this makes for convenient calculations throughout.
+    //
+    // (ref: https://developer.mozilla.org/en-US/docs/Web/CSS/font-size)
+    font-size: 62.5%; // .625 * 16px = 10px -> 1rem = 10px
+
+    // Order is important!  Since this is a desktop-first application,
+    // max-width is used to determine break points, so media queries need
+    // to be ordered in order of decreasing size.
+    @include respond(large) { // width < 900px?
+        //font-size: 56.25%; // 1rem = 9px, 9/16 = .5625
+    }
+    @include respond(medium) { // width < 1200px?
+        font-size: 56.25%; // 1rem = 9px, 9/16 = .5625
+    }
+    @include respond(small) { // width < 600px?
+        font-size: 50%; // 1 rem = 8px, 8/16 = .5625
+    }
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 2.5rem;
+    box-sizing: border-box;
+}

@@ -1,0 +1,47 @@
+@mixin clearfix {
+    &::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}
+
+@mixin absCenter {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/*
+  MEDIA QUERY MANAGER
+
+ $breakpoint argument choices:
+ - default: over 1200px (desktop)
+ - large: under 1200px (tablet landscape)
+ - medium: under 900px (tablet portrait)
+ - small: under 600px (phone)
+   1em = 16px
+ */
+@mixin respond($breakpoint) {
+    // 1200px / 16px = 75em
+    @if $breakpoint == large {
+        @media(max-width: 75em) {
+            @content
+        }
+    }
+
+    // 900px / 16px = 56.26em
+    @if $breakpoint == medium {
+        @media(max-width: 56.25em) {
+            @content
+        }
+    }
+
+    @if $breakpoint == small {
+        // 600px / 16px = 37.5em
+        @media(max-width: 37.5em) {
+            @content
+        }
+    }
+}
