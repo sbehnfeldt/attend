@@ -14,7 +14,7 @@
             {#        <link rel="stylesheet" type="text/css" href="css/attend.css"> #}
             {#        <link rel="stylesheet" type="text/css" href="css/main.css"> #}
             {# <link rel="stylesheet" type="text/css" media="print" href="css/print.css"> #}
-            <link rel="stylesheet" href="/css/style.css">
+            <link rel="stylesheet" href="/style.css">
         {% endblock %}
 
         <title>{% block title %}Insert Title Block{% endblock %}</title>
@@ -24,23 +24,29 @@
 
         <header>
             <nav class="navbar main">
-                <input type="checkbox" class="toggle">
-                <div class="hamburger">
-                    <div class="bar"></div>
-                </div>
+                {#                <input type="checkbox" class="toggle"> #}
+                {#                <div class="hamburger"> #}
+                {#                    <div class="bar"></div> #}
+                {#                </div> #}
                 <ul class="menu main-menu nav-menu" role="menu">
                     {% if perms.PAGE_ATTENDANCE %}
-                        <li class="menu-item"><a href="">Home</a></li>{% endif %}
+                        <li class="menu-item"><a href="">Home</a></li>
+                    {% endif %}
                     {% if perms.PAGE_ATTENDANCE %}
-                        <li class="menu-item"><a href="attendance">Attendance</a></li>{% endif %}
+                        <li class="menu-item"><a href="attendance">Attendance</a></li>
+                    {% endif %}
                     {% if perms.PAGE_ENROLLMENT %}
-                        <li class="menu-item"><a href="enrollment">Enrollment</a></li>{% endif %}
+                        <li class="menu-item"><a href="enrollment">Enrollment</a></li>
+                    {% endif %}
                     {% if perms.PAGE_CLASSROOMS %}
-                        <li class="menu-item"><a href="classrooms">Classrooms</a></li>{% endif %}
+                        <li class="menu-item"><a href="classrooms">Classrooms</a></li>
+                    {% endif %}
                     {% if perms.PAGE_ADMIN %}
-                        <li class="menu-item"><a href="admin">Admin</a></li>{% endif %}
+                        <li class="menu-item"><a href="admin">Admin</a></li>
+                    {% endif %}
                     {% if perms.PAGE_PROFILE %}
-                        <li class="menu-item"><a href="profile">Profile</a></li>{% endif %}
+                        <li class="menu-item"><a href="profile">Profile</a></li>
+                    {% endif %}
                     <li class="menu-item"><a href="logout">Logout</a></li>
                 </ul>
             </nav>

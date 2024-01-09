@@ -1,3 +1,12 @@
+@mixin clearfix {
+    &::after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+}
+
+
 /* Global reset by way of the universal selector.  Universal selector only covers "real" elements,
    so the ::before and ::after pseudo-elements must be included in the rule explicitly
 */
@@ -13,4 +22,46 @@
        selector, which is considered better practice (cite?).
     */
     box-sizing: inherit;
+}
+
+html {
+    background-color: peachpuff;
+}
+
+head {
+}
+
+
+body {
+    background-color: slategray;
+
+    header {
+    }
+}
+
+
+nav {
+    border-top: 2px solid crimson;
+    border-bottom: 2px solid crimson;
+
+    ul {
+        @include clearfix;
+        list-style: none;
+
+        li {
+            float: left;
+
+
+            a {
+                display: inline-block;
+                padding: 1rem 3rem;
+                text-decoration: none;
+
+                &:hover {
+                    background-color: #fff;
+                    color: #222;
+                }
+            }
+        }
+    }
 }

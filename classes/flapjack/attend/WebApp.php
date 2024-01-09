@@ -107,9 +107,11 @@ class WebApp extends App
             if ( ! $this->twig) {
                 $loader     = new FilesystemLoader('../templates');
                 $this->twig = new Environment($loader, array(
-                    'cache' => false
+                    'cache' => false,
+                    'debug' => true
                 ));
                 $this->twig->addFunction($f);
+                $this->twig->addExtension(new \Twig\Extension\DebugExtension());
             }
         }
 
