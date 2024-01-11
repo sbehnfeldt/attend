@@ -15,5 +15,12 @@ use flapjack\attend\database\Base\LoginAttempt as BaseLoginAttempt;
  */
 class LoginAttempt extends BaseLoginAttempt
 {
-
+    public function __construct(string $username, $attempted_at, $pass, $note)
+    {
+        parent::__construct();
+        $this->username     = $username;
+        $this->attempted_at = $attempted_at;
+        $this->pass         = $pass;
+        $this->note         = $note;
+    }
 }

@@ -1,11 +1,9 @@
 <?php
-
-
 namespace flapjack\attend;
 
 
-use flapjack\attend\MissingLoginCredentialsException;
-use flapjack\attend\UnauthorizedLoginAttemptException;
+use flapjack\attend\database\TokenAuth;
+use flapjack\attend\database\TokenAuthQuery;
 use flapjack\attend\database\Account;
 use flapjack\attend\database\AccountQuery;
 use flapjack\attend\database\LoginAttempt;
@@ -13,13 +11,14 @@ use flapjack\attend\database\ClassroomQuery;
 use flapjack\attend\database\LoginAttemptQuery;
 use flapjack\attend\database\PermissionQuery;
 
-//use Attend\Database\Token;
-//use Attend\Database\TokenQuery;
 use DateInterval;
 use DateTime;
 use Exception;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use Propel\Runtime\Exception\PropelException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
@@ -27,12 +26,14 @@ use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\TwigFunction;
 
-// Find the DateTime object representing the Monday closest to the input date
+
 /**
  * @param  DateTime  $d
  *
  * @return DateTime
  * @throws Exception
+ *
+ * Find the DateTime object representing the Monday closest to the input date
  */
 function getMonday(DateTime $d)
 {
@@ -87,7 +88,9 @@ class WebApp extends App
     }
 
     /**
-     * @return Environment|null
+     * @return Environment
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function getTwig(): Environment
     {
@@ -119,7 +122,7 @@ class WebApp extends App
     }
 
     /**
-     * @param  Environment|null  $twig
+     * @param  Environment  $twig
      */
     public function setTwig(Environment $twig)
     {
@@ -128,6 +131,8 @@ class WebApp extends App
 
     /**
      * @return Logger
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function getLogger(): Logger
     {
@@ -155,93 +160,43 @@ class WebApp extends App
     }
 
 
-    public function login($username, $password)
+    /**
+     * @param  string  $username
+     * @param  string  $password
+     *
+     * @return true|void
+     * @throws ContainerExceptionInterface
+     * @throws MissingLoginCredentialsException
+     * @throws NotFoundExceptionInterface
+     * @throws PropelException
+     * @throws UnauthorizedLoginAttemptException
+     *
+     * Process username/password login attempt
+     */
+    public function authenticate(string $username, string $password)
     {
-        if (empty($username) || empty($password)) {
-            $note    = 'Invalid login attempt: missing username or password';
-            $attempt = new LoginAttempt();
-            $attempt->setAttemptedAt(time());
-            $attempt->setPass(0);
-            $attempt->setNote($note);
-            $attempt->save();
-            $this->getLogger()->info($note);
-            throw new MissingLoginCredentialsException($note);
+        try {
+            $this->validateCredentialsNonempty($username, $password);
+            $acct = $this->lookup($username);
+            $this->verify($password, $acct);
+        } catch (UnauthorizedLoginAttemptException|MissingLoginCredentialsException $e) {
+            $this->getLogger()->warning($e->getMessage());
+            throw $e;
         }
-
-        // Look up user in Accounts table
-//        $acct = AccountQuery::create()->findOneByUsername($username);
-//        $q = new AccountQuery();
-        $q    = AccountQuery::create();
-        $acct = $q->findOneByUsername($username);
-        if ( ! $acct) {
-            // User not found
-            $note    = sprintf('Login denied: no account for user "%s"', $username);
-            $attempt = new LoginAttempt();
-            $attempt->setUsername($username);
-            $attempt->setAttemptedAt(time());
-            $attempt->setPass(0);
-            $attempt->setNote($note);
-            $attempt->save();
-            $this->getLogger()->info($note);
-            throw new UnauthorizedLoginAttemptException($note);
-        }
-        if ( ! password_verify($password, $acct->getPwhash())) {
-            // Wrong password
-            $note    = sprintf('Login denied: incorrect password for user "%s"', $username);
-            $attempt = new LoginAttempt();
-            $attempt->setUsername($username);
-            $attempt->setAttemptedAt(time());
-            $attempt->setPass(0);
-            $attempt->setNote($note);
-            $attempt->save();
-            $this->getLogger()->info($note);
-            throw new UnauthorizedLoginAttemptException($note);
-        }
-        // User authenticated
-        $this->getLogger()->info(sprintf('User "%s" successfully logged in', $username));
-        $attempt = new LoginAttempt();
-        $attempt->setUsername($username);
-        $attempt->setAttemptedAt(time());
-        $attempt->setPass(1);
-        $attempt->setNote('Authenticated');
-        $attempt->save();
-        $_SESSION['account'] = $acct;
-        if (empty($_POST['remember'])) {
-            // Clear any current auth cookie
-            setcookie("account_id", null, time() - 1);
-            setcookie("token", null, time() - 1);
-        } else {
-            // Mark any existing token as expired
-            $tokens = TokenQuery::create()->findByAccountId($acct->getId());
-            foreach ($tokens as $token) {
-                try {
-                    $token->delete();
-                } catch (Exception $e) {
-                    die($e->getMessage());
-                }
-            }
-
-            $expiration = time() + (30 * 24 * 60 * 60);  // for 1 month
-            setcookie("account_id", $acct->getId(), $expiration);
-            $random = getToken(32);
-            setcookie("token", $random, $expiration);
-
-            $token = new Token();
-            $token->setAccountId($acct->getId());
-            $token->setCookieHash(password_hash($random, PASSWORD_DEFAULT));
-            $token->setExpires(date("Y-m-d H:i:s", $expiration));
-            try {
-                $token->save();
-            } catch (Exception $e) {
-                die($e->getMessage());
-            }
-        }
+        $this->acceptUser($acct);
 
         return true;
     }
 
 
-    public function logout()
+    /**
+     * @return void
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     *
+     * Log user out
+     */
+    public function logout(): void
     {
         if (empty($_SESSION['account'])) {
             $this->getLogger()->warning('Unexpected logout without session');
@@ -251,7 +206,7 @@ class WebApp extends App
             $this->getLogger()->info(sprintf('User "%s" logged out', $acct->getUsername()));
 
             // Delete "remember me" tokens when user explicitly logs out
-            $tokens = TokenQuery::create()->findByAccountId($acct->getId());
+            $tokens = TokenAuthQuery::create()->findByAccountId($acct->getId());
             foreach ($tokens as $token) {
                 try {
                     $token->delete();
@@ -268,6 +223,123 @@ class WebApp extends App
     }
 
 
+    /**
+     * @param  string  $username
+     * @param  string  $password
+     *
+     * @return void
+     * @throws ContainerExceptionInterface
+     * @throws MissingLoginCredentialsException
+     * @throws NotFoundExceptionInterface
+     * @throws PropelException
+     *
+     * Validate that the provided username and password are not empty
+     */
+    private function validateCredentialsNonempty(string $username, string $password): void
+    {
+        if (empty($username) || empty($password)) {
+            $note    = 'Invalid login attempt: missing username or password';
+            $attempt = new LoginAttempt('', time(), 0, $note);
+            $attempt->save();
+            throw new MissingLoginCredentialsException($note);
+        }
+    }
+
+    /**
+     * @param  string  $password
+     * @param  Account  $acct
+     *
+     * @return void
+     * @throws PropelException
+     * @throws UnauthorizedLoginAttemptException
+     *
+     * Verify user credentials and log results
+     */
+    private function verify(string $password, Account $acct)
+    {
+        if ( ! password_verify($password, $acct->getPwhash())) {
+            // Wrong password
+            $note    = sprintf('Login denied: incorrect password for user "%s"', $acct->getUsername());
+            $attempt = new LoginAttempt($acct->getUsername(), time(), 0, $note);
+            $attempt->save();
+            throw new UnauthorizedLoginAttemptException($note);
+        }
+    }
+
+
+    /**
+     * @param  string  $username
+     *
+     * @return Account
+     * @throws UnauthorizedLoginAttemptException
+     * @throws PropelException
+     *
+     * Find the account by the specified username and log results
+     */
+    private function lookup(string $username): Account
+    {
+        if ( ! ($acct = AccountQuery::create()->findOneByUsername($username))) {
+            // User not found
+            $note    = sprintf('Login denied: no account for user "%s"', $username);
+            $attempt = new LoginAttempt($username, time(), 0, $note);
+            $attempt->save();
+            throw new UnauthorizedLoginAttemptException($note);
+        }
+
+        return $acct;
+    }
+
+
+    /**
+     * @param  Account  $acct
+     *
+     * @return void
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws PropelException
+     *
+     * Accept
+     */
+    private function acceptUser(Account $acct)
+    {
+        $_SESSION['account'] = $acct;
+        $this->getLogger()->info(sprintf('User "%s" successfully logged in', $acct->getUsername()));
+        $attempt = new LoginAttempt($acct->getUsername(), time(), 1, '');
+        $attempt->save();
+
+        if (empty($_POST['remember'])) {
+            // Clear any current auth cookie
+            setcookie("account_id", null, time() - 1);
+            setcookie("token", null, time() - 1);
+        } else {
+            // Mark any existing token as expired
+            $tokens = TokenAuthQuery::create()->findByAccountId($acct->getId());
+            foreach ($tokens as $token) {
+                try {
+                    $token->delete();
+                } catch (Exception $e) {
+                    die($e->getMessage());
+                }
+            }
+
+            $expiration = time() + (30 * 24 * 60 * 60);  // for 1 month
+            setcookie("account_id", $acct->getId(), $expiration);
+            $random = getToken(32);
+            setcookie("token", $random, $expiration);
+
+            $token = new TokenAuth();
+            $token->setAccountId($acct->getId());
+            $token->setCookieHash(password_hash($random, PASSWORD_DEFAULT));
+            $token->setExpires(date("Y-m-d H:i:s", $expiration));
+            try {
+                $token->save();
+            } catch (Exception $e) {
+                die($e->getMessage());
+            }
+        }
+    }
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Routing for Web App Pages
     ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -278,11 +350,12 @@ class WebApp extends App
         // Middleware to ensure user is logged in
         $isAuthenticated = function (Request $request, Response $response, $next) use ($web) {
             if (empty($_SESSION['account'])) {
+                // If this value is empty, then the user is not logged in.
                 // Check for "remember me" cookies, validate if found
                 // ref: https://phppot.com/php/secure-remember-me-for-login-using-php-session-and-cookies/
                 if ( ! empty($_COOKIE["account_id"]) && ! empty($_COOKIE["token"])) {
-                    $tokens = TokenQuery::create()->filterByAccountId($_COOKIE['account_id']);
-                    /** @var Token $token */
+                    $tokens = TokenAuthQuery::create()->filterByAccountId($_COOKIE['account_id']);
+                    /** @var TokenAuth $token */
                     foreach ($tokens as $token) {
                         if (password_verify($_COOKIE["token"], $token->getCookieHash()) && $token->getExpires() >= date(
                                 "Y-m-d H:i:s",
@@ -296,7 +369,7 @@ class WebApp extends App
             }
 
             if (empty($_SESSION['account'])) {
-                // Not authenticated: neither by session nor "remember me" cookies
+                // Still not authenticated, neither by session nor "remember me" cookies
                 return $response->withHeader('Location', '/login');
             }
 
@@ -342,7 +415,7 @@ class WebApp extends App
         /// Handle login form submission
         $this->post('/login', function (Request $request, Response $response, array $args) use ($web) {
             try {
-                $web->login($_POST['username'], $_POST['password']);
+                $web->authenticate($_POST['username'], $_POST['password']);
             } catch (MissingLoginCredentialsException $e) {
                 header('Content-Type: application/json');
                 die (
@@ -362,9 +435,9 @@ class WebApp extends App
             }
 
             header('Content-Type: application/json');
-            die(
+            exit(
             json_encode([
-                'Location' => $_POST['route']
+                'Location' => '/'
             ])
             );
         });
@@ -377,7 +450,7 @@ class WebApp extends App
 
             return $response
                 ->withStatus(301)
-                ->withHeader('Location', '/attend');
+                ->withHeader('Location', '/');
         });
 
 
