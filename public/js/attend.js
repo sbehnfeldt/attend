@@ -1,8 +1,8 @@
 ;(function ( global, $ ) {
     'use strict';
 
-    var loading  = 0;
-    var $loading = $( '#loading' );
+    let loading  = 0;
+    let $loading = $('#loading');
 
     global.Attend = global.Attend || {};
 

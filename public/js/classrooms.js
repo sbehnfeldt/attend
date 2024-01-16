@@ -1,8 +1,8 @@
 ;(function (global, $) {
     'use strict';
 
-    var ClassroomsTab = (function (selector) {
-        var $self,
+    let ClassroomsTab = (function (selector) {
+        let $self,
             table;
 
         $self = $(selector);
@@ -40,7 +40,7 @@
             ]
         });
 
-        var b0 = new $.fn.dataTable.Buttons(table, {
+        let b0 = new $.fn.dataTable.Buttons(table, {
             buttons: [{
                 "text": "New",
                 "action": function () {
@@ -98,7 +98,7 @@
         });
         b0.dom.container.eq(0).appendTo($self.find('.record-buttons'));
 
-        var b1 = new $.fn.dataTable.Buttons(table, {
+        let b1 = new $.fn.dataTable.Buttons(table, {
             "buttons": [{
                 "text": "Reload",
                 "action": function (e, dt) {
@@ -152,7 +152,7 @@
             "redrawRow": redrawRow,
             "deleteRow": deleteRow
         };
-    })('#classrooms-tab');
+    })('#classrooms');
 
     var ClassroomPropsDlg = (function (selector) {
         var $self,
@@ -336,8 +336,8 @@
         };
     })('#classroom-props-dlg');
 
-    $(function () {
-        $('#tabs').tabs().show();
-    });
+    // $(function () {
+    //     $('#tabs').tabs().show();
+    // });
 
 })(this, jQuery);

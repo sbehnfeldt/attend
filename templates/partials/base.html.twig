@@ -7,13 +7,14 @@
             {#        <link rel="stylesheet" type="text/css" href="css/jquery-ui.css"> #}
             {#        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> #}
             {#        <link rel="stylesheet" type="text/css" href="css/jquery.dataTables.min.css"> #}
-            {#        <link rel="stylesheet" type="text/css" #}
-            {#              href="https://cdn.datatables.net/buttons/1.6.1/css/buttons.dataTables.min.css"> #}
+            <link rel="stylesheet" type="text/css"
+                  href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
             {#        <link rel="stylesheet" type="text/css" href="css/reset.css"> #}
             {#        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet"> #}
             {#        <link rel="stylesheet" type="text/css" href="css/attend.css"> #}
             {#        <link rel="stylesheet" type="text/css" href="css/main.css"> #}
             {# <link rel="stylesheet" type="text/css" media="print" href="css/print.css"> #}
+            <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet">
             <link rel="stylesheet" href="/style.css">
         {% endblock %}
 
@@ -30,29 +31,26 @@
                 {#                </div> #}
                 <ul class="menu main-menu nav-menu" role="menu">
                     {% if perms.PAGE_ATTENDANCE %}
-                        <li class="menu-item"><a href="">Home</a></li>
-                    {% endif %}
-                    {% if perms.PAGE_ATTENDANCE %}
-                        <li class="menu-item"><a href="attendance">Attendance</a></li>
+                        {#                        <li class="menu-item"><a href="attendance">Attendance</a></li> #}
                     {% endif %}
                     {% if perms.PAGE_ENROLLMENT %}
-                        <li class="menu-item"><a href="enrollment">Enrollment</a></li>
+                        {#                        <li class="menu-item"><a href="enrollment">Enrollment</a></li> #}
                     {% endif %}
                     {% if perms.PAGE_CLASSROOMS %}
                         <li class="menu-item"><a href="classrooms">Classrooms</a></li>
                     {% endif %}
                     {% if perms.PAGE_ADMIN %}
-                        <li class="menu-item"><a href="admin">Admin</a></li>
+                        {#                        <li class="menu-item"><a href="admin">Admin</a></li> #}
                     {% endif %}
                     {% if perms.PAGE_PROFILE %}
-                        <li class="menu-item"><a href="profile">Profile</a></li>
+                        {#                        <li class="menu-item"><a href="profile">Profile</a></li> #}
                     {% endif %}
                     <li class="menu-item"><a href="logout">Logout</a></li>
                 </ul>
             </nav>
         </header>
 
-        <main class="container">
+        <main>
             <div id="loading">
                 <div id="loading-image"></div>
             </div>
@@ -60,14 +58,16 @@
         </main>
 
         {% block scripts %}
-            <script type="application/javascript" src="js/jquery-1.11.0.min.js"></script>
-            <script type="application/javascript" src="js/jquery-ui.js"></script>
-            <script type="application/javascript" src="js/jquery.dataTables.min.js"></script>
-            <script type="application/javascript" src="js/dataTables.buttons.min.js"></script>
-            <script type="application/javascript" src="js/dataTables.select.min.js"></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"
-                    integrity="sha256-usTqAE1ywvdMtksWzdeWzD75MsfJN0h0U7y2NtZL3N0=" crossorigin="anonymous"></script>
-            <script type="application/javascript" src="js/attend.js"></script>
+            <script type="application/javascript" src="//code.jquery.com/jquery-3.7.1.min.js"></script>
+            {#            <script type="application/javascript" src="js/jquery-ui.js"></script> #}
+            <script type="application/javascript"
+                    src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+            <script type="application/javascript"
+                    src="//cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+            {#            <script type="application/javascript" src="js/dataTables.select.min.js"></script> #}
+            {#            <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js" #}
+            {#                    integrity="sha256-usTqAE1ywvdMtksWzdeWzD75MsfJN0h0U7y2NtZL3N0=" crossorigin="anonymous"></script> #}
+            <script type="application/javascript" src="/js/attend.js"></script>
 
         {% endblock %}
     </body>

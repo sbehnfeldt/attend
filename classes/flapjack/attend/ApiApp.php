@@ -1,12 +1,8 @@
 <?php
-
-
 namespace flapjack\attend;
 
 
-use Attend\Database\Account;
-use Attend\Database\AccountQuery;
-use Attend\PropelEngine\PropelEngine;
+use flapjack\attend\PropelEngine\PropelEngine;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
