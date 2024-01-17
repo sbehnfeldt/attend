@@ -98,6 +98,7 @@
         });
         b0.dom.container.eq(0).appendTo($self.find('.record-buttons'));
 
+
         let b1 = new $.fn.dataTable.Buttons(table, {
             "buttons": [{
                 "text": "Reload",
@@ -154,8 +155,8 @@
         };
     })('#classrooms');
 
-    var ClassroomPropsDlg = (function (selector) {
-        var $self,
+    let ClassroomPropsDlg = (function (selector) {
+        let $self,
             $form,
             $classroomId,
             $label,
