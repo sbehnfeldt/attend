@@ -214,8 +214,8 @@ class ClassroomTableMap extends TableMap
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addColumn('label', 'Label', 'VARCHAR', true, 63, null);
         $this->addColumn('ordering', 'Ordering', 'INTEGER', true, null, null);
-        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', true, null, null);
-        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, null);
+        $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP');
+        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP');
     }
 
     /**
@@ -442,10 +442,9 @@ class ClassroomTableMap extends TableMap
      *
      * @param  Criteria  $criteria  Object containing the columns to remove.
      * @param  string|null  $alias  Optional table alias
-     *
-     * @return void
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     * @return void
      */
     public static function removeSelectColumns(Criteria $criteria, ?string $alias = null): void
     {
@@ -474,8 +473,7 @@ class ClassroomTableMap extends TableMap
     public static function getTableMap(): TableMap
     {
         return Propel::getServiceContainer()->getDatabaseMap(ClassroomTableMap::DATABASE_NAME)->getTable(
-            ClassroomTableMap::TABLE_NAME
-        );
+            ClassroomTableMap::TABLE_NAME);
     }
 
     /**

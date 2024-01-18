@@ -299,6 +299,7 @@ abstract class GroupMember implements ActiveRecordInterface
      * @param  \Propel\Runtime\Parser\AbstractParser|string  $parser  An AbstractParser instance, or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param  bool  $includeLazyLoadColumns  (optional) Whether to include lazy load(ed) columns. Defaults to TRUE.
      * @param  string  $keyType  (optional) One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME, TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM. Defaults to TableMap::TYPE_PHPNAME.
+     *
      * @return string The exported data
      */
     public function exportTo(
@@ -396,7 +397,7 @@ abstract class GroupMember implements ActiveRecordInterface
     public function setGroupId($v)
     {
         if ($v !== null) {
-            $v = (int)$v;
+            $v = (int) $v;
         }
 
         if ($this->group_id !== $v) {
@@ -420,7 +421,7 @@ abstract class GroupMember implements ActiveRecordInterface
     public function setAccountId($v)
     {
         if ($v !== null) {
-            $v = (int)$v;
+            $v = (int) $v;
         }
 
         if ($this->account_id !== $v) {
@@ -461,7 +462,7 @@ abstract class GroupMember implements ActiveRecordInterface
      * @param  int  $startcol  0-based offset column which indicates which resultset column to start with.
      * @param  bool  $rehydrate  Whether this object is being re-hydrated from the database.
      * @param  string  $indexType  The index type of $row. Mostly DataFetcher->getIndexType().
-    One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                            TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @return int next starting column
@@ -505,8 +506,7 @@ abstract class GroupMember implements ActiveRecordInterface
             return $startcol + 3; // 3 = GroupMemberTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(
-                sprintf('Error populating %s object', '\\flapjack\\attend\\database\\GroupMember'), 0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\flapjack\\attend\\database\\GroupMember'), 0, $e);
         }
     }
 
@@ -566,7 +566,7 @@ abstract class GroupMember implements ActiveRecordInterface
         )->find($con);
         $row         = $dataFetcher->fetch();
         $dataFetcher->close();
-        if (!$row) {
+        if ( ! $row) {
             throw new PropelException('Cannot find matching row in the database to reload object values.');
         }
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
@@ -726,21 +726,19 @@ abstract class GroupMember implements ActiveRecordInterface
     protected function doInsert(ConnectionInterface $con): void
     {
         $modifiedColumns = [];
-        $index           = 0;
+        $index = 0;
 
         $this->modifiedColumns[GroupMemberTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException(
-                'Cannot insert a value for auto-increment primary key (' . GroupMemberTableMap::COL_ID . ')'
-            );
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . GroupMemberTableMap::COL_ID . ')');
         }
 
         // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(GroupMemberTableMap::COL_ID)) {
-            $modifiedColumns[':p' . $index++] = 'id';
+            $modifiedColumns[':p' . $index++]  = 'id';
         }
         if ($this->isColumnModified(GroupMemberTableMap::COL_GROUP_ID)) {
-            $modifiedColumns[':p' . $index++] = 'group_id';
+            $modifiedColumns[':p' . $index++]  = 'group_id';
         }
         if ($this->isColumnModified(GroupMemberTableMap::COL_ACCOUNT_ID)) {
             $modifiedColumns[':p' . $index++] = 'account_id';
@@ -882,6 +880,7 @@ abstract class GroupMember implements ActiveRecordInterface
 
         if ($includeForeignObjects) {
             if (null !== $this->aGroup) {
+
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'group';
@@ -896,6 +895,7 @@ abstract class GroupMember implements ActiveRecordInterface
                 $result[$key] = $this->aGroup->toArray($keyType, $includeLazyLoadColumns, $alreadyDumpedObjects, true);
             }
             if (null !== $this->aAccount) {
+
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'account';
@@ -907,12 +907,7 @@ abstract class GroupMember implements ActiveRecordInterface
                         $key = 'Account';
                 }
 
-                $result[$key] = $this->aAccount->toArray(
-                    $keyType,
-                    $includeLazyLoadColumns,
-                    $alreadyDumpedObjects,
-                    true
-                );
+                $result[$key] = $this->aAccount->toArray($keyType, $includeLazyLoadColumns, $alreadyDumpedObjects, true);
             }
         }
 
@@ -999,25 +994,25 @@ abstract class GroupMember implements ActiveRecordInterface
         return $this;
     }
 
-     /**
+    /**
      * Populate the current object from a string, using a given parser format
      * <code>
      * $book = new Book();
      * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
      * </code>
-      *
-      * You can specify the key type of the array by additionally passing one
-      * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
-      * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
-      * The default key type is the column's TableMap::TYPE_PHPNAME.
-      *
-      * @param  mixed  $parser  A AbstractParser instance,
-      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
-      * @param  string  $data  The source data to import from
-      * @param  string  $keyType  The type of keys the array uses.
-      *
-      * @return $this The current object, for fluid interface
-      */
+     *
+     * You can specify the key type of the array by additionally passing one
+     * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
+     * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
+     * The default key type is the column's TableMap::TYPE_PHPNAME.
+     *
+     * @param  mixed  $parser  A AbstractParser instance,
+     *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
+     * @param  string  $data  The source data to import from
+     * @param  string  $keyType  The type of keys the array uses.
+     *
+     * @return $this The current object, for fluid interface
+     */
     public function importFrom($parser, string $data, string $keyType = TableMap::TYPE_PHPNAME)
     {
         if ( ! $parser instanceof AbstractParser) {
@@ -1169,14 +1164,13 @@ abstract class GroupMember implements ActiveRecordInterface
      * Declares an association between this object and a ChildGroup object.
      *
      * @param  ChildGroup  $v
-     *
      * @return $this The current object (for fluent API support)
      * @throws \Propel\Runtime\Exception\PropelException
      */
     public function setGroup(ChildGroup $v = null)
     {
         if ($v === null) {
-            $this->setGroupId(null);
+            $this->setGroupId(NULL);
         } else {
             $this->setGroupId($v->getId());
         }
@@ -1198,7 +1192,6 @@ abstract class GroupMember implements ActiveRecordInterface
      * Get the associated ChildGroup object
      *
      * @param  ConnectionInterface  $con  Optional Connection object.
-     *
      * @return ChildGroup The associated ChildGroup object.
      * @throws \Propel\Runtime\Exception\PropelException
      */
@@ -1222,14 +1215,13 @@ abstract class GroupMember implements ActiveRecordInterface
      * Declares an association between this object and a ChildAccount object.
      *
      * @param  ChildAccount  $v
-     *
      * @return $this The current object (for fluent API support)
      * @throws \Propel\Runtime\Exception\PropelException
      */
     public function setAccount(ChildAccount $v = null)
     {
         if ($v === null) {
-            $this->setAccountId(null);
+            $this->setAccountId(NULL);
         } else {
             $this->setAccountId($v->getId());
         }
@@ -1251,7 +1243,6 @@ abstract class GroupMember implements ActiveRecordInterface
      * Get the associated ChildAccount object
      *
      * @param  ConnectionInterface  $con  Optional Connection object.
-     *
      * @return ChildAccount The associated ChildAccount object.
      * @throws \Propel\Runtime\Exception\PropelException
      */

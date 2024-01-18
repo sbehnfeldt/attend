@@ -342,6 +342,7 @@ abstract class Student implements ActiveRecordInterface
      * @param  \Propel\Runtime\Parser\AbstractParser|string  $parser  An AbstractParser instance, or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param  bool  $includeLazyLoadColumns  (optional) Whether to include lazy load(ed) columns. Defaults to TRUE.
      * @param  string  $keyType  (optional) One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME, TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM. Defaults to TableMap::TYPE_PHPNAME.
+     *
      * @return string The exported data
      */
     public function exportTo(
@@ -516,7 +517,7 @@ abstract class Student implements ActiveRecordInterface
             if (is_string($v)) {
                 $v = in_array(strtolower($v), array('false', 'off', '-', 'no', 'n', '0', '')) ? false : true;
             } else {
-                $v = (boolean)$v;
+                $v = (boolean) $v;
             }
         }
 
@@ -578,7 +579,7 @@ abstract class Student implements ActiveRecordInterface
      * @param  int  $startcol  0-based offset column which indicates which resultset column to start with.
      * @param  bool  $rehydrate  Whether this object is being re-hydrated from the database.
      * @param  string  $indexType  The index type of $row. Mostly DataFetcher->getIndexType().
-    One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                            TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @return int next starting column
@@ -636,9 +637,7 @@ abstract class Student implements ActiveRecordInterface
             return $startcol + 5; // 5 = StudentTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(
-                sprintf('Error populating %s object', '\\flapjack\\attend\\database\\Student'),
-                0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\flapjack\\attend\\database\\Student'), 0, $e);
         }
     }
 
@@ -883,18 +882,16 @@ abstract class Student implements ActiveRecordInterface
     protected function doInsert(ConnectionInterface $con): void
     {
         $modifiedColumns = [];
-        $index           = 0;
+        $index = 0;
 
         $this->modifiedColumns[StudentTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException(
-                'Cannot insert a value for auto-increment primary key (' . StudentTableMap::COL_ID . ')'
-            );
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . StudentTableMap::COL_ID . ')');
         }
 
         // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(StudentTableMap::COL_ID)) {
-            $modifiedColumns[':p' . $index++] = 'id';
+            $modifiedColumns[':p' . $index++]  = 'id';
         }
         if ($this->isColumnModified(StudentTableMap::COL_FAMILY_NAME)) {
             $modifiedColumns[':p' . $index++] = 'family_name';
@@ -903,7 +900,7 @@ abstract class Student implements ActiveRecordInterface
             $modifiedColumns[':p' . $index++] = 'first_name';
         }
         if ($this->isColumnModified(StudentTableMap::COL_ENROLLED)) {
-            $modifiedColumns[':p' . $index++] = 'enrolled';
+            $modifiedColumns[':p' . $index++]  = 'enrolled';
         }
         if ($this->isColumnModified(StudentTableMap::COL_CLASSROOM_ID)) {
             $modifiedColumns[':p' . $index++] = 'classroom_id';
@@ -1205,25 +1202,25 @@ abstract class Student implements ActiveRecordInterface
         return $this;
     }
 
-     /**
+    /**
      * Populate the current object from a string, using a given parser format
      * <code>
      * $book = new Book();
      * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
      * </code>
-      *
-      * You can specify the key type of the array by additionally passing one
-      * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
-      * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
-      * The default key type is the column's TableMap::TYPE_PHPNAME.
-      *
-      * @param  mixed  $parser  A AbstractParser instance,
-      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
-      * @param  string  $data  The source data to import from
-      * @param  string  $keyType  The type of keys the array uses.
-      *
-      * @return $this The current object, for fluid interface
-      */
+     *
+     * You can specify the key type of the array by additionally passing one
+     * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
+     * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
+     * The default key type is the column's TableMap::TYPE_PHPNAME.
+     *
+     * @param  mixed  $parser  A AbstractParser instance,
+     *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
+     * @param  string  $data  The source data to import from
+     * @param  string  $keyType  The type of keys the array uses.
+     *
+     * @return $this The current object, for fluid interface
+     */
     public function importFrom($parser, string $data, string $keyType = TableMap::TYPE_PHPNAME)
     {
         if ( ! $parser instanceof AbstractParser) {
@@ -1463,12 +1460,10 @@ abstract class Student implements ActiveRecordInterface
     {
         if ('Attendance' === $relationName) {
             $this->initAttendances();
-
             return;
         }
         if ('Schedule' === $relationName) {
             $this->initSchedules();
-
             return;
         }
     }
@@ -1540,7 +1535,7 @@ abstract class Student implements ActiveRecordInterface
      */
     public function getAttendances(?Criteria $criteria = null, ?ConnectionInterface $con = null)
     {
-        $partial = $this->collAttendancesPartial && ! $this->isNew();
+        $partial = $this->collAttendancesPartial && !$this->isNew();
         if (null === $this->collAttendances || null !== $criteria || $partial) {
             if ($this->isNew()) {
                 // return empty collection
@@ -1630,6 +1625,7 @@ abstract class Student implements ActiveRecordInterface
      * @param  Criteria  $criteria
      * @param  bool  $distinct
      * @param  ConnectionInterface  $con
+     *
      * @return int Count of related Attendance objects.
      * @throws \Propel\Runtime\Exception\PropelException
      */
@@ -1782,7 +1778,7 @@ abstract class Student implements ActiveRecordInterface
      */
     public function getSchedules(?Criteria $criteria = null, ?ConnectionInterface $con = null)
     {
-        $partial = $this->collSchedulesPartial && ! $this->isNew();
+        $partial = $this->collSchedulesPartial && !$this->isNew();
         if (null === $this->collSchedules || null !== $criteria || $partial) {
             if ($this->isNew()) {
                 // return empty collection
@@ -1872,6 +1868,7 @@ abstract class Student implements ActiveRecordInterface
      * @param  Criteria  $criteria
      * @param  bool  $distinct
      * @param  ConnectionInterface  $con
+     *
      * @return int Count of related Schedule objects.
      * @throws \Propel\Runtime\Exception\PropelException
      */
@@ -2010,7 +2007,6 @@ abstract class Student implements ActiveRecordInterface
         $this->collAttendances = null;
         $this->collSchedules = null;
         $this->aClassroom = null;
-
         return $this;
     }
 
@@ -2026,7 +2022,7 @@ abstract class Student implements ActiveRecordInterface
 
     /**
      * Code to be run before persisting the object
-     * @param  ConnectionInterface|null  $con
+     * @param  ConnectionInterface|null $con
      * @return bool
      */
     public function preSave(?ConnectionInterface $con = null): bool
@@ -2036,7 +2032,7 @@ abstract class Student implements ActiveRecordInterface
 
     /**
      * Code to be run after persisting the object
-     * @param  ConnectionInterface|null  $con
+     * @param  ConnectionInterface|null $con
      * @return void
      */
     public function postSave(?ConnectionInterface $con = null): void
@@ -2045,7 +2041,7 @@ abstract class Student implements ActiveRecordInterface
 
     /**
      * Code to be run before inserting to database
-     * @param  ConnectionInterface|null  $con
+     * @param  ConnectionInterface|null $con
      * @return bool
      */
     public function preInsert(?ConnectionInterface $con = null): bool
@@ -2055,7 +2051,7 @@ abstract class Student implements ActiveRecordInterface
 
     /**
      * Code to be run after inserting to database
-     * @param  ConnectionInterface|null  $con
+     * @param  ConnectionInterface|null $con
      * @return void
      */
     public function postInsert(?ConnectionInterface $con = null): void
@@ -2064,7 +2060,7 @@ abstract class Student implements ActiveRecordInterface
 
     /**
      * Code to be run before updating the object in database
-     * @param  ConnectionInterface|null  $con
+     * @param  ConnectionInterface|null $con
      * @return bool
      */
     public function preUpdate(?ConnectionInterface $con = null): bool
@@ -2074,7 +2070,7 @@ abstract class Student implements ActiveRecordInterface
 
     /**
      * Code to be run after updating the object in database
-     * @param  ConnectionInterface|null  $con
+     * @param  ConnectionInterface|null $con
      * @return void
      */
     public function postUpdate(?ConnectionInterface $con = null): void
@@ -2083,7 +2079,7 @@ abstract class Student implements ActiveRecordInterface
 
     /**
      * Code to be run before deleting the object in database
-     * @param  ConnectionInterface|null  $con
+     * @param  ConnectionInterface|null $con
      * @return bool
      */
     public function preDelete(?ConnectionInterface $con = null): bool
@@ -2093,7 +2089,7 @@ abstract class Student implements ActiveRecordInterface
 
     /**
      * Code to be run after deleting the object in database
-     * @param  ConnectionInterface|null  $con
+     * @param  ConnectionInterface|null $con
      * @return void
      */
     public function postDelete(?ConnectionInterface $con = null): void

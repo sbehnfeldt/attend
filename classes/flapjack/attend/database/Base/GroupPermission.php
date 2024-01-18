@@ -176,9 +176,7 @@ abstract class GroupPermission implements ActiveRecordInterface
 
     /**
      * Specify whether this object has been deleted.
-     *
      * @param  bool  $b  The deleted state of this object.
-     *
      * @return void
      */
     public function setDeleted(bool $b): void
@@ -188,9 +186,7 @@ abstract class GroupPermission implements ActiveRecordInterface
 
     /**
      * Sets the modified state for the object to be false.
-     *
      * @param  string  $col  If supplied, only the specified column is reset.
-     *
      * @return void
      */
     public function resetModified(?string $col = null): void
@@ -208,7 +204,6 @@ abstract class GroupPermission implements ActiveRecordInterface
      * <code>equals(GroupPermission)</code>.  Otherwise, returns <code>false</code>.
      *
      * @param  mixed  $obj  The object to compare to.
-     *
      * @return bool Whether equal to the object specified.
      */
     public function equals($obj): bool
@@ -242,7 +237,6 @@ abstract class GroupPermission implements ActiveRecordInterface
      * Checks the existence of a virtual column in this object
      *
      * @param  string  $name  The virtual column name
-     *
      * @return bool
      */
     public function hasVirtualColumn(string $name): bool
@@ -254,7 +248,6 @@ abstract class GroupPermission implements ActiveRecordInterface
      * Get the value of a virtual column in this object
      *
      * @param  string  $name  The virtual column name
-     *
      * @return mixed
      *
      * @throws \Propel\Runtime\Exception\PropelException
@@ -288,7 +281,6 @@ abstract class GroupPermission implements ActiveRecordInterface
      *
      * @param  string  $msg
      * @param  int  $priority  One of the Propel::LOG_* logging levels
-     *
      * @return void
      */
     protected function log(string $msg, int $priority = Propel::LOG_INFO): void
@@ -380,13 +372,12 @@ abstract class GroupPermission implements ActiveRecordInterface
      * Set the value of [id] column.
      *
      * @param  int  $v  New value
-     *
      * @return $this The current object (for fluent API support)
      */
     public function setId($v)
     {
         if ($v !== null) {
-            $v = (int)$v;
+            $v = (int) $v;
         }
 
         if ($this->id !== $v) {
@@ -401,13 +392,12 @@ abstract class GroupPermission implements ActiveRecordInterface
      * Set the value of [group_id] column.
      *
      * @param  int  $v  New value
-     *
      * @return $this The current object (for fluent API support)
      */
     public function setGroupId($v)
     {
         if ($v !== null) {
-            $v = (int)$v;
+            $v = (int) $v;
         }
 
         if ($this->group_id !== $v) {
@@ -426,13 +416,12 @@ abstract class GroupPermission implements ActiveRecordInterface
      * Set the value of [permission_id] column.
      *
      * @param  int  $v  New value
-     *
      * @return $this The current object (for fluent API support)
      */
     public function setPermissionId($v)
     {
         if ($v !== null) {
-            $v = (int)$v;
+            $v = (int) $v;
         }
 
         if ($this->permission_id !== $v) {
@@ -518,8 +507,7 @@ abstract class GroupPermission implements ActiveRecordInterface
 
         } catch (Exception $e) {
             throw new PropelException(
-                sprintf('Error populating %s object', '\\flapjack\\attend\\database\\GroupPermission'), 0, $e
-            );
+                sprintf('Error populating %s object', '\\flapjack\\attend\\database\\GroupPermission'), 0, $e);
         }
     }
 
@@ -554,7 +542,6 @@ abstract class GroupPermission implements ActiveRecordInterface
      *
      * @param  bool  $deep  (optional) Whether to also de-associated any related objects.
      * @param  ConnectionInterface  $con  (optional) The ConnectionInterface connection to use.
-     *
      * @return void
      * @throws \Propel\Runtime\Exception\PropelException - if this object is deleted, unsaved or doesn't have pk match in db
      */
@@ -596,7 +583,6 @@ abstract class GroupPermission implements ActiveRecordInterface
      * Removes this object from datastore and sets delete attribute.
      *
      * @param  ConnectionInterface  $con
-     *
      * @return void
      * @throws \Propel\Runtime\Exception\PropelException
      * @see GroupPermission::setDeleted()
@@ -633,7 +619,6 @@ abstract class GroupPermission implements ActiveRecordInterface
      * single transaction.
      *
      * @param  ConnectionInterface  $con
-     *
      * @return int The number of rows affected by this insert/update and any referring fk objects' save() operations.
      * @throws \Propel\Runtime\Exception\PropelException
      * @see doSave()
@@ -684,7 +669,6 @@ abstract class GroupPermission implements ActiveRecordInterface
      * All related objects are also updated in this method.
      *
      * @param  ConnectionInterface  $con
-     *
      * @return int The number of rows affected by this insert/update and any referring fk objects' save() operations.
      * @throws \Propel\Runtime\Exception\PropelException
      * @see save()
@@ -726,6 +710,7 @@ abstract class GroupPermission implements ActiveRecordInterface
             }
 
             $this->alreadyInSave = false;
+
         }
 
         return $affectedRows;
@@ -742,21 +727,20 @@ abstract class GroupPermission implements ActiveRecordInterface
     protected function doInsert(ConnectionInterface $con): void
     {
         $modifiedColumns = [];
-        $index           = 0;
+        $index = 0;
 
         $this->modifiedColumns[GroupPermissionTableMap::COL_ID] = true;
         if (null !== $this->id) {
             throw new PropelException(
-                'Cannot insert a value for auto-increment primary key (' . GroupPermissionTableMap::COL_ID . ')'
-            );
+                'Cannot insert a value for auto-increment primary key (' . GroupPermissionTableMap::COL_ID . ')');
         }
 
         // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(GroupPermissionTableMap::COL_ID)) {
-            $modifiedColumns[':p' . $index++] = 'id';
+            $modifiedColumns[':p' . $index++]  = 'id';
         }
         if ($this->isColumnModified(GroupPermissionTableMap::COL_GROUP_ID)) {
-            $modifiedColumns[':p' . $index++] = 'group_id';
+            $modifiedColumns[':p' . $index++]  = 'group_id';
         }
         if ($this->isColumnModified(GroupPermissionTableMap::COL_PERMISSION_ID)) {
             $modifiedColumns[':p' . $index++] = 'permission_id';
@@ -826,7 +810,6 @@ abstract class GroupPermission implements ActiveRecordInterface
      *                     one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                     TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                     Defaults to TableMap::TYPE_PHPNAME.
-     *
      * @return mixed Value of field.
      */
     public function getByName(string $name, string $type = TableMap::TYPE_PHPNAME)
@@ -842,7 +825,6 @@ abstract class GroupPermission implements ActiveRecordInterface
      * Zero-based.
      *
      * @param  int  $pos  Position in XML schema
-     *
      * @return mixed Value of field at $pos
      */
     public function getByPosition(int $pos)
@@ -900,6 +882,7 @@ abstract class GroupPermission implements ActiveRecordInterface
 
         if ($includeForeignObjects) {
             if (null !== $this->aGroup) {
+
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'group';
@@ -914,6 +897,7 @@ abstract class GroupPermission implements ActiveRecordInterface
                 $result[$key] = $this->aGroup->toArray($keyType, $includeLazyLoadColumns, $alreadyDumpedObjects, true);
             }
             if (null !== $this->aPermission) {
+
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'permission';
@@ -928,9 +912,7 @@ abstract class GroupPermission implements ActiveRecordInterface
                 $result[$key] = $this->aPermission->toArray(
                     $keyType,
                     $includeLazyLoadColumns,
-                    $alreadyDumpedObjects,
-                    true
-                );
+                    $alreadyDumpedObjects, true);
             }
         }
 
@@ -946,7 +928,6 @@ abstract class GroupPermission implements ActiveRecordInterface
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
-     *
      * @return $this
      */
     public function setByName(string $name, $value, string $type = TableMap::TYPE_PHPNAME)
@@ -964,7 +945,6 @@ abstract class GroupPermission implements ActiveRecordInterface
      *
      * @param  int  $pos  position in xml schema
      * @param  mixed  $value  field value
-     *
      * @return $this
      */
     public function setByPosition(int $pos, $value)
@@ -1019,24 +999,24 @@ abstract class GroupPermission implements ActiveRecordInterface
         return $this;
     }
 
-    /**
+     /**
      * Populate the current object from a string, using a given parser format
-     * <code>
-     * $book = new Book();
-     * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
-     * </code>
-     *
-     * You can specify the key type of the array by additionally passing one
-     * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
-     * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
-     * The default key type is the column's TableMap::TYPE_PHPNAME.
-     *
-     * @param  mixed  $parser  A AbstractParser instance,
-     *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
-     * @param  string  $data  The source data to import from
-     * @param  string  $keyType  The type of keys the array uses.
-     *
-     * @return $this The current object, for fluid interface
+      * <code>
+      * $book = new Book();
+      * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
+      * </code>
+      *
+      * You can specify the key type of the array by additionally passing one
+      * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
+      * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
+      * The default key type is the column's TableMap::TYPE_PHPNAME.
+      *
+      * @param  mixed  $parser  A AbstractParser instance,
+      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
+      * @param  string  $data  The source data to import from
+      * @param  string  $keyType  The type of keys the array uses.
+      *
+      * @return $this The current object, for fluid interface
      */
     public function importFrom($parser, string $data, string $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1077,9 +1057,9 @@ abstract class GroupPermission implements ActiveRecordInterface
      * Unlike buildCriteria() this method includes the primary key values regardless
      * of whether they have been modified.
      *
-     * @return \Propel\Runtime\ActiveQuery\Criteria The Criteria object containing value(s) for primary key(s).
      * @throws LogicException if no primary key is defined
      *
+     * @return \Propel\Runtime\ActiveQuery\Criteria The Criteria object containing value(s) for primary key(s).
      */
     public function buildPkeyCriteria(): Criteria
     {
@@ -1100,7 +1080,7 @@ abstract class GroupPermission implements ActiveRecordInterface
         $validPk = null !== $this->getId();
 
         $validPrimaryKeyFKs = 0;
-        $primaryKeyFKs      = [];
+        $primaryKeyFKs = [];
 
         if ($validPk) {
             return crc32(json_encode($this->getPrimaryKey(), JSON_UNESCAPED_UNICODE));
@@ -1124,7 +1104,6 @@ abstract class GroupPermission implements ActiveRecordInterface
      * Generic method to set the primary key (id column).
      *
      * @param  int|null  $key  Primary key.
-     *
      * @return void
      */
     public function setPrimaryKey(?int $key = null): void
@@ -1151,9 +1130,8 @@ abstract class GroupPermission implements ActiveRecordInterface
      * @param  object  $copyObj  An object of \flapjack\attend\database\GroupPermission (or compatible) type.
      * @param  bool  $deepCopy  Whether to also copy all rows that refer (by fkey) to the current row.
      * @param  bool  $makeNew  Whether to reset autoincrement PKs and make the object new.
-     *
-     * @return void
      * @throws \Propel\Runtime\Exception\PropelException
+     * @return void
      */
     public function copyInto(object $copyObj, bool $deepCopy = false, bool $makeNew = true): void
     {
@@ -1174,7 +1152,6 @@ abstract class GroupPermission implements ActiveRecordInterface
      * objects.
      *
      * @param  bool  $deepCopy  Whether to also copy all rows that refer (by fkey) to the current row.
-     *
      * @return \flapjack\attend\database\GroupPermission Clone of current object.
      * @throws \Propel\Runtime\Exception\PropelException
      */
@@ -1192,14 +1169,13 @@ abstract class GroupPermission implements ActiveRecordInterface
      * Declares an association between this object and a ChildGroup object.
      *
      * @param  ChildGroup  $v
-     *
      * @return $this The current object (for fluent API support)
      * @throws \Propel\Runtime\Exception\PropelException
      */
     public function setGroup(ChildGroup $v = null)
     {
         if ($v === null) {
-            $this->setGroupId(null);
+            $this->setGroupId(NULL);
         } else {
             $this->setGroupId($v->getId());
         }
@@ -1221,7 +1197,6 @@ abstract class GroupPermission implements ActiveRecordInterface
      * Get the associated ChildGroup object
      *
      * @param  ConnectionInterface  $con  Optional Connection object.
-     *
      * @return ChildGroup The associated ChildGroup object.
      * @throws \Propel\Runtime\Exception\PropelException
      */
@@ -1245,14 +1220,13 @@ abstract class GroupPermission implements ActiveRecordInterface
      * Declares an association between this object and a ChildPermission object.
      *
      * @param  ChildPermission  $v
-     *
      * @return $this The current object (for fluent API support)
      * @throws \Propel\Runtime\Exception\PropelException
      */
     public function setPermission(ChildPermission $v = null)
     {
         if ($v === null) {
-            $this->setPermissionId(null);
+            $this->setPermissionId(NULL);
         } else {
             $this->setPermissionId($v->getId());
         }
@@ -1274,7 +1248,6 @@ abstract class GroupPermission implements ActiveRecordInterface
      * Get the associated ChildPermission object
      *
      * @param  ConnectionInterface  $con  Optional Connection object.
-     *
      * @return ChildPermission The associated ChildPermission object.
      * @throws \Propel\Runtime\Exception\PropelException
      */
@@ -1328,7 +1301,6 @@ abstract class GroupPermission implements ActiveRecordInterface
      * Necessary for object serialisation.
      *
      * @param  bool  $deep  Whether to also clear the references on all referrer objects.
-     *
      * @return $this
      */
     public function clearAllReferences(bool $deep = false)
@@ -1338,7 +1310,6 @@ abstract class GroupPermission implements ActiveRecordInterface
 
         $this->aGroup      = null;
         $this->aPermission = null;
-
         return $this;
     }
 
@@ -1354,9 +1325,7 @@ abstract class GroupPermission implements ActiveRecordInterface
 
     /**
      * Code to be run before persisting the object
-     *
      * @param  ConnectionInterface|null  $con
-     *
      * @return bool
      */
     public function preSave(?ConnectionInterface $con = null): bool
@@ -1366,9 +1335,7 @@ abstract class GroupPermission implements ActiveRecordInterface
 
     /**
      * Code to be run after persisting the object
-     *
      * @param  ConnectionInterface|null  $con
-     *
      * @return void
      */
     public function postSave(?ConnectionInterface $con = null): void
@@ -1377,9 +1344,7 @@ abstract class GroupPermission implements ActiveRecordInterface
 
     /**
      * Code to be run before inserting to database
-     *
      * @param  ConnectionInterface|null  $con
-     *
      * @return bool
      */
     public function preInsert(?ConnectionInterface $con = null): bool
@@ -1389,9 +1354,7 @@ abstract class GroupPermission implements ActiveRecordInterface
 
     /**
      * Code to be run after inserting to database
-     *
      * @param  ConnectionInterface|null  $con
-     *
      * @return void
      */
     public function postInsert(?ConnectionInterface $con = null): void
@@ -1400,9 +1363,7 @@ abstract class GroupPermission implements ActiveRecordInterface
 
     /**
      * Code to be run before updating the object in database
-     *
      * @param  ConnectionInterface|null  $con
-     *
      * @return bool
      */
     public function preUpdate(?ConnectionInterface $con = null): bool
@@ -1412,9 +1373,7 @@ abstract class GroupPermission implements ActiveRecordInterface
 
     /**
      * Code to be run after updating the object in database
-     *
      * @param  ConnectionInterface|null  $con
-     *
      * @return void
      */
     public function postUpdate(?ConnectionInterface $con = null): void
@@ -1423,9 +1382,7 @@ abstract class GroupPermission implements ActiveRecordInterface
 
     /**
      * Code to be run before deleting the object in database
-     *
      * @param  ConnectionInterface|null  $con
-     *
      * @return bool
      */
     public function preDelete(?ConnectionInterface $con = null): bool
@@ -1435,9 +1392,7 @@ abstract class GroupPermission implements ActiveRecordInterface
 
     /**
      * Code to be run after deleting the object in database
-     *
      * @param  ConnectionInterface|null  $con
-     *
      * @return void
      */
     public function postDelete(?ConnectionInterface $con = null): void

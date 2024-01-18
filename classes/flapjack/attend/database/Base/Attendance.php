@@ -301,6 +301,7 @@ abstract class Attendance implements ActiveRecordInterface
      * @param  \Propel\Runtime\Parser\AbstractParser|string  $parser  An AbstractParser instance, or a format name ('XML', 'YAML', 'JSON', 'CSV')
      * @param  bool  $includeLazyLoadColumns  (optional) Whether to include lazy load(ed) columns. Defaults to TRUE.
      * @param  string  $keyType  (optional) One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME, TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM. Defaults to TableMap::TYPE_PHPNAME.
+     *
      * @return string The exported data
      */
     public function exportTo(
@@ -517,7 +518,7 @@ abstract class Attendance implements ActiveRecordInterface
      * @param  int  $startcol  0-based offset column which indicates which resultset column to start with.
      * @param  bool  $rehydrate  Whether this object is being re-hydrated from the database.
      * @param  string  $indexType  The index type of $row. Mostly DataFetcher->getIndexType().
-    One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                            TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @return int next starting column
@@ -574,9 +575,7 @@ abstract class Attendance implements ActiveRecordInterface
             return $startcol + 4; // 4 = AttendanceTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException(
-                sprintf('Error populating %s object', '\\flapjack\\attend\\database\\Attendance'),
-                0, $e);
+            throw new PropelException(sprintf('Error populating %s object', '\\flapjack\\attend\\database\\Attendance'), 0, $e);
         }
     }
 
@@ -628,7 +627,9 @@ abstract class Attendance implements ActiveRecordInterface
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildAttendanceQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $dataFetcher = ChildAttendanceQuery::create(null, $this->buildPkeyCriteria())->setFormatter(
+            ModelCriteria::FORMAT_STATEMENT
+        )->find($con);
         $row         = $dataFetcher->fetch();
         $dataFetcher->close();
         if (!$row) {
@@ -766,6 +767,7 @@ abstract class Attendance implements ActiveRecordInterface
             }
 
             $this->alreadyInSave = false;
+
         }
 
         return $affectedRows;
@@ -782,27 +784,25 @@ abstract class Attendance implements ActiveRecordInterface
     protected function doInsert(ConnectionInterface $con): void
     {
         $modifiedColumns = [];
-        $index           = 0;
+        $index = 0;
 
         $this->modifiedColumns[AttendanceTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException(
-                'Cannot insert a value for auto-increment primary key (' . AttendanceTableMap::COL_ID . ')'
-            );
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . AttendanceTableMap::COL_ID . ')');
         }
 
         // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(AttendanceTableMap::COL_ID)) {
-            $modifiedColumns[':p' . $index++] = 'id';
+            $modifiedColumns[':p' . $index++]  = 'id';
         }
         if ($this->isColumnModified(AttendanceTableMap::COL_STUDENT_ID)) {
             $modifiedColumns[':p' . $index++] = 'student_id';
         }
         if ($this->isColumnModified(AttendanceTableMap::COL_CHECK_IN)) {
-            $modifiedColumns[':p' . $index++] = 'check_in';
+            $modifiedColumns[':p' . $index++]  = 'check_in';
         }
         if ($this->isColumnModified(AttendanceTableMap::COL_CHECK_OUT)) {
-            $modifiedColumns[':p' . $index++] = 'check_out';
+            $modifiedColumns[':p' . $index++]  = 'check_out';
         }
 
         $sql = sprintf(
@@ -827,16 +827,14 @@ abstract class Attendance implements ActiveRecordInterface
                         $stmt->bindValue(
                             $identifier,
                             $this->check_in ? $this->check_in->format("Y-m-d H:i:s.u") : null,
-                            PDO::PARAM_STR
-                        );
+                            PDO::PARAM_STR);
 
                         break;
                     case 'check_out':
                         $stmt->bindValue(
                             $identifier,
                             $this->check_out ? $this->check_out->format("Y-m-d H:i:s.u") : null,
-                            PDO::PARAM_STR
-                        );
+                            PDO::PARAM_STR);
 
                         break;
                 }
@@ -965,6 +963,7 @@ abstract class Attendance implements ActiveRecordInterface
 
         if ($includeForeignObjects) {
             if (null !== $this->aStudent) {
+
                 switch ($keyType) {
                     case TableMap::TYPE_CAMELNAME:
                         $key = 'student';
@@ -1069,24 +1068,24 @@ abstract class Attendance implements ActiveRecordInterface
         return $this;
     }
 
-    /**
+     /**
      * Populate the current object from a string, using a given parser format
-     * <code>
-     * $book = new Book();
-     * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
-     * </code>
-     *
-     * You can specify the key type of the array by additionally passing one
-     * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
-     * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
-     * The default key type is the column's TableMap::TYPE_PHPNAME.
-     *
-     * @param  mixed  $parser  A AbstractParser instance,
-     *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
-     * @param  string  $data  The source data to import from
-     * @param  string  $keyType  The type of keys the array uses.
-     *
-     * @return $this The current object, for fluid interface
+      * <code>
+      * $book = new Book();
+      * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
+      * </code>
+      *
+      * You can specify the key type of the array by additionally passing one
+      * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
+      * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
+      * The default key type is the column's TableMap::TYPE_PHPNAME.
+      *
+      * @param  mixed  $parser  A AbstractParser instance,
+      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
+      * @param  string  $data  The source data to import from
+      * @param  string  $keyType  The type of keys the array uses.
+      *
+      * @return $this The current object, for fluid interface
      */
     public function importFrom($parser, string $data, string $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1153,7 +1152,7 @@ abstract class Attendance implements ActiveRecordInterface
         $validPk = null !== $this->getId();
 
         $validPrimaryKeyFKs = 0;
-        $primaryKeyFKs      = [];
+        $primaryKeyFKs = [];
 
         if ($validPk) {
             return crc32(json_encode($this->getPrimaryKey(), JSON_UNESCAPED_UNICODE));
@@ -1330,7 +1329,6 @@ abstract class Attendance implements ActiveRecordInterface
         } // if ($deep)
 
         $this->aStudent = null;
-
         return $this;
     }
 

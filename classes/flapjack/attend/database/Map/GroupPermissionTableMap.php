@@ -310,12 +310,12 @@ class GroupPermissionTableMap extends TableMap
      * @param  array  $row  Row returned by DataFetcher->fetch().
      * @param  int  $offset  The 0-based offset for reading from the resultset row.
      * @param  string  $indexType  The index type of $row. Mostly DataFetcher->getIndexType().
-     * One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+    One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
-     * @return array (GroupPermission object, last column rank)
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     * @return array (GroupPermission object, last column rank)
      */
     public static function populateObject(array $row, int $offset = 0, string $indexType = TableMap::TYPE_NUM): array
     {
@@ -341,7 +341,6 @@ class GroupPermissionTableMap extends TableMap
      * objects that inherit from the default.
      *
      * @param  DataFetcherInterface  $dataFetcher
-     *
      * @return array<object>
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
@@ -381,10 +380,9 @@ class GroupPermissionTableMap extends TableMap
      *
      * @param  Criteria  $criteria  Object containing the columns to add.
      * @param  string|null  $alias  Optional table alias
-     *
-     * @return void
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     * @return void
      */
     public static function addSelectColumns(Criteria $criteria, ?string $alias = null): void
     {
@@ -407,10 +405,9 @@ class GroupPermissionTableMap extends TableMap
      *
      * @param  Criteria  $criteria  Object containing the columns to remove.
      * @param  string|null  $alias  Optional table alias
-     *
-     * @return void
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     * @return void
      */
     public static function removeSelectColumns(Criteria $criteria, ?string $alias = null): void
     {
@@ -435,8 +432,7 @@ class GroupPermissionTableMap extends TableMap
     public static function getTableMap(): TableMap
     {
         return Propel::getServiceContainer()->getDatabaseMap(GroupPermissionTableMap::DATABASE_NAME)->getTable(
-            GroupPermissionTableMap::TABLE_NAME
-        );
+            GroupPermissionTableMap::TABLE_NAME);
     }
 
     /**
@@ -485,7 +481,6 @@ class GroupPermissionTableMap extends TableMap
      * Deletes all rows from the group_permissions table.
      *
      * @param  ConnectionInterface  $con  the connection to use
-     *
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(?ConnectionInterface $con = null): int
@@ -498,7 +493,6 @@ class GroupPermissionTableMap extends TableMap
      *
      * @param  mixed  $criteria  Criteria or GroupPermission object containing data that is used to create the INSERT statement.
      * @param  ConnectionInterface  $con  the ConnectionInterface connection to use
-     *
      * @return mixed The new primary key.
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.

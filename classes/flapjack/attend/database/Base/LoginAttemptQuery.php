@@ -94,8 +94,8 @@ abstract class LoginAttemptQuery extends ModelCriteria
     /**
      * Returns a new ChildLoginAttemptQuery object.
      *
-     * @param string $modelAlias The alias of a model in the query
-     * @param Criteria $criteria Optional Criteria to build the query from
+     * @param  string  $modelAlias  The alias of a model in the query
+     * @param  Criteria  $criteria  Optional Criteria to build the query from
      *
      * @return ChildLoginAttemptQuery
      */
@@ -248,6 +248,7 @@ abstract class LoginAttemptQuery extends ModelCriteria
      */
     public function filterByPrimaryKey($key)
     {
+
         $this->addUsingAlias(LoginAttemptTableMap::COL_ID, $key, Criteria::EQUAL);
 
         return $this;
@@ -262,6 +263,7 @@ abstract class LoginAttemptQuery extends ModelCriteria
      */
     public function filterByPrimaryKeys($keys)
     {
+
         $this->addUsingAlias(LoginAttemptTableMap::COL_ID, $keys, Criteria::IN);
 
         return $this;

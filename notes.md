@@ -79,8 +79,8 @@ Write the schema.xml file describing the database schema. If using an existing d
 automatically.
 
 ```shell
-$> .\vendor\bin\propel reverse --config-dir=../ --output-dir=propel --schema-name=attend-schema --database-name=attend --namespace=Attend\Database "mysql:host=localhost;dbname=attend;user=attend;password=attend" 
-$> .\vendor\bin\propel reverse --config-dir=../ --output-dir=propel --schema-name=attend-schema --database-name=attend --namespace=Attend\Database attend
+$> .\vendor\bin\propel reverse --config-dir=propel --output-dir=propel --schema-name=attend-schema --database-name=attend --namespace=flapjack\attend\database "mysql:host=localhost;dbname=attend;user=attend;password=attend" 
+$> .\vendor\bin\propel reverse --config-dir=propel --output-dir=propel --schema-name=attend-schema --database-name=attend --namespace=flapjack\attend\database attend
 ```
 
 * --config-dir: directory containing the propel.json or similar config file

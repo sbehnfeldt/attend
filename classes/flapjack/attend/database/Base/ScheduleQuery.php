@@ -262,6 +262,7 @@ abstract class ScheduleQuery extends ModelCriteria
      */
     public function filterByPrimaryKey($key)
     {
+
         $this->addUsingAlias(ScheduleTableMap::COL_ID, $key, Criteria::EQUAL);
 
         return $this;
@@ -276,6 +277,7 @@ abstract class ScheduleQuery extends ModelCriteria
      */
     public function filterByPrimaryKeys($keys)
     {
+
         $this->addUsingAlias(ScheduleTableMap::COL_ID, $keys, Criteria::IN);
 
         return $this;
@@ -616,74 +618,70 @@ abstract class ScheduleQuery extends ModelCriteria
     /**
      * Use the relation to Student table for an EXISTS query.
      *
+     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
      * @param  string  $typeOfExists  Either ExistsQueryCriterion::TYPE_EXISTS or ExistsQueryCriterion::TYPE_NOT_EXISTS
      *
      * @return \flapjack\attend\database\StudentQuery The inner query object of the EXISTS statement
-     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
-     *
      */
     public function useStudentExistsQuery($modelAlias = null, $queryClass = null, $typeOfExists = 'EXISTS')
     {
         /** @var $q \flapjack\attend\database\StudentQuery */
         $q = $this->useExistsQuery('Student', $modelAlias, $queryClass, $typeOfExists);
-
         return $q;
     }
 
     /**
      * Use the relation to Student table for a NOT EXISTS query.
      *
+     * @see useStudentExistsQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\StudentQuery The inner query object of the NOT EXISTS statement
-     * @see useStudentExistsQuery()
-     *
      */
     public function useStudentNotExistsQuery($modelAlias = null, $queryClass = null)
     {
         /** @var $q \flapjack\attend\database\StudentQuery */
         $q = $this->useExistsQuery('Student', $modelAlias, $queryClass, 'NOT EXISTS');
-
         return $q;
     }
 
     /**
      * Use the relation to Student table for an IN query.
      *
+     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useInQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the IN query, like ExtendedBookQuery::class
      * @param  string  $typeOfIn  Criteria::IN or Criteria::NOT_IN
      *
      * @return \flapjack\attend\database\StudentQuery The inner query object of the IN statement
-     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useInQuery()
-     *
      */
     public function useInStudentQuery($modelAlias = null, $queryClass = null, $typeOfIn = 'IN')
     {
         /** @var $q \flapjack\attend\database\StudentQuery */
         $q = $this->useInQuery('Student', $modelAlias, $queryClass, $typeOfIn);
-
         return $q;
     }
 
     /**
      * Use the relation to Student table for a NOT IN query.
      *
+     * @see useStudentInQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the NOT IN query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\StudentQuery The inner query object of the NOT IN statement
-     * @see useStudentInQuery()
-     *
      */
     public function useNotInStudentQuery($modelAlias = null, $queryClass = null)
     {
         /** @var $q \flapjack\attend\database\StudentQuery */
         $q = $this->useInQuery('Student', $modelAlias, $queryClass, 'NOT IN');
-
         return $q;
     }
 

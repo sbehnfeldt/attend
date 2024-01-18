@@ -433,10 +433,9 @@ class ScheduleTableMap extends TableMap
      *
      * @param  Criteria  $criteria  Object containing the columns to remove.
      * @param  string|null  $alias  Optional table alias
-     *
-     * @return void
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     * @return void
      */
     public static function removeSelectColumns(Criteria $criteria, ?string $alias = null): void
     {
@@ -465,8 +464,7 @@ class ScheduleTableMap extends TableMap
     public static function getTableMap(): TableMap
     {
         return Propel::getServiceContainer()->getDatabaseMap(ScheduleTableMap::DATABASE_NAME)->getTable(
-            ScheduleTableMap::TABLE_NAME
-        );
+            ScheduleTableMap::TABLE_NAME);
     }
 
     /**

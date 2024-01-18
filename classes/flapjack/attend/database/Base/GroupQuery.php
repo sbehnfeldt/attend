@@ -232,7 +232,6 @@ abstract class GroupQuery extends ModelCriteria
      * <code>
      * $objs = $c->findPks(array(12, 56, 832), $con);
      * </code>
-     *
      * @param  array  $keys  Primary keys to use for the query
      * @param  ConnectionInterface  $con  an optional connection object
      *
@@ -261,6 +260,7 @@ abstract class GroupQuery extends ModelCriteria
      */
     public function filterByPrimaryKey($key)
     {
+
         $this->addUsingAlias(GroupTableMap::COL_ID, $key, Criteria::EQUAL);
 
         return $this;
@@ -275,6 +275,7 @@ abstract class GroupQuery extends ModelCriteria
      */
     public function filterByPrimaryKeys($keys)
     {
+
         $this->addUsingAlias(GroupTableMap::COL_ID, $keys, Criteria::IN);
 
         return $this;
@@ -443,13 +444,13 @@ abstract class GroupQuery extends ModelCriteria
     /**
      * Use the GroupMember relation GroupMember object
      *
+     * @see useQuery()
+     *
      * @param  string  $relationAlias  optional alias for the relation,
      *                                   to be used as main alias in the secondary query
      * @param  string  $joinType  Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \flapjack\attend\database\GroupMemberQuery A secondary query class using the current class as primary query
-     * @see useQuery()
-     *
      */
     public function useGroupMemberQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -487,74 +488,70 @@ abstract class GroupQuery extends ModelCriteria
     /**
      * Use the relation to GroupMember table for an EXISTS query.
      *
+     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
      * @param  string  $typeOfExists  Either ExistsQueryCriterion::TYPE_EXISTS or ExistsQueryCriterion::TYPE_NOT_EXISTS
      *
      * @return \flapjack\attend\database\GroupMemberQuery The inner query object of the EXISTS statement
-     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
-     *
      */
     public function useGroupMemberExistsQuery($modelAlias = null, $queryClass = null, $typeOfExists = 'EXISTS')
     {
         /** @var $q \flapjack\attend\database\GroupMemberQuery */
         $q = $this->useExistsQuery('GroupMember', $modelAlias, $queryClass, $typeOfExists);
-
         return $q;
     }
 
     /**
      * Use the relation to GroupMember table for a NOT EXISTS query.
      *
+     * @see useGroupMemberExistsQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\GroupMemberQuery The inner query object of the NOT EXISTS statement
-     * @see useGroupMemberExistsQuery()
-     *
      */
     public function useGroupMemberNotExistsQuery($modelAlias = null, $queryClass = null)
     {
         /** @var $q \flapjack\attend\database\GroupMemberQuery */
         $q = $this->useExistsQuery('GroupMember', $modelAlias, $queryClass, 'NOT EXISTS');
-
         return $q;
     }
 
     /**
      * Use the relation to GroupMember table for an IN query.
      *
+     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useInQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the IN query, like ExtendedBookQuery::class
      * @param  string  $typeOfIn  Criteria::IN or Criteria::NOT_IN
      *
      * @return \flapjack\attend\database\GroupMemberQuery The inner query object of the IN statement
-     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useInQuery()
-     *
      */
     public function useInGroupMemberQuery($modelAlias = null, $queryClass = null, $typeOfIn = 'IN')
     {
         /** @var $q \flapjack\attend\database\GroupMemberQuery */
         $q = $this->useInQuery('GroupMember', $modelAlias, $queryClass, $typeOfIn);
-
         return $q;
     }
 
     /**
      * Use the relation to GroupMember table for a NOT IN query.
      *
+     * @see useGroupMemberInQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the NOT IN query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\GroupMemberQuery The inner query object of the NOT IN statement
-     * @see useGroupMemberInQuery()
-     *
      */
     public function useNotInGroupMemberQuery($modelAlias = null, $queryClass = null)
     {
         /** @var $q \flapjack\attend\database\GroupMemberQuery */
         $q = $this->useInQuery('GroupMember', $modelAlias, $queryClass, 'NOT IN');
-
         return $q;
     }
 
@@ -622,13 +619,13 @@ abstract class GroupQuery extends ModelCriteria
     /**
      * Use the GroupPermission relation GroupPermission object
      *
+     * @see useQuery()
+     *
      * @param  string  $relationAlias  optional alias for the relation,
      *                                   to be used as main alias in the secondary query
      * @param  string  $joinType  Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \flapjack\attend\database\GroupPermissionQuery A secondary query class using the current class as primary query
-     * @see useQuery()
-     *
      */
     public function useGroupPermissionQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -669,74 +666,70 @@ abstract class GroupQuery extends ModelCriteria
     /**
      * Use the relation to GroupPermission table for an EXISTS query.
      *
+     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
      * @param  string  $typeOfExists  Either ExistsQueryCriterion::TYPE_EXISTS or ExistsQueryCriterion::TYPE_NOT_EXISTS
      *
      * @return \flapjack\attend\database\GroupPermissionQuery The inner query object of the EXISTS statement
-     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
-     *
      */
     public function useGroupPermissionExistsQuery($modelAlias = null, $queryClass = null, $typeOfExists = 'EXISTS')
     {
         /** @var $q \flapjack\attend\database\GroupPermissionQuery */
         $q = $this->useExistsQuery('GroupPermission', $modelAlias, $queryClass, $typeOfExists);
-
         return $q;
     }
 
     /**
      * Use the relation to GroupPermission table for a NOT EXISTS query.
      *
+     * @see useGroupPermissionExistsQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\GroupPermissionQuery The inner query object of the NOT EXISTS statement
-     * @see useGroupPermissionExistsQuery()
-     *
      */
     public function useGroupPermissionNotExistsQuery($modelAlias = null, $queryClass = null)
     {
         /** @var $q \flapjack\attend\database\GroupPermissionQuery */
         $q = $this->useExistsQuery('GroupPermission', $modelAlias, $queryClass, 'NOT EXISTS');
-
         return $q;
     }
 
     /**
      * Use the relation to GroupPermission table for an IN query.
      *
+     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useInQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the IN query, like ExtendedBookQuery::class
      * @param  string  $typeOfIn  Criteria::IN or Criteria::NOT_IN
      *
      * @return \flapjack\attend\database\GroupPermissionQuery The inner query object of the IN statement
-     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useInQuery()
-     *
      */
     public function useInGroupPermissionQuery($modelAlias = null, $queryClass = null, $typeOfIn = 'IN')
     {
         /** @var $q \flapjack\attend\database\GroupPermissionQuery */
         $q = $this->useInQuery('GroupPermission', $modelAlias, $queryClass, $typeOfIn);
-
         return $q;
     }
 
     /**
      * Use the relation to GroupPermission table for a NOT IN query.
      *
+     * @see useGroupPermissionInQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the NOT IN query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\GroupPermissionQuery The inner query object of the NOT IN statement
-     * @see useGroupPermissionInQuery()
-     *
      */
     public function useNotInGroupPermissionQuery($modelAlias = null, $queryClass = null)
     {
         /** @var $q \flapjack\attend\database\GroupPermissionQuery */
         $q = $this->useInQuery('GroupPermission', $modelAlias, $queryClass, 'NOT IN');
-
         return $q;
     }
 
@@ -760,7 +753,6 @@ abstract class GroupQuery extends ModelCriteria
      * Deletes all rows from the groups table.
      *
      * @param  ConnectionInterface  $con  the connection to use
-     *
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public function doDeleteAll(?ConnectionInterface $con = null): int
@@ -788,7 +780,6 @@ abstract class GroupQuery extends ModelCriteria
      * Performs a DELETE on the database based on the current ModelCriteria
      *
      * @param  ConnectionInterface  $con  the connection to use
-     *
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
      *                         if supported by native driver or if emulated using Propel.
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be

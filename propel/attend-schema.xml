@@ -35,8 +35,8 @@
                 required="true"/>
         <column name="ordering" phpName="Ordering" type="INTEGER" description="Order among all classrooms"
                 required="true"/>
-        <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" required="true"/>
-        <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" required="true"/>
+        <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" required="true" defaultExpr="CURRENT_TIMESTAMP"/>
+        <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" required="true" defaultExpr="CURRENT_TIMESTAMP"/>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>

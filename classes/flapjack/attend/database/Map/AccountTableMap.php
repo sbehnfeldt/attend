@@ -465,10 +465,9 @@ class AccountTableMap extends TableMap
      *
      * @param  Criteria  $criteria  Object containing the columns to remove.
      * @param  string|null  $alias  Optional table alias
-     *
-     * @return void
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
+     * @return void
      */
     public static function removeSelectColumns(Criteria $criteria, ?string $alias = null): void
     {
@@ -497,8 +496,7 @@ class AccountTableMap extends TableMap
     public static function getTableMap(): TableMap
     {
         return Propel::getServiceContainer()->getDatabaseMap(AccountTableMap::DATABASE_NAME)->getTable(
-            AccountTableMap::TABLE_NAME
-        );
+            AccountTableMap::TABLE_NAME);
     }
 
     /**

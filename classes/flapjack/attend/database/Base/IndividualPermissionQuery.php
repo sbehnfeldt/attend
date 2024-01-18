@@ -232,7 +232,6 @@ abstract class IndividualPermissionQuery extends ModelCriteria
      * <code>
      * $objs = $c->findPks(array(12, 56, 832), $con);
      * </code>
-     *
      * @param  array  $keys  Primary keys to use for the query
      * @param  ConnectionInterface  $con  an optional connection object
      *
@@ -261,6 +260,7 @@ abstract class IndividualPermissionQuery extends ModelCriteria
      */
     public function filterByPrimaryKey($key)
     {
+
         $this->addUsingAlias(IndividualPermissionTableMap::COL_ID, $key, Criteria::EQUAL);
 
         return $this;
@@ -275,6 +275,7 @@ abstract class IndividualPermissionQuery extends ModelCriteria
      */
     public function filterByPrimaryKeys($keys)
     {
+
         $this->addUsingAlias(IndividualPermissionTableMap::COL_ID, $keys, Criteria::IN);
 
         return $this;
@@ -333,6 +334,8 @@ abstract class IndividualPermissionQuery extends ModelCriteria
      * $query->filterByAccountId(array('min' => 12)); // WHERE account_id > 12
      * </code>
      *
+     * @see       filterByAccount()
+     *
      * @param  mixed  $accountId  The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
@@ -340,8 +343,6 @@ abstract class IndividualPermissionQuery extends ModelCriteria
      * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
-     * @see       filterByAccount()
-     *
      */
     public function filterByAccountId($accountId = null, ?string $comparison = null)
     {
@@ -386,6 +387,8 @@ abstract class IndividualPermissionQuery extends ModelCriteria
      * $query->filterByPermissionsId(array('min' => 12)); // WHERE permissions_id > 12
      * </code>
      *
+     * @see       filterByPermission()
+     *
      * @param  mixed  $permissionsId  The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
@@ -393,8 +396,6 @@ abstract class IndividualPermissionQuery extends ModelCriteria
      * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
-     * @see       filterByPermission()
-     *
      */
     public function filterByPermissionsId($permissionsId = null, ?string $comparison = null)
     {
@@ -435,9 +436,9 @@ abstract class IndividualPermissionQuery extends ModelCriteria
      * @param  \flapjack\attend\database\Account|ObjectCollection  $account  The related object(s) to use as filter
      * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this The current query, for fluid interface
      * @throws \Propel\Runtime\Exception\PropelException
      *
+     * @return $this The current query, for fluid interface
      */
     public function filterByAccount($account, ?string $comparison = null)
     {
@@ -499,13 +500,13 @@ abstract class IndividualPermissionQuery extends ModelCriteria
     /**
      * Use the Account relation Account object
      *
+     * @see useQuery()
+     *
      * @param  string  $relationAlias  optional alias for the relation,
      *                                   to be used as main alias in the secondary query
      * @param  string  $joinType  Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \flapjack\attend\database\AccountQuery A secondary query class using the current class as primary query
-     * @see useQuery()
-     *
      */
     public function useAccountQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -543,74 +544,70 @@ abstract class IndividualPermissionQuery extends ModelCriteria
     /**
      * Use the relation to Account table for an EXISTS query.
      *
+     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
      * @param  string  $typeOfExists  Either ExistsQueryCriterion::TYPE_EXISTS or ExistsQueryCriterion::TYPE_NOT_EXISTS
      *
      * @return \flapjack\attend\database\AccountQuery The inner query object of the EXISTS statement
-     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
-     *
      */
     public function useAccountExistsQuery($modelAlias = null, $queryClass = null, $typeOfExists = 'EXISTS')
     {
         /** @var $q \flapjack\attend\database\AccountQuery */
         $q = $this->useExistsQuery('Account', $modelAlias, $queryClass, $typeOfExists);
-
         return $q;
     }
 
     /**
      * Use the relation to Account table for a NOT EXISTS query.
      *
+     * @see useAccountExistsQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\AccountQuery The inner query object of the NOT EXISTS statement
-     * @see useAccountExistsQuery()
-     *
      */
     public function useAccountNotExistsQuery($modelAlias = null, $queryClass = null)
     {
         /** @var $q \flapjack\attend\database\AccountQuery */
         $q = $this->useExistsQuery('Account', $modelAlias, $queryClass, 'NOT EXISTS');
-
         return $q;
     }
 
     /**
      * Use the relation to Account table for an IN query.
      *
+     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useInQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the IN query, like ExtendedBookQuery::class
      * @param  string  $typeOfIn  Criteria::IN or Criteria::NOT_IN
      *
      * @return \flapjack\attend\database\AccountQuery The inner query object of the IN statement
-     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useInQuery()
-     *
      */
     public function useInAccountQuery($modelAlias = null, $queryClass = null, $typeOfIn = 'IN')
     {
         /** @var $q \flapjack\attend\database\AccountQuery */
         $q = $this->useInQuery('Account', $modelAlias, $queryClass, $typeOfIn);
-
         return $q;
     }
 
     /**
      * Use the relation to Account table for a NOT IN query.
      *
+     * @see useAccountInQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the NOT IN query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\AccountQuery The inner query object of the NOT IN statement
-     * @see useAccountInQuery()
-     *
      */
     public function useNotInAccountQuery($modelAlias = null, $queryClass = null)
     {
         /** @var $q \flapjack\attend\database\AccountQuery */
         $q = $this->useInQuery('Account', $modelAlias, $queryClass, 'NOT IN');
-
         return $q;
     }
 
@@ -620,9 +617,9 @@ abstract class IndividualPermissionQuery extends ModelCriteria
      * @param  \flapjack\attend\database\Permission|ObjectCollection  $permission  The related object(s) to use as filter
      * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
-     * @return $this The current query, for fluid interface
      * @throws \Propel\Runtime\Exception\PropelException
      *
+     * @return $this The current query, for fluid interface
      */
     public function filterByPermission($permission, ?string $comparison = null)
     {
@@ -684,13 +681,13 @@ abstract class IndividualPermissionQuery extends ModelCriteria
     /**
      * Use the Permission relation Permission object
      *
+     * @see useQuery()
+     *
      * @param  string  $relationAlias  optional alias for the relation,
      *                                   to be used as main alias in the secondary query
      * @param  string  $joinType  Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \flapjack\attend\database\PermissionQuery A secondary query class using the current class as primary query
-     * @see useQuery()
-     *
      */
     public function usePermissionQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
@@ -728,74 +725,70 @@ abstract class IndividualPermissionQuery extends ModelCriteria
     /**
      * Use the relation to Permission table for an EXISTS query.
      *
+     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
      * @param  string  $typeOfExists  Either ExistsQueryCriterion::TYPE_EXISTS or ExistsQueryCriterion::TYPE_NOT_EXISTS
      *
      * @return \flapjack\attend\database\PermissionQuery The inner query object of the EXISTS statement
-     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
-     *
      */
     public function usePermissionExistsQuery($modelAlias = null, $queryClass = null, $typeOfExists = 'EXISTS')
     {
         /** @var $q \flapjack\attend\database\PermissionQuery */
         $q = $this->useExistsQuery('Permission', $modelAlias, $queryClass, $typeOfExists);
-
         return $q;
     }
 
     /**
      * Use the relation to Permission table for a NOT EXISTS query.
      *
+     * @see usePermissionExistsQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\PermissionQuery The inner query object of the NOT EXISTS statement
-     * @see usePermissionExistsQuery()
-     *
      */
     public function usePermissionNotExistsQuery($modelAlias = null, $queryClass = null)
     {
         /** @var $q \flapjack\attend\database\PermissionQuery */
         $q = $this->useExistsQuery('Permission', $modelAlias, $queryClass, 'NOT EXISTS');
-
         return $q;
     }
 
     /**
      * Use the relation to Permission table for an IN query.
      *
+     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useInQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the IN query, like ExtendedBookQuery::class
      * @param  string  $typeOfIn  Criteria::IN or Criteria::NOT_IN
      *
      * @return \flapjack\attend\database\PermissionQuery The inner query object of the IN statement
-     * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useInQuery()
-     *
      */
     public function useInPermissionQuery($modelAlias = null, $queryClass = null, $typeOfIn = 'IN')
     {
         /** @var $q \flapjack\attend\database\PermissionQuery */
         $q = $this->useInQuery('Permission', $modelAlias, $queryClass, $typeOfIn);
-
         return $q;
     }
 
     /**
      * Use the relation to Permission table for a NOT IN query.
      *
+     * @see usePermissionInQuery()
+     *
      * @param  string|null  $modelAlias  sets an alias for the nested query
      * @param  string|null  $queryClass  Allows to use a custom query class for the NOT IN query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\PermissionQuery The inner query object of the NOT IN statement
-     * @see usePermissionInQuery()
-     *
      */
     public function useNotInPermissionQuery($modelAlias = null, $queryClass = null)
     {
         /** @var $q \flapjack\attend\database\PermissionQuery */
         $q = $this->useInQuery('Permission', $modelAlias, $queryClass, 'NOT IN');
-
         return $q;
     }
 
@@ -823,7 +816,6 @@ abstract class IndividualPermissionQuery extends ModelCriteria
      * Deletes all rows from the individual_permissions table.
      *
      * @param  ConnectionInterface  $con  the connection to use
-     *
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public function doDeleteAll(?ConnectionInterface $con = null): int
@@ -851,7 +843,6 @@ abstract class IndividualPermissionQuery extends ModelCriteria
      * Performs a DELETE on the database based on the current ModelCriteria
      *
      * @param  ConnectionInterface  $con  the connection to use
-     *
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
      *                         if supported by native driver or if emulated using Propel.
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
