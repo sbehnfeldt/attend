@@ -153,7 +153,8 @@
             "redrawRow": redrawRow,
             "deleteRow": deleteRow
         };
-    })('#classrooms');
+    })('#classrooms-tab');
+
 
     let ClassroomPropsDlg = (function (selector) {
         let $self,
