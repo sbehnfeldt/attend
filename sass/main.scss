@@ -30,33 +30,31 @@
 }
 
 html {
-    background-color: peachpuff;
+    background-color: #ffffff;
 }
 
 head {
 }
 
-
 body {
     font-family: "Lato", sans-serif;
     font-weight: 400;
-    height: 100vh;
-
+    background-color: #888888;
 
     header {
     }
 
     main {
         @include container;
-        background-color: slategray;
+        background-color: #cfcfcf;
+        min-height: 100vh;
     }
 }
 
 
 nav {
     @include container;
-    border-top: 2px solid crimson;
-    border-bottom: 2px solid crimson;
+    background-color: #9999c5;
 
     ul {
         @include clearfix;
@@ -68,8 +66,9 @@ nav {
 
             a {
                 display: inline-block;
-                padding: 1rem 3rem;
+                padding: .5rem 2rem;
                 text-decoration: none;
+                color: #060631;
 
                 &:hover {
                     background-color: #fff;
@@ -80,8 +79,37 @@ nav {
     }
 }
 
+h1 {
+    margin-bottom: .5rem;
+}
+
 table {
     width: 100%;
     border: 1px solid #333;
 
+    thead {
+        tr {
+            background-color: darkorange;
+
+            th {
+            }
+        }
+    }
+}
+
+.tab {
+    padding: 2rem;
+}
+
+.table {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.dialog {
+    display: none;
+}
+
+#classrooms-tab {
+    padding: 1rem;
 }

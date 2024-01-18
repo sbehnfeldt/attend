@@ -11,25 +11,29 @@
 {% block main %}
 
     <div id="classrooms-tab">
-        <table class="display compact">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Label</th>
-                    <th>Order</th>
-                    <th>Created</th>
-                    <th>Updated</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <h1>Classrooms</h1>
 
-        <div class="buttons">
-            <div class="record-buttons"></div>
-            <div class="table-buttons"></div>
+        <div class="table">
+            <table class="display compact">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Label</th>
+                        <th>Order</th>
+                        <th>Created</th>
+                        <th>Updated</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+            <div class="buttons">
+                <div class="record-buttons"></div>
+                <div class="table-buttons"></div>
+            </div>
         </div>
 
-        <div id="classroom-props-dlg" title="Add/Edit Classroom">
+        <div class="dialog" id="classroom-props-dlg" title="Add/Edit Classroom">
             <form>
                 <p class="update-tips"></p>
                 <input type="hidden" name="Id" id="Id">
