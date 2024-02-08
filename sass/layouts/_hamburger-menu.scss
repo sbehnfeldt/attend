@@ -9,8 +9,8 @@ nav.main {
     height: $hamburger-height;
     width: 100%;
     display: flex;
-    flex-direction: column;
-    background: $primary;
+    flex-direction: row;
+    background: rebeccapurple;
     z-index: 1000;
 
     // Checkbox toggles the main menu on and off

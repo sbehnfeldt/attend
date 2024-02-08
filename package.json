@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "sass:compile": "node-sass sass/main.scss public/style.css",
-    "sass:watch": "node-sass sass/main.scss public/style.css -w"
+    "sass:compile": "node-sass sass/main.scss public/attend.css",
+    "sass:watch": "node-sass sass/main.scss public/attend.css -w"
   },
   "devDependencies": {
     "node-sass": "^9.0.0"

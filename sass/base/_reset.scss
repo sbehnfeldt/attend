@@ -1,0 +1,17 @@
+/* Global reset by way of the universal selector.  Universal selector only covers "real" elements,
+   so the ::before and ::after pseudo-elements must be included in the rule explicitly
+*/
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+
+    /* box-sizing prop does not inherit by default.  Setting its value to "inherit" in the universal selector
+       will make it inherit.  We can then specify a value of "border-box" in the rule for the body selector.
+       Then all elements will have box-sizing of border-box by way of inheritance, rather than the universal
+       selector, which is considered better practice (cite?).
+    */
+    box-sizing: inherit;
+}
+

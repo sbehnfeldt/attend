@@ -1,0 +1,17 @@
+nav.main {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 2px;
+
+    ul {
+        list-style: none;
+
+        li {
+            a {
+                color: green;
+            }
+        }
+    }
+}

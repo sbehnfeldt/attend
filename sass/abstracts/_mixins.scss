@@ -1,11 +1,18 @@
+@mixin container {
+    width: 960px;
+    margin: 0 auto;
+}
+
+// Include in an element with floating children
 @mixin clearfix {
     &::after {
         content: "";
-        display: table;
         clear: both;
+        display: table;
     }
 }
 
+// Ancestor element must be positioned  for the "position: absolute" rule to work
 @mixin absCenter {
     position: absolute;
     top: 50%;

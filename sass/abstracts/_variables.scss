@@ -1,3 +1,9 @@
+$neutral: rgb(186, 190, 196);
+$neutral-light: lighten($neutral, 10%);
+$neutral-dark: darken($neutral, 25%);
+
+$color: #021e50;
+
 $primary: #0f4c75;
 $primary-light: lighten($primary, 25%);
 $primary-dark: darken($primary, 25%);
