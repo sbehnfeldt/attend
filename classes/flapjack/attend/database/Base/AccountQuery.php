@@ -113,23 +113,20 @@ abstract class AccountQuery extends ModelCriteria
     /**
      * Initializes internal state of \flapjack\attend\database\Base\AccountQuery object.
      *
-     * @param  string  $dbName  The database name
-     * @param  string  $modelName  The phpName of a model, e.g. 'Book'
-     * @param  string  $modelAlias  The alias for the model in this query, e.g. 'b'
+     * @param string $dbName The database name
+     * @param string $modelName The phpName of a model, e.g. 'Book'
+     * @param string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct(
-        $dbName = 'attend',
-        $modelName = '\\flapjack\\attend\\database\\Account',
-        $modelAlias = null
-    ) {
+    public function __construct($dbName = 'attend', $modelName = '\\flapjack\\attend\\database\\Account', $modelAlias = null)
+    {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
      * Returns a new ChildAccountQuery object.
      *
-     * @param  string  $modelAlias  The alias of a model in the query
-     * @param  Criteria  $criteria  Optional Criteria to build the query from
+     * @param string $modelAlias The alias of a model in the query
+     * @param Criteria $criteria Optional Criteria to build the query from
      *
      * @return ChildAccountQuery
      */
@@ -158,8 +155,8 @@ abstract class AccountQuery extends ModelCriteria
      * $obj  = $c->findPk(12, $con);
      * </code>
      *
-     * @param  mixed  $key  Primary key to use for the query
-     * @param  ConnectionInterface  $con  an optional connection object
+     * @param mixed $key Primary key to use for the query
+     * @param ConnectionInterface $con an optional connection object
      *
      * @return ChildAccount|array|mixed the result, formatted by the current formatter
      */
@@ -183,9 +180,7 @@ abstract class AccountQuery extends ModelCriteria
             return $this->findPkComplex($key, $con);
         }
 
-        if ((null !== ($obj = AccountTableMap::getInstanceFromPool(
-                null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string)$key : $key
-            )))) {
+        if ((null !== ($obj = AccountTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -197,12 +192,12 @@ abstract class AccountQuery extends ModelCriteria
      * Find object by primary key using raw SQL to go fast.
      * Bypass doSelect() and the object formatter by using generated code.
      *
-     * @param  mixed  $key  Primary key to use for the query
-     * @param  ConnectionInterface  $con  A connection object
+     * @param mixed $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
-     * @return ChildAccount A model object, or null if the key is not found
      * @throws \Propel\Runtime\Exception\PropelException
      *
+     * @return ChildAccount A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
@@ -220,10 +215,7 @@ abstract class AccountQuery extends ModelCriteria
             /** @var ChildAccount $obj */
             $obj = new ChildAccount();
             $obj->hydrate($row);
-            AccountTableMap::addInstanceToPool(
-                $obj,
-                null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string)$key : $key
-            );
+            AccountTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -233,15 +225,15 @@ abstract class AccountQuery extends ModelCriteria
     /**
      * Find object by primary key.
      *
-     * @param  mixed  $key  Primary key to use for the query
-     * @param  ConnectionInterface  $con  A connection object
+     * @param mixed $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @return ChildAccount|array|mixed the result, formatted by the current formatter
      */
     protected function findPkComplex($key, ConnectionInterface $con)
     {
         // As the query uses a PK condition, no limit(1) is necessary.
-        $criteria    = $this->isKeepQuery() ? clone $this : $this;
+        $criteria = $this->isKeepQuery() ? clone $this : $this;
         $dataFetcher = $criteria
             ->filterByPrimaryKey($key)
             ->doSelect($con);
@@ -254,8 +246,8 @@ abstract class AccountQuery extends ModelCriteria
      * <code>
      * $objs = $c->findPks(array(12, 56, 832), $con);
      * </code>
-     * @param  array  $keys  Primary keys to use for the query
-     * @param  ConnectionInterface  $con  an optional connection object
+     * @param array $keys Primary keys to use for the query
+     * @param ConnectionInterface $con an optional connection object
      *
      * @return Collection|array|mixed the list of results, formatted by the current formatter
      */
@@ -265,7 +257,7 @@ abstract class AccountQuery extends ModelCriteria
             $con = Propel::getServiceContainer()->getReadConnection($this->getDbName());
         }
         $this->basePreSelect($con);
-        $criteria    = $this->isKeepQuery() ? clone $this : $this;
+        $criteria = $this->isKeepQuery() ? clone $this : $this;
         $dataFetcher = $criteria
             ->filterByPrimaryKeys($keys)
             ->doSelect($con);
@@ -276,7 +268,7 @@ abstract class AccountQuery extends ModelCriteria
     /**
      * Filter the query by primary key
      *
-     * @param  mixed  $key  Primary key to use for the query
+     * @param mixed $key Primary key to use for the query
      *
      * @return $this The current query, for fluid interface
      */
@@ -291,7 +283,7 @@ abstract class AccountQuery extends ModelCriteria
     /**
      * Filter the query by a list of primary keys
      *
-     * @param  array|int  $keys  The list of primary key to use for the query
+     * @param array|int $keys The list of primary key to use for the query
      *
      * @return $this The current query, for fluid interface
      */
@@ -313,11 +305,11 @@ abstract class AccountQuery extends ModelCriteria
      * $query->filterById(array('min' => 12)); // WHERE id > 12
      * </code>
      *
-     * @param  mixed  $id  The value to use as filter.
+     * @param mixed $id The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
@@ -356,8 +348,8 @@ abstract class AccountQuery extends ModelCriteria
      * $query->filterByUsername(['foo', 'bar']); // WHERE username IN ('foo', 'bar')
      * </code>
      *
-     * @param  string|string[]  $username  The value to use as filter.
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|string[] $username The value to use as filter.
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
@@ -384,8 +376,8 @@ abstract class AccountQuery extends ModelCriteria
      * $query->filterByPwhash(['foo', 'bar']); // WHERE pwhash IN ('foo', 'bar')
      * </code>
      *
-     * @param  string|string[]  $pwhash  The value to use as filter.
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|string[] $pwhash The value to use as filter.
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
@@ -412,8 +404,8 @@ abstract class AccountQuery extends ModelCriteria
      * $query->filterByEmail(['foo', 'bar']); // WHERE email IN ('foo', 'bar')
      * </code>
      *
-     * @param  string|string[]  $email  The value to use as filter.
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|string[] $email The value to use as filter.
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
@@ -440,8 +432,8 @@ abstract class AccountQuery extends ModelCriteria
      * $query->filterByRole(['foo', 'bar']); // WHERE role IN ('foo', 'bar')
      * </code>
      *
-     * @param  string|string[]  $role  The value to use as filter.
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|string[] $role The value to use as filter.
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
@@ -461,8 +453,8 @@ abstract class AccountQuery extends ModelCriteria
     /**
      * Filter the query by a related \flapjack\attend\database\GroupMember object
      *
-     * @param  \flapjack\attend\database\GroupMember|ObjectCollection  $groupMember  the related object to use as filter
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param \flapjack\attend\database\GroupMember|ObjectCollection $groupMember the related object to use as filter
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
@@ -481,23 +473,21 @@ abstract class AccountQuery extends ModelCriteria
 
             return $this;
         } else {
-            throw new PropelException(
-                'filterByGroupMember() only accepts arguments of type \flapjack\attend\database\GroupMember or Collection'
-            );
+            throw new PropelException('filterByGroupMember() only accepts arguments of type \flapjack\attend\database\GroupMember or Collection');
         }
     }
 
     /**
      * Adds a JOIN clause to the query using the GroupMember relation
      *
-     * @param  string|null  $relationAlias  Optional alias for the relation
-     * @param  string|null  $joinType  Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string|null $relationAlias Optional alias for the relation
+     * @param string|null $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this The current query, for fluid interface
      */
     public function joinGroupMember(?string $relationAlias = null, ?string $joinType = Criteria::INNER_JOIN)
     {
-        $tableMap    = $this->getTableMap();
+        $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('GroupMember');
 
         // create a ModelJoin object for this join
@@ -524,9 +514,9 @@ abstract class AccountQuery extends ModelCriteria
      *
      * @see useQuery()
      *
-     * @param  string  $relationAlias  optional alias for the relation,
+     * @param string $relationAlias optional alias for the relation,
      *                                   to be used as main alias in the secondary query
-     * @param  string  $joinType  Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \flapjack\attend\database\GroupMemberQuery A secondary query class using the current class as primary query
      */
@@ -540,11 +530,11 @@ abstract class AccountQuery extends ModelCriteria
     /**
      * Use the GroupMember relation GroupMember object
      *
-     * @param  callable(\flapjack\attend\database\GroupMemberQuery):\flapjack\attend\database\GroupMemberQuery  $callable  A function working on the related query
+     * @param callable(\flapjack\attend\database\GroupMemberQuery):\flapjack\attend\database\GroupMemberQuery $callable A function working on the related query
      *
-     * @param  string|null  $relationAlias  optional alias for the relation
+     * @param string|null $relationAlias optional alias for the relation
      *
-     * @param  string|null  $joinType  Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string|null $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this
      */
@@ -568,9 +558,9 @@ abstract class AccountQuery extends ModelCriteria
      *
      * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
      *
-     * @param  string|null  $modelAlias  sets an alias for the nested query
-     * @param  string|null  $queryClass  Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
-     * @param  string  $typeOfExists  Either ExistsQueryCriterion::TYPE_EXISTS or ExistsQueryCriterion::TYPE_NOT_EXISTS
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
+     * @param string $typeOfExists Either ExistsQueryCriterion::TYPE_EXISTS or ExistsQueryCriterion::TYPE_NOT_EXISTS
      *
      * @return \flapjack\attend\database\GroupMemberQuery The inner query object of the EXISTS statement
      */
@@ -586,8 +576,8 @@ abstract class AccountQuery extends ModelCriteria
      *
      * @see useGroupMemberExistsQuery()
      *
-     * @param  string|null  $modelAlias  sets an alias for the nested query
-     * @param  string|null  $queryClass  Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\GroupMemberQuery The inner query object of the NOT EXISTS statement
      */
@@ -603,9 +593,9 @@ abstract class AccountQuery extends ModelCriteria
      *
      * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useInQuery()
      *
-     * @param  string|null  $modelAlias  sets an alias for the nested query
-     * @param  string|null  $queryClass  Allows to use a custom query class for the IN query, like ExtendedBookQuery::class
-     * @param  string  $typeOfIn  Criteria::IN or Criteria::NOT_IN
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the IN query, like ExtendedBookQuery::class
+     * @param string $typeOfIn Criteria::IN or Criteria::NOT_IN
      *
      * @return \flapjack\attend\database\GroupMemberQuery The inner query object of the IN statement
      */
@@ -621,8 +611,8 @@ abstract class AccountQuery extends ModelCriteria
      *
      * @see useGroupMemberInQuery()
      *
-     * @param  string|null  $modelAlias  sets an alias for the nested query
-     * @param  string|null  $queryClass  Allows to use a custom query class for the NOT IN query, like ExtendedBookQuery::class
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the NOT IN query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\GroupMemberQuery The inner query object of the NOT IN statement
      */
@@ -636,8 +626,8 @@ abstract class AccountQuery extends ModelCriteria
     /**
      * Filter the query by a related \flapjack\attend\database\IndividualPermission object
      *
-     * @param  \flapjack\attend\database\IndividualPermission|ObjectCollection  $individualPermission  the related object to use as filter
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param \flapjack\attend\database\IndividualPermission|ObjectCollection $individualPermission the related object to use as filter
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
@@ -656,23 +646,21 @@ abstract class AccountQuery extends ModelCriteria
 
             return $this;
         } else {
-            throw new PropelException(
-                'filterByIndividualPermission() only accepts arguments of type \flapjack\attend\database\IndividualPermission or Collection'
-            );
+            throw new PropelException('filterByIndividualPermission() only accepts arguments of type \flapjack\attend\database\IndividualPermission or Collection');
         }
     }
 
     /**
      * Adds a JOIN clause to the query using the IndividualPermission relation
      *
-     * @param  string|null  $relationAlias  Optional alias for the relation
-     * @param  string|null  $joinType  Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string|null $relationAlias Optional alias for the relation
+     * @param string|null $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this The current query, for fluid interface
      */
     public function joinIndividualPermission(?string $relationAlias = null, ?string $joinType = Criteria::INNER_JOIN)
     {
-        $tableMap    = $this->getTableMap();
+        $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('IndividualPermission');
 
         // create a ModelJoin object for this join
@@ -699,9 +687,9 @@ abstract class AccountQuery extends ModelCriteria
      *
      * @see useQuery()
      *
-     * @param  string  $relationAlias  optional alias for the relation,
+     * @param string $relationAlias optional alias for the relation,
      *                                   to be used as main alias in the secondary query
-     * @param  string  $joinType  Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \flapjack\attend\database\IndividualPermissionQuery A secondary query class using the current class as primary query
      */
@@ -709,20 +697,17 @@ abstract class AccountQuery extends ModelCriteria
     {
         return $this
             ->joinIndividualPermission($relationAlias, $joinType)
-            ->useQuery(
-                $relationAlias ? $relationAlias : 'IndividualPermission',
-                '\flapjack\attend\database\IndividualPermissionQuery'
-            );
+            ->useQuery($relationAlias ? $relationAlias : 'IndividualPermission', '\flapjack\attend\database\IndividualPermissionQuery');
     }
 
     /**
      * Use the IndividualPermission relation IndividualPermission object
      *
-     * @param  callable(\flapjack\attend\database\IndividualPermissionQuery):\flapjack\attend\database\IndividualPermissionQuery  $callable  A function working on the related query
+     * @param callable(\flapjack\attend\database\IndividualPermissionQuery):\flapjack\attend\database\IndividualPermissionQuery $callable A function working on the related query
      *
-     * @param  string|null  $relationAlias  optional alias for the relation
+     * @param string|null $relationAlias optional alias for the relation
      *
-     * @param  string|null  $joinType  Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string|null $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this
      */
@@ -746,9 +731,9 @@ abstract class AccountQuery extends ModelCriteria
      *
      * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
      *
-     * @param  string|null  $modelAlias  sets an alias for the nested query
-     * @param  string|null  $queryClass  Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
-     * @param  string  $typeOfExists  Either ExistsQueryCriterion::TYPE_EXISTS or ExistsQueryCriterion::TYPE_NOT_EXISTS
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
+     * @param string $typeOfExists Either ExistsQueryCriterion::TYPE_EXISTS or ExistsQueryCriterion::TYPE_NOT_EXISTS
      *
      * @return \flapjack\attend\database\IndividualPermissionQuery The inner query object of the EXISTS statement
      */
@@ -764,8 +749,8 @@ abstract class AccountQuery extends ModelCriteria
      *
      * @see useIndividualPermissionExistsQuery()
      *
-     * @param  string|null  $modelAlias  sets an alias for the nested query
-     * @param  string|null  $queryClass  Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\IndividualPermissionQuery The inner query object of the NOT EXISTS statement
      */
@@ -781,9 +766,9 @@ abstract class AccountQuery extends ModelCriteria
      *
      * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useInQuery()
      *
-     * @param  string|null  $modelAlias  sets an alias for the nested query
-     * @param  string|null  $queryClass  Allows to use a custom query class for the IN query, like ExtendedBookQuery::class
-     * @param  string  $typeOfIn  Criteria::IN or Criteria::NOT_IN
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the IN query, like ExtendedBookQuery::class
+     * @param string $typeOfIn Criteria::IN or Criteria::NOT_IN
      *
      * @return \flapjack\attend\database\IndividualPermissionQuery The inner query object of the IN statement
      */
@@ -799,8 +784,8 @@ abstract class AccountQuery extends ModelCriteria
      *
      * @see useIndividualPermissionInQuery()
      *
-     * @param  string|null  $modelAlias  sets an alias for the nested query
-     * @param  string|null  $queryClass  Allows to use a custom query class for the NOT IN query, like ExtendedBookQuery::class
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the NOT IN query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\IndividualPermissionQuery The inner query object of the NOT IN statement
      */
@@ -814,8 +799,8 @@ abstract class AccountQuery extends ModelCriteria
     /**
      * Filter the query by a related \flapjack\attend\database\TokenAuth object
      *
-     * @param  \flapjack\attend\database\TokenAuth|ObjectCollection  $tokenAuth  the related object to use as filter
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param \flapjack\attend\database\TokenAuth|ObjectCollection $tokenAuth the related object to use as filter
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
@@ -834,23 +819,21 @@ abstract class AccountQuery extends ModelCriteria
 
             return $this;
         } else {
-            throw new PropelException(
-                'filterByTokenAuth() only accepts arguments of type \flapjack\attend\database\TokenAuth or Collection'
-            );
+            throw new PropelException('filterByTokenAuth() only accepts arguments of type \flapjack\attend\database\TokenAuth or Collection');
         }
     }
 
     /**
      * Adds a JOIN clause to the query using the TokenAuth relation
      *
-     * @param  string|null  $relationAlias  Optional alias for the relation
-     * @param  string|null  $joinType  Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string|null $relationAlias Optional alias for the relation
+     * @param string|null $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this The current query, for fluid interface
      */
     public function joinTokenAuth(?string $relationAlias = null, ?string $joinType = Criteria::INNER_JOIN)
     {
-        $tableMap    = $this->getTableMap();
+        $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('TokenAuth');
 
         // create a ModelJoin object for this join
@@ -877,9 +860,9 @@ abstract class AccountQuery extends ModelCriteria
      *
      * @see useQuery()
      *
-     * @param  string  $relationAlias  optional alias for the relation,
+     * @param string $relationAlias optional alias for the relation,
      *                                   to be used as main alias in the secondary query
-     * @param  string  $joinType  Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \flapjack\attend\database\TokenAuthQuery A secondary query class using the current class as primary query
      */
@@ -893,11 +876,11 @@ abstract class AccountQuery extends ModelCriteria
     /**
      * Use the TokenAuth relation TokenAuth object
      *
-     * @param  callable(\flapjack\attend\database\TokenAuthQuery):\flapjack\attend\database\TokenAuthQuery  $callable  A function working on the related query
+     * @param callable(\flapjack\attend\database\TokenAuthQuery):\flapjack\attend\database\TokenAuthQuery $callable A function working on the related query
      *
-     * @param  string|null  $relationAlias  optional alias for the relation
+     * @param string|null $relationAlias optional alias for the relation
      *
-     * @param  string|null  $joinType  Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string|null $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this
      */
@@ -921,9 +904,9 @@ abstract class AccountQuery extends ModelCriteria
      *
      * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
      *
-     * @param  string|null  $modelAlias  sets an alias for the nested query
-     * @param  string|null  $queryClass  Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
-     * @param  string  $typeOfExists  Either ExistsQueryCriterion::TYPE_EXISTS or ExistsQueryCriterion::TYPE_NOT_EXISTS
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
+     * @param string $typeOfExists Either ExistsQueryCriterion::TYPE_EXISTS or ExistsQueryCriterion::TYPE_NOT_EXISTS
      *
      * @return \flapjack\attend\database\TokenAuthQuery The inner query object of the EXISTS statement
      */
@@ -939,8 +922,8 @@ abstract class AccountQuery extends ModelCriteria
      *
      * @see useTokenAuthExistsQuery()
      *
-     * @param  string|null  $modelAlias  sets an alias for the nested query
-     * @param  string|null  $queryClass  Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\TokenAuthQuery The inner query object of the NOT EXISTS statement
      */
@@ -956,9 +939,9 @@ abstract class AccountQuery extends ModelCriteria
      *
      * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useInQuery()
      *
-     * @param  string|null  $modelAlias  sets an alias for the nested query
-     * @param  string|null  $queryClass  Allows to use a custom query class for the IN query, like ExtendedBookQuery::class
-     * @param  string  $typeOfIn  Criteria::IN or Criteria::NOT_IN
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the IN query, like ExtendedBookQuery::class
+     * @param string $typeOfIn Criteria::IN or Criteria::NOT_IN
      *
      * @return \flapjack\attend\database\TokenAuthQuery The inner query object of the IN statement
      */
@@ -974,8 +957,8 @@ abstract class AccountQuery extends ModelCriteria
      *
      * @see useTokenAuthInQuery()
      *
-     * @param  string|null  $modelAlias  sets an alias for the nested query
-     * @param  string|null  $queryClass  Allows to use a custom query class for the NOT IN query, like ExtendedBookQuery::class
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the NOT IN query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\TokenAuthQuery The inner query object of the NOT IN statement
      */
@@ -989,7 +972,7 @@ abstract class AccountQuery extends ModelCriteria
     /**
      * Exclude object from result
      *
-     * @param  ChildAccount  $account  Object to remove from the list of results
+     * @param ChildAccount $account Object to remove from the list of results
      *
      * @return $this The current query, for fluid interface
      */
@@ -1005,7 +988,7 @@ abstract class AccountQuery extends ModelCriteria
     /**
      * Deletes all rows from the accounts table.
      *
-     * @param  ConnectionInterface  $con  the connection to use
+     * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public function doDeleteAll(?ConnectionInterface $con = null): int
@@ -1032,7 +1015,7 @@ abstract class AccountQuery extends ModelCriteria
     /**
      * Performs a DELETE on the database based on the current ModelCriteria
      *
-     * @param  ConnectionInterface  $con  the connection to use
+     * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
      *                         if supported by native driver or if emulated using Propel.
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be

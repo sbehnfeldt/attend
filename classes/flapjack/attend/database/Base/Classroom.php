@@ -153,14 +153,13 @@ abstract class Classroom implements ActiveRecordInterface
      */
     public function isModified(): bool
     {
-        return ! ! $this->modifiedColumns;
+        return !!$this->modifiedColumns;
     }
 
     /**
      * Has specified column been modified?
      *
-     * @param  string  $col  column fully qualified name (TableMap::TYPE_COLNAME), e.g. Book::AUTHOR_ID
-     *
+     * @param string $col column fully qualified name (TableMap::TYPE_COLNAME), e.g. Book::AUTHOR_ID
      * @return bool True if $col has been modified.
      */
     public function isColumnModified(string $col): bool
@@ -193,7 +192,7 @@ abstract class Classroom implements ActiveRecordInterface
      * Setter for the isNew attribute.  This method will be called
      * by Propel-generated children and objects.
      *
-     * @param  bool  $b  the state of the object.
+     * @param bool $b the state of the object.
      */
     public function setNew(bool $b): void
     {
@@ -211,7 +210,7 @@ abstract class Classroom implements ActiveRecordInterface
 
     /**
      * Specify whether this object has been deleted.
-     * @param  bool  $b  The deleted state of this object.
+     * @param bool $b The deleted state of this object.
      * @return void
      */
     public function setDeleted(bool $b): void
@@ -221,7 +220,7 @@ abstract class Classroom implements ActiveRecordInterface
 
     /**
      * Sets the modified state for the object to be false.
-     * @param  string  $col  If supplied, only the specified column is reset.
+     * @param string $col If supplied, only the specified column is reset.
      * @return void
      */
     public function resetModified(?string $col = null): void
@@ -238,12 +237,12 @@ abstract class Classroom implements ActiveRecordInterface
      * <code>obj</code> is an instance of <code>Classroom</code>, delegates to
      * <code>equals(Classroom)</code>.  Otherwise, returns <code>false</code>.
      *
-     * @param  mixed  $obj  The object to compare to.
+     * @param mixed $obj The object to compare to.
      * @return bool Whether equal to the object specified.
      */
     public function equals($obj): bool
     {
-        if ( ! $obj instanceof static) {
+        if (!$obj instanceof static) {
             return false;
         }
 
@@ -271,7 +270,7 @@ abstract class Classroom implements ActiveRecordInterface
     /**
      * Checks the existence of a virtual column in this object
      *
-     * @param  string  $name  The virtual column name
+     * @param string $name The virtual column name
      * @return bool
      */
     public function hasVirtualColumn(string $name): bool
@@ -282,14 +281,14 @@ abstract class Classroom implements ActiveRecordInterface
     /**
      * Get the value of a virtual column in this object
      *
-     * @param  string  $name  The virtual column name
+     * @param string $name The virtual column name
      * @return mixed
      *
      * @throws \Propel\Runtime\Exception\PropelException
      */
     public function getVirtualColumn(string $name)
     {
-        if ( ! $this->hasVirtualColumn($name)) {
+        if (!$this->hasVirtualColumn($name)) {
             throw new PropelException(sprintf('Cannot get value of nonexistent virtual column `%s`.', $name));
         }
 
@@ -299,8 +298,8 @@ abstract class Classroom implements ActiveRecordInterface
     /**
      * Set the value of a virtual column in this object
      *
-     * @param  string  $name  The virtual column name
-     * @param  mixed  $value  The value to give to the virtual column
+     * @param string $name The virtual column name
+     * @param mixed $value The value to give to the virtual column
      *
      * @return $this The current object, for fluid interface
      */
@@ -314,8 +313,8 @@ abstract class Classroom implements ActiveRecordInterface
     /**
      * Logs a message using Propel::log().
      *
-     * @param  string  $msg
-     * @param  int  $priority  One of the Propel::LOG_* logging levels
+     * @param string $msg
+     * @param int $priority One of the Propel::LOG_* logging levels
      * @return void
      */
     protected function log(string $msg, int $priority = Propel::LOG_INFO): void
@@ -331,18 +330,14 @@ abstract class Classroom implements ActiveRecordInterface
      *  => {"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
      * </code>
      *
-     * @param  \Propel\Runtime\Parser\AbstractParser|string  $parser  An AbstractParser instance, or a format name ('XML', 'YAML', 'JSON', 'CSV')
-     * @param  bool  $includeLazyLoadColumns  (optional) Whether to include lazy load(ed) columns. Defaults to TRUE.
-     * @param  string  $keyType  (optional) One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME, TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM. Defaults to TableMap::TYPE_PHPNAME.
-     *
+     * @param \Propel\Runtime\Parser\AbstractParser|string $parser An AbstractParser instance, or a format name ('XML', 'YAML', 'JSON', 'CSV')
+     * @param bool $includeLazyLoadColumns (optional) Whether to include lazy load(ed) columns. Defaults to TRUE.
+     * @param string $keyType (optional) One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME, TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM. Defaults to TableMap::TYPE_PHPNAME.
      * @return string The exported data
      */
-    public function exportTo(
-        $parser,
-        bool $includeLazyLoadColumns = true,
-        string $keyType = TableMap::TYPE_PHPNAME
-    ): string {
-        if ( ! $parser instanceof AbstractParser) {
+    public function exportTo($parser, bool $includeLazyLoadColumns = true, string $keyType = TableMap::TYPE_PHPNAME): string
+    {
+        if (!$parser instanceof AbstractParser) {
             $parser = AbstractParser::getParser($parser);
         }
 
@@ -359,14 +354,11 @@ abstract class Classroom implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        $cls                    = new \ReflectionClass($this);
-        $propertyNames          = [];
-        $serializableProperties = array_diff(
-            $cls->getProperties(),
-            $cls->getProperties(\ReflectionProperty::IS_STATIC)
-        );
+        $cls = new \ReflectionClass($this);
+        $propertyNames = [];
+        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
 
-        foreach ($serializableProperties as $property) {
+        foreach($serializableProperties as $property) {
             $propertyNames[] = $property->getName();
         }
 
@@ -407,7 +399,7 @@ abstract class Classroom implements ActiveRecordInterface
      * Get the [optionally formatted] temporal [created_at] column value.
      *
      *
-     * @param  string|null  $format  The date/time format string (either date()-style or strftime()-style).
+     * @param string|null $format The date/time format string (either date()-style or strftime()-style).
      *   If format is NULL, then the raw DateTime object will be returned.
      *
      * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), and 0 if column value is 0000-00-00 00:00:00.
@@ -429,7 +421,7 @@ abstract class Classroom implements ActiveRecordInterface
      * Get the [optionally formatted] temporal [updated_at] column value.
      *
      *
-     * @param  string|null  $format  The date/time format string (either date()-style or strftime()-style).
+     * @param string|null $format The date/time format string (either date()-style or strftime()-style).
      *   If format is NULL, then the raw DateTime object will be returned.
      *
      * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), and 0 if column value is 0000-00-00 00:00:00.
@@ -450,7 +442,7 @@ abstract class Classroom implements ActiveRecordInterface
     /**
      * Set the value of [id] column.
      *
-     * @param  int  $v  New value
+     * @param int $v New value
      * @return $this The current object (for fluent API support)
      */
     public function setId($v)
@@ -470,7 +462,7 @@ abstract class Classroom implements ActiveRecordInterface
     /**
      * Set the value of [label] column.
      * Human-readable name of the classroom
-     * @param  string  $v  New value
+     * @param string $v New value
      * @return $this The current object (for fluent API support)
      */
     public function setLabel($v)
@@ -490,7 +482,7 @@ abstract class Classroom implements ActiveRecordInterface
     /**
      * Set the value of [ordering] column.
      * Order among all classrooms
-     * @param  int  $v  New value
+     * @param int $v New value
      * @return $this The current object (for fluent API support)
      */
     public function setOrdering($v)
@@ -510,7 +502,7 @@ abstract class Classroom implements ActiveRecordInterface
     /**
      * Sets the value of [created_at] column to a normalized version of the date/time value specified.
      *
-     * @param  string|integer|\DateTimeInterface  $v  string, integer (timestamp), or \DateTimeInterface value.
+     * @param string|integer|\DateTimeInterface $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
      * @return $this The current object (for fluent API support)
      */
@@ -530,7 +522,7 @@ abstract class Classroom implements ActiveRecordInterface
     /**
      * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
      *
-     * @param  string|integer|\DateTimeInterface  $v  string, integer (timestamp), or \DateTimeInterface value.
+     * @param string|integer|\DateTimeInterface $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
      * @return $this The current object (for fluent API support)
      */
@@ -569,59 +561,36 @@ abstract class Classroom implements ActiveRecordInterface
      * for results of JOIN queries where the resultset row includes columns from two or
      * more tables.
      *
-     * @param  array  $row  The row returned by DataFetcher->fetch().
-     * @param  int  $startcol  0-based offset column which indicates which resultset column to start with.
-     * @param  bool  $rehydrate  Whether this object is being re-hydrated from the database.
-     * @param  string  $indexType  The index type of $row. Mostly DataFetcher->getIndexType().
-     * One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * @param array $row The row returned by DataFetcher->fetch().
+     * @param int $startcol 0-based offset column which indicates which resultset column to start with.
+     * @param bool $rehydrate Whether this object is being re-hydrated from the database.
+     * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
+                                  One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                            TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @return int next starting column
      * @throws \Propel\Runtime\Exception\PropelException - Any caught Exception will be rewrapped as a PropelException.
      */
-    public function hydrate(
-        array $row,
-        int $startcol = 0,
-        bool $rehydrate = false,
-        string $indexType = TableMap::TYPE_NUM
-    ): int {
+    public function hydrate(array $row, int $startcol = 0, bool $rehydrate = false, string $indexType = TableMap::TYPE_NUM): int
+    {
         try {
-            $col      = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ClassroomTableMap::translateFieldName(
-                'Id',
-                TableMap::TYPE_PHPNAME,
-                $indexType
-            )];
-            $this->id = (null !== $col) ? (int)$col : null;
 
-            $col         = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ClassroomTableMap::translateFieldName(
-                'Label',
-                TableMap::TYPE_PHPNAME,
-                $indexType
-            )];
-            $this->label = (null !== $col) ? (string)$col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : ClassroomTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->id = (null !== $col) ? (int) $col : null;
 
-            $col            = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ClassroomTableMap::translateFieldName(
-                'Ordering',
-                TableMap::TYPE_PHPNAME,
-                $indexType
-            )];
-            $this->ordering = (null !== $col) ? (int)$col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : ClassroomTableMap::translateFieldName('Label', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->label = (null !== $col) ? (string) $col : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ClassroomTableMap::translateFieldName(
-                'CreatedAt',
-                TableMap::TYPE_PHPNAME,
-                $indexType
-            )];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : ClassroomTableMap::translateFieldName('Ordering', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->ordering = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ClassroomTableMap::translateFieldName('CreatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
             $this->created_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
-            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ClassroomTableMap::translateFieldName(
-                'UpdatedAt',
-                TableMap::TYPE_PHPNAME,
-                $indexType
-            )];
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ClassroomTableMap::translateFieldName('UpdatedAt', TableMap::TYPE_PHPNAME, $indexType)];
             if ($col === '0000-00-00 00:00:00') {
                 $col = null;
             }
@@ -664,8 +633,8 @@ abstract class Classroom implements ActiveRecordInterface
      *
      * This will only work if the object has been saved and has a valid primary key set.
      *
-     * @param  bool  $deep  (optional) Whether to also de-associated any related objects.
-     * @param  ConnectionInterface  $con  (optional) The ConnectionInterface connection to use.
+     * @param bool $deep (optional) Whether to also de-associated any related objects.
+     * @param ConnectionInterface $con (optional) The ConnectionInterface connection to use.
      * @return void
      * @throws \Propel\Runtime\Exception\PropelException - if this object is deleted, unsaved or doesn't have pk match in db
      */
@@ -704,7 +673,7 @@ abstract class Classroom implements ActiveRecordInterface
     /**
      * Removes this object from datastore and sets delete attribute.
      *
-     * @param  ConnectionInterface  $con
+     * @param ConnectionInterface $con
      * @return void
      * @throws \Propel\Runtime\Exception\PropelException
      * @see Classroom::setDeleted()
@@ -740,7 +709,7 @@ abstract class Classroom implements ActiveRecordInterface
      * method.  This method wraps all precipitate database operations in a
      * single transaction.
      *
-     * @param  ConnectionInterface  $con
+     * @param ConnectionInterface $con
      * @return int The number of rows affected by this insert/update and any referring fk objects' save() operations.
      * @throws \Propel\Runtime\Exception\PropelException
      * @see doSave()
@@ -790,7 +759,7 @@ abstract class Classroom implements ActiveRecordInterface
      * If the object is new, it inserts it; otherwise an update is performed.
      * All related objects are also updated in this method.
      *
-     * @param  ConnectionInterface  $con
+     * @param ConnectionInterface $con
      * @return int The number of rows affected by this insert/update and any referring fk objects' save() operations.
      * @throws \Propel\Runtime\Exception\PropelException
      * @see save()
@@ -798,7 +767,7 @@ abstract class Classroom implements ActiveRecordInterface
     protected function doSave(ConnectionInterface $con): int
     {
         $affectedRows = 0; // initialize var to track total num of affected rows
-        if ( ! $this->alreadyInSave) {
+        if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
             if ($this->isNew() || $this->isModified()) {
@@ -815,10 +784,8 @@ abstract class Classroom implements ActiveRecordInterface
             if ($this->studentsScheduledForDeletion !== null) {
                 if (!$this->studentsScheduledForDeletion->isEmpty()) {
                     \flapjack\attend\database\StudentQuery::create()
-                                                          ->filterByPrimaryKeys(
-                                                              $this->studentsScheduledForDeletion->getPrimaryKeys(false)
-                                                          )
-                                                          ->delete($con);
+                        ->filterByPrimaryKeys($this->studentsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
                     $this->studentsScheduledForDeletion = null;
                 }
             }
@@ -841,7 +808,7 @@ abstract class Classroom implements ActiveRecordInterface
     /**
      * Insert the row in the database.
      *
-     * @param  ConnectionInterface  $con
+     * @param ConnectionInterface $con
      *
      * @throws \Propel\Runtime\Exception\PropelException
      * @see doSave()
@@ -856,7 +823,7 @@ abstract class Classroom implements ActiveRecordInterface
             throw new PropelException('Cannot insert a value for auto-increment primary key (' . ClassroomTableMap::COL_ID . ')');
         }
 
-        // check the columns in natural order for more readable SQL queries
+         // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(ClassroomTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
@@ -867,10 +834,10 @@ abstract class Classroom implements ActiveRecordInterface
             $modifiedColumns[':p' . $index++]  = 'ordering';
         }
         if ($this->isColumnModified(ClassroomTableMap::COL_CREATED_AT)) {
-            $modifiedColumns[':p' . $index++] = 'created_at';
+            $modifiedColumns[':p' . $index++]  = 'created_at';
         }
         if ($this->isColumnModified(ClassroomTableMap::COL_UPDATED_AT)) {
-            $modifiedColumns[':p' . $index++] = 'updated_at';
+            $modifiedColumns[':p' . $index++]  = 'updated_at';
         }
 
         $sql = sprintf(
@@ -924,7 +891,7 @@ abstract class Classroom implements ActiveRecordInterface
     /**
      * Update the row in the database.
      *
-     * @param  ConnectionInterface  $con
+     * @param ConnectionInterface $con
      *
      * @return int Number of updated rows
      * @see doSave()
@@ -940,8 +907,8 @@ abstract class Classroom implements ActiveRecordInterface
     /**
      * Retrieves a field from the object by name passed in as a string.
      *
-     * @param  string  $name  name
-     * @param  string  $type  The type of fieldname the $name is of:
+     * @param string $name name
+     * @param string $type The type of fieldname the $name is of:
      *                     one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                     TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                     Defaults to TableMap::TYPE_PHPNAME.
@@ -949,7 +916,7 @@ abstract class Classroom implements ActiveRecordInterface
      */
     public function getByName(string $name, string $type = TableMap::TYPE_PHPNAME)
     {
-        $pos   = ClassroomTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = ClassroomTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -959,7 +926,7 @@ abstract class Classroom implements ActiveRecordInterface
      * Retrieves a field from the object by Position as specified in the xml schema.
      * Zero-based.
      *
-     * @param  int  $pos  Position in XML schema
+     * @param int $pos Position in XML schema
      * @return mixed Value of field at $pos
      */
     public function getByPosition(int $pos)
@@ -991,27 +958,23 @@ abstract class Classroom implements ActiveRecordInterface
      * You can specify the key type of the array by passing one of the class
      * type constants.
      *
-     * @param  string  $keyType  (optional) One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
+     * @param string $keyType (optional) One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
      *                    TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                    Defaults to TableMap::TYPE_PHPNAME.
-     * @param  bool  $includeLazyLoadColumns  (optional) Whether to include lazy loaded columns. Defaults to TRUE.
-     * @param  array  $alreadyDumpedObjects  List of objects to skip to avoid recursion
-     * @param  bool  $includeForeignObjects  (optional) Whether to include hydrated related objects. Default to FALSE.
+     * @param bool $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+     * @param array $alreadyDumpedObjects List of objects to skip to avoid recursion
+     * @param bool $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array An associative array containing the field names (as keys) and field values
      */
-    public function toArray(
-        string $keyType = TableMap::TYPE_PHPNAME,
-        bool $includeLazyLoadColumns = true,
-        array $alreadyDumpedObjects = [],
-        bool $includeForeignObjects = false
-    ): array {
+    public function toArray(string $keyType = TableMap::TYPE_PHPNAME, bool $includeLazyLoadColumns = true, array $alreadyDumpedObjects = [], bool $includeForeignObjects = false): array
+    {
         if (isset($alreadyDumpedObjects['Classroom'][$this->hashCode()])) {
             return ['*RECURSION*'];
         }
         $alreadyDumpedObjects['Classroom'][$this->hashCode()] = true;
-        $keys                                                 = ClassroomTableMap::getFieldNames($keyType);
-        $result                                               = [
+        $keys = ClassroomTableMap::getFieldNames($keyType);
+        $result = [
             $keys[0] => $this->getId(),
             $keys[1] => $this->getLabel(),
             $keys[2] => $this->getOrdering(),
@@ -1055,9 +1018,9 @@ abstract class Classroom implements ActiveRecordInterface
     /**
      * Sets a field from the object by name passed in as a string.
      *
-     * @param  string  $name
-     * @param  mixed  $value  field value
-     * @param  string  $type  The type of fieldname the $name is of:
+     * @param string $name
+     * @param mixed $value field value
+     * @param string $type The type of fieldname the $name is of:
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
@@ -1076,8 +1039,8 @@ abstract class Classroom implements ActiveRecordInterface
      * Sets a field from the object by Position as specified in the xml schema.
      * Zero-based.
      *
-     * @param  int  $pos  position in xml schema
-     * @param  mixed  $value  field value
+     * @param int $pos position in xml schema
+     * @param mixed $value field value
      * @return $this
      */
     public function setByPosition(int $pos, $value)
@@ -1116,9 +1079,8 @@ abstract class Classroom implements ActiveRecordInterface
      * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      * The default key type is the column's TableMap::TYPE_PHPNAME.
      *
-     * @param  array  $arr  An array to populate the object from.
-     * @param  string  $keyType  The type of keys the array uses.
-     *
+     * @param array $arr An array to populate the object from.
+     * @param string $keyType The type of keys the array uses.
      * @return $this
      */
     public function fromArray(array $arr, string $keyType = TableMap::TYPE_PHPNAME)
@@ -1146,26 +1108,26 @@ abstract class Classroom implements ActiveRecordInterface
 
      /**
      * Populate the current object from a string, using a given parser format
-      * <code>
-      * $book = new Book();
-      * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
-      * </code>
-      *
-      * You can specify the key type of the array by additionally passing one
-      * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
-      * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
-      * The default key type is the column's TableMap::TYPE_PHPNAME.
-      *
-      * @param  mixed  $parser  A AbstractParser instance,
-      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
-      * @param  string  $data  The source data to import from
-      * @param  string  $keyType  The type of keys the array uses.
-      *
-      * @return $this The current object, for fluid interface
+     * <code>
+     * $book = new Book();
+     * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
+     * </code>
+     *
+     * You can specify the key type of the array by additionally passing one
+     * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
+     * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
+     * The default key type is the column's TableMap::TYPE_PHPNAME.
+     *
+     * @param mixed $parser A AbstractParser instance,
+     *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
+     * @param string $data The source data to import from
+     * @param string $keyType The type of keys the array uses.
+     *
+     * @return $this The current object, for fluid interface
      */
     public function importFrom($parser, string $data, string $keyType = TableMap::TYPE_PHPNAME)
     {
-        if ( ! $parser instanceof AbstractParser) {
+        if (!$parser instanceof AbstractParser) {
             $parser = AbstractParser::getParser($parser);
         }
 
@@ -1254,7 +1216,7 @@ abstract class Classroom implements ActiveRecordInterface
     /**
      * Generic method to set the primary key (id column).
      *
-     * @param  int|null  $key  Primary key.
+     * @param int|null $key Primary key.
      * @return void
      */
     public function setPrimaryKey(?int $key = null): void
@@ -1278,9 +1240,9 @@ abstract class Classroom implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param  object  $copyObj  An object of \flapjack\attend\database\Classroom (or compatible) type.
-     * @param  bool  $deepCopy  Whether to also copy all rows that refer (by fkey) to the current row.
-     * @param  bool  $makeNew  Whether to reset autoincrement PKs and make the object new.
+     * @param object $copyObj An object of \flapjack\attend\database\Classroom (or compatible) type.
+     * @param bool $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+     * @param bool $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws \Propel\Runtime\Exception\PropelException
      * @return void
      */
@@ -1318,14 +1280,14 @@ abstract class Classroom implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param  bool  $deepCopy  Whether to also copy all rows that refer (by fkey) to the current row.
+     * @param bool $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @return \flapjack\attend\database\Classroom Clone of current object.
      * @throws \Propel\Runtime\Exception\PropelException
      */
     public function copy(bool $deepCopy = false)
     {
         // we use get_class(), because this might be a subclass
-        $clazz   = get_class($this);
+        $clazz = get_class($this);
         $copyObj = new $clazz();
         $this->copyInto($copyObj, $deepCopy);
 
@@ -1338,7 +1300,7 @@ abstract class Classroom implements ActiveRecordInterface
      * Avoids crafting an 'init[$relationName]s' method name
      * that wouldn't work when StandardEnglishPluralizer is used.
      *
-     * @param  string  $relationName  The name of the relation to initialize
+     * @param string $relationName The name of the relation to initialize
      * @return void
      */
     public function initRelation($relationName): void
@@ -1382,14 +1344,14 @@ abstract class Classroom implements ActiveRecordInterface
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
-     * @param  bool  $overrideExisting  If set to true, the method call initializes
+     * @param bool $overrideExisting If set to true, the method call initializes
      *                                        the collection even if it is not empty
      *
      * @return void
      */
     public function initStudents(bool $overrideExisting = true): void
     {
-        if (null !== $this->collStudents && ! $overrideExisting) {
+        if (null !== $this->collStudents && !$overrideExisting) {
             return;
         }
 
@@ -1408,8 +1370,8 @@ abstract class Classroom implements ActiveRecordInterface
      * If this ChildClassroom is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
-     * @param  Criteria  $criteria  optional Criteria object to narrow the query
-     * @param  ConnectionInterface  $con  optional connection object
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param ConnectionInterface $con optional connection object
      * @return ObjectCollection|ChildStudent[] List of ChildStudent objects
      * @phpstan-return ObjectCollection&\Traversable<ChildStudent> List of ChildStudent objects
      * @throws \Propel\Runtime\Exception\PropelException
@@ -1473,8 +1435,8 @@ abstract class Classroom implements ActiveRecordInterface
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param  Collection  $students  A Propel collection.
-     * @param  ConnectionInterface  $con  Optional connection object
+     * @param Collection $students A Propel collection.
+     * @param ConnectionInterface $con Optional connection object
      * @return $this The current object (for fluent API support)
      */
     public function setStudents(Collection $students, ?ConnectionInterface $con = null)
@@ -1503,25 +1465,21 @@ abstract class Classroom implements ActiveRecordInterface
     /**
      * Returns the number of related Student objects.
      *
-     * @param  Criteria  $criteria
-     * @param  bool  $distinct
-     * @param  ConnectionInterface  $con
-     *
+     * @param Criteria $criteria
+     * @param bool $distinct
+     * @param ConnectionInterface $con
      * @return int Count of related Student objects.
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function countStudents(
-        ?Criteria $criteria = null,
-        bool $distinct = false,
-        ?ConnectionInterface $con = null
-    ): int {
-        $partial = $this->collStudentsPartial && ! $this->isNew();
+    public function countStudents(?Criteria $criteria = null, bool $distinct = false, ?ConnectionInterface $con = null): int
+    {
+        $partial = $this->collStudentsPartial && !$this->isNew();
         if (null === $this->collStudents || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collStudents) {
                 return 0;
             }
 
-            if ($partial && ! $criteria) {
+            if ($partial && !$criteria) {
                 return count($this->getStudents());
             }
 
@@ -1542,7 +1500,7 @@ abstract class Classroom implements ActiveRecordInterface
      * Method called to associate a ChildStudent object to this object
      * through the ChildStudent foreign key attribute.
      *
-     * @param  ChildStudent  $l  ChildStudent
+     * @param ChildStudent $l ChildStudent
      * @return $this The current object (for fluent API support)
      */
     public function addStudent(ChildStudent $l)
@@ -1568,12 +1526,12 @@ abstract class Classroom implements ActiveRecordInterface
      */
     protected function doAddStudent(ChildStudent $student): void
     {
-        $this->collStudents[] = $student;
+        $this->collStudents[]= $student;
         $student->setClassroom($this);
     }
 
     /**
-     * @param  ChildStudent  $student  The ChildStudent object to remove.
+     * @param ChildStudent $student The ChildStudent object to remove.
      * @return $this The current object (for fluent API support)
      */
     public function removeStudent(ChildStudent $student)
@@ -1585,7 +1543,7 @@ abstract class Classroom implements ActiveRecordInterface
                 $this->studentsScheduledForDeletion = clone $this->collStudents;
                 $this->studentsScheduledForDeletion->clear();
             }
-            $this->studentsScheduledForDeletion[] = clone $student;
+            $this->studentsScheduledForDeletion[]= clone $student;
             $student->setClassroom(null);
         }
 
@@ -1601,11 +1559,11 @@ abstract class Classroom implements ActiveRecordInterface
      */
     public function clear()
     {
-        $this->id            = null;
-        $this->label         = null;
-        $this->ordering      = null;
-        $this->created_at    = null;
-        $this->updated_at    = null;
+        $this->id = null;
+        $this->label = null;
+        $this->ordering = null;
+        $this->created_at = null;
+        $this->updated_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -1622,7 +1580,7 @@ abstract class Classroom implements ActiveRecordInterface
      * This method is used to reset all php object references (not the actual reference in the database).
      * Necessary for object serialisation.
      *
-     * @param  bool  $deep  Whether to also clear the references on all referrer objects.
+     * @param bool $deep Whether to also clear the references on all referrer objects.
      * @return $this
      */
     public function clearAllReferences(bool $deep = false)
@@ -1646,84 +1604,84 @@ abstract class Classroom implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string)$this->exportTo(ClassroomTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(ClassroomTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**
      * Code to be run before persisting the object
-     * @param  ConnectionInterface|null  $con
+     * @param ConnectionInterface|null $con
      * @return bool
      */
     public function preSave(?ConnectionInterface $con = null): bool
     {
-        return true;
+                return true;
     }
 
     /**
      * Code to be run after persisting the object
-     * @param  ConnectionInterface|null  $con
+     * @param ConnectionInterface|null $con
      * @return void
      */
     public function postSave(?ConnectionInterface $con = null): void
     {
-    }
+            }
 
     /**
      * Code to be run before inserting to database
-     * @param  ConnectionInterface|null  $con
+     * @param ConnectionInterface|null $con
      * @return bool
      */
     public function preInsert(?ConnectionInterface $con = null): bool
     {
-        return true;
+                return true;
     }
 
     /**
      * Code to be run after inserting to database
-     * @param  ConnectionInterface|null  $con
+     * @param ConnectionInterface|null $con
      * @return void
      */
     public function postInsert(?ConnectionInterface $con = null): void
     {
-    }
+            }
 
     /**
      * Code to be run before updating the object in database
-     * @param  ConnectionInterface|null  $con
+     * @param ConnectionInterface|null $con
      * @return bool
      */
     public function preUpdate(?ConnectionInterface $con = null): bool
     {
-        return true;
+                return true;
     }
 
     /**
      * Code to be run after updating the object in database
-     * @param  ConnectionInterface|null  $con
+     * @param ConnectionInterface|null $con
      * @return void
      */
     public function postUpdate(?ConnectionInterface $con = null): void
     {
-    }
+            }
 
     /**
      * Code to be run before deleting the object in database
-     * @param  ConnectionInterface|null  $con
+     * @param ConnectionInterface|null $con
      * @return bool
      */
     public function preDelete(?ConnectionInterface $con = null): bool
     {
-        return true;
+                return true;
     }
 
     /**
      * Code to be run after deleting the object in database
-     * @param  ConnectionInterface|null  $con
+     * @param ConnectionInterface|null $con
      * @return void
      */
     public function postDelete(?ConnectionInterface $con = null): void
     {
-    }
+            }
 
 
     /**
@@ -1732,8 +1690,8 @@ abstract class Classroom implements ActiveRecordInterface
      * Provides magic import/export method support (fromXML()/toXML(), fromYAML()/toYAML(), etc.).
      * Allows to define default __call() behavior if you overwrite __call()
      *
-     * @param  string  $name
-     * @param  mixed  $params
+     * @param string $name
+     * @param mixed $params
      *
      * @return array|string
      */
@@ -1752,17 +1710,17 @@ abstract class Classroom implements ActiveRecordInterface
         }
 
         if (0 === strpos($name, 'from')) {
-            $format    = substr($name, 4);
+            $format = substr($name, 4);
             $inputData = $params[0];
-            $keyType   = $params[1] ?? TableMap::TYPE_PHPNAME;
+            $keyType = $params[1] ?? TableMap::TYPE_PHPNAME;
 
             return $this->importFrom($format, $inputData, $keyType);
         }
 
         if (0 === strpos($name, 'to')) {
-            $format                 = substr($name, 2);
+            $format = substr($name, 2);
             $includeLazyLoadColumns = $params[0] ?? true;
-            $keyType                = $params[1] ?? TableMap::TYPE_PHPNAME;
+            $keyType = $params[1] ?? TableMap::TYPE_PHPNAME;
 
             return $this->exportTo($format, $includeLazyLoadColumns, $keyType);
         }

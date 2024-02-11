@@ -85,23 +85,20 @@ abstract class LoginAttemptQuery extends ModelCriteria
     /**
      * Initializes internal state of \flapjack\attend\database\Base\LoginAttemptQuery object.
      *
-     * @param  string  $dbName  The database name
-     * @param  string  $modelName  The phpName of a model, e.g. 'Book'
-     * @param  string  $modelAlias  The alias for the model in this query, e.g. 'b'
+     * @param string $dbName The database name
+     * @param string $modelName The phpName of a model, e.g. 'Book'
+     * @param string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct(
-        $dbName = 'attend',
-        $modelName = '\\flapjack\\attend\\database\\LoginAttempt',
-        $modelAlias = null
-    ) {
+    public function __construct($dbName = 'attend', $modelName = '\\flapjack\\attend\\database\\LoginAttempt', $modelAlias = null)
+    {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
      * Returns a new ChildLoginAttemptQuery object.
      *
-     * @param  string  $modelAlias  The alias of a model in the query
-     * @param  Criteria  $criteria  Optional Criteria to build the query from
+     * @param string $modelAlias The alias of a model in the query
+     * @param Criteria $criteria Optional Criteria to build the query from
      *
      * @return ChildLoginAttemptQuery
      */
@@ -155,9 +152,7 @@ abstract class LoginAttemptQuery extends ModelCriteria
             return $this->findPkComplex($key, $con);
         }
 
-        if ((null !== ($obj = LoginAttemptTableMap::getInstanceFromPool(
-                null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string)$key : $key
-            )))) {
+        if ((null !== ($obj = LoginAttemptTableMap::getInstanceFromPool(null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key)))) {
             // the object is already in the instance pool
             return $obj;
         }
@@ -169,12 +164,12 @@ abstract class LoginAttemptQuery extends ModelCriteria
      * Find object by primary key using raw SQL to go fast.
      * Bypass doSelect() and the object formatter by using generated code.
      *
-     * @param  mixed  $key  Primary key to use for the query
-     * @param  ConnectionInterface  $con  A connection object
+     * @param mixed $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
-     * @return ChildLoginAttempt A model object, or null if the key is not found
      * @throws \Propel\Runtime\Exception\PropelException
      *
+     * @return ChildLoginAttempt A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
@@ -192,10 +187,7 @@ abstract class LoginAttemptQuery extends ModelCriteria
             /** @var ChildLoginAttempt $obj */
             $obj = new ChildLoginAttempt();
             $obj->hydrate($row);
-            LoginAttemptTableMap::addInstanceToPool(
-                $obj,
-                null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string)$key : $key
-            );
+            LoginAttemptTableMap::addInstanceToPool($obj, null === $key || is_scalar($key) || is_callable([$key, '__toString']) ? (string) $key : $key);
         }
         $stmt->closeCursor();
 
@@ -226,8 +218,8 @@ abstract class LoginAttemptQuery extends ModelCriteria
      * <code>
      * $objs = $c->findPks(array(12, 56, 832), $con);
      * </code>
-     * @param  array  $keys  Primary keys to use for the query
-     * @param  ConnectionInterface  $con  an optional connection object
+     * @param array $keys Primary keys to use for the query
+     * @param ConnectionInterface $con an optional connection object
      *
      * @return Collection|array|mixed the list of results, formatted by the current formatter
      */
@@ -248,7 +240,7 @@ abstract class LoginAttemptQuery extends ModelCriteria
     /**
      * Filter the query by primary key
      *
-     * @param  mixed  $key  Primary key to use for the query
+     * @param mixed $key Primary key to use for the query
      *
      * @return $this The current query, for fluid interface
      */
@@ -263,7 +255,7 @@ abstract class LoginAttemptQuery extends ModelCriteria
     /**
      * Filter the query by a list of primary keys
      *
-     * @param  array|int  $keys  The list of primary key to use for the query
+     * @param array|int $keys The list of primary key to use for the query
      *
      * @return $this The current query, for fluid interface
      */
@@ -285,11 +277,11 @@ abstract class LoginAttemptQuery extends ModelCriteria
      * $query->filterById(array('min' => 12)); // WHERE id > 12
      * </code>
      *
-     * @param  mixed  $id  The value to use as filter.
+     * @param mixed $id The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
@@ -323,18 +315,16 @@ abstract class LoginAttemptQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByAttemptedAt('2011-03-14'); // WHERE attempted_at = '2011-03-14'
-     * $query->filterByAttemptedAt('now'); // WHERE attempted_at = '2011-03-14'
-     * $query->filterByAttemptedAt(array('max' => 'yesterday')); // WHERE attempted_at > '2011-03-13'
+     * $query->filterByAttemptedAt(1234); // WHERE attempted_at = 1234
+     * $query->filterByAttemptedAt(array(12, 34)); // WHERE attempted_at IN (12, 34)
+     * $query->filterByAttemptedAt(array('min' => 12)); // WHERE attempted_at > 12
      * </code>
      *
-     * @param  mixed  $attemptedAt  The value to use as filter.
-     *              Values can be integers (unix timestamps), DateTime objects, or strings.
-     *              Empty strings are treated as NULL.
+     * @param mixed $attemptedAt The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
@@ -343,11 +333,7 @@ abstract class LoginAttemptQuery extends ModelCriteria
         if (is_array($attemptedAt)) {
             $useMinMax = false;
             if (isset($attemptedAt['min'])) {
-                $this->addUsingAlias(
-                    LoginAttemptTableMap::COL_ATTEMPTED_AT,
-                    $attemptedAt['min'],
-                    Criteria::GREATER_EQUAL
-                );
+                $this->addUsingAlias(LoginAttemptTableMap::COL_ATTEMPTED_AT, $attemptedAt['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($attemptedAt['max'])) {
@@ -377,8 +363,8 @@ abstract class LoginAttemptQuery extends ModelCriteria
      * $query->filterByUsername(['foo', 'bar']); // WHERE username IN ('foo', 'bar')
      * </code>
      *
-     * @param  string|string[]  $username  The value to use as filter.
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|string[] $username The value to use as filter.
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
@@ -404,12 +390,12 @@ abstract class LoginAttemptQuery extends ModelCriteria
      * $query->filterByPass('yes'); // WHERE pass = true
      * </code>
      *
-     * @param  bool|string  $pass  The value to use as filter.
+     * @param bool|string $pass The value to use as filter.
      *              Non-boolean arguments are converted using the following rules:
      *                * 1, '1', 'true',  'on',  and 'yes' are converted to boolean true
      *                * 0, '0', 'false', 'off', and 'no'  are converted to boolean false
      *              Check on string values is case insensitive (so 'FaLsE' is seen as 'false').
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
@@ -434,8 +420,8 @@ abstract class LoginAttemptQuery extends ModelCriteria
      * $query->filterByNote(['foo', 'bar']); // WHERE note IN ('foo', 'bar')
      * </code>
      *
-     * @param  string|string[]  $note  The value to use as filter.
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|string[] $note The value to use as filter.
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
@@ -457,18 +443,16 @@ abstract class LoginAttemptQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByLoggedOutAt('2011-03-14'); // WHERE logged_out_at = '2011-03-14'
-     * $query->filterByLoggedOutAt('now'); // WHERE logged_out_at = '2011-03-14'
-     * $query->filterByLoggedOutAt(array('max' => 'yesterday')); // WHERE logged_out_at > '2011-03-13'
+     * $query->filterByLoggedOutAt(1234); // WHERE logged_out_at = 1234
+     * $query->filterByLoggedOutAt(array(12, 34)); // WHERE logged_out_at IN (12, 34)
+     * $query->filterByLoggedOutAt(array('min' => 12)); // WHERE logged_out_at > 12
      * </code>
      *
-     * @param  mixed  $loggedOutAt  The value to use as filter.
-     *              Values can be integers (unix timestamps), DateTime objects, or strings.
-     *              Empty strings are treated as NULL.
+     * @param mixed $loggedOutAt The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
@@ -477,19 +461,11 @@ abstract class LoginAttemptQuery extends ModelCriteria
         if (is_array($loggedOutAt)) {
             $useMinMax = false;
             if (isset($loggedOutAt['min'])) {
-                $this->addUsingAlias(
-                    LoginAttemptTableMap::COL_LOGGED_OUT_AT,
-                    $loggedOutAt['min'],
-                    Criteria::GREATER_EQUAL
-                );
+                $this->addUsingAlias(LoginAttemptTableMap::COL_LOGGED_OUT_AT, $loggedOutAt['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
             if (isset($loggedOutAt['max'])) {
-                $this->addUsingAlias(
-                    LoginAttemptTableMap::COL_LOGGED_OUT_AT,
-                    $loggedOutAt['max'],
-                    Criteria::LESS_EQUAL
-                );
+                $this->addUsingAlias(LoginAttemptTableMap::COL_LOGGED_OUT_AT, $loggedOutAt['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -508,7 +484,7 @@ abstract class LoginAttemptQuery extends ModelCriteria
     /**
      * Exclude object from result
      *
-     * @param  ChildLoginAttempt  $loginAttempt  Object to remove from the list of results
+     * @param ChildLoginAttempt $loginAttempt Object to remove from the list of results
      *
      * @return $this The current query, for fluid interface
      */
@@ -551,7 +527,7 @@ abstract class LoginAttemptQuery extends ModelCriteria
     /**
      * Performs a DELETE on the database based on the current ModelCriteria
      *
-     * @param  ConnectionInterface  $con  the connection to use
+     * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
      *                         if supported by native driver or if emulated using Propel.
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be

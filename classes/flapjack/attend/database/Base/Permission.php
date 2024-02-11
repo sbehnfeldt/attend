@@ -154,14 +154,13 @@ abstract class Permission implements ActiveRecordInterface
      */
     public function isModified(): bool
     {
-        return ! ! $this->modifiedColumns;
+        return !!$this->modifiedColumns;
     }
 
     /**
      * Has specified column been modified?
      *
-     * @param  string  $col  column fully qualified name (TableMap::TYPE_COLNAME), e.g. Book::AUTHOR_ID
-     *
+     * @param string $col column fully qualified name (TableMap::TYPE_COLNAME), e.g. Book::AUTHOR_ID
      * @return bool True if $col has been modified.
      */
     public function isColumnModified(string $col): bool
@@ -194,7 +193,7 @@ abstract class Permission implements ActiveRecordInterface
      * Setter for the isNew attribute.  This method will be called
      * by Propel-generated children and objects.
      *
-     * @param  bool  $b  the state of the object.
+     * @param bool $b the state of the object.
      */
     public function setNew(bool $b): void
     {
@@ -212,7 +211,7 @@ abstract class Permission implements ActiveRecordInterface
 
     /**
      * Specify whether this object has been deleted.
-     * @param  bool  $b  The deleted state of this object.
+     * @param bool $b The deleted state of this object.
      * @return void
      */
     public function setDeleted(bool $b): void
@@ -222,7 +221,7 @@ abstract class Permission implements ActiveRecordInterface
 
     /**
      * Sets the modified state for the object to be false.
-     * @param  string  $col  If supplied, only the specified column is reset.
+     * @param string $col If supplied, only the specified column is reset.
      * @return void
      */
     public function resetModified(?string $col = null): void
@@ -239,12 +238,12 @@ abstract class Permission implements ActiveRecordInterface
      * <code>obj</code> is an instance of <code>Permission</code>, delegates to
      * <code>equals(Permission)</code>.  Otherwise, returns <code>false</code>.
      *
-     * @param  mixed  $obj  The object to compare to.
+     * @param mixed $obj The object to compare to.
      * @return bool Whether equal to the object specified.
      */
     public function equals($obj): bool
     {
-        if ( ! $obj instanceof static) {
+        if (!$obj instanceof static) {
             return false;
         }
 
@@ -272,7 +271,7 @@ abstract class Permission implements ActiveRecordInterface
     /**
      * Checks the existence of a virtual column in this object
      *
-     * @param  string  $name  The virtual column name
+     * @param string $name The virtual column name
      * @return bool
      */
     public function hasVirtualColumn(string $name): bool
@@ -283,14 +282,14 @@ abstract class Permission implements ActiveRecordInterface
     /**
      * Get the value of a virtual column in this object
      *
-     * @param  string  $name  The virtual column name
+     * @param string $name The virtual column name
      * @return mixed
      *
      * @throws \Propel\Runtime\Exception\PropelException
      */
     public function getVirtualColumn(string $name)
     {
-        if ( ! $this->hasVirtualColumn($name)) {
+        if (!$this->hasVirtualColumn($name)) {
             throw new PropelException(sprintf('Cannot get value of nonexistent virtual column `%s`.', $name));
         }
 
@@ -300,8 +299,8 @@ abstract class Permission implements ActiveRecordInterface
     /**
      * Set the value of a virtual column in this object
      *
-     * @param  string  $name  The virtual column name
-     * @param  mixed  $value  The value to give to the virtual column
+     * @param string $name The virtual column name
+     * @param mixed $value The value to give to the virtual column
      *
      * @return $this The current object, for fluid interface
      */
@@ -315,8 +314,8 @@ abstract class Permission implements ActiveRecordInterface
     /**
      * Logs a message using Propel::log().
      *
-     * @param  string  $msg
-     * @param  int  $priority  One of the Propel::LOG_* logging levels
+     * @param string $msg
+     * @param int $priority One of the Propel::LOG_* logging levels
      * @return void
      */
     protected function log(string $msg, int $priority = Propel::LOG_INFO): void
@@ -332,18 +331,14 @@ abstract class Permission implements ActiveRecordInterface
      *  => {"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
      * </code>
      *
-     * @param  \Propel\Runtime\Parser\AbstractParser|string  $parser  An AbstractParser instance, or a format name ('XML', 'YAML', 'JSON', 'CSV')
-     * @param  bool  $includeLazyLoadColumns  (optional) Whether to include lazy load(ed) columns. Defaults to TRUE.
-     * @param  string  $keyType  (optional) One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME, TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM. Defaults to TableMap::TYPE_PHPNAME.
-     *
+     * @param \Propel\Runtime\Parser\AbstractParser|string $parser An AbstractParser instance, or a format name ('XML', 'YAML', 'JSON', 'CSV')
+     * @param bool $includeLazyLoadColumns (optional) Whether to include lazy load(ed) columns. Defaults to TRUE.
+     * @param string $keyType (optional) One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME, TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM. Defaults to TableMap::TYPE_PHPNAME.
      * @return string The exported data
      */
-    public function exportTo(
-        $parser,
-        bool $includeLazyLoadColumns = true,
-        string $keyType = TableMap::TYPE_PHPNAME
-    ): string {
-        if ( ! $parser instanceof AbstractParser) {
+    public function exportTo($parser, bool $includeLazyLoadColumns = true, string $keyType = TableMap::TYPE_PHPNAME): string
+    {
+        if (!$parser instanceof AbstractParser) {
             $parser = AbstractParser::getParser($parser);
         }
 
@@ -360,14 +355,11 @@ abstract class Permission implements ActiveRecordInterface
     {
         $this->clearAllReferences();
 
-        $cls                    = new \ReflectionClass($this);
-        $propertyNames          = [];
-        $serializableProperties = array_diff(
-            $cls->getProperties(),
-            $cls->getProperties(\ReflectionProperty::IS_STATIC)
-        );
+        $cls = new \ReflectionClass($this);
+        $propertyNames = [];
+        $serializableProperties = array_diff($cls->getProperties(), $cls->getProperties(\ReflectionProperty::IS_STATIC));
 
-        foreach ($serializableProperties as $property) {
+        foreach($serializableProperties as $property) {
             $propertyNames[] = $property->getName();
         }
 
@@ -407,7 +399,7 @@ abstract class Permission implements ActiveRecordInterface
     /**
      * Set the value of [id] column.
      *
-     * @param  int  $v  New value
+     * @param int $v New value
      * @return $this The current object (for fluent API support)
      */
     public function setId($v)
@@ -417,7 +409,7 @@ abstract class Permission implements ActiveRecordInterface
         }
 
         if ($this->id !== $v) {
-            $this->id                                          = $v;
+            $this->id = $v;
             $this->modifiedColumns[PermissionTableMap::COL_ID] = true;
         }
 
@@ -427,7 +419,7 @@ abstract class Permission implements ActiveRecordInterface
     /**
      * Set the value of [slug] column.
      * Human-readable mnemonic for the permission name
-     * @param  string  $v  New value
+     * @param string $v New value
      * @return $this The current object (for fluent API support)
      */
     public function setSlug($v)
@@ -437,7 +429,7 @@ abstract class Permission implements ActiveRecordInterface
         }
 
         if ($this->slug !== $v) {
-            $this->slug                                          = $v;
+            $this->slug = $v;
             $this->modifiedColumns[PermissionTableMap::COL_SLUG] = true;
         }
 
@@ -447,7 +439,7 @@ abstract class Permission implements ActiveRecordInterface
     /**
      * Set the value of [description] column.
      * Description of what the permission permits
-     * @param  string  $v  New value
+     * @param string $v New value
      * @return $this The current object (for fluent API support)
      */
     public function setDescription($v)
@@ -457,7 +449,7 @@ abstract class Permission implements ActiveRecordInterface
         }
 
         if ($this->description !== $v) {
-            $this->description                                          = $v;
+            $this->description = $v;
             $this->modifiedColumns[PermissionTableMap::COL_DESCRIPTION] = true;
         }
 
@@ -474,9 +466,9 @@ abstract class Permission implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues(): bool
     {
-        if ($this->description !== '') {
-            return false;
-        }
+            if ($this->description !== '') {
+                return false;
+            }
 
         // otherwise, everything was equal, so return TRUE
         return true;
@@ -490,43 +482,28 @@ abstract class Permission implements ActiveRecordInterface
      * for results of JOIN queries where the resultset row includes columns from two or
      * more tables.
      *
-     * @param  array  $row  The row returned by DataFetcher->fetch().
-     * @param  int  $startcol  0-based offset column which indicates which resultset column to start with.
-     * @param  bool  $rehydrate  Whether this object is being re-hydrated from the database.
-     * @param  string  $indexType  The index type of $row. Mostly DataFetcher->getIndexType().
-     * One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * @param array $row The row returned by DataFetcher->fetch().
+     * @param int $startcol 0-based offset column which indicates which resultset column to start with.
+     * @param bool $rehydrate Whether this object is being re-hydrated from the database.
+     * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
+                                  One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                            TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @return int next starting column
      * @throws \Propel\Runtime\Exception\PropelException - Any caught Exception will be rewrapped as a PropelException.
      */
-    public function hydrate(
-        array $row,
-        int $startcol = 0,
-        bool $rehydrate = false,
-        string $indexType = TableMap::TYPE_NUM
-    ): int {
+    public function hydrate(array $row, int $startcol = 0, bool $rehydrate = false, string $indexType = TableMap::TYPE_NUM): int
+    {
         try {
-            $col      = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : PermissionTableMap::translateFieldName(
-                'Id',
-                TableMap::TYPE_PHPNAME,
-                $indexType
-            )];
-            $this->id = (null !== $col) ? (int)$col : null;
 
-            $col        = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : PermissionTableMap::translateFieldName(
-                'Slug',
-                TableMap::TYPE_PHPNAME,
-                $indexType
-            )];
-            $this->slug = (null !== $col) ? (string)$col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 0 + $startcol : PermissionTableMap::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->id = (null !== $col) ? (int) $col : null;
 
-            $col               = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : PermissionTableMap::translateFieldName(
-                'Description',
-                TableMap::TYPE_PHPNAME,
-                $indexType
-            )];
-            $this->description = (null !== $col) ? (string)$col : null;
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 1 + $startcol : PermissionTableMap::translateFieldName('Slug', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->slug = (null !== $col) ? (string) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 2 + $startcol : PermissionTableMap::translateFieldName('Description', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->description = (null !== $col) ? (string) $col : null;
 
             $this->resetModified();
             $this->setNew(false);
@@ -553,8 +530,8 @@ abstract class Permission implements ActiveRecordInterface
      * the base method from the overridden method (i.e. parent::ensureConsistency()),
      * in case your model changes.
      *
-     * @return void
      * @throws \Propel\Runtime\Exception\PropelException
+     * @return void
      */
     public function ensureConsistency(): void
     {
@@ -565,8 +542,8 @@ abstract class Permission implements ActiveRecordInterface
      *
      * This will only work if the object has been saved and has a valid primary key set.
      *
-     * @param  bool  $deep  (optional) Whether to also de-associated any related objects.
-     * @param  ConnectionInterface  $con  (optional) The ConnectionInterface connection to use.
+     * @param bool $deep (optional) Whether to also de-associated any related objects.
+     * @param ConnectionInterface $con (optional) The ConnectionInterface connection to use.
      * @return void
      * @throws \Propel\Runtime\Exception\PropelException - if this object is deleted, unsaved or doesn't have pk match in db
      */
@@ -587,12 +564,10 @@ abstract class Permission implements ActiveRecordInterface
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $dataFetcher = ChildPermissionQuery::create(null, $this->buildPkeyCriteria())->setFormatter(
-            ModelCriteria::FORMAT_STATEMENT
-        )->find($con);
-        $row         = $dataFetcher->fetch();
+        $dataFetcher = ChildPermissionQuery::create(null, $this->buildPkeyCriteria())->setFormatter(ModelCriteria::FORMAT_STATEMENT)->find($con);
+        $row = $dataFetcher->fetch();
         $dataFetcher->close();
-        if ( ! $row) {
+        if (!$row) {
             throw new PropelException('Cannot find matching row in the database to reload object values.');
         }
         $this->hydrate($row, 0, true, $dataFetcher->getIndexType()); // rehydrate
@@ -609,7 +584,7 @@ abstract class Permission implements ActiveRecordInterface
     /**
      * Removes this object from datastore and sets delete attribute.
      *
-     * @param  ConnectionInterface  $con
+     * @param ConnectionInterface $con
      * @return void
      * @throws \Propel\Runtime\Exception\PropelException
      * @see Permission::setDeleted()
@@ -627,8 +602,8 @@ abstract class Permission implements ActiveRecordInterface
 
         $con->transaction(function () use ($con) {
             $deleteQuery = ChildPermissionQuery::create()
-                                               ->filterByPrimaryKey($this->getPrimaryKey());
-            $ret         = $this->preDelete($con);
+                ->filterByPrimaryKey($this->getPrimaryKey());
+            $ret = $this->preDelete($con);
             if ($ret) {
                 $deleteQuery->delete($con);
                 $this->postDelete($con);
@@ -645,7 +620,7 @@ abstract class Permission implements ActiveRecordInterface
      * method.  This method wraps all precipitate database operations in a
      * single transaction.
      *
-     * @param  ConnectionInterface  $con
+     * @param ConnectionInterface $con
      * @return int The number of rows affected by this insert/update and any referring fk objects' save() operations.
      * @throws \Propel\Runtime\Exception\PropelException
      * @see doSave()
@@ -665,7 +640,7 @@ abstract class Permission implements ActiveRecordInterface
         }
 
         return $con->transaction(function () use ($con) {
-            $ret      = $this->preSave($con);
+            $ret = $this->preSave($con);
             $isInsert = $this->isNew();
             if ($isInsert) {
                 $ret = $ret && $this->preInsert($con);
@@ -695,7 +670,7 @@ abstract class Permission implements ActiveRecordInterface
      * If the object is new, it inserts it; otherwise an update is performed.
      * All related objects are also updated in this method.
      *
-     * @param  ConnectionInterface  $con
+     * @param ConnectionInterface $con
      * @return int The number of rows affected by this insert/update and any referring fk objects' save() operations.
      * @throws \Propel\Runtime\Exception\PropelException
      * @see save()
@@ -703,7 +678,7 @@ abstract class Permission implements ActiveRecordInterface
     protected function doSave(ConnectionInterface $con): int
     {
         $affectedRows = 0; // initialize var to track total num of affected rows
-        if ( ! $this->alreadyInSave) {
+        if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
             if ($this->isNew() || $this->isModified()) {
@@ -718,42 +693,34 @@ abstract class Permission implements ActiveRecordInterface
             }
 
             if ($this->groupPermissionsScheduledForDeletion !== null) {
-                if ( ! $this->groupPermissionsScheduledForDeletion->isEmpty()) {
+                if (!$this->groupPermissionsScheduledForDeletion->isEmpty()) {
                     \flapjack\attend\database\GroupPermissionQuery::create()
-                                                                  ->filterByPrimaryKeys(
-                                                                      $this->groupPermissionsScheduledForDeletion->getPrimaryKeys(
-                                                                          false
-                                                                      )
-                                                                  )
-                                                                  ->delete($con);
+                        ->filterByPrimaryKeys($this->groupPermissionsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
                     $this->groupPermissionsScheduledForDeletion = null;
                 }
             }
 
             if ($this->collGroupPermissions !== null) {
                 foreach ($this->collGroupPermissions as $referrerFK) {
-                    if ( ! $referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
             }
 
             if ($this->individualPermissionsScheduledForDeletion !== null) {
-                if ( ! $this->individualPermissionsScheduledForDeletion->isEmpty()) {
+                if (!$this->individualPermissionsScheduledForDeletion->isEmpty()) {
                     \flapjack\attend\database\IndividualPermissionQuery::create()
-                                                                       ->filterByPrimaryKeys(
-                                                                           $this->individualPermissionsScheduledForDeletion->getPrimaryKeys(
-                                                                               false
-                                                                           )
-                                                                       )
-                                                                       ->delete($con);
+                        ->filterByPrimaryKeys($this->individualPermissionsScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
                     $this->individualPermissionsScheduledForDeletion = null;
                 }
             }
 
             if ($this->collIndividualPermissions !== null) {
                 foreach ($this->collIndividualPermissions as $referrerFK) {
-                    if ( ! $referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
                 }
@@ -769,7 +736,7 @@ abstract class Permission implements ActiveRecordInterface
     /**
      * Insert the row in the database.
      *
-     * @param  ConnectionInterface  $con
+     * @param ConnectionInterface $con
      *
      * @throws \Propel\Runtime\Exception\PropelException
      * @see doSave()
@@ -784,7 +751,7 @@ abstract class Permission implements ActiveRecordInterface
             throw new PropelException('Cannot insert a value for auto-increment primary key (' . PermissionTableMap::COL_ID . ')');
         }
 
-        // check the columns in natural order for more readable SQL queries
+         // check the columns in natural order for more readable SQL queries
         if ($this->isColumnModified(PermissionTableMap::COL_ID)) {
             $modifiedColumns[':p' . $index++]  = 'id';
         }
@@ -792,7 +759,7 @@ abstract class Permission implements ActiveRecordInterface
             $modifiedColumns[':p' . $index++]  = 'slug';
         }
         if ($this->isColumnModified(PermissionTableMap::COL_DESCRIPTION)) {
-            $modifiedColumns[':p' . $index++] = 'description';
+            $modifiedColumns[':p' . $index++]  = 'description';
         }
 
         $sql = sprintf(
@@ -838,7 +805,7 @@ abstract class Permission implements ActiveRecordInterface
     /**
      * Update the row in the database.
      *
-     * @param  ConnectionInterface  $con
+     * @param ConnectionInterface $con
      *
      * @return int Number of updated rows
      * @see doSave()
@@ -854,8 +821,8 @@ abstract class Permission implements ActiveRecordInterface
     /**
      * Retrieves a field from the object by name passed in as a string.
      *
-     * @param  string  $name  name
-     * @param  string  $type  The type of fieldname the $name is of:
+     * @param string $name name
+     * @param string $type The type of fieldname the $name is of:
      *                     one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                     TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                     Defaults to TableMap::TYPE_PHPNAME.
@@ -863,7 +830,7 @@ abstract class Permission implements ActiveRecordInterface
      */
     public function getByName(string $name, string $type = TableMap::TYPE_PHPNAME)
     {
-        $pos   = PermissionTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
+        $pos = PermissionTableMap::translateFieldName($name, $type, TableMap::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -873,7 +840,7 @@ abstract class Permission implements ActiveRecordInterface
      * Retrieves a field from the object by Position as specified in the xml schema.
      * Zero-based.
      *
-     * @param  int  $pos  Position in XML schema
+     * @param int $pos Position in XML schema
      * @return mixed Value of field at $pos
      */
     public function getByPosition(int $pos)
@@ -899,32 +866,28 @@ abstract class Permission implements ActiveRecordInterface
      * You can specify the key type of the array by passing one of the class
      * type constants.
      *
-     * @param  string  $keyType  (optional) One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
+     * @param string $keyType (optional) One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
      *                    TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                    Defaults to TableMap::TYPE_PHPNAME.
-     * @param  bool  $includeLazyLoadColumns  (optional) Whether to include lazy loaded columns. Defaults to TRUE.
-     * @param  array  $alreadyDumpedObjects  List of objects to skip to avoid recursion
-     * @param  bool  $includeForeignObjects  (optional) Whether to include hydrated related objects. Default to FALSE.
+     * @param bool $includeLazyLoadColumns (optional) Whether to include lazy loaded columns. Defaults to TRUE.
+     * @param array $alreadyDumpedObjects List of objects to skip to avoid recursion
+     * @param bool $includeForeignObjects (optional) Whether to include hydrated related objects. Default to FALSE.
      *
      * @return array An associative array containing the field names (as keys) and field values
      */
-    public function toArray(
-        string $keyType = TableMap::TYPE_PHPNAME,
-        bool $includeLazyLoadColumns = true,
-        array $alreadyDumpedObjects = [],
-        bool $includeForeignObjects = false
-    ): array {
+    public function toArray(string $keyType = TableMap::TYPE_PHPNAME, bool $includeLazyLoadColumns = true, array $alreadyDumpedObjects = [], bool $includeForeignObjects = false): array
+    {
         if (isset($alreadyDumpedObjects['Permission'][$this->hashCode()])) {
             return ['*RECURSION*'];
         }
         $alreadyDumpedObjects['Permission'][$this->hashCode()] = true;
-        $keys                                                  = PermissionTableMap::getFieldNames($keyType);
-        $result                                                = [
+        $keys = PermissionTableMap::getFieldNames($keyType);
+        $result = [
             $keys[0] => $this->getId(),
             $keys[1] => $this->getSlug(),
             $keys[2] => $this->getDescription(),
         ];
-        $virtualColumns                                        = $this->virtualColumns;
+        $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
             $result[$key] = $virtualColumn;
         }
@@ -943,12 +906,7 @@ abstract class Permission implements ActiveRecordInterface
                         $key = 'GroupPermissions';
                 }
 
-                $result[$key] = $this->collGroupPermissions->toArray(
-                    null,
-                    false,
-                    $keyType,
-                    $includeLazyLoadColumns,
-                    $alreadyDumpedObjects);
+                $result[$key] = $this->collGroupPermissions->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collIndividualPermissions) {
 
@@ -963,12 +921,7 @@ abstract class Permission implements ActiveRecordInterface
                         $key = 'IndividualPermissions';
                 }
 
-                $result[$key] = $this->collIndividualPermissions->toArray(
-                    null,
-                    false,
-                    $keyType,
-                    $includeLazyLoadColumns,
-                    $alreadyDumpedObjects);
+                $result[$key] = $this->collIndividualPermissions->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
         }
 
@@ -978,9 +931,9 @@ abstract class Permission implements ActiveRecordInterface
     /**
      * Sets a field from the object by name passed in as a string.
      *
-     * @param  string  $name
-     * @param  mixed  $value  field value
-     * @param  string  $type  The type of fieldname the $name is of:
+     * @param string $name
+     * @param mixed $value field value
+     * @param string $type The type of fieldname the $name is of:
      *                one of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *                Defaults to TableMap::TYPE_PHPNAME.
@@ -999,8 +952,8 @@ abstract class Permission implements ActiveRecordInterface
      * Sets a field from the object by Position as specified in the xml schema.
      * Zero-based.
      *
-     * @param  int  $pos  position in xml schema
-     * @param  mixed  $value  field value
+     * @param int $pos position in xml schema
+     * @param mixed $value field value
      * @return $this
      */
     public function setByPosition(int $pos, $value)
@@ -1033,9 +986,8 @@ abstract class Permission implements ActiveRecordInterface
      * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      * The default key type is the column's TableMap::TYPE_PHPNAME.
      *
-     * @param  array  $arr  An array to populate the object from.
-     * @param  string  $keyType  The type of keys the array uses.
-     *
+     * @param array $arr An array to populate the object from.
+     * @param string $keyType The type of keys the array uses.
      * @return $this
      */
     public function fromArray(array $arr, string $keyType = TableMap::TYPE_PHPNAME)
@@ -1055,7 +1007,7 @@ abstract class Permission implements ActiveRecordInterface
         return $this;
     }
 
-    /**
+     /**
      * Populate the current object from a string, using a given parser format
      * <code>
      * $book = new Book();
@@ -1067,16 +1019,16 @@ abstract class Permission implements ActiveRecordInterface
      * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      * The default key type is the column's TableMap::TYPE_PHPNAME.
      *
-     * @param  mixed  $parser  A AbstractParser instance,
+     * @param mixed $parser A AbstractParser instance,
      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
-     * @param  string  $data  The source data to import from
-     * @param  string  $keyType  The type of keys the array uses.
+     * @param string $data The source data to import from
+     * @param string $keyType The type of keys the array uses.
      *
      * @return $this The current object, for fluid interface
      */
     public function importFrom($parser, string $data, string $keyType = TableMap::TYPE_PHPNAME)
     {
-        if ( ! $parser instanceof AbstractParser) {
+        if (!$parser instanceof AbstractParser) {
             $parser = AbstractParser::getParser($parser);
         }
 
@@ -1159,7 +1111,7 @@ abstract class Permission implements ActiveRecordInterface
     /**
      * Generic method to set the primary key (id column).
      *
-     * @param  int|null  $key  Primary key.
+     * @param int|null $key Primary key.
      * @return void
      */
     public function setPrimaryKey(?int $key = null): void
@@ -1183,9 +1135,9 @@ abstract class Permission implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param  object  $copyObj  An object of \flapjack\attend\database\Permission (or compatible) type.
-     * @param  bool  $deepCopy  Whether to also copy all rows that refer (by fkey) to the current row.
-     * @param  bool  $makeNew  Whether to reset autoincrement PKs and make the object new.
+     * @param object $copyObj An object of \flapjack\attend\database\Permission (or compatible) type.
+     * @param bool $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
+     * @param bool $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws \Propel\Runtime\Exception\PropelException
      * @return void
      */
@@ -1215,7 +1167,7 @@ abstract class Permission implements ActiveRecordInterface
 
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setId(null); // this is a auto-increment column, so set to default value
+            $copyObj->setId(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1227,14 +1179,14 @@ abstract class Permission implements ActiveRecordInterface
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param  bool  $deepCopy  Whether to also copy all rows that refer (by fkey) to the current row.
+     * @param bool $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @return \flapjack\attend\database\Permission Clone of current object.
      * @throws \Propel\Runtime\Exception\PropelException
      */
     public function copy(bool $deepCopy = false)
     {
         // we use get_class(), because this might be a subclass
-        $clazz   = get_class($this);
+        $clazz = get_class($this);
         $copyObj = new $clazz();
         $this->copyInto($copyObj, $deepCopy);
 
@@ -1247,7 +1199,7 @@ abstract class Permission implements ActiveRecordInterface
      * Avoids crafting an 'init[$relationName]s' method name
      * that wouldn't work when StandardEnglishPluralizer is used.
      *
-     * @param  string  $relationName  The name of the relation to initialize
+     * @param string $relationName The name of the relation to initialize
      * @return void
      */
     public function initRelation($relationName): void
@@ -1295,14 +1247,14 @@ abstract class Permission implements ActiveRecordInterface
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
-     * @param  bool  $overrideExisting  If set to true, the method call initializes
+     * @param bool $overrideExisting If set to true, the method call initializes
      *                                        the collection even if it is not empty
      *
      * @return void
      */
     public function initGroupPermissions(bool $overrideExisting = true): void
     {
-        if (null !== $this->collGroupPermissions && ! $overrideExisting) {
+        if (null !== $this->collGroupPermissions && !$overrideExisting) {
             return;
         }
 
@@ -1321,8 +1273,8 @@ abstract class Permission implements ActiveRecordInterface
      * If this ChildPermission is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
-     * @param  Criteria  $criteria  optional Criteria object to narrow the query
-     * @param  ConnectionInterface  $con  optional connection object
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param ConnectionInterface $con optional connection object
      * @return ObjectCollection|ChildGroupPermission[] List of ChildGroupPermission objects
      * @phpstan-return ObjectCollection&\Traversable<ChildGroupPermission> List of ChildGroupPermission objects
      * @throws \Propel\Runtime\Exception\PropelException
@@ -1345,7 +1297,7 @@ abstract class Permission implements ActiveRecordInterface
                 }
             } else {
                 $collGroupPermissions = ChildGroupPermissionQuery::create(null, $criteria)
-                                                                 ->filterByPermission($this)
+                    ->filterByPermission($this)
                     ->find($con);
 
                 if (null !== $criteria) {
@@ -1372,7 +1324,7 @@ abstract class Permission implements ActiveRecordInterface
                     }
                 }
 
-                $this->collGroupPermissions        = $collGroupPermissions;
+                $this->collGroupPermissions = $collGroupPermissions;
                 $this->collGroupPermissionsPartial = false;
             }
         }
@@ -1386,8 +1338,8 @@ abstract class Permission implements ActiveRecordInterface
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param  Collection  $groupPermissions  A Propel collection.
-     * @param  ConnectionInterface  $con  Optional connection object
+     * @param Collection $groupPermissions A Propel collection.
+     * @param ConnectionInterface $con Optional connection object
      * @return $this The current object (for fluent API support)
      */
     public function setGroupPermissions(Collection $groupPermissions, ?ConnectionInterface $con = null)
@@ -1407,7 +1359,7 @@ abstract class Permission implements ActiveRecordInterface
             $this->addGroupPermission($groupPermission);
         }
 
-        $this->collGroupPermissions        = $groupPermissions;
+        $this->collGroupPermissions = $groupPermissions;
         $this->collGroupPermissionsPartial = false;
 
         return $this;
@@ -1416,25 +1368,21 @@ abstract class Permission implements ActiveRecordInterface
     /**
      * Returns the number of related GroupPermission objects.
      *
-     * @param  Criteria  $criteria
-     * @param  bool  $distinct
-     * @param  ConnectionInterface  $con
-     *
+     * @param Criteria $criteria
+     * @param bool $distinct
+     * @param ConnectionInterface $con
      * @return int Count of related GroupPermission objects.
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function countGroupPermissions(
-        ?Criteria $criteria = null,
-        bool $distinct = false,
-        ?ConnectionInterface $con = null
-    ): int {
-        $partial = $this->collGroupPermissionsPartial && ! $this->isNew();
+    public function countGroupPermissions(?Criteria $criteria = null, bool $distinct = false, ?ConnectionInterface $con = null): int
+    {
+        $partial = $this->collGroupPermissionsPartial && !$this->isNew();
         if (null === $this->collGroupPermissions || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collGroupPermissions) {
                 return 0;
             }
 
-            if ($partial && ! $criteria) {
+            if ($partial && !$criteria) {
                 return count($this->getGroupPermissions());
             }
 
@@ -1455,7 +1403,7 @@ abstract class Permission implements ActiveRecordInterface
      * Method called to associate a ChildGroupPermission object to this object
      * through the ChildGroupPermission foreign key attribute.
      *
-     * @param  ChildGroupPermission  $l  ChildGroupPermission
+     * @param ChildGroupPermission $l ChildGroupPermission
      * @return $this The current object (for fluent API support)
      */
     public function addGroupPermission(ChildGroupPermission $l)
@@ -1465,14 +1413,11 @@ abstract class Permission implements ActiveRecordInterface
             $this->collGroupPermissionsPartial = true;
         }
 
-        if ( ! $this->collGroupPermissions->contains($l)) {
+        if (!$this->collGroupPermissions->contains($l)) {
             $this->doAddGroupPermission($l);
 
-            if ($this->groupPermissionsScheduledForDeletion and $this->groupPermissionsScheduledForDeletion->contains(
-                    $l
-                )) {
-                $this->groupPermissionsScheduledForDeletion->remove(
-                    $this->groupPermissionsScheduledForDeletion->search($l));
+            if ($this->groupPermissionsScheduledForDeletion and $this->groupPermissionsScheduledForDeletion->contains($l)) {
+                $this->groupPermissionsScheduledForDeletion->remove($this->groupPermissionsScheduledForDeletion->search($l));
             }
         }
 
@@ -1480,16 +1425,16 @@ abstract class Permission implements ActiveRecordInterface
     }
 
     /**
-     * @param  ChildGroupPermission  $groupPermission  The ChildGroupPermission object to add.
+     * @param ChildGroupPermission $groupPermission The ChildGroupPermission object to add.
      */
     protected function doAddGroupPermission(ChildGroupPermission $groupPermission): void
     {
-        $this->collGroupPermissions[] = $groupPermission;
+        $this->collGroupPermissions[]= $groupPermission;
         $groupPermission->setPermission($this);
     }
 
     /**
-     * @param  ChildGroupPermission  $groupPermission  The ChildGroupPermission object to remove.
+     * @param ChildGroupPermission $groupPermission The ChildGroupPermission object to remove.
      * @return $this The current object (for fluent API support)
      */
     public function removeGroupPermission(ChildGroupPermission $groupPermission)
@@ -1501,7 +1446,7 @@ abstract class Permission implements ActiveRecordInterface
                 $this->groupPermissionsScheduledForDeletion = clone $this->collGroupPermissions;
                 $this->groupPermissionsScheduledForDeletion->clear();
             }
-            $this->groupPermissionsScheduledForDeletion[] = clone $groupPermission;
+            $this->groupPermissionsScheduledForDeletion[]= clone $groupPermission;
             $groupPermission->setPermission(null);
         }
 
@@ -1520,18 +1465,14 @@ abstract class Permission implements ActiveRecordInterface
      * api reasonable.  You can provide public methods for those you
      * actually need in Permission.
      *
-     * @param  Criteria  $criteria  optional Criteria object to narrow the query
-     * @param  ConnectionInterface  $con  optional connection object
-     * @param  string  $joinBehavior  optional join type to use (defaults to Criteria::LEFT_JOIN)
-     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param ConnectionInterface $con optional connection object
+     * @param string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildGroupPermission[] List of ChildGroupPermission objects
      * @phpstan-return ObjectCollection&\Traversable<ChildGroupPermission}> List of ChildGroupPermission objects
      */
-    public function getGroupPermissionsJoinGroup(
-        ?Criteria $criteria = null,
-        ?ConnectionInterface $con = null,
-        $joinBehavior = Criteria::LEFT_JOIN
-    ) {
+    public function getGroupPermissionsJoinGroup(?Criteria $criteria = null, ?ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
         $query = ChildGroupPermissionQuery::create(null, $criteria);
         $query->joinWith('Group', $joinBehavior);
 
@@ -1571,14 +1512,14 @@ abstract class Permission implements ActiveRecordInterface
      * however, you may wish to override this method in your stub class to provide setting appropriate
      * to your application -- for example, setting the initial array to the values stored in database.
      *
-     * @param  bool  $overrideExisting  If set to true, the method call initializes
+     * @param bool $overrideExisting If set to true, the method call initializes
      *                                        the collection even if it is not empty
      *
      * @return void
      */
     public function initIndividualPermissions(bool $overrideExisting = true): void
     {
-        if (null !== $this->collIndividualPermissions && ! $overrideExisting) {
+        if (null !== $this->collIndividualPermissions && !$overrideExisting) {
             return;
         }
 
@@ -1597,8 +1538,8 @@ abstract class Permission implements ActiveRecordInterface
      * If this ChildPermission is new, it will return
      * an empty collection or the current collection; the criteria is ignored on a new object.
      *
-     * @param  Criteria  $criteria  optional Criteria object to narrow the query
-     * @param  ConnectionInterface  $con  optional connection object
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param ConnectionInterface $con optional connection object
      * @return ObjectCollection|ChildIndividualPermission[] List of ChildIndividualPermission objects
      * @phpstan-return ObjectCollection&\Traversable<ChildIndividualPermission> List of ChildIndividualPermission objects
      * @throws \Propel\Runtime\Exception\PropelException
@@ -1648,7 +1589,7 @@ abstract class Permission implements ActiveRecordInterface
                     }
                 }
 
-                $this->collIndividualPermissions        = $collIndividualPermissions;
+                $this->collIndividualPermissions = $collIndividualPermissions;
                 $this->collIndividualPermissionsPartial = false;
             }
         }
@@ -1662,8 +1603,8 @@ abstract class Permission implements ActiveRecordInterface
      * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
      * and new objects from the given Propel collection.
      *
-     * @param  Collection  $individualPermissions  A Propel collection.
-     * @param  ConnectionInterface  $con  Optional connection object
+     * @param Collection $individualPermissions A Propel collection.
+     * @param ConnectionInterface $con Optional connection object
      * @return $this The current object (for fluent API support)
      */
     public function setIndividualPermissions(Collection $individualPermissions, ?ConnectionInterface $con = null)
@@ -1683,7 +1624,7 @@ abstract class Permission implements ActiveRecordInterface
             $this->addIndividualPermission($individualPermission);
         }
 
-        $this->collIndividualPermissions        = $individualPermissions;
+        $this->collIndividualPermissions = $individualPermissions;
         $this->collIndividualPermissionsPartial = false;
 
         return $this;
@@ -1692,25 +1633,21 @@ abstract class Permission implements ActiveRecordInterface
     /**
      * Returns the number of related IndividualPermission objects.
      *
-     * @param  Criteria  $criteria
-     * @param  bool  $distinct
-     * @param  ConnectionInterface  $con
-     *
+     * @param Criteria $criteria
+     * @param bool $distinct
+     * @param ConnectionInterface $con
      * @return int Count of related IndividualPermission objects.
      * @throws \Propel\Runtime\Exception\PropelException
      */
-    public function countIndividualPermissions(
-        ?Criteria $criteria = null,
-        bool $distinct = false,
-        ?ConnectionInterface $con = null
-    ): int {
-        $partial = $this->collIndividualPermissionsPartial && ! $this->isNew();
+    public function countIndividualPermissions(?Criteria $criteria = null, bool $distinct = false, ?ConnectionInterface $con = null): int
+    {
+        $partial = $this->collIndividualPermissionsPartial && !$this->isNew();
         if (null === $this->collIndividualPermissions || null !== $criteria || $partial) {
             if ($this->isNew() && null === $this->collIndividualPermissions) {
                 return 0;
             }
 
-            if ($partial && ! $criteria) {
+            if ($partial && !$criteria) {
                 return count($this->getIndividualPermissions());
             }
 
@@ -1731,7 +1668,7 @@ abstract class Permission implements ActiveRecordInterface
      * Method called to associate a ChildIndividualPermission object to this object
      * through the ChildIndividualPermission foreign key attribute.
      *
-     * @param  ChildIndividualPermission  $l  ChildIndividualPermission
+     * @param ChildIndividualPermission $l ChildIndividualPermission
      * @return $this The current object (for fluent API support)
      */
     public function addIndividualPermission(ChildIndividualPermission $l)
@@ -1741,14 +1678,11 @@ abstract class Permission implements ActiveRecordInterface
             $this->collIndividualPermissionsPartial = true;
         }
 
-        if ( ! $this->collIndividualPermissions->contains($l)) {
+        if (!$this->collIndividualPermissions->contains($l)) {
             $this->doAddIndividualPermission($l);
 
-            if ($this->individualPermissionsScheduledForDeletion and $this->individualPermissionsScheduledForDeletion->contains(
-                    $l
-                )) {
-                $this->individualPermissionsScheduledForDeletion->remove(
-                    $this->individualPermissionsScheduledForDeletion->search($l));
+            if ($this->individualPermissionsScheduledForDeletion and $this->individualPermissionsScheduledForDeletion->contains($l)) {
+                $this->individualPermissionsScheduledForDeletion->remove($this->individualPermissionsScheduledForDeletion->search($l));
             }
         }
 
@@ -1756,16 +1690,16 @@ abstract class Permission implements ActiveRecordInterface
     }
 
     /**
-     * @param  ChildIndividualPermission  $individualPermission  The ChildIndividualPermission object to add.
+     * @param ChildIndividualPermission $individualPermission The ChildIndividualPermission object to add.
      */
     protected function doAddIndividualPermission(ChildIndividualPermission $individualPermission): void
     {
-        $this->collIndividualPermissions[] = $individualPermission;
+        $this->collIndividualPermissions[]= $individualPermission;
         $individualPermission->setPermission($this);
     }
 
     /**
-     * @param  ChildIndividualPermission  $individualPermission  The ChildIndividualPermission object to remove.
+     * @param ChildIndividualPermission $individualPermission The ChildIndividualPermission object to remove.
      * @return $this The current object (for fluent API support)
      */
     public function removeIndividualPermission(ChildIndividualPermission $individualPermission)
@@ -1777,7 +1711,7 @@ abstract class Permission implements ActiveRecordInterface
                 $this->individualPermissionsScheduledForDeletion = clone $this->collIndividualPermissions;
                 $this->individualPermissionsScheduledForDeletion->clear();
             }
-            $this->individualPermissionsScheduledForDeletion[] = clone $individualPermission;
+            $this->individualPermissionsScheduledForDeletion[]= clone $individualPermission;
             $individualPermission->setPermission(null);
         }
 
@@ -1796,18 +1730,14 @@ abstract class Permission implements ActiveRecordInterface
      * api reasonable.  You can provide public methods for those you
      * actually need in Permission.
      *
-     * @param  Criteria  $criteria  optional Criteria object to narrow the query
-     * @param  ConnectionInterface  $con  optional connection object
-     * @param  string  $joinBehavior  optional join type to use (defaults to Criteria::LEFT_JOIN)
-     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param ConnectionInterface $con optional connection object
+     * @param string $joinBehavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return ObjectCollection|ChildIndividualPermission[] List of ChildIndividualPermission objects
      * @phpstan-return ObjectCollection&\Traversable<ChildIndividualPermission}> List of ChildIndividualPermission objects
      */
-    public function getIndividualPermissionsJoinAccount(
-        ?Criteria $criteria = null,
-        ?ConnectionInterface $con = null,
-        $joinBehavior = Criteria::LEFT_JOIN
-    ) {
+    public function getIndividualPermissionsJoinAccount(?Criteria $criteria = null, ?ConnectionInterface $con = null, $joinBehavior = Criteria::LEFT_JOIN)
+    {
         $query = ChildIndividualPermissionQuery::create(null, $criteria);
         $query->joinWith('Account', $joinBehavior);
 
@@ -1823,9 +1753,9 @@ abstract class Permission implements ActiveRecordInterface
      */
     public function clear()
     {
-        $this->id            = null;
-        $this->slug          = null;
-        $this->description   = null;
+        $this->id = null;
+        $this->slug = null;
+        $this->description = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -1842,7 +1772,7 @@ abstract class Permission implements ActiveRecordInterface
      * This method is used to reset all php object references (not the actual reference in the database).
      * Necessary for object serialisation.
      *
-     * @param  bool  $deep  Whether to also clear the references on all referrer objects.
+     * @param bool $deep Whether to also clear the references on all referrer objects.
      * @return $this
      */
     public function clearAllReferences(bool $deep = false)
@@ -1860,7 +1790,7 @@ abstract class Permission implements ActiveRecordInterface
             }
         } // if ($deep)
 
-        $this->collGroupPermissions      = null;
+        $this->collGroupPermissions = null;
         $this->collIndividualPermissions = null;
         return $this;
     }
@@ -1872,84 +1802,84 @@ abstract class Permission implements ActiveRecordInterface
      */
     public function __toString()
     {
-        return (string)$this->exportTo(PermissionTableMap::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(PermissionTableMap::DEFAULT_STRING_FORMAT);
     }
 
     /**
      * Code to be run before persisting the object
-     * @param  ConnectionInterface|null $con
+     * @param ConnectionInterface|null $con
      * @return bool
      */
     public function preSave(?ConnectionInterface $con = null): bool
     {
-        return true;
+                return true;
     }
 
     /**
      * Code to be run after persisting the object
-     * @param  ConnectionInterface|null $con
+     * @param ConnectionInterface|null $con
      * @return void
      */
     public function postSave(?ConnectionInterface $con = null): void
     {
-    }
+            }
 
     /**
      * Code to be run before inserting to database
-     * @param  ConnectionInterface|null $con
+     * @param ConnectionInterface|null $con
      * @return bool
      */
     public function preInsert(?ConnectionInterface $con = null): bool
     {
-        return true;
+                return true;
     }
 
     /**
      * Code to be run after inserting to database
-     * @param  ConnectionInterface|null $con
+     * @param ConnectionInterface|null $con
      * @return void
      */
     public function postInsert(?ConnectionInterface $con = null): void
     {
-    }
+            }
 
     /**
      * Code to be run before updating the object in database
-     * @param  ConnectionInterface|null $con
+     * @param ConnectionInterface|null $con
      * @return bool
      */
     public function preUpdate(?ConnectionInterface $con = null): bool
     {
-        return true;
+                return true;
     }
 
     /**
      * Code to be run after updating the object in database
-     * @param  ConnectionInterface|null $con
+     * @param ConnectionInterface|null $con
      * @return void
      */
     public function postUpdate(?ConnectionInterface $con = null): void
     {
-    }
+            }
 
     /**
      * Code to be run before deleting the object in database
-     * @param  ConnectionInterface|null $con
+     * @param ConnectionInterface|null $con
      * @return bool
      */
     public function preDelete(?ConnectionInterface $con = null): bool
     {
-        return true;
+                return true;
     }
 
     /**
      * Code to be run after deleting the object in database
-     * @param  ConnectionInterface|null $con
+     * @param ConnectionInterface|null $con
      * @return void
      */
     public function postDelete(?ConnectionInterface $con = null): void
     {
-    }
+            }
 
 
     /**
@@ -1958,8 +1888,8 @@ abstract class Permission implements ActiveRecordInterface
      * Provides magic import/export method support (fromXML()/toXML(), fromYAML()/toYAML(), etc.).
      * Allows to define default __call() behavior if you overwrite __call()
      *
-     * @param  string  $name
-     * @param  mixed  $params
+     * @param string $name
+     * @param mixed $params
      *
      * @return array|string
      */
@@ -1978,7 +1908,7 @@ abstract class Permission implements ActiveRecordInterface
         }
 
         if (0 === strpos($name, 'from')) {
-            $format    = substr($name, 4);
+            $format = substr($name, 4);
             $inputData = $params[0];
             $keyType = $params[1] ?? TableMap::TYPE_PHPNAME;
 
@@ -1986,7 +1916,7 @@ abstract class Permission implements ActiveRecordInterface
         }
 
         if (0 === strpos($name, 'to')) {
-            $format                 = substr($name, 2);
+            $format = substr($name, 2);
             $includeLazyLoadColumns = $params[0] ?? true;
             $keyType = $params[1] ?? TableMap::TYPE_PHPNAME;
 

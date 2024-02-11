@@ -212,11 +212,11 @@ class LoginAttemptTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('attempted_at', 'AttemptedAt', 'TIMESTAMP', true, null, null);
+        $this->addColumn('attempted_at', 'AttemptedAt', 'BIGINT', true, null, null);
         $this->addColumn('username', 'Username', 'VARCHAR', true, 63, null);
         $this->addColumn('pass', 'Pass', 'BOOLEAN', true, 1, null);
         $this->addColumn('note', 'Note', 'VARCHAR', true, 255, null);
-        $this->addColumn('logged_out_at', 'LoggedOutAt', 'TIMESTAMP', false, null, null);
+        $this->addColumn('logged_out_at', 'LoggedOutAt', 'BIGINT', false, null, null);
     }
 
     /**

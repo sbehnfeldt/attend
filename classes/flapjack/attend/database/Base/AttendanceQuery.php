@@ -87,23 +87,20 @@ abstract class AttendanceQuery extends ModelCriteria
     /**
      * Initializes internal state of \flapjack\attend\database\Base\AttendanceQuery object.
      *
-     * @param  string  $dbName  The database name
-     * @param  string  $modelName  The phpName of a model, e.g. 'Book'
-     * @param  string  $modelAlias  The alias for the model in this query, e.g. 'b'
+     * @param string $dbName The database name
+     * @param string $modelName The phpName of a model, e.g. 'Book'
+     * @param string $modelAlias The alias for the model in this query, e.g. 'b'
      */
-    public function __construct(
-        $dbName = 'attend',
-        $modelName = '\\flapjack\\attend\\database\\Attendance',
-        $modelAlias = null
-    ) {
+    public function __construct($dbName = 'attend', $modelName = '\\flapjack\\attend\\database\\Attendance', $modelAlias = null)
+    {
         parent::__construct($dbName, $modelName, $modelAlias);
     }
 
     /**
      * Returns a new ChildAttendanceQuery object.
      *
-     * @param  string  $modelAlias  The alias of a model in the query
-     * @param  Criteria  $criteria  Optional Criteria to build the query from
+     * @param string $modelAlias The alias of a model in the query
+     * @param Criteria $criteria Optional Criteria to build the query from
      *
      * @return ChildAttendanceQuery
      */
@@ -169,12 +166,12 @@ abstract class AttendanceQuery extends ModelCriteria
      * Find object by primary key using raw SQL to go fast.
      * Bypass doSelect() and the object formatter by using generated code.
      *
-     * @param  mixed  $key  Primary key to use for the query
-     * @param  ConnectionInterface  $con  A connection object
+     * @param mixed $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
-     * @return ChildAttendance A model object, or null if the key is not found
      * @throws \Propel\Runtime\Exception\PropelException
      *
+     * @return ChildAttendance A model object, or null if the key is not found
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
@@ -202,8 +199,8 @@ abstract class AttendanceQuery extends ModelCriteria
     /**
      * Find object by primary key.
      *
-     * @param  mixed  $key  Primary key to use for the query
-     * @param  ConnectionInterface  $con  A connection object
+     * @param mixed $key Primary key to use for the query
+     * @param ConnectionInterface $con A connection object
      *
      * @return ChildAttendance|array|mixed the result, formatted by the current formatter
      */
@@ -223,8 +220,8 @@ abstract class AttendanceQuery extends ModelCriteria
      * <code>
      * $objs = $c->findPks(array(12, 56, 832), $con);
      * </code>
-     * @param  array  $keys  Primary keys to use for the query
-     * @param  ConnectionInterface  $con  an optional connection object
+     * @param array $keys Primary keys to use for the query
+     * @param ConnectionInterface $con an optional connection object
      *
      * @return Collection|array|mixed the list of results, formatted by the current formatter
      */
@@ -234,7 +231,7 @@ abstract class AttendanceQuery extends ModelCriteria
             $con = Propel::getServiceContainer()->getReadConnection($this->getDbName());
         }
         $this->basePreSelect($con);
-        $criteria    = $this->isKeepQuery() ? clone $this : $this;
+        $criteria = $this->isKeepQuery() ? clone $this : $this;
         $dataFetcher = $criteria
             ->filterByPrimaryKeys($keys)
             ->doSelect($con);
@@ -245,7 +242,7 @@ abstract class AttendanceQuery extends ModelCriteria
     /**
      * Filter the query by primary key
      *
-     * @param  mixed  $key  Primary key to use for the query
+     * @param mixed $key Primary key to use for the query
      *
      * @return $this The current query, for fluid interface
      */
@@ -260,7 +257,7 @@ abstract class AttendanceQuery extends ModelCriteria
     /**
      * Filter the query by a list of primary keys
      *
-     * @param  array|int  $keys  The list of primary key to use for the query
+     * @param array|int $keys The list of primary key to use for the query
      *
      * @return $this The current query, for fluid interface
      */
@@ -282,11 +279,11 @@ abstract class AttendanceQuery extends ModelCriteria
      * $query->filterById(array('min' => 12)); // WHERE id > 12
      * </code>
      *
-     * @param  mixed  $id  The value to use as filter.
+     * @param mixed $id The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
@@ -327,11 +324,11 @@ abstract class AttendanceQuery extends ModelCriteria
      *
      * @see       filterByStudent()
      *
-     * @param  mixed  $studentId  The value to use as filter.
+     * @param mixed $studentId The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
@@ -370,13 +367,13 @@ abstract class AttendanceQuery extends ModelCriteria
      * $query->filterByCheckIn(array('max' => 'yesterday')); // WHERE check_in > '2011-03-13'
      * </code>
      *
-     * @param  mixed  $checkIn  The value to use as filter.
+     * @param mixed $checkIn The value to use as filter.
      *              Values can be integers (unix timestamps), DateTime objects, or strings.
      *              Empty strings are treated as NULL.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
@@ -415,13 +412,13 @@ abstract class AttendanceQuery extends ModelCriteria
      * $query->filterByCheckOut(array('max' => 'yesterday')); // WHERE check_out > '2011-03-13'
      * </code>
      *
-     * @param  mixed  $checkOut  The value to use as filter.
+     * @param mixed $checkOut The value to use as filter.
      *              Values can be integers (unix timestamps), DateTime objects, or strings.
      *              Empty strings are treated as NULL.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @return $this The current query, for fluid interface
      */
@@ -453,8 +450,8 @@ abstract class AttendanceQuery extends ModelCriteria
     /**
      * Filter the query by a related \flapjack\attend\database\Student object
      *
-     * @param  \flapjack\attend\database\Student|ObjectCollection  $student  The related object(s) to use as filter
-     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     * @param \flapjack\attend\database\Student|ObjectCollection $student The related object(s) to use as filter
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
      *
      * @throws \Propel\Runtime\Exception\PropelException
      *
@@ -471,31 +468,25 @@ abstract class AttendanceQuery extends ModelCriteria
             }
 
             $this
-                ->addUsingAlias(
-                    AttendanceTableMap::COL_STUDENT_ID,
-                    $student->toKeyValue('PrimaryKey', 'Id'),
-                    $comparison
-                );
+                ->addUsingAlias(AttendanceTableMap::COL_STUDENT_ID, $student->toKeyValue('PrimaryKey', 'Id'), $comparison);
 
             return $this;
         } else {
-            throw new PropelException(
-                'filterByStudent() only accepts arguments of type \flapjack\attend\database\Student or Collection'
-            );
+            throw new PropelException('filterByStudent() only accepts arguments of type \flapjack\attend\database\Student or Collection');
         }
     }
 
     /**
      * Adds a JOIN clause to the query using the Student relation
      *
-     * @param  string|null  $relationAlias  Optional alias for the relation
-     * @param  string|null  $joinType  Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string|null $relationAlias Optional alias for the relation
+     * @param string|null $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this The current query, for fluid interface
      */
     public function joinStudent(?string $relationAlias = null, ?string $joinType = Criteria::INNER_JOIN)
     {
-        $tableMap    = $this->getTableMap();
+        $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('Student');
 
         // create a ModelJoin object for this join
@@ -522,9 +513,9 @@ abstract class AttendanceQuery extends ModelCriteria
      *
      * @see useQuery()
      *
-     * @param  string  $relationAlias  optional alias for the relation,
+     * @param string $relationAlias optional alias for the relation,
      *                                   to be used as main alias in the secondary query
-     * @param  string  $joinType  Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return \flapjack\attend\database\StudentQuery A secondary query class using the current class as primary query
      */
@@ -538,11 +529,11 @@ abstract class AttendanceQuery extends ModelCriteria
     /**
      * Use the Student relation Student object
      *
-     * @param  callable(\flapjack\attend\database\StudentQuery):\flapjack\attend\database\StudentQuery  $callable  A function working on the related query
+     * @param callable(\flapjack\attend\database\StudentQuery):\flapjack\attend\database\StudentQuery $callable A function working on the related query
      *
-     * @param  string|null  $relationAlias  optional alias for the relation
+     * @param string|null $relationAlias optional alias for the relation
      *
-     * @param  string|null  $joinType  Accepted values are null, 'left join', 'right join', 'inner join'
+     * @param string|null $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this
      */
@@ -566,9 +557,9 @@ abstract class AttendanceQuery extends ModelCriteria
      *
      * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
      *
-     * @param  string|null  $modelAlias  sets an alias for the nested query
-     * @param  string|null  $queryClass  Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
-     * @param  string  $typeOfExists  Either ExistsQueryCriterion::TYPE_EXISTS or ExistsQueryCriterion::TYPE_NOT_EXISTS
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
+     * @param string $typeOfExists Either ExistsQueryCriterion::TYPE_EXISTS or ExistsQueryCriterion::TYPE_NOT_EXISTS
      *
      * @return \flapjack\attend\database\StudentQuery The inner query object of the EXISTS statement
      */
@@ -584,8 +575,8 @@ abstract class AttendanceQuery extends ModelCriteria
      *
      * @see useStudentExistsQuery()
      *
-     * @param  string|null  $modelAlias  sets an alias for the nested query
-     * @param  string|null  $queryClass  Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\StudentQuery The inner query object of the NOT EXISTS statement
      */
@@ -601,9 +592,9 @@ abstract class AttendanceQuery extends ModelCriteria
      *
      * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useInQuery()
      *
-     * @param  string|null  $modelAlias  sets an alias for the nested query
-     * @param  string|null  $queryClass  Allows to use a custom query class for the IN query, like ExtendedBookQuery::class
-     * @param  string  $typeOfIn  Criteria::IN or Criteria::NOT_IN
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the IN query, like ExtendedBookQuery::class
+     * @param string $typeOfIn Criteria::IN or Criteria::NOT_IN
      *
      * @return \flapjack\attend\database\StudentQuery The inner query object of the IN statement
      */
@@ -619,8 +610,8 @@ abstract class AttendanceQuery extends ModelCriteria
      *
      * @see useStudentInQuery()
      *
-     * @param  string|null  $modelAlias  sets an alias for the nested query
-     * @param  string|null  $queryClass  Allows to use a custom query class for the NOT IN query, like ExtendedBookQuery::class
+     * @param string|null $modelAlias sets an alias for the nested query
+     * @param string|null $queryClass Allows to use a custom query class for the NOT IN query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\StudentQuery The inner query object of the NOT IN statement
      */
@@ -634,7 +625,7 @@ abstract class AttendanceQuery extends ModelCriteria
     /**
      * Exclude object from result
      *
-     * @param  ChildAttendance  $attendance  Object to remove from the list of results
+     * @param ChildAttendance $attendance Object to remove from the list of results
      *
      * @return $this The current query, for fluid interface
      */
@@ -677,7 +668,7 @@ abstract class AttendanceQuery extends ModelCriteria
     /**
      * Performs a DELETE on the database based on the current ModelCriteria
      *
-     * @param  ConnectionInterface  $con  the connection to use
+     * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
      *                         if supported by native driver or if emulated using Propel.
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be

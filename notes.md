@@ -97,7 +97,7 @@ $> .\vendor\bin\propel reverse --config-dir=propel --output-dir=propel --schema-
 ### SQL and Schema Map
 
 ```shell
-.\vendor\bin\propel model:build --config-dir=propel --schema-dir=propel --output-dir=classes/database
+.\vendor\bin\propel sql:build --config-dir=propel --schema-dir=propel --output-dir=propel
 ```
 
 * --config-dir: directory containing the propel.json or similar config file

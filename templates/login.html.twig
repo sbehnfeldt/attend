@@ -20,33 +20,33 @@
                 <p>Please enter your login username and password:</p>
                 <input type="hidden" name="route" value="{{ route }}">
 
-        <div class="invalid-credentials">
-            <p>Invalid credentials. Please check your username and password and try again.</p>
-        </div>
+                <div class="invalid-credentials">
+                    <p>Invalid credentials. Please check your username and password and try again.</p>
+                </div>
 
-        <div class="form-box">
-            <label for="">Name</label>
-            <input type="text" name="username" placeholder="User Name" value="{{ username }}">
-        </div>
+                <div class="form-box">
+                    <label for="">Name</label>
+                    <input type="text" name="username" placeholder="User Name" value="{{ username }}">
+                </div>
 
-        <div class="form-box">
-            <label for="">Password</label>
-            <input type="password" name="password" placeholder="Password" value="{{ password }}">
-        </div>
+                <div class="form-box">
+                    <label for="">Password</label>
+                    <input type="password" name="password" placeholder="Password" value="{{ password }}">
+                </div>
 
                 <div class="form-box form-box1">
                     <input type="checkbox" name="remember" {% if remember %}checked{% endif %}>
-            <label class="always" for="">Remember Me</label>
-        </div>
+                    <label class="always" for="">Remember Me</label>
+                </div>
 
-        <div class="form-box">
-            <button>Submit</button>
-        </div>
-    </form>
-</main>
+                <div class="form-box">
+                    <button>Submit</button>
+                </div>
+            </form>
+        </main>
 
-<script type="application/javascript" src="js/jquery-1.11.0.min.js"></script>
-<script src="js/attend.js"></script>
-<script src="js/login.js"></script>
-</body>
+        <script type="application/javascript" src="js/jquery-1.11.0.min.js"></script>
+        <script src="js/attend.js"></script>
+        <script src="js/login.js"></script>
+    </body>
 </html>

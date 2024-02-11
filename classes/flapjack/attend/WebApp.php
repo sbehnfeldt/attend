@@ -205,9 +205,9 @@ class WebApp extends App
             $acct = $_SESSION['account'];
             $this->getLogger()->info(sprintf('User "%s" logged out', $acct->getUsername()));
             $login = LoginAttemptQuery::create()
-                ->filterByUsername($acct->getUsername())
-                ->orderByAttemptedAt('desc')
-                ->findOne();
+                                      ->filterByUsername($acct->getUsername())
+                                      ->orderByAttemptedAt('desc')
+                                      ->findOne();
             $login->setLoggedOutAt(time());
             $login->save();
 
@@ -324,6 +324,7 @@ class WebApp extends App
         $this->getLogger()->info(sprintf('User "%s" successfully logged in', $acct->getUsername()));
         $attempt = new LoginAttempt();
         $attempt->setUsername($acct->getUsername());
+        $temp = time();
         $attempt->setAttemptedAt(time());
         $attempt->setPass(1);
         $attempt->setNote('Authenticated');
@@ -334,7 +335,7 @@ class WebApp extends App
             setcookie("account_id", null, time() - 1);
             setcookie("token", null, time() - 1);
         } else {
-            // Mark any existing token as expired
+            // Mark any existing "Remember Me" tokens as expired
             $tokens = TokenAuthQuery::create()->findByAccountId($acct->getId());
             foreach ($tokens as $token) {
                 try {
@@ -344,7 +345,9 @@ class WebApp extends App
                 }
             }
 
-            $expiration = time() + (30 * 24 * 60 * 60);  // for 1 month
+            //
+//            $expiration = time() + (30 * 24 * 60 * 60);  // for 1 month
+            $expiration = time() + (5 * 60 * 60);  // for 5 minutes
             setcookie("account_id", $acct->getId(), $expiration);
             $random = getToken(32);
             setcookie("token", $random, $expiration);
@@ -373,16 +376,22 @@ class WebApp extends App
         $isAuthenticated = function (Request $request, Response $response, $next) use ($web) {
             if (empty($_SESSION['account'])) {
                 // If this value is empty, then the user is not logged in.
-                // Check for "remember me" cookies, validate if found
+
+                // Check for "remember me" cookies; validate if found
                 // ref: https://phppot.com/php/secure-remember-me-for-login-using-php-session-and-cookies/
                 if ( ! empty($_COOKIE["account_id"]) && ! empty($_COOKIE["token"])) {
                     $tokens = TokenAuthQuery::create()->filterByAccountId($_COOKIE['account_id']);
                     /** @var TokenAuth $token */
                     foreach ($tokens as $token) {
-                        if (password_verify($_COOKIE["token"], $token->getCookieHash()) && $token->getExpires() >= date(
-                                "Y-m-d H:i:s",
-                                time()
-                            )) {
+                        $tk      = $_COOKIE['token'];
+                        $hash    = $token->getCookieHash();
+                        $expires = $token->getExpires();
+                        $now     = new DateTime(time());
+                        $expired = ($expires < $now);
+
+                        // If password is verified
+                        // AND token expiry is later than current time
+                        if (password_verify($tk, $hash) && ! $expired) {
                             $_SESSION['account'] = AccountQuery::create()->findPk($_COOKIE['account_id']);
                             break;
                         }
