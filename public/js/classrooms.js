@@ -32,11 +32,24 @@
             "select": true,
             "order": [[2, "asc"]],
             "columns": [
-                {"data": "Id"},
-                {"data": "Label"},
-                {"data": "Ordering"},
-                {"data": "CreatedAt"},
-                {"data": "UpdatedAt"}
+                {
+                    'data': "Id",
+                    'visible': false
+                },
+                {'data': "Label"},
+                {'data': "Ordering"},
+                {
+                    'data': "CreatedAt",
+                    'render': (x) => {
+                        return moment(x).format('YYYY-MM-D');
+                    }
+                },
+                {
+                    'data': "UpdatedAt",
+                    'render': (x) => {
+                        return moment(x).format('YYYY-MM-D');
+                    }
+                }
             ]
         });
 
@@ -263,7 +276,7 @@
             $.ajax({
                 "url": "api/classrooms",
                 "method": "post",
-                "data": data,
+                'data': data,
 
                 "dataType": "json",
                 "success": function (json) {
@@ -316,7 +329,7 @@
             $.ajax({
                 "url": "api/classrooms/" + id,
                 "method": "put",
-                "data": data,
+                'data': data,
 
                 "dataType": "json",
                 "success": function (json) {
