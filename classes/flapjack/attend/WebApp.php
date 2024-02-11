@@ -239,7 +239,11 @@ class WebApp extends App
     {
         if (empty($username) || empty($password)) {
             $note    = 'Invalid login attempt: missing username or password';
-            $attempt = new LoginAttempt('', time(), 0, $note);
+            $attempt = new LoginAttempt();
+            $attempt->setUsername('');
+            $attempt->setAttemptedAt(time());
+            $attempt->setPass(0);
+            $attempt->setNote($note);
             $attempt->save();
             throw new MissingLoginCredentialsException($note);
         }
@@ -260,7 +264,11 @@ class WebApp extends App
         if ( ! password_verify($password, $acct->getPwhash())) {
             // Wrong password
             $note    = sprintf('Login denied: incorrect password for user "%s"', $acct->getUsername());
-            $attempt = new LoginAttempt($acct->getUsername(), time(), 0, $note);
+            $attempt = new LoginAttempt();
+            $attempt->setUsername($acct->getUsername());
+            $attempt->setAttemptedAt(time());
+            $attempt->setPass(0);
+            $attempt->setNote($note);
             $attempt->save();
             throw new UnauthorizedLoginAttemptException($note);
         }
@@ -281,7 +289,11 @@ class WebApp extends App
         if ( ! ($acct = AccountQuery::create()->findOneByUsername($username))) {
             // User not found
             $note    = sprintf('Login denied: no account for user "%s"', $username);
-            $attempt = new LoginAttempt($username, time(), 0, $note);
+            $attempt = new LoginAttempt();
+            $attempt->setUsername($username);
+            $attempt->setAttemptedAt(time());
+            $attempt->setPass(0);
+            $attempt->setNote($note);
             $attempt->save();
             throw new UnauthorizedLoginAttemptException($note);
         }
@@ -304,7 +316,11 @@ class WebApp extends App
     {
         $_SESSION['account'] = $acct;
         $this->getLogger()->info(sprintf('User "%s" successfully logged in', $acct->getUsername()));
-        $attempt = new LoginAttempt($acct->getUsername(), time(), 1, '');
+        $attempt = new LoginAttempt();
+        $attempt->setUsername($acct->getUsername());
+        $attempt->setAttemptedAt(time());
+        $attempt->setPass(1);
+        $attempt->setNote('Authenticated');
         $attempt->save();
 
         if (empty($_POST['remember'])) {
