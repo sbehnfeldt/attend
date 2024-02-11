@@ -1219,24 +1219,24 @@ abstract class Account implements ActiveRecordInterface
         return $this;
     }
 
-     /**
+    /**
      * Populate the current object from a string, using a given parser format
-      * <code>
-      * $book = new Book();
-      * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
-      * </code>
-      *
-      * You can specify the key type of the array by additionally passing one
-      * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
-      * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
-      * The default key type is the column's TableMap::TYPE_PHPNAME.
-      *
-      * @param  mixed  $parser  A AbstractParser instance,
-      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
-      * @param  string  $data  The source data to import from
-      * @param  string  $keyType  The type of keys the array uses.
-      *
-      * @return $this The current object, for fluid interface
+     * <code>
+     * $book = new Book();
+     * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
+     * </code>
+     *
+     * You can specify the key type of the array by additionally passing one
+     * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
+     * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
+     * The default key type is the column's TableMap::TYPE_PHPNAME.
+     *
+     * @param  mixed  $parser  A AbstractParser instance,
+     *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
+     * @param  string  $data  The source data to import from
+     * @param  string  $keyType  The type of keys the array uses.
+     *
+     * @return $this The current object, for fluid interface
      */
     public function importFrom($parser, string $data, string $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1800,7 +1800,7 @@ abstract class Account implements ActiveRecordInterface
                 }
             } else {
                 $collIndividualPermissions = ChildIndividualPermissionQuery::create(null, $criteria)
-                                                                           ->filterByAccount($this)
+                    ->filterByAccount($this)
                     ->find($con);
 
                 if (null !== $criteria) {
@@ -2076,7 +2076,7 @@ abstract class Account implements ActiveRecordInterface
                 }
             } else {
                 $collTokenAuths = ChildTokenAuthQuery::create(null, $criteria)
-                                                     ->filterByAccount($this)
+                    ->filterByAccount($this)
                     ->find($con);
 
                 if (null !== $criteria) {
@@ -2288,7 +2288,7 @@ abstract class Account implements ActiveRecordInterface
             }
         } // if ($deep)
 
-        $this->collGroupMembers          = null;
+        $this->collGroupMembers = null;
         $this->collIndividualPermissions = null;
         $this->collTokenAuths = null;
         return $this;
@@ -2311,7 +2311,7 @@ abstract class Account implements ActiveRecordInterface
      */
     public function preSave(?ConnectionInterface $con = null): bool
     {
-        return true;
+                return true;
     }
 
     /**
@@ -2321,7 +2321,7 @@ abstract class Account implements ActiveRecordInterface
      */
     public function postSave(?ConnectionInterface $con = null): void
     {
-    }
+            }
 
     /**
      * Code to be run before inserting to database
@@ -2330,7 +2330,7 @@ abstract class Account implements ActiveRecordInterface
      */
     public function preInsert(?ConnectionInterface $con = null): bool
     {
-        return true;
+                return true;
     }
 
     /**
@@ -2340,7 +2340,7 @@ abstract class Account implements ActiveRecordInterface
      */
     public function postInsert(?ConnectionInterface $con = null): void
     {
-    }
+            }
 
     /**
      * Code to be run before updating the object in database
@@ -2349,7 +2349,7 @@ abstract class Account implements ActiveRecordInterface
      */
     public function preUpdate(?ConnectionInterface $con = null): bool
     {
-        return true;
+                return true;
     }
 
     /**
@@ -2359,7 +2359,7 @@ abstract class Account implements ActiveRecordInterface
      */
     public function postUpdate(?ConnectionInterface $con = null): void
     {
-    }
+            }
 
     /**
      * Code to be run before deleting the object in database
@@ -2368,7 +2368,7 @@ abstract class Account implements ActiveRecordInterface
      */
     public function preDelete(?ConnectionInterface $con = null): bool
     {
-        return true;
+                return true;
     }
 
     /**
@@ -2407,7 +2407,7 @@ abstract class Account implements ActiveRecordInterface
         }
 
         if (0 === strpos($name, 'from')) {
-            $format    = substr($name, 4);
+            $format = substr($name, 4);
             $inputData = $params[0];
             $keyType = $params[1] ?? TableMap::TYPE_PHPNAME;
 

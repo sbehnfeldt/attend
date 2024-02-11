@@ -22,12 +22,14 @@ use flapjack\attend\database\Map\LoginAttemptTableMap;
  * @method     ChildLoginAttemptQuery orderByUsername($order = Criteria::ASC) Order by the username column
  * @method     ChildLoginAttemptQuery orderByPass($order = Criteria::ASC) Order by the pass column
  * @method     ChildLoginAttemptQuery orderByNote($order = Criteria::ASC) Order by the note column
+ * @method     ChildLoginAttemptQuery orderByLoggedOutAt($order = Criteria::ASC) Order by the logged_out_at column
  *
  * @method     ChildLoginAttemptQuery groupById() Group by the id column
  * @method     ChildLoginAttemptQuery groupByAttemptedAt() Group by the attempted_at column
  * @method     ChildLoginAttemptQuery groupByUsername() Group by the username column
  * @method     ChildLoginAttemptQuery groupByPass() Group by the pass column
  * @method     ChildLoginAttemptQuery groupByNote() Group by the note column
+ * @method     ChildLoginAttemptQuery groupByLoggedOutAt() Group by the logged_out_at column
  *
  * @method     ChildLoginAttemptQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildLoginAttemptQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -45,6 +47,7 @@ use flapjack\attend\database\Map\LoginAttemptTableMap;
  * @method     ChildLoginAttempt|null findOneByUsername(string $username) Return the first ChildLoginAttempt filtered by the username column
  * @method     ChildLoginAttempt|null findOneByPass(boolean $pass) Return the first ChildLoginAttempt filtered by the pass column
  * @method     ChildLoginAttempt|null findOneByNote(string $note) Return the first ChildLoginAttempt filtered by the note column
+ * @method     ChildLoginAttempt|null findOneByLoggedOutAt(string $logged_out_at) Return the first ChildLoginAttempt filtered by the logged_out_at column
  *
  * @method     ChildLoginAttempt requirePk($key, ?ConnectionInterface $con = null) Return the ChildLoginAttempt by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLoginAttempt requireOne(?ConnectionInterface $con = null) Return the first ChildLoginAttempt matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -54,6 +57,7 @@ use flapjack\attend\database\Map\LoginAttemptTableMap;
  * @method     ChildLoginAttempt requireOneByUsername(string $username) Return the first ChildLoginAttempt filtered by the username column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLoginAttempt requireOneByPass(boolean $pass) Return the first ChildLoginAttempt filtered by the pass column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildLoginAttempt requireOneByNote(string $note) Return the first ChildLoginAttempt filtered by the note column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildLoginAttempt requireOneByLoggedOutAt(string $logged_out_at) Return the first ChildLoginAttempt filtered by the logged_out_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildLoginAttempt[]|Collection find(?ConnectionInterface $con = null) Return ChildLoginAttempt objects based on current ModelCriteria
  * @psalm-method Collection&\Traversable<ChildLoginAttempt> find(?ConnectionInterface $con = null) Return ChildLoginAttempt objects based on current ModelCriteria
@@ -68,6 +72,8 @@ use flapjack\attend\database\Map\LoginAttemptTableMap;
  * @psalm-method Collection&\Traversable<ChildLoginAttempt> findByPass(boolean|array<boolean> $pass) Return ChildLoginAttempt objects filtered by the pass column
  * @method     ChildLoginAttempt[]|Collection findByNote(string|array<string> $note) Return ChildLoginAttempt objects filtered by the note column
  * @psalm-method Collection&\Traversable<ChildLoginAttempt> findByNote(string|array<string> $note) Return ChildLoginAttempt objects filtered by the note column
+ * @method     ChildLoginAttempt[]|Collection findByLoggedOutAt(string|array<string> $logged_out_at) Return ChildLoginAttempt objects filtered by the logged_out_at column
+ * @psalm-method Collection&\Traversable<ChildLoginAttempt> findByLoggedOutAt(string|array<string> $logged_out_at) Return ChildLoginAttempt objects filtered by the logged_out_at column
  *
  * @method     ChildLoginAttempt[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ?ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  * @psalm-method \Propel\Runtime\Util\PropelModelPager&\Traversable<ChildLoginAttempt> paginate($page = 1, $maxPerPage = 10, ?ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -172,7 +178,7 @@ abstract class LoginAttemptQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, attempted_at, username, pass, note FROM login_attempts WHERE id = :p0';
+        $sql = 'SELECT id, attempted_at, username, pass, note, logged_out_at FROM login_attempts WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -442,6 +448,59 @@ abstract class LoginAttemptQuery extends ModelCriteria
         }
 
         $this->addUsingAlias(LoginAttemptTableMap::COL_NOTE, $note, $comparison);
+
+        return $this;
+    }
+
+    /**
+     * Filter the query on the logged_out_at column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByLoggedOutAt('2011-03-14'); // WHERE logged_out_at = '2011-03-14'
+     * $query->filterByLoggedOutAt('now'); // WHERE logged_out_at = '2011-03-14'
+     * $query->filterByLoggedOutAt(array('max' => 'yesterday')); // WHERE logged_out_at > '2011-03-13'
+     * </code>
+     *
+     * @param  mixed  $loggedOutAt  The value to use as filter.
+     *              Values can be integers (unix timestamps), DateTime objects, or strings.
+     *              Empty strings are treated as NULL.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param  string|null  $comparison  Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this The current query, for fluid interface
+     */
+    public function filterByLoggedOutAt($loggedOutAt = null, ?string $comparison = null)
+    {
+        if (is_array($loggedOutAt)) {
+            $useMinMax = false;
+            if (isset($loggedOutAt['min'])) {
+                $this->addUsingAlias(
+                    LoginAttemptTableMap::COL_LOGGED_OUT_AT,
+                    $loggedOutAt['min'],
+                    Criteria::GREATER_EQUAL
+                );
+                $useMinMax = true;
+            }
+            if (isset($loggedOutAt['max'])) {
+                $this->addUsingAlias(
+                    LoginAttemptTableMap::COL_LOGGED_OUT_AT,
+                    $loggedOutAt['max'],
+                    Criteria::LESS_EQUAL
+                );
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        $this->addUsingAlias(LoginAttemptTableMap::COL_LOGGED_OUT_AT, $loggedOutAt, $comparison);
 
         return $this;
     }

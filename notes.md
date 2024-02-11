@@ -90,7 +90,7 @@ $> .\vendor\bin\propel reverse --config-dir=propel --output-dir=propel --schema-
   file.
 * --database-name: value for the "name" attribute of the &lt;database&gt; element in generated schema file.
 
-**TODO:** Delete any `&lt;table&gt;` elements that should not have model classes generated (eg, phinxlog)  
+**TODO:** Delete any &lt;table&gt; elements that should not have model classes generated (eg, phinxlog)  
 **TODO:** Change the value of the phpName attribute of every table element to singular.  
 **TODO:** Correct value of namespace attributes in database and table elements, as necessary
 
@@ -107,7 +107,7 @@ $> .\vendor\bin\propel reverse --config-dir=propel --output-dir=propel --schema-
 ### Model Classes
 
 ```shell
-$> .\vendor\bin\propel model:build --config-dir=propel --schema-dir=propel --output-dir=classes
+$> .\vendor\bin\propel model:build --config-dir=propel --schema-dir=propel --output-dir=classes/flapjack/attend/database
 ```
 
 ## Phinx

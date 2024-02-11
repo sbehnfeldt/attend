@@ -114,17 +114,11 @@ class ClassroomTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldNames = [
-        self::TYPE_PHPNAME   => ['Id', 'Label', 'Ordering', 'CreatedAt', 'UpdatedAt',],
-        self::TYPE_CAMELNAME => ['id', 'label', 'ordering', 'createdAt', 'updatedAt',],
-        self::TYPE_COLNAME   => [
-            ClassroomTableMap::COL_ID,
-            ClassroomTableMap::COL_LABEL,
-            ClassroomTableMap::COL_ORDERING,
-            ClassroomTableMap::COL_CREATED_AT,
-            ClassroomTableMap::COL_UPDATED_AT,
-        ],
-        self::TYPE_FIELDNAME => ['id', 'label', 'ordering', 'created_at', 'updated_at',],
-        self::TYPE_NUM       => [0, 1, 2, 3, 4,]
+        self::TYPE_PHPNAME       => ['Id', 'Label', 'Ordering', 'CreatedAt', 'UpdatedAt', ],
+        self::TYPE_CAMELNAME     => ['id', 'label', 'ordering', 'createdAt', 'updatedAt', ],
+        self::TYPE_COLNAME       => [ClassroomTableMap::COL_ID, ClassroomTableMap::COL_LABEL, ClassroomTableMap::COL_ORDERING, ClassroomTableMap::COL_CREATED_AT, ClassroomTableMap::COL_UPDATED_AT, ],
+        self::TYPE_FIELDNAME     => ['id', 'label', 'ordering', 'created_at', 'updated_at', ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, ]
     ];
 
     /**
@@ -136,17 +130,11 @@ class ClassroomTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldKeys = [
-        self::TYPE_PHPNAME   => ['Id' => 0, 'Label' => 1, 'Ordering' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4,],
-        self::TYPE_CAMELNAME => ['id' => 0, 'label' => 1, 'ordering' => 2, 'createdAt' => 3, 'updatedAt' => 4,],
-        self::TYPE_COLNAME   => [
-            ClassroomTableMap::COL_ID         => 0,
-            ClassroomTableMap::COL_LABEL      => 1,
-            ClassroomTableMap::COL_ORDERING   => 2,
-            ClassroomTableMap::COL_CREATED_AT => 3,
-            ClassroomTableMap::COL_UPDATED_AT => 4,
-        ],
-        self::TYPE_FIELDNAME => ['id' => 0, 'label' => 1, 'ordering' => 2, 'created_at' => 3, 'updated_at' => 4,],
-        self::TYPE_NUM       => [0, 1, 2, 3, 4,]
+        self::TYPE_PHPNAME       => ['Id' => 0, 'Label' => 1, 'Ordering' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, ],
+        self::TYPE_CAMELNAME     => ['id' => 0, 'label' => 1, 'ordering' => 2, 'createdAt' => 3, 'updatedAt' => 4, ],
+        self::TYPE_COLNAME       => [ClassroomTableMap::COL_ID => 0, ClassroomTableMap::COL_LABEL => 1, ClassroomTableMap::COL_ORDERING => 2, ClassroomTableMap::COL_CREATED_AT => 3, ClassroomTableMap::COL_UPDATED_AT => 4, ],
+        self::TYPE_FIELDNAME     => ['id' => 0, 'label' => 1, 'ordering' => 2, 'created_at' => 3, 'updated_at' => 4, ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, ]
     ];
 
     /**
@@ -155,43 +143,43 @@ class ClassroomTableMap extends TableMap
      * @var array<string>
      */
     protected $normalizedColumnNameMap = [
-        'Id'                                => 'ID',
-        'Classroom.Id'                      => 'ID',
-        'id'                                => 'ID',
-        'classroom.id'                      => 'ID',
-        'ClassroomTableMap::COL_ID'         => 'ID',
-        'COL_ID'                            => 'ID',
-        'classrooms.id'                     => 'ID',
-        'Label'                             => 'LABEL',
-        'Classroom.Label'                   => 'LABEL',
-        'label'                             => 'LABEL',
-        'classroom.label'                   => 'LABEL',
-        'ClassroomTableMap::COL_LABEL'      => 'LABEL',
-        'COL_LABEL'                         => 'LABEL',
-        'classrooms.label'                  => 'LABEL',
-        'Ordering'                          => 'ORDERING',
-        'Classroom.Ordering'                => 'ORDERING',
-        'ordering'                          => 'ORDERING',
-        'classroom.ordering'                => 'ORDERING',
-        'ClassroomTableMap::COL_ORDERING'   => 'ORDERING',
-        'COL_ORDERING'                      => 'ORDERING',
-        'classrooms.ordering'               => 'ORDERING',
-        'CreatedAt'                         => 'CREATED_AT',
-        'Classroom.CreatedAt'               => 'CREATED_AT',
-        'createdAt'                         => 'CREATED_AT',
-        'classroom.createdAt'               => 'CREATED_AT',
+        'Id' => 'ID',
+        'Classroom.Id' => 'ID',
+        'id' => 'ID',
+        'classroom.id' => 'ID',
+        'ClassroomTableMap::COL_ID' => 'ID',
+        'COL_ID' => 'ID',
+        'classrooms.id' => 'ID',
+        'Label' => 'LABEL',
+        'Classroom.Label' => 'LABEL',
+        'label' => 'LABEL',
+        'classroom.label' => 'LABEL',
+        'ClassroomTableMap::COL_LABEL' => 'LABEL',
+        'COL_LABEL' => 'LABEL',
+        'classrooms.label' => 'LABEL',
+        'Ordering' => 'ORDERING',
+        'Classroom.Ordering' => 'ORDERING',
+        'ordering' => 'ORDERING',
+        'classroom.ordering' => 'ORDERING',
+        'ClassroomTableMap::COL_ORDERING' => 'ORDERING',
+        'COL_ORDERING' => 'ORDERING',
+        'classrooms.ordering' => 'ORDERING',
+        'CreatedAt' => 'CREATED_AT',
+        'Classroom.CreatedAt' => 'CREATED_AT',
+        'createdAt' => 'CREATED_AT',
+        'classroom.createdAt' => 'CREATED_AT',
         'ClassroomTableMap::COL_CREATED_AT' => 'CREATED_AT',
-        'COL_CREATED_AT'                    => 'CREATED_AT',
-        'created_at'                        => 'CREATED_AT',
-        'classrooms.created_at'             => 'CREATED_AT',
-        'UpdatedAt'                         => 'UPDATED_AT',
-        'Classroom.UpdatedAt'               => 'UPDATED_AT',
-        'updatedAt'                         => 'UPDATED_AT',
-        'classroom.updatedAt'               => 'UPDATED_AT',
+        'COL_CREATED_AT' => 'CREATED_AT',
+        'created_at' => 'CREATED_AT',
+        'classrooms.created_at' => 'CREATED_AT',
+        'UpdatedAt' => 'UPDATED_AT',
+        'Classroom.UpdatedAt' => 'UPDATED_AT',
+        'updatedAt' => 'UPDATED_AT',
+        'classroom.updatedAt' => 'UPDATED_AT',
         'ClassroomTableMap::COL_UPDATED_AT' => 'UPDATED_AT',
-        'COL_UPDATED_AT'                    => 'UPDATED_AT',
-        'updated_at'                        => 'UPDATED_AT',
-        'classrooms.updated_at'             => 'UPDATED_AT',
+        'COL_UPDATED_AT' => 'UPDATED_AT',
+        'updated_at' => 'UPDATED_AT',
+        'classrooms.updated_at' => 'UPDATED_AT',
     ];
 
     /**
@@ -225,13 +213,13 @@ class ClassroomTableMap extends TableMap
      */
     public function buildRelations(): void
     {
-        $this->addRelation('Student', '\\flapjack\\attend\\database\\Student', RelationMap::ONE_TO_MANY, array(
-            0 =>
-                array(
-                    0 => ':classroom_id',
-                    1 => ':id',
-                ),
-        ), 'CASCADE', null, 'Students', false);
+        $this->addRelation('Student', '\\flapjack\\attend\\database\\Student', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':classroom_id',
+    1 => ':id',
+  ),
+), 'CASCADE', null, 'Students', false);
     }
 
     /**
@@ -250,55 +238,21 @@ class ClassroomTableMap extends TableMap
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
-     * @param  array  $row  Resultset row.
-     * @param  int  $offset  The 0-based offset for reading from the resultset row.
-     * @param  string  $indexType  One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * @param array $row Resultset row.
+     * @param int $offset The 0-based offset for reading from the resultset row.
+     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return string|null The primary key hash of the row
      */
-    public static function getPrimaryKeyHashFromRow(
-        array $row,
-        int $offset = 0,
-        string $indexType = TableMap::TYPE_NUM
-    ): ?string {
+    public static function getPrimaryKeyHashFromRow(array $row, int $offset = 0, string $indexType = TableMap::TYPE_NUM): ?string
+    {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName(
-                'Id',
-                TableMap::TYPE_PHPNAME,
-                $indexType
-            )] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName(
-            'Id',
-            TableMap::TYPE_PHPNAME,
-            $indexType
-        )] || is_scalar(
-                   $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName(
-                       'Id',
-                       TableMap::TYPE_PHPNAME,
-                       $indexType
-                   )]
-               ) || is_callable(
-                   [
-                       $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName(
-                           'Id',
-                           TableMap::TYPE_PHPNAME,
-                           $indexType
-                       )],
-                       '__toString'
-                   ]
-               ) ? (string)$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName(
-            'Id',
-            TableMap::TYPE_PHPNAME,
-            $indexType
-        )] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName(
-            'Id',
-            TableMap::TYPE_PHPNAME,
-            $indexType
-        )];
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -306,18 +260,20 @@ class ClassroomTableMap extends TableMap
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
      * a multi-column primary key, an array of the primary key columns will be returned.
      *
-     * @param  array  $row  Resultset row.
-     * @param  int  $offset  The 0-based offset for reading from the resultset row.
-     * @param  string  $indexType  One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * @param array $row Resultset row.
+     * @param int $offset The 0-based offset for reading from the resultset row.
+     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return mixed The primary key of the row
      */
     public static function getPrimaryKeyFromRow(array $row, int $offset = 0, string $indexType = TableMap::TYPE_NUM)
     {
-        return (int)$row[$indexType == TableMap::TYPE_NUM
-            ? 0 + $offset
-            : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return (int) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 0 + $offset
+                : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
+        ];
     }
 
     /**
@@ -328,8 +284,7 @@ class ClassroomTableMap extends TableMap
      * relative to a location on the PHP include_path.
      * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
      *
-     * @param  bool  $withPrefix  Whether to return the path with the class name
-     *
+     * @param bool $withPrefix Whether to return the path with the class name
      * @return string path.to.ClassName
      */
     public static function getOMClass(bool $withPrefix = true): string
@@ -340,10 +295,10 @@ class ClassroomTableMap extends TableMap
     /**
      * Populates an object of the default type or an object that inherit from the default.
      *
-     * @param  array  $row  Row returned by DataFetcher->fetch().
-     * @param  int  $offset  The 0-based offset for reading from the resultset row.
-     * @param  string  $indexType  The index type of $row. Mostly DataFetcher->getIndexType().
-    One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * @param array $row Row returned by DataFetcher->fetch().
+     * @param int $offset The 0-based offset for reading from the resultset row.
+     * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
+                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
@@ -373,7 +328,7 @@ class ClassroomTableMap extends TableMap
      * The returned array will contain objects of the default type or
      * objects that inherit from the default.
      *
-     * @param  DataFetcherInterface  $dataFetcher
+     * @param DataFetcherInterface $dataFetcher
      * @return array<object>
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
@@ -403,7 +358,6 @@ class ClassroomTableMap extends TableMap
 
         return $results;
     }
-
     /**
      * Add all the columns needed to create a new object.
      *
@@ -411,8 +365,8 @@ class ClassroomTableMap extends TableMap
      * XML schema will not be added to the select list and only loaded
      * on demand.
      *
-     * @param  Criteria  $criteria  Object containing the columns to add.
-     * @param  string|null  $alias  Optional table alias
+     * @param Criteria $criteria Object containing the columns to add.
+     * @param string|null $alias Optional table alias
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      * @return void
@@ -440,8 +394,8 @@ class ClassroomTableMap extends TableMap
      * Note: any columns that were marked with lazyLoad="true" in the
      * XML schema will not be removed as they are only loaded on demand.
      *
-     * @param  Criteria  $criteria  Object containing the columns to remove.
-     * @param  string|null  $alias  Optional table alias
+     * @param Criteria $criteria Object containing the columns to remove.
+     * @param string|null $alias Optional table alias
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      * @return void
@@ -472,24 +426,22 @@ class ClassroomTableMap extends TableMap
      */
     public static function getTableMap(): TableMap
     {
-        return Propel::getServiceContainer()->getDatabaseMap(ClassroomTableMap::DATABASE_NAME)->getTable(
-            ClassroomTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(ClassroomTableMap::DATABASE_NAME)->getTable(ClassroomTableMap::TABLE_NAME);
     }
 
     /**
      * Performs a DELETE on the database, given a Classroom or Criteria object OR a primary key value.
      *
-     * @param  mixed  $values  Criteria or Classroom object or primary key or array of primary keys
+     * @param mixed $values Criteria or Classroom object or primary key or array of primary keys
      *              which is used to create the DELETE statement
-     * @param  ConnectionInterface  $con  the connection to use
-     *
+     * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
      *                         if supported by native driver or if emulated using Propel.
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function doDelete($values, ?ConnectionInterface $con = null): int
-    {
+     public static function doDelete($values, ?ConnectionInterface $con = null): int
+     {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(ClassroomTableMap::DATABASE_NAME);
         }
@@ -502,7 +454,7 @@ class ClassroomTableMap extends TableMap
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(ClassroomTableMap::DATABASE_NAME);
-            $criteria->add(ClassroomTableMap::COL_ID, (array)$values, Criteria::IN);
+            $criteria->add(ClassroomTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
         $query = ClassroomQuery::create()->mergeWith($criteria);
@@ -510,7 +462,7 @@ class ClassroomTableMap extends TableMap
         if ($values instanceof Criteria) {
             ClassroomTableMap::clearInstancePool();
         } elseif (!is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array)$values as $singleval) {
+            foreach ((array) $values as $singleval) {
                 ClassroomTableMap::removeInstanceFromPool($singleval);
             }
         }
@@ -532,8 +484,8 @@ class ClassroomTableMap extends TableMap
     /**
      * Performs an INSERT on the database, given a Classroom or Criteria object.
      *
-     * @param  mixed  $criteria  Criteria or Classroom object containing data that is used to create the INSERT statement.
-     * @param  ConnectionInterface  $con  the ConnectionInterface connection to use
+     * @param mixed $criteria Criteria or Classroom object containing data that is used to create the INSERT statement.
+     * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed The new primary key.
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
@@ -550,12 +502,8 @@ class ClassroomTableMap extends TableMap
             $criteria = $criteria->buildCriteria(); // build Criteria from Classroom object
         }
 
-        if ($criteria->containsKey(ClassroomTableMap::COL_ID) && $criteria->keyContainsValue(
-                ClassroomTableMap::COL_ID
-            )) {
-            throw new PropelException(
-                'Cannot insert a value for auto-increment primary key (' . ClassroomTableMap::COL_ID . ')'
-            );
+        if ($criteria->containsKey(ClassroomTableMap::COL_ID) && $criteria->keyContainsValue(ClassroomTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.ClassroomTableMap::COL_ID.')');
         }
 
 

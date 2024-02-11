@@ -120,6 +120,7 @@
         <column name="username" phpName="Username" type="VARCHAR" size="63" required="true"/>
         <column name="pass" phpName="Pass" type="BOOLEAN" size="1" required="true"/>
         <column name="note" phpName="Note" type="VARCHAR" size="255" required="true"/>
+        <column name="logged_out_at" phpName="LoggedOutAt" type="TIMESTAMP" required="false"/>
         <vendor type="mysql">
             <parameter name="Engine" value="InnoDB"/>
         </vendor>

@@ -204,6 +204,12 @@ class WebApp extends App
             /** @var Account $acct */
             $acct = $_SESSION['account'];
             $this->getLogger()->info(sprintf('User "%s" logged out', $acct->getUsername()));
+            $login = LoginAttemptQuery::create()
+                ->filterByUsername($acct->getUsername())
+                ->orderByAttemptedAt('desc')
+                ->findOne();
+            $login->setLoggedOutAt(time());
+            $login->save();
 
             // Delete "remember me" tokens when user explicitly logs out
             $tokens = TokenAuthQuery::create()->findByAccountId($acct->getId());

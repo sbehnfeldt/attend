@@ -99,6 +99,13 @@ abstract class LoginAttempt implements ActiveRecordInterface
     protected $note;
 
     /**
+     * The value for the logged_out_at field.
+     *
+     * @var        DateTime|null
+     */
+    protected $logged_out_at;
+
+    /**
      * Flag to prevent endless save loop, if this object is referenced
      * by another object which falls in this transaction.
      *
@@ -413,9 +420,32 @@ abstract class LoginAttempt implements ActiveRecordInterface
     }
 
     /**
+     * Get the [optionally formatted] temporal [logged_out_at] column value.
+     *
+     *
+     * @param  string|null  $format  The date/time format string (either date()-style or strftime()-style).
+     *   If format is NULL, then the raw DateTime object will be returned.
+     *
+     * @return string|DateTime|null Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00.
+     *
+     * @throws \Propel\Runtime\Exception\PropelException - if unable to parse/validate the date/time value.
+     *
+     * @psalm-return ($format is null ? DateTime|null : string|null)
+     */
+    public function getLoggedOutAt($format = null)
+    {
+        if ($format === null) {
+            return $this->logged_out_at;
+        } else {
+            return $this->logged_out_at instanceof \DateTimeInterface ? $this->logged_out_at->format($format) : null;
+        }
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param  int  $v  New value
+     *
      * @return $this The current object (for fluent API support)
      */
     public function setId($v)
@@ -509,13 +539,36 @@ abstract class LoginAttempt implements ActiveRecordInterface
     public function setNote($v)
     {
         if ($v !== null) {
-            $v = (string) $v;
+            $v = (string)$v;
         }
 
         if ($this->note !== $v) {
-            $this->note = $v;
+            $this->note                                            = $v;
             $this->modifiedColumns[LoginAttemptTableMap::COL_NOTE] = true;
         }
+
+        return $this;
+    }
+
+    /**
+     * Sets the value of [logged_out_at] column to a normalized version of the date/time value specified.
+     *
+     * @param  string|integer|\DateTimeInterface|null  $v  string, integer (timestamp), or \DateTimeInterface value.
+     *               Empty strings are treated as NULL.
+     *
+     * @return $this The current object (for fluent API support)
+     */
+    public function setLoggedOutAt($v)
+    {
+        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
+        if ($this->logged_out_at !== null || $dt !== null) {
+            if ($this->logged_out_at === null || $dt === null || $dt->format(
+                    "Y-m-d H:i:s.u"
+                ) !== $this->logged_out_at->format("Y-m-d H:i:s.u")) {
+                $this->logged_out_at                                            = $dt === null ? null : clone $dt;
+                $this->modifiedColumns[LoginAttemptTableMap::COL_LOGGED_OUT_AT] = true;
+            }
+        } // if either are not null
 
         return $this;
     }
@@ -597,6 +650,16 @@ abstract class LoginAttempt implements ActiveRecordInterface
             )];
             $this->note = (null !== $col) ? (string)$col : null;
 
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : LoginAttemptTableMap::translateFieldName(
+                'LoggedOutAt',
+                TableMap::TYPE_PHPNAME,
+                $indexType
+            )];
+            if ($col === '0000-00-00 00:00:00') {
+                $col = null;
+            }
+            $this->logged_out_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+
             $this->resetModified();
             $this->setNew(false);
 
@@ -604,7 +667,7 @@ abstract class LoginAttempt implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = LoginAttemptTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 6; // 6 = LoginAttemptTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(
@@ -803,7 +866,8 @@ abstract class LoginAttempt implements ActiveRecordInterface
 
         $this->modifiedColumns[LoginAttemptTableMap::COL_ID] = true;
         if (null !== $this->id) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . LoginAttemptTableMap::COL_ID . ')');
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . LoginAttemptTableMap::COL_ID . ')'
+            );
         }
 
         // check the columns in natural order for more readable SQL queries
@@ -814,13 +878,16 @@ abstract class LoginAttempt implements ActiveRecordInterface
             $modifiedColumns[':p' . $index++] = 'attempted_at';
         }
         if ($this->isColumnModified(LoginAttemptTableMap::COL_USERNAME)) {
-            $modifiedColumns[':p' . $index++]  = 'username';
+            $modifiedColumns[':p' . $index++] = 'username';
         }
         if ($this->isColumnModified(LoginAttemptTableMap::COL_PASS)) {
-            $modifiedColumns[':p' . $index++]  = 'pass';
+            $modifiedColumns[':p' . $index++] = 'pass';
         }
         if ($this->isColumnModified(LoginAttemptTableMap::COL_NOTE)) {
-            $modifiedColumns[':p' . $index++]  = 'note';
+            $modifiedColumns[':p' . $index++] = 'note';
+        }
+        if ($this->isColumnModified(LoginAttemptTableMap::COL_LOGGED_OUT_AT)) {
+            $modifiedColumns[':p' . $index++] = 'logged_out_at';
         }
 
         $sql = sprintf(
@@ -851,6 +918,14 @@ abstract class LoginAttempt implements ActiveRecordInterface
                         break;
                     case 'note':
                         $stmt->bindValue($identifier, $this->note, PDO::PARAM_STR);
+
+                        break;
+                    case 'logged_out_at':
+                        $stmt->bindValue(
+                            $identifier,
+                            $this->logged_out_at ? $this->logged_out_at->format("Y-m-d H:i:s.u") : null,
+                            PDO::PARAM_STR
+                        );
 
                         break;
                 }
@@ -930,6 +1005,9 @@ abstract class LoginAttempt implements ActiveRecordInterface
             case 4:
                 return $this->getNote();
 
+            case 5:
+                return $this->getLoggedOutAt();
+
             default:
                 return null;
         } // switch()
@@ -965,9 +1043,14 @@ abstract class LoginAttempt implements ActiveRecordInterface
             $keys[2] => $this->getUsername(),
             $keys[3] => $this->getPass(),
             $keys[4] => $this->getNote(),
+            $keys[5] => $this->getLoggedOutAt(),
         ];
         if ($result[$keys[1]] instanceof \DateTimeInterface) {
             $result[$keys[1]] = $result[$keys[1]]->format('Y-m-d H:i:s.u');
+        }
+
+        if ($result[$keys[5]] instanceof \DateTimeInterface) {
+            $result[$keys[5]] = $result[$keys[5]]->format('Y-m-d H:i:s.u');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1025,6 +1108,9 @@ abstract class LoginAttempt implements ActiveRecordInterface
             case 4:
                 $this->setNote($value);
                 break;
+            case 5:
+                $this->setLoggedOutAt($value);
+                break;
         } // switch()
 
         return $this;
@@ -1067,28 +1153,31 @@ abstract class LoginAttempt implements ActiveRecordInterface
         if (array_key_exists($keys[4], $arr)) {
             $this->setNote($arr[$keys[4]]);
         }
+        if (array_key_exists($keys[5], $arr)) {
+            $this->setLoggedOutAt($arr[$keys[5]]);
+        }
 
         return $this;
     }
 
-    /**
+     /**
      * Populate the current object from a string, using a given parser format
-     * <code>
-     * $book = new Book();
-     * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
-     * </code>
-     *
-     * You can specify the key type of the array by additionally passing one
-     * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
-     * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
-     * The default key type is the column's TableMap::TYPE_PHPNAME.
-     *
-     * @param  mixed  $parser  A AbstractParser instance,
-     *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
-     * @param  string  $data  The source data to import from
-     * @param  string  $keyType  The type of keys the array uses.
-     *
-     * @return $this The current object, for fluid interface
+      * <code>
+      * $book = new Book();
+      * $book->importFrom('JSON', '{"Id":9012,"Title":"Don Juan","ISBN":"0140422161","Price":12.99,"PublisherId":1234,"AuthorId":5678}');
+      * </code>
+      *
+      * You can specify the key type of the array by additionally passing one
+      * of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME,
+      * TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
+      * The default key type is the column's TableMap::TYPE_PHPNAME.
+      *
+      * @param  mixed  $parser  A AbstractParser instance,
+      *                       or a format name ('XML', 'YAML', 'JSON', 'CSV')
+      * @param  string  $data  The source data to import from
+      * @param  string  $keyType  The type of keys the array uses.
+      *
+      * @return $this The current object, for fluid interface
      */
     public function importFrom($parser, string $data, string $keyType = TableMap::TYPE_PHPNAME)
     {
@@ -1124,6 +1213,9 @@ abstract class LoginAttempt implements ActiveRecordInterface
         }
         if ($this->isColumnModified(LoginAttemptTableMap::COL_NOTE)) {
             $criteria->add(LoginAttemptTableMap::COL_NOTE, $this->note);
+        }
+        if ($this->isColumnModified(LoginAttemptTableMap::COL_LOGGED_OUT_AT)) {
+            $criteria->add(LoginAttemptTableMap::COL_LOGGED_OUT_AT, $this->logged_out_at);
         }
 
         return $criteria;
@@ -1217,6 +1309,7 @@ abstract class LoginAttempt implements ActiveRecordInterface
         $copyObj->setUsername($this->getUsername());
         $copyObj->setPass($this->getPass());
         $copyObj->setNote($this->getNote());
+        $copyObj->setLoggedOutAt($this->getLoggedOutAt());
         if ($makeNew) {
             $copyObj->setNew(true);
             $copyObj->setId(null); // this is a auto-increment column, so set to default value
@@ -1259,6 +1352,7 @@ abstract class LoginAttempt implements ActiveRecordInterface
         $this->username      = null;
         $this->pass          = null;
         $this->note          = null;
+        $this->logged_out_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->resetModified();
@@ -1297,7 +1391,7 @@ abstract class LoginAttempt implements ActiveRecordInterface
 
     /**
      * Code to be run before persisting the object
-     * @param  ConnectionInterface|null  $con
+     * @param  ConnectionInterface|null $con
      * @return bool
      */
     public function preSave(?ConnectionInterface $con = null): bool
@@ -1307,7 +1401,7 @@ abstract class LoginAttempt implements ActiveRecordInterface
 
     /**
      * Code to be run after persisting the object
-     * @param  ConnectionInterface|null  $con
+     * @param  ConnectionInterface|null $con
      * @return void
      */
     public function postSave(?ConnectionInterface $con = null): void
@@ -1316,7 +1410,7 @@ abstract class LoginAttempt implements ActiveRecordInterface
 
     /**
      * Code to be run before inserting to database
-     * @param  ConnectionInterface|null  $con
+     * @param  ConnectionInterface|null $con
      * @return bool
      */
     public function preInsert(?ConnectionInterface $con = null): bool
@@ -1326,7 +1420,7 @@ abstract class LoginAttempt implements ActiveRecordInterface
 
     /**
      * Code to be run after inserting to database
-     * @param  ConnectionInterface|null  $con
+     * @param  ConnectionInterface|null $con
      * @return void
      */
     public function postInsert(?ConnectionInterface $con = null): void
@@ -1335,7 +1429,7 @@ abstract class LoginAttempt implements ActiveRecordInterface
 
     /**
      * Code to be run before updating the object in database
-     * @param  ConnectionInterface|null  $con
+     * @param  ConnectionInterface|null $con
      * @return bool
      */
     public function preUpdate(?ConnectionInterface $con = null): bool
@@ -1345,7 +1439,7 @@ abstract class LoginAttempt implements ActiveRecordInterface
 
     /**
      * Code to be run after updating the object in database
-     * @param  ConnectionInterface|null  $con
+     * @param  ConnectionInterface|null $con
      * @return void
      */
     public function postUpdate(?ConnectionInterface $con = null): void
@@ -1354,7 +1448,7 @@ abstract class LoginAttempt implements ActiveRecordInterface
 
     /**
      * Code to be run before deleting the object in database
-     * @param  ConnectionInterface|null  $con
+     * @param  ConnectionInterface|null $con
      * @return bool
      */
     public function preDelete(?ConnectionInterface $con = null): bool
@@ -1364,7 +1458,7 @@ abstract class LoginAttempt implements ActiveRecordInterface
 
     /**
      * Code to be run after deleting the object in database
-     * @param  ConnectionInterface|null  $con
+     * @param  ConnectionInterface|null $con
      * @return void
      */
     public function postDelete(?ConnectionInterface $con = null): void

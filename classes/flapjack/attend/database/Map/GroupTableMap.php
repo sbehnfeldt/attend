@@ -104,11 +104,11 @@ class GroupTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldNames = [
-        self::TYPE_PHPNAME   => ['Id', 'Name', 'Description',],
-        self::TYPE_CAMELNAME => ['id', 'name', 'description',],
-        self::TYPE_COLNAME   => [GroupTableMap::COL_ID, GroupTableMap::COL_NAME, GroupTableMap::COL_DESCRIPTION,],
-        self::TYPE_FIELDNAME => ['id', 'name', 'description',],
-        self::TYPE_NUM       => [0, 1, 2,]
+        self::TYPE_PHPNAME       => ['Id', 'Name', 'Description', ],
+        self::TYPE_CAMELNAME     => ['id', 'name', 'description', ],
+        self::TYPE_COLNAME       => [GroupTableMap::COL_ID, GroupTableMap::COL_NAME, GroupTableMap::COL_DESCRIPTION, ],
+        self::TYPE_FIELDNAME     => ['id', 'name', 'description', ],
+        self::TYPE_NUM           => [0, 1, 2, ]
     ];
 
     /**
@@ -120,15 +120,11 @@ class GroupTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldKeys = [
-        self::TYPE_PHPNAME   => ['Id' => 0, 'Name' => 1, 'Description' => 2,],
-        self::TYPE_CAMELNAME => ['id' => 0, 'name' => 1, 'description' => 2,],
-        self::TYPE_COLNAME   => [
-            GroupTableMap::COL_ID          => 0,
-            GroupTableMap::COL_NAME        => 1,
-            GroupTableMap::COL_DESCRIPTION => 2,
-        ],
-        self::TYPE_FIELDNAME => ['id' => 0, 'name' => 1, 'description' => 2,],
-        self::TYPE_NUM       => [0, 1, 2,]
+        self::TYPE_PHPNAME       => ['Id' => 0, 'Name' => 1, 'Description' => 2, ],
+        self::TYPE_CAMELNAME     => ['id' => 0, 'name' => 1, 'description' => 2, ],
+        self::TYPE_COLNAME       => [GroupTableMap::COL_ID => 0, GroupTableMap::COL_NAME => 1, GroupTableMap::COL_DESCRIPTION => 2, ],
+        self::TYPE_FIELDNAME     => ['id' => 0, 'name' => 1, 'description' => 2, ],
+        self::TYPE_NUM           => [0, 1, 2, ]
     ];
 
     /**
@@ -137,27 +133,27 @@ class GroupTableMap extends TableMap
      * @var array<string>
      */
     protected $normalizedColumnNameMap = [
-        'Id'                             => 'ID',
-        'Group.Id'                       => 'ID',
-        'id'                             => 'ID',
-        'group.id'                       => 'ID',
-        'GroupTableMap::COL_ID'          => 'ID',
-        'COL_ID'                         => 'ID',
-        'groups.id'                      => 'ID',
-        'Name'                           => 'NAME',
-        'Group.Name'                     => 'NAME',
-        'name'                           => 'NAME',
-        'group.name'                     => 'NAME',
-        'GroupTableMap::COL_NAME'        => 'NAME',
-        'COL_NAME'                       => 'NAME',
-        'groups.name'                    => 'NAME',
-        'Description'                    => 'DESCRIPTION',
-        'Group.Description'              => 'DESCRIPTION',
-        'description'                    => 'DESCRIPTION',
-        'group.description'              => 'DESCRIPTION',
+        'Id' => 'ID',
+        'Group.Id' => 'ID',
+        'id' => 'ID',
+        'group.id' => 'ID',
+        'GroupTableMap::COL_ID' => 'ID',
+        'COL_ID' => 'ID',
+        'groups.id' => 'ID',
+        'Name' => 'NAME',
+        'Group.Name' => 'NAME',
+        'name' => 'NAME',
+        'group.name' => 'NAME',
+        'GroupTableMap::COL_NAME' => 'NAME',
+        'COL_NAME' => 'NAME',
+        'groups.name' => 'NAME',
+        'Description' => 'DESCRIPTION',
+        'Group.Description' => 'DESCRIPTION',
+        'description' => 'DESCRIPTION',
+        'group.description' => 'DESCRIPTION',
         'GroupTableMap::COL_DESCRIPTION' => 'DESCRIPTION',
-        'COL_DESCRIPTION'                => 'DESCRIPTION',
-        'groups.description'             => 'DESCRIPTION',
+        'COL_DESCRIPTION' => 'DESCRIPTION',
+        'groups.description' => 'DESCRIPTION',
     ];
 
     /**
@@ -189,29 +185,20 @@ class GroupTableMap extends TableMap
      */
     public function buildRelations(): void
     {
-        $this->addRelation('GroupMember', '\\flapjack\\attend\\database\\GroupMember', RelationMap::ONE_TO_MANY, array(
-            0 =>
-                array(
-                    0 => ':group_id',
-                    1 => ':id',
-                ),
-        ), 'CASCADE', null, 'GroupMembers', false);
-        $this->addRelation(
-            'GroupPermission',
-            '\\flapjack\\attend\\database\\GroupPermission',
-            RelationMap::ONE_TO_MANY,
-            array(
-                0 =>
-                    array(
-                        0 => ':group_id',
-                        1 => ':id',
-                    ),
-            ),
-            'CASCADE',
-            null,
-            'GroupPermissions',
-            false
-        );
+        $this->addRelation('GroupMember', '\\flapjack\\attend\\database\\GroupMember', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':group_id',
+    1 => ':id',
+  ),
+), 'CASCADE', null, 'GroupMembers', false);
+        $this->addRelation('GroupPermission', '\\flapjack\\attend\\database\\GroupPermission', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':group_id',
+    1 => ':id',
+  ),
+), 'CASCADE', null, 'GroupPermissions', false);
     }
 
     /**
@@ -231,55 +218,21 @@ class GroupTableMap extends TableMap
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
-     * @param  array  $row  Resultset row.
-     * @param  int  $offset  The 0-based offset for reading from the resultset row.
-     * @param  string  $indexType  One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * @param array $row Resultset row.
+     * @param int $offset The 0-based offset for reading from the resultset row.
+     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return string|null The primary key hash of the row
      */
-    public static function getPrimaryKeyHashFromRow(
-        array $row,
-        int $offset = 0,
-        string $indexType = TableMap::TYPE_NUM
-    ): ?string {
+    public static function getPrimaryKeyHashFromRow(array $row, int $offset = 0, string $indexType = TableMap::TYPE_NUM): ?string
+    {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName(
-                'Id',
-                TableMap::TYPE_PHPNAME,
-                $indexType
-            )] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName(
-            'Id',
-            TableMap::TYPE_PHPNAME,
-            $indexType
-        )] || is_scalar(
-                   $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName(
-                       'Id',
-                       TableMap::TYPE_PHPNAME,
-                       $indexType
-                   )]
-               ) || is_callable(
-                   [
-                       $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName(
-                           'Id',
-                           TableMap::TYPE_PHPNAME,
-                           $indexType
-                       )],
-                       '__toString'
-                   ]
-               ) ? (string)$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName(
-            'Id',
-            TableMap::TYPE_PHPNAME,
-            $indexType
-        )] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName(
-            'Id',
-            TableMap::TYPE_PHPNAME,
-            $indexType
-        )];
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -287,18 +240,20 @@ class GroupTableMap extends TableMap
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
      * a multi-column primary key, an array of the primary key columns will be returned.
      *
-     * @param  array  $row  Resultset row.
-     * @param  int  $offset  The 0-based offset for reading from the resultset row.
-     * @param  string  $indexType  One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * @param array $row Resultset row.
+     * @param int $offset The 0-based offset for reading from the resultset row.
+     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return mixed The primary key of the row
      */
     public static function getPrimaryKeyFromRow(array $row, int $offset = 0, string $indexType = TableMap::TYPE_NUM)
     {
-        return (int)$row[$indexType == TableMap::TYPE_NUM
-            ? 0 + $offset
-            : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return (int) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 0 + $offset
+                : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
+        ];
     }
 
     /**
@@ -309,8 +264,7 @@ class GroupTableMap extends TableMap
      * relative to a location on the PHP include_path.
      * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
      *
-     * @param  bool  $withPrefix  Whether to return the path with the class name
-     *
+     * @param bool $withPrefix Whether to return the path with the class name
      * @return string path.to.ClassName
      */
     public static function getOMClass(bool $withPrefix = true): string
@@ -321,10 +275,10 @@ class GroupTableMap extends TableMap
     /**
      * Populates an object of the default type or an object that inherit from the default.
      *
-     * @param  array  $row  Row returned by DataFetcher->fetch().
-     * @param  int  $offset  The 0-based offset for reading from the resultset row.
-     * @param  string  $indexType  The index type of $row. Mostly DataFetcher->getIndexType().
-    One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * @param array $row Row returned by DataFetcher->fetch().
+     * @param int $offset The 0-based offset for reading from the resultset row.
+     * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
+                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
@@ -354,7 +308,7 @@ class GroupTableMap extends TableMap
      * The returned array will contain objects of the default type or
      * objects that inherit from the default.
      *
-     * @param  DataFetcherInterface  $dataFetcher
+     * @param DataFetcherInterface $dataFetcher
      * @return array<object>
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
@@ -384,7 +338,6 @@ class GroupTableMap extends TableMap
 
         return $results;
     }
-
     /**
      * Add all the columns needed to create a new object.
      *
@@ -392,8 +345,8 @@ class GroupTableMap extends TableMap
      * XML schema will not be added to the select list and only loaded
      * on demand.
      *
-     * @param  Criteria  $criteria  Object containing the columns to add.
-     * @param  string|null  $alias  Optional table alias
+     * @param Criteria $criteria Object containing the columns to add.
+     * @param string|null $alias Optional table alias
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      * @return void
@@ -417,8 +370,8 @@ class GroupTableMap extends TableMap
      * Note: any columns that were marked with lazyLoad="true" in the
      * XML schema will not be removed as they are only loaded on demand.
      *
-     * @param  Criteria  $criteria  Object containing the columns to remove.
-     * @param  string|null  $alias  Optional table alias
+     * @param Criteria $criteria Object containing the columns to remove.
+     * @param string|null $alias Optional table alias
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      * @return void
@@ -445,24 +398,22 @@ class GroupTableMap extends TableMap
      */
     public static function getTableMap(): TableMap
     {
-        return Propel::getServiceContainer()->getDatabaseMap(GroupTableMap::DATABASE_NAME)->getTable(
-            GroupTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(GroupTableMap::DATABASE_NAME)->getTable(GroupTableMap::TABLE_NAME);
     }
 
     /**
      * Performs a DELETE on the database, given a Group or Criteria object OR a primary key value.
      *
-     * @param  mixed  $values  Criteria or Group object or primary key or array of primary keys
+     * @param mixed $values Criteria or Group object or primary key or array of primary keys
      *              which is used to create the DELETE statement
-     * @param  ConnectionInterface  $con  the connection to use
-     *
+     * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
      *                         if supported by native driver or if emulated using Propel.
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function doDelete($values, ?ConnectionInterface $con = null): int
-    {
+     public static function doDelete($values, ?ConnectionInterface $con = null): int
+     {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(GroupTableMap::DATABASE_NAME);
         }
@@ -475,15 +426,15 @@ class GroupTableMap extends TableMap
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(GroupTableMap::DATABASE_NAME);
-            $criteria->add(GroupTableMap::COL_ID, (array)$values, Criteria::IN);
+            $criteria->add(GroupTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
         $query = GroupQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
             GroupTableMap::clearInstancePool();
-        } elseif ( ! is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array)$values as $singleval) {
+        } elseif (!is_object($values)) { // it's a primary key, or an array of pks
+            foreach ((array) $values as $singleval) {
                 GroupTableMap::removeInstanceFromPool($singleval);
             }
         }
@@ -494,7 +445,7 @@ class GroupTableMap extends TableMap
     /**
      * Deletes all rows from the groups table.
      *
-     * @param  ConnectionInterface  $con  the connection to use
+     * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(?ConnectionInterface $con = null): int
@@ -505,8 +456,8 @@ class GroupTableMap extends TableMap
     /**
      * Performs an INSERT on the database, given a Group or Criteria object.
      *
-     * @param  mixed  $criteria  Criteria or Group object containing data that is used to create the INSERT statement.
-     * @param  ConnectionInterface  $con  the ConnectionInterface connection to use
+     * @param mixed $criteria Criteria or Group object containing data that is used to create the INSERT statement.
+     * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed The new primary key.
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
@@ -523,10 +474,8 @@ class GroupTableMap extends TableMap
             $criteria = $criteria->buildCriteria(); // build Criteria from Group object
         }
 
-        if ($criteria->containsKey(GroupTableMap::COL_ID) && $criteria->keyContainsValue(GroupTableMap::COL_ID)) {
-            throw new PropelException(
-                'Cannot insert a value for auto-increment primary key (' . GroupTableMap::COL_ID . ')'
-            );
+        if ($criteria->containsKey(GroupTableMap::COL_ID) && $criteria->keyContainsValue(GroupTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.GroupTableMap::COL_ID.')');
         }
 
 

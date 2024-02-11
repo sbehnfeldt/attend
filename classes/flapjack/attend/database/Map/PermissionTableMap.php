@@ -104,15 +104,11 @@ class PermissionTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldNames = [
-        self::TYPE_PHPNAME   => ['Id', 'Slug', 'Description',],
-        self::TYPE_CAMELNAME => ['id', 'slug', 'description',],
-        self::TYPE_COLNAME   => [
-            PermissionTableMap::COL_ID,
-            PermissionTableMap::COL_SLUG,
-            PermissionTableMap::COL_DESCRIPTION,
-        ],
-        self::TYPE_FIELDNAME => ['id', 'slug', 'description',],
-        self::TYPE_NUM       => [0, 1, 2,]
+        self::TYPE_PHPNAME       => ['Id', 'Slug', 'Description', ],
+        self::TYPE_CAMELNAME     => ['id', 'slug', 'description', ],
+        self::TYPE_COLNAME       => [PermissionTableMap::COL_ID, PermissionTableMap::COL_SLUG, PermissionTableMap::COL_DESCRIPTION, ],
+        self::TYPE_FIELDNAME     => ['id', 'slug', 'description', ],
+        self::TYPE_NUM           => [0, 1, 2, ]
     ];
 
     /**
@@ -124,15 +120,11 @@ class PermissionTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldKeys = [
-        self::TYPE_PHPNAME   => ['Id' => 0, 'Slug' => 1, 'Description' => 2,],
-        self::TYPE_CAMELNAME => ['id' => 0, 'slug' => 1, 'description' => 2,],
-        self::TYPE_COLNAME   => [
-            PermissionTableMap::COL_ID          => 0,
-            PermissionTableMap::COL_SLUG        => 1,
-            PermissionTableMap::COL_DESCRIPTION => 2,
-        ],
-        self::TYPE_FIELDNAME => ['id' => 0, 'slug' => 1, 'description' => 2,],
-        self::TYPE_NUM       => [0, 1, 2,]
+        self::TYPE_PHPNAME       => ['Id' => 0, 'Slug' => 1, 'Description' => 2, ],
+        self::TYPE_CAMELNAME     => ['id' => 0, 'slug' => 1, 'description' => 2, ],
+        self::TYPE_COLNAME       => [PermissionTableMap::COL_ID => 0, PermissionTableMap::COL_SLUG => 1, PermissionTableMap::COL_DESCRIPTION => 2, ],
+        self::TYPE_FIELDNAME     => ['id' => 0, 'slug' => 1, 'description' => 2, ],
+        self::TYPE_NUM           => [0, 1, 2, ]
     ];
 
     /**
@@ -141,27 +133,27 @@ class PermissionTableMap extends TableMap
      * @var array<string>
      */
     protected $normalizedColumnNameMap = [
-        'Id'                                  => 'ID',
-        'Permission.Id'                       => 'ID',
-        'id'                                  => 'ID',
-        'permission.id'                       => 'ID',
-        'PermissionTableMap::COL_ID'          => 'ID',
-        'COL_ID'                              => 'ID',
-        'permissions.id'                      => 'ID',
-        'Slug'                                => 'SLUG',
-        'Permission.Slug'                     => 'SLUG',
-        'slug'                                => 'SLUG',
-        'permission.slug'                     => 'SLUG',
-        'PermissionTableMap::COL_SLUG'        => 'SLUG',
-        'COL_SLUG'                            => 'SLUG',
-        'permissions.slug'                    => 'SLUG',
-        'Description'                         => 'DESCRIPTION',
-        'Permission.Description'              => 'DESCRIPTION',
-        'description'                         => 'DESCRIPTION',
-        'permission.description'              => 'DESCRIPTION',
+        'Id' => 'ID',
+        'Permission.Id' => 'ID',
+        'id' => 'ID',
+        'permission.id' => 'ID',
+        'PermissionTableMap::COL_ID' => 'ID',
+        'COL_ID' => 'ID',
+        'permissions.id' => 'ID',
+        'Slug' => 'SLUG',
+        'Permission.Slug' => 'SLUG',
+        'slug' => 'SLUG',
+        'permission.slug' => 'SLUG',
+        'PermissionTableMap::COL_SLUG' => 'SLUG',
+        'COL_SLUG' => 'SLUG',
+        'permissions.slug' => 'SLUG',
+        'Description' => 'DESCRIPTION',
+        'Permission.Description' => 'DESCRIPTION',
+        'description' => 'DESCRIPTION',
+        'permission.description' => 'DESCRIPTION',
         'PermissionTableMap::COL_DESCRIPTION' => 'DESCRIPTION',
-        'COL_DESCRIPTION'                     => 'DESCRIPTION',
-        'permissions.description'             => 'DESCRIPTION',
+        'COL_DESCRIPTION' => 'DESCRIPTION',
+        'permissions.description' => 'DESCRIPTION',
     ];
 
     /**
@@ -193,38 +185,20 @@ class PermissionTableMap extends TableMap
      */
     public function buildRelations(): void
     {
-        $this->addRelation(
-            'GroupPermission',
-            '\\flapjack\\attend\\database\\GroupPermission',
-            RelationMap::ONE_TO_MANY,
-            array(
-                0 =>
-                    array(
-                        0 => ':permission_id',
-                        1 => ':id',
-                    ),
-            ),
-            'CASCADE',
-            null,
-            'GroupPermissions',
-            false
-        );
-        $this->addRelation(
-            'IndividualPermission',
-            '\\flapjack\\attend\\database\\IndividualPermission',
-            RelationMap::ONE_TO_MANY,
-            array(
-                0 =>
-                    array(
-                        0 => ':permissions_id',
-                        1 => ':id',
-                    ),
-            ),
-            'CASCADE',
-            null,
-            'IndividualPermissions',
-            false
-        );
+        $this->addRelation('GroupPermission', '\\flapjack\\attend\\database\\GroupPermission', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':permission_id',
+    1 => ':id',
+  ),
+), 'CASCADE', null, 'GroupPermissions', false);
+        $this->addRelation('IndividualPermission', '\\flapjack\\attend\\database\\IndividualPermission', RelationMap::ONE_TO_MANY, array (
+  0 =>
+  array (
+    0 => ':permissions_id',
+    1 => ':id',
+  ),
+), 'CASCADE', null, 'IndividualPermissions', false);
     }
 
     /**
@@ -244,55 +218,21 @@ class PermissionTableMap extends TableMap
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
      * a multi-column primary key, a serialize()d version of the primary key will be returned.
      *
-     * @param  array  $row  Resultset row.
-     * @param  int  $offset  The 0-based offset for reading from the resultset row.
-     * @param  string  $indexType  One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * @param array $row Resultset row.
+     * @param int $offset The 0-based offset for reading from the resultset row.
+     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return string|null The primary key hash of the row
      */
-    public static function getPrimaryKeyHashFromRow(
-        array $row,
-        int $offset = 0,
-        string $indexType = TableMap::TYPE_NUM
-    ): ?string {
+    public static function getPrimaryKeyHashFromRow(array $row, int $offset = 0, string $indexType = TableMap::TYPE_NUM): ?string
+    {
         // If the PK cannot be derived from the row, return NULL.
-        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName(
-                'Id',
-                TableMap::TYPE_PHPNAME,
-                $indexType
-            )] === null) {
+        if ($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] === null) {
             return null;
         }
 
-        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName(
-            'Id',
-            TableMap::TYPE_PHPNAME,
-            $indexType
-        )] || is_scalar(
-                   $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName(
-                       'Id',
-                       TableMap::TYPE_PHPNAME,
-                       $indexType
-                   )]
-               ) || is_callable(
-                   [
-                       $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName(
-                           'Id',
-                           TableMap::TYPE_PHPNAME,
-                           $indexType
-                       )],
-                       '__toString'
-                   ]
-               ) ? (string)$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName(
-            'Id',
-            TableMap::TYPE_PHPNAME,
-            $indexType
-        )] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName(
-            'Id',
-            TableMap::TYPE_PHPNAME,
-            $indexType
-        )];
+        return null === $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] || is_scalar($row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)]) || is_callable([$row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)], '__toString']) ? (string) $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)] : $row[TableMap::TYPE_NUM == $indexType ? 0 + $offset : static::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
     }
 
     /**
@@ -300,18 +240,20 @@ class PermissionTableMap extends TableMap
      * For tables with a single-column primary key, that simple pkey value will be returned.  For tables with
      * a multi-column primary key, an array of the primary key columns will be returned.
      *
-     * @param  array  $row  Resultset row.
-     * @param  int  $offset  The 0-based offset for reading from the resultset row.
-     * @param  string  $indexType  One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * @param array $row Resultset row.
+     * @param int $offset The 0-based offset for reading from the resultset row.
+     * @param string $indexType One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM
      *
      * @return mixed The primary key of the row
      */
     public static function getPrimaryKeyFromRow(array $row, int $offset = 0, string $indexType = TableMap::TYPE_NUM)
     {
-        return (int)$row[$indexType == TableMap::TYPE_NUM
-            ? 0 + $offset
-            : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)];
+        return (int) $row[
+            $indexType == TableMap::TYPE_NUM
+                ? 0 + $offset
+                : self::translateFieldName('Id', TableMap::TYPE_PHPNAME, $indexType)
+        ];
     }
 
     /**
@@ -322,8 +264,7 @@ class PermissionTableMap extends TableMap
      * relative to a location on the PHP include_path.
      * (e.g. path.to.MyClass -> 'path/to/MyClass.php')
      *
-     * @param  bool  $withPrefix  Whether to return the path with the class name
-     *
+     * @param bool $withPrefix Whether to return the path with the class name
      * @return string path.to.ClassName
      */
     public static function getOMClass(bool $withPrefix = true): string
@@ -334,10 +275,10 @@ class PermissionTableMap extends TableMap
     /**
      * Populates an object of the default type or an object that inherit from the default.
      *
-     * @param  array  $row  Row returned by DataFetcher->fetch().
-     * @param  int  $offset  The 0-based offset for reading from the resultset row.
-     * @param  string  $indexType  The index type of $row. Mostly DataFetcher->getIndexType().
-    One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
+     * @param array $row Row returned by DataFetcher->fetch().
+     * @param int $offset The 0-based offset for reading from the resultset row.
+     * @param string $indexType The index type of $row. Mostly DataFetcher->getIndexType().
+                                 One of the class type constants TableMap::TYPE_PHPNAME, TableMap::TYPE_CAMELNAME
      *                           TableMap::TYPE_COLNAME, TableMap::TYPE_FIELDNAME, TableMap::TYPE_NUM.
      *
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
@@ -367,7 +308,7 @@ class PermissionTableMap extends TableMap
      * The returned array will contain objects of the default type or
      * objects that inherit from the default.
      *
-     * @param  DataFetcherInterface  $dataFetcher
+     * @param DataFetcherInterface $dataFetcher
      * @return array<object>
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
@@ -397,7 +338,6 @@ class PermissionTableMap extends TableMap
 
         return $results;
     }
-
     /**
      * Add all the columns needed to create a new object.
      *
@@ -405,8 +345,8 @@ class PermissionTableMap extends TableMap
      * XML schema will not be added to the select list and only loaded
      * on demand.
      *
-     * @param  Criteria  $criteria  Object containing the columns to add.
-     * @param  string|null  $alias  Optional table alias
+     * @param Criteria $criteria Object containing the columns to add.
+     * @param string|null $alias Optional table alias
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      * @return void
@@ -430,8 +370,8 @@ class PermissionTableMap extends TableMap
      * Note: any columns that were marked with lazyLoad="true" in the
      * XML schema will not be removed as they are only loaded on demand.
      *
-     * @param  Criteria  $criteria  Object containing the columns to remove.
-     * @param  string|null  $alias  Optional table alias
+     * @param Criteria $criteria Object containing the columns to remove.
+     * @param string|null $alias Optional table alias
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      * @return void
@@ -458,24 +398,22 @@ class PermissionTableMap extends TableMap
      */
     public static function getTableMap(): TableMap
     {
-        return Propel::getServiceContainer()->getDatabaseMap(PermissionTableMap::DATABASE_NAME)->getTable(
-            PermissionTableMap::TABLE_NAME);
+        return Propel::getServiceContainer()->getDatabaseMap(PermissionTableMap::DATABASE_NAME)->getTable(PermissionTableMap::TABLE_NAME);
     }
 
     /**
      * Performs a DELETE on the database, given a Permission or Criteria object OR a primary key value.
      *
-     * @param  mixed  $values  Criteria or Permission object or primary key or array of primary keys
+     * @param mixed $values Criteria or Permission object or primary key or array of primary keys
      *              which is used to create the DELETE statement
-     * @param  ConnectionInterface  $con  the connection to use
-     *
+     * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).  This includes CASCADE-related rows
      *                         if supported by native driver or if emulated using Propel.
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
      */
-    public static function doDelete($values, ?ConnectionInterface $con = null): int
-    {
+     public static function doDelete($values, ?ConnectionInterface $con = null): int
+     {
         if (null === $con) {
             $con = Propel::getServiceContainer()->getWriteConnection(PermissionTableMap::DATABASE_NAME);
         }
@@ -488,15 +426,15 @@ class PermissionTableMap extends TableMap
             $criteria = $values->buildPkeyCriteria();
         } else { // it's a primary key, or an array of pks
             $criteria = new Criteria(PermissionTableMap::DATABASE_NAME);
-            $criteria->add(PermissionTableMap::COL_ID, (array)$values, Criteria::IN);
+            $criteria->add(PermissionTableMap::COL_ID, (array) $values, Criteria::IN);
         }
 
         $query = PermissionQuery::create()->mergeWith($criteria);
 
         if ($values instanceof Criteria) {
             PermissionTableMap::clearInstancePool();
-        } elseif ( ! is_object($values)) { // it's a primary key, or an array of pks
-            foreach ((array)$values as $singleval) {
+        } elseif (!is_object($values)) { // it's a primary key, or an array of pks
+            foreach ((array) $values as $singleval) {
                 PermissionTableMap::removeInstanceFromPool($singleval);
             }
         }
@@ -507,7 +445,7 @@ class PermissionTableMap extends TableMap
     /**
      * Deletes all rows from the permissions table.
      *
-     * @param  ConnectionInterface  $con  the connection to use
+     * @param ConnectionInterface $con the connection to use
      * @return int The number of affected rows (if supported by underlying database driver).
      */
     public static function doDeleteAll(?ConnectionInterface $con = null): int
@@ -518,8 +456,8 @@ class PermissionTableMap extends TableMap
     /**
      * Performs an INSERT on the database, given a Permission or Criteria object.
      *
-     * @param  mixed  $criteria  Criteria or Permission object containing data that is used to create the INSERT statement.
-     * @param  ConnectionInterface  $con  the ConnectionInterface connection to use
+     * @param mixed $criteria Criteria or Permission object containing data that is used to create the INSERT statement.
+     * @param ConnectionInterface $con the ConnectionInterface connection to use
      * @return mixed The new primary key.
      * @throws \Propel\Runtime\Exception\PropelException Any exceptions caught during processing will be
      *                         rethrown wrapped into a PropelException.
@@ -536,12 +474,8 @@ class PermissionTableMap extends TableMap
             $criteria = $criteria->buildCriteria(); // build Criteria from Permission object
         }
 
-        if ($criteria->containsKey(PermissionTableMap::COL_ID) && $criteria->keyContainsValue(
-                PermissionTableMap::COL_ID
-            )) {
-            throw new PropelException(
-                'Cannot insert a value for auto-increment primary key (' . PermissionTableMap::COL_ID . ')'
-            );
+        if ($criteria->containsKey(PermissionTableMap::COL_ID) && $criteria->keyContainsValue(PermissionTableMap::COL_ID) ) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key ('.PermissionTableMap::COL_ID.')');
         }
 
 
