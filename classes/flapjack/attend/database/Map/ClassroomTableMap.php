@@ -200,10 +200,10 @@ class ClassroomTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
-        $this->addColumn('label', 'Label', 'VARCHAR', true, 63, null);
-        $this->addColumn('ordering', 'Ordering', 'INTEGER', true, null, null);
+        $this->addColumn('label', 'Label', 'VARCHAR', true, 45, null);
+        $this->addColumn('ordering', 'Ordering', 'INTEGER', false, null, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP');
-        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP');
+        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
     }
 
     /**

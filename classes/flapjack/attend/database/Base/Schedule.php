@@ -25,7 +25,7 @@ use flapjack\attend\database\Map\ScheduleTableMap;
 /**
  * Base class that represents a row from the 'schedules' table.
  *
- *
+ * Table indicating when students are scheduled to attend
  *
  * @package    propel.generator..Base
  */
@@ -82,6 +82,7 @@ abstract class Schedule implements ActiveRecordInterface
     /**
      * The value for the schedule field.
      *
+     * Note: this column has a database default value of: 0
      * @var        int
      */
     protected $schedule;
@@ -96,7 +97,8 @@ abstract class Schedule implements ActiveRecordInterface
     /**
      * The value for the entered_at field.
      *
-     * @var        DateTime
+     * Note: this column has a database default value of: 0
+     * @var        int
      */
     protected $entered_at;
 
@@ -114,10 +116,24 @@ abstract class Schedule implements ActiveRecordInterface
     protected $alreadyInSave = false;
 
     /**
+     * Applies default values to this object.
+     * This method should be called from the object's constructor (or
+     * equivalent initialization method).
+     * @see __construct()
+     */
+    public function applyDefaultValues(): void
+    {
+        $this->schedule = 0;
+        $this->entered_at = 0;
+    }
+
+    /**
      * Initializes internal state of flapjack\attend\database\Base\Schedule object.
+     * @see applyDefaults()
      */
     public function __construct()
     {
+        $this->applyDefaultValues();
     }
 
     /**
@@ -376,7 +392,7 @@ abstract class Schedule implements ActiveRecordInterface
      * @param string|null $format The date/time format string (either date()-style or strftime()-style).
      *   If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), and 0 if column value is 0000-00-00 00:00:00.
+     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), and 0 if column value is 0000-00-00.
      *
      * @throws \Propel\Runtime\Exception\PropelException - if unable to parse/validate the date/time value.
      *
@@ -392,25 +408,13 @@ abstract class Schedule implements ActiveRecordInterface
     }
 
     /**
-     * Get the [optionally formatted] temporal [entered_at] column value.
+     * Get the [entered_at] column value.
      *
-     *
-     * @param string|null $format The date/time format string (either date()-style or strftime()-style).
-     *   If format is NULL, then the raw DateTime object will be returned.
-     *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), and 0 if column value is 0000-00-00 00:00:00.
-     *
-     * @throws \Propel\Runtime\Exception\PropelException - if unable to parse/validate the date/time value.
-     *
-     * @psalm-return ($format is null ? DateTime : string)
+     * @return int
      */
-    public function getEnteredAt($format = null)
+    public function getEnteredAt()
     {
-        if ($format === null) {
-            return $this->entered_at;
-        } else {
-            return $this->entered_at instanceof \DateTimeInterface ? $this->entered_at->format($format) : null;
-        }
+        return $this->entered_at;
     }
 
     /**
@@ -488,7 +492,7 @@ abstract class Schedule implements ActiveRecordInterface
     {
         $dt = PropelDateTime::newInstance($v, null, 'DateTime');
         if ($this->start_date !== null || $dt !== null) {
-            if ($this->start_date === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->start_date->format("Y-m-d H:i:s.u")) {
+            if ($this->start_date === null || $dt === null || $dt->format("Y-m-d") !== $this->start_date->format("Y-m-d")) {
                 $this->start_date = $dt === null ? null : clone $dt;
                 $this->modifiedColumns[ScheduleTableMap::COL_START_DATE] = true;
             }
@@ -498,21 +502,21 @@ abstract class Schedule implements ActiveRecordInterface
     }
 
     /**
-     * Sets the value of [entered_at] column to a normalized version of the date/time value specified.
+     * Set the value of [entered_at] column.
      *
-     * @param string|integer|\DateTimeInterface $v string, integer (timestamp), or \DateTimeInterface value.
-     *               Empty strings are treated as NULL.
+     * @param int $v New value
      * @return $this The current object (for fluent API support)
      */
     public function setEnteredAt($v)
     {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->entered_at !== null || $dt !== null) {
-            if ($this->entered_at === null || $dt === null || $dt->format("Y-m-d H:i:s.u") !== $this->entered_at->format("Y-m-d H:i:s.u")) {
-                $this->entered_at = $dt === null ? null : clone $dt;
-                $this->modifiedColumns[ScheduleTableMap::COL_ENTERED_AT] = true;
-            }
-        } // if either are not null
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->entered_at !== $v) {
+            $this->entered_at = $v;
+            $this->modifiedColumns[ScheduleTableMap::COL_ENTERED_AT] = true;
+        }
 
         return $this;
     }
@@ -527,6 +531,14 @@ abstract class Schedule implements ActiveRecordInterface
      */
     public function hasOnlyDefaultValues(): bool
     {
+            if ($this->schedule !== 0) {
+                return false;
+            }
+
+            if ($this->entered_at !== 0) {
+                return false;
+            }
+
         // otherwise, everything was equal, so return TRUE
         return true;
     }
@@ -563,16 +575,13 @@ abstract class Schedule implements ActiveRecordInterface
             $this->schedule = (null !== $col) ? (int) $col : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 3 + $startcol : ScheduleTableMap::translateFieldName('StartDate', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
+            if ($col === '0000-00-00') {
                 $col = null;
             }
             $this->start_date = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
             $col = $row[TableMap::TYPE_NUM == $indexType ? 4 + $startcol : ScheduleTableMap::translateFieldName('EnteredAt', TableMap::TYPE_PHPNAME, $indexType)];
-            if ($col === '0000-00-00 00:00:00') {
-                $col = null;
-            }
-            $this->entered_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
+            $this->entered_at = (null !== $col) ? (int) $col : null;
 
             $this->resetModified();
             $this->setNew(false);
@@ -838,11 +847,11 @@ abstract class Schedule implements ActiveRecordInterface
 
                         break;
                     case 'start_date':
-                        $stmt->bindValue($identifier, $this->start_date ? $this->start_date->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier, $this->start_date ? $this->start_date->format("Y-m-d") : null, PDO::PARAM_STR);
 
                         break;
                     case 'entered_at':
-                        $stmt->bindValue($identifier, $this->entered_at ? $this->entered_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+                        $stmt->bindValue($identifier, $this->entered_at, PDO::PARAM_INT);
 
                         break;
                 }
@@ -957,11 +966,7 @@ abstract class Schedule implements ActiveRecordInterface
             $keys[4] => $this->getEnteredAt(),
         ];
         if ($result[$keys[3]] instanceof \DateTimeInterface) {
-            $result[$keys[3]] = $result[$keys[3]]->format('Y-m-d H:i:s.u');
-        }
-
-        if ($result[$keys[4]] instanceof \DateTimeInterface) {
-            $result[$keys[4]] = $result[$keys[4]]->format('Y-m-d H:i:s.u');
+            $result[$keys[3]] = $result[$keys[3]]->format('Y-m-d');
         }
 
         $virtualColumns = $this->virtualColumns;
@@ -1325,6 +1330,7 @@ abstract class Schedule implements ActiveRecordInterface
         $this->entered_at = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
+        $this->applyDefaultValues();
         $this->resetModified();
         $this->setNew(true);
         $this->setDeleted(false);

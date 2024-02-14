@@ -77,15 +77,15 @@ abstract class Classroom implements ActiveRecordInterface
 
     /**
      * The value for the label field.
-     * Human-readable name of the classroom
+     *
      * @var        string
      */
     protected $label;
 
     /**
      * The value for the ordering field.
-     * Order among all classrooms
-     * @var        int
+     *
+     * @var        int|null
      */
     protected $ordering;
 
@@ -101,7 +101,7 @@ abstract class Classroom implements ActiveRecordInterface
      * The value for the updated_at field.
      *
      * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
-     * @var        DateTime
+     * @var        DateTime|null
      */
     protected $updated_at;
 
@@ -377,7 +377,7 @@ abstract class Classroom implements ActiveRecordInterface
 
     /**
      * Get the [label] column value.
-     * Human-readable name of the classroom
+     *
      * @return string
      */
     public function getLabel()
@@ -387,8 +387,8 @@ abstract class Classroom implements ActiveRecordInterface
 
     /**
      * Get the [ordering] column value.
-     * Order among all classrooms
-     * @return int
+     *
+     * @return int|null
      */
     public function getOrdering()
     {
@@ -424,11 +424,11 @@ abstract class Classroom implements ActiveRecordInterface
      * @param string|null $format The date/time format string (either date()-style or strftime()-style).
      *   If format is NULL, then the raw DateTime object will be returned.
      *
-     * @return string|DateTime Formatted date/time value as string or DateTime object (if format is NULL), and 0 if column value is 0000-00-00 00:00:00.
+     * @return string|DateTime|null Formatted date/time value as string or DateTime object (if format is NULL), NULL if column is NULL, and 0 if column value is 0000-00-00 00:00:00.
      *
      * @throws \Propel\Runtime\Exception\PropelException - if unable to parse/validate the date/time value.
      *
-     * @psalm-return ($format is null ? DateTime : string)
+     * @psalm-return ($format is null ? DateTime|null : string|null)
      */
     public function getUpdatedAt($format = null)
     {
@@ -461,7 +461,7 @@ abstract class Classroom implements ActiveRecordInterface
 
     /**
      * Set the value of [label] column.
-     * Human-readable name of the classroom
+     *
      * @param string $v New value
      * @return $this The current object (for fluent API support)
      */
@@ -481,8 +481,8 @@ abstract class Classroom implements ActiveRecordInterface
 
     /**
      * Set the value of [ordering] column.
-     * Order among all classrooms
-     * @param int $v New value
+     *
+     * @param int|null $v New value
      * @return $this The current object (for fluent API support)
      */
     public function setOrdering($v)
@@ -522,7 +522,7 @@ abstract class Classroom implements ActiveRecordInterface
     /**
      * Sets the value of [updated_at] column to a normalized version of the date/time value specified.
      *
-     * @param string|integer|\DateTimeInterface $v string, integer (timestamp), or \DateTimeInterface value.
+     * @param string|integer|\DateTimeInterface|null $v string, integer (timestamp), or \DateTimeInterface value.
      *               Empty strings are treated as NULL.
      * @return $this The current object (for fluent API support)
      */

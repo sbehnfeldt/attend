@@ -19,6 +19,8 @@ use flapjack\attend\database\Map\ScheduleTableMap;
 /**
  * Base class that represents a query for the `schedules` table.
  *
+ * Table indicating when students are scheduled to attend
+ *
  * @method     ChildScheduleQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildScheduleQuery orderByStudentId($order = Criteria::ASC) Order by the student_id column
  * @method     ChildScheduleQuery orderBySchedule($order = Criteria::ASC) Order by the schedule column
@@ -58,7 +60,7 @@ use flapjack\attend\database\Map\ScheduleTableMap;
  * @method     ChildSchedule|null findOneByStudentId(int $student_id) Return the first ChildSchedule filtered by the student_id column
  * @method     ChildSchedule|null findOneBySchedule(int $schedule) Return the first ChildSchedule filtered by the schedule column
  * @method     ChildSchedule|null findOneByStartDate(string $start_date) Return the first ChildSchedule filtered by the start_date column
- * @method     ChildSchedule|null findOneByEnteredAt(string $entered_at) Return the first ChildSchedule filtered by the entered_at column
+ * @method     ChildSchedule|null findOneByEnteredAt(int $entered_at) Return the first ChildSchedule filtered by the entered_at column
  *
  * @method     ChildSchedule requirePk($key, ?ConnectionInterface $con = null) Return the ChildSchedule by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSchedule requireOne(?ConnectionInterface $con = null) Return the first ChildSchedule matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -67,7 +69,7 @@ use flapjack\attend\database\Map\ScheduleTableMap;
  * @method     ChildSchedule requireOneByStudentId(int $student_id) Return the first ChildSchedule filtered by the student_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSchedule requireOneBySchedule(int $schedule) Return the first ChildSchedule filtered by the schedule column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildSchedule requireOneByStartDate(string $start_date) Return the first ChildSchedule filtered by the start_date column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildSchedule requireOneByEnteredAt(string $entered_at) Return the first ChildSchedule filtered by the entered_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildSchedule requireOneByEnteredAt(int $entered_at) Return the first ChildSchedule filtered by the entered_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildSchedule[]|Collection find(?ConnectionInterface $con = null) Return ChildSchedule objects based on current ModelCriteria
  * @psalm-method Collection&\Traversable<ChildSchedule> find(?ConnectionInterface $con = null) Return ChildSchedule objects based on current ModelCriteria
@@ -80,8 +82,8 @@ use flapjack\attend\database\Map\ScheduleTableMap;
  * @psalm-method Collection&\Traversable<ChildSchedule> findBySchedule(int|array<int> $schedule) Return ChildSchedule objects filtered by the schedule column
  * @method     ChildSchedule[]|Collection findByStartDate(string|array<string> $start_date) Return ChildSchedule objects filtered by the start_date column
  * @psalm-method Collection&\Traversable<ChildSchedule> findByStartDate(string|array<string> $start_date) Return ChildSchedule objects filtered by the start_date column
- * @method     ChildSchedule[]|Collection findByEnteredAt(string|array<string> $entered_at) Return ChildSchedule objects filtered by the entered_at column
- * @psalm-method Collection&\Traversable<ChildSchedule> findByEnteredAt(string|array<string> $entered_at) Return ChildSchedule objects filtered by the entered_at column
+ * @method     ChildSchedule[]|Collection findByEnteredAt(int|array<int> $entered_at) Return ChildSchedule objects filtered by the entered_at column
+ * @psalm-method Collection&\Traversable<ChildSchedule> findByEnteredAt(int|array<int> $entered_at) Return ChildSchedule objects filtered by the entered_at column
  *
  * @method     ChildSchedule[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ?ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  * @psalm-method \Propel\Runtime\Util\PropelModelPager&\Traversable<ChildSchedule> paginate($page = 1, $maxPerPage = 10, ?ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -456,14 +458,12 @@ abstract class ScheduleQuery extends ModelCriteria
      *
      * Example usage:
      * <code>
-     * $query->filterByEnteredAt('2011-03-14'); // WHERE entered_at = '2011-03-14'
-     * $query->filterByEnteredAt('now'); // WHERE entered_at = '2011-03-14'
-     * $query->filterByEnteredAt(array('max' => 'yesterday')); // WHERE entered_at > '2011-03-13'
+     * $query->filterByEnteredAt(1234); // WHERE entered_at = 1234
+     * $query->filterByEnteredAt(array(12, 34)); // WHERE entered_at IN (12, 34)
+     * $query->filterByEnteredAt(array('min' => 12)); // WHERE entered_at > 12
      * </code>
      *
      * @param mixed $enteredAt The value to use as filter.
-     *              Values can be integers (unix timestamps), DateTime objects, or strings.
-     *              Empty strings are treated as NULL.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.

@@ -49,11 +49,13 @@ DROP TABLE IF EXISTS `classrooms`;
 CREATE TABLE `classrooms`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `label` VARCHAR(63) NOT NULL COMMENT 'Human-readable name of the classroom',
-    `ordering` INTEGER NOT NULL COMMENT 'Order among all classrooms',
+    `label` VARCHAR(45) NOT NULL,
+    `ordering` INTEGER,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`)
+    `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE INDEX `id_UNIQUE` (`id`),
+    UNIQUE INDEX `name_UNIQUE` (`label`)
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------
@@ -152,11 +154,11 @@ DROP TABLE IF EXISTS `login_attempts`;
 CREATE TABLE `login_attempts`
 (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `attempted_at` BIGINT NOT NULL,
+    `attempted_at` bigint unsigned NOT NULL,
     `username` VARCHAR(63) NOT NULL,
     `pass` TINYINT(1) NOT NULL,
     `note` VARCHAR(255) NOT NULL,
-    `logged_out_at` BIGINT,
+    `logged_out_at` bigint unsigned,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
@@ -183,18 +185,19 @@ DROP TABLE IF EXISTS `schedules`;
 
 CREATE TABLE `schedules`
 (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
     `student_id` INTEGER NOT NULL,
-    `schedule` INTEGER NOT NULL,
-    `start_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `entered_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `schedule` INTEGER DEFAULT 0 NOT NULL,
+    `start_date` DATE NOT NULL,
+    `entered_at` INTEGER DEFAULT 0 NOT NULL,
     PRIMARY KEY (`id`),
-    INDEX `student_id` (`student_id`),
-    CONSTRAINT `schedules_ibfk_1`
+    UNIQUE INDEX `id_UNIQUE` (`id`),
+    UNIQUE INDEX `student_date_unique` (`student_id`, `start_date`),
+    INDEX `fk_student_idx` (`student_id`),
+    CONSTRAINT `schedules_students_FK`
         FOREIGN KEY (`student_id`)
         REFERENCES `students` (`id`)
-        ON DELETE CASCADE
-) ENGINE=InnoDB;
+) ENGINE=InnoDB COMMENT='Table indicating when students are scheduled to attend';
 
 -- ---------------------------------------------------------------------
 -- students

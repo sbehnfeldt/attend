@@ -234,7 +234,7 @@ class StudentTableMap extends TableMap
     0 => ':student_id',
     1 => ':id',
   ),
-), 'CASCADE', null, 'Schedules', false);
+), null, null, 'Schedules', false);
     }
 
     /**
@@ -245,7 +245,6 @@ class StudentTableMap extends TableMap
         // Invalidate objects in related instance pools,
         // since one or more of them may be deleted by ON DELETE CASCADE/SETNULL rule.
         AttendanceTableMap::clearInstancePool();
-        ScheduleTableMap::clearInstancePool();
     }
 
     /**

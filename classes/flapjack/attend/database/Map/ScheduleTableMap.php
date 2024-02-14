@@ -202,9 +202,9 @@ class ScheduleTableMap extends TableMap
         // columns
         $this->addPrimaryKey('id', 'Id', 'INTEGER', true, null, null);
         $this->addForeignKey('student_id', 'StudentId', 'INTEGER', 'students', 'id', true, null, null);
-        $this->addColumn('schedule', 'Schedule', 'INTEGER', true, null, null);
-        $this->addColumn('start_date', 'StartDate', 'TIMESTAMP', true, null, null);
-        $this->addColumn('entered_at', 'EnteredAt', 'TIMESTAMP', true, null, null);
+        $this->addColumn('schedule', 'Schedule', 'INTEGER', true, null, 0);
+        $this->addColumn('start_date', 'StartDate', 'DATE', true, null, null);
+        $this->addColumn('entered_at', 'EnteredAt', 'INTEGER', true, null, 0);
     }
 
     /**
@@ -220,7 +220,7 @@ class ScheduleTableMap extends TableMap
     0 => ':student_id',
     1 => ':id',
   ),
-), 'CASCADE', null, null, false);
+), null, null, null, false);
     }
 
     /**
