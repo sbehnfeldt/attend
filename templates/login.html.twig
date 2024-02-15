@@ -1,43 +1,42 @@
-<html>
+<!doctype html>
+<html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport"
               content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet">
-        <link rel="stylesheet" href="css/main.css">
-        <link rel="stylesheet" href="css/login.css">
+        <link rel="stylesheet" href="/attend.css">
         <title>Attend | Login</title>
     </head>
 
-    <body>
+    <body id="login-page">
         <main>
-            <div id="loading">
-                <div id="loading-image"></div>
-            </div>
-
             <form class="login-form" action="login.php" method="post">
-                <p>Please enter your login username and password:</p>
+                <p>Please enter your username and password to access the Attend application:</p>
                 <input type="hidden" name="route" value="{{ route }}">
 
-                <div class="invalid-credentials">
-                    <p>Invalid credentials. Please check your username and password and try again.</p>
-                </div>
+                <div id="form-error"></div>
 
                 <div class="form-box">
-                    <label for="">Name</label>
+                    <label class="required">Name</label>
                     <input type="text" name="username" placeholder="User Name" value="{{ username }}">
                 </div>
 
                 <div class="form-box">
-                    <label for="">Password</label>
+                    <label class="required">Password</label>
                     <input type="password" name="password" placeholder="Password" value="{{ password }}">
                 </div>
 
-                <div class="form-box form-box1">
-                    <input type="checkbox" name="remember" {% if remember %}checked{% endif %}>
-                    <label class="always" for="">Remember Me</label>
-                </div>
+                {#  TODO: "Remember Me" checkbox #}
+                {#                <div class="form-box form-box1"> #}
+                {#                    <input type="checkbox" name="remember" {% if remember %}checked{% endif %}> #}
+                {#                    <label class="always" for="">Remember Me</label> #}
+                {#                </div> #}
+
+                {# TODO: "Forgot Password" link #}
+
+                {# TODO: "Request an Account" link #}
 
                 <div class="form-box">
                     <button>Submit</button>

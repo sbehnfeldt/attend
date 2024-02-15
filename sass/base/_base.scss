@@ -32,19 +32,6 @@ h1 {
     margin-bottom: .5rem;
 }
 
-table {
-    border-collapse: collapse;
-    width: 95%;
-    margin: 0 auto;
-    border: 4px solid darkorange;
-
-    thead {
-        tr {
-            background-color: darkorange;
-
-            th {
-            }
-        }
-    }
-}
-
+// Table and form are by their nature compound (ie, nested) elements.
+// The base styling of each are contained in the corresponding file in the "components/" subdirectory.
+table, form {}

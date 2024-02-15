@@ -5,28 +5,7 @@
 @import 'base/typography';
 @import 'layouts/loading';
 
+@import 'components/form';
+@import 'components/table';
+@import 'components/login-form';
 @import 'components/main-menu';
-//
-//
-//.tab {
-//    padding: 2rem;
-//}
-//
-//.table {
-//    width: 90%;
-//    margin: 0 auto;
-//}
-//
-//.dialog {
-//    display: none;
-//}
-//
-//.buttons {
-//    @include clearfix;
-//    border: 1px solid darkorange;
-//    margin-top: 1rem;
-//}
-//
-//#classrooms-tab {
-//    padding: 1rem;
-//}

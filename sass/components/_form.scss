@@ -1,16 +1,15 @@
 form {
-
-    font-size: 1.6rem;
-
-    display: flex;
-    flex-direction: column;
+    font-size: 1.8rem;
+    background-color: $primary-extra-pale;
 
     section {
         margin: 1rem 2rem;
     }
 
+    // A label/input control pair
     .form-box {
 
+        // In desktop-first, display label and control next to each other
         display: flex;
         flex-direction: row;
 
@@ -30,11 +29,6 @@ form {
             }
         }
 
-        button {
-            margin: auto;
-            padding: .5rem 2rem;
-        }
-
         input[type=text],
         input[type=email],
         input[type=password],
@@ -46,9 +40,8 @@ form {
             flex-basis: 9rem;
             flex-grow: 1;
 
-            //background-image: linear-gradient(#fff 0%, #c7f85B 100%);
             color: $text-color-dark;
-            background-color: $primary-extra-pale;
+            background-color: $primary-pale;
 
 
             transform: scaleX(.95);
@@ -90,46 +83,10 @@ form {
         }
     }
 
-    .form-box1 {
-        padding-left: 15rem;
-
-        label {
-            padding-left: .5rem;
-            font-size: 1.5rem;
-            text-align: left;
-
-            &::after {
-                content: "";
-            }
-        }
+    button {
+        margin: auto;
+        padding: .5rem 2rem;
     }
-
-
-    //table {
-    //  width: 100%;
-    //
-    //  tr {
-    //    border: 1px solid gray;
-    //
-    //    td, th {
-    //      margin: 0;
-    //      padding: 0;
-    //
-    //      &:not(:first-of-type) {
-    //        border: 1px solid #888;
-    //      }
-    //
-    //      button {
-    //        width: 100%;
-    //      }
-    //
-    //      input[type=checkbox] {
-    //        text-align: center;
-    //        width: 100%;
-    //      }
-    //    }
-    //  }
-    //}
 
     hr {
         border-top: 3px solid #aaa;
