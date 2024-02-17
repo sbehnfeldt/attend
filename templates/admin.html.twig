@@ -16,10 +16,10 @@
             <li><a href="#permissions-tab">Permissions</a></li>
         </ul>
 
-        <section class="tab" id="users-tab">
+        <section class="tab" id="accounts-tab">
             <p>This page allows administrators to manage users authorized to use Attend.</p>
 
-            <table>
+            <table id="accounts-table" class="display compact">
                 <thead>
                     <tr>
                         <th>Username</th>
@@ -36,20 +36,25 @@
                 </tbody>
             </table>
 
-            <hr>
-            <section class="account-data">
-                <form>
-                    <div class="form-box">
-                        <label for="">User Name</label>
-                        <input type="text" name="username" placeholder="User name">
-                    </div>
-                    <div class="form-box">
-                        <label for="">Email</label>
-                        <input type="email" name="email" placeholder="Account holder email">
-                    </div>
-                </form>
+            <div class="buttons">
+                <div class="record-buttons"></div>
+                <div class="table-buttons"></div>
+            </div>
 
-            </section>
+            <hr>
+{#            <section class="account-data">#}
+{#                <form>#}
+{#                    <div class="form-box">#}
+{#                        <label for="">User Name</label>#}
+{#                        <input type="text" name="username" placeholder="User name">#}
+{#                    </div>#}
+{#                    <div class="form-box">#}
+{#                        <label for="">Email</label>#}
+{#                        <input type="email" name="email" placeholder="Account holder email">#}
+{#                    </div>#}
+{#                </form>#}
+
+{#            </section>#}
 
             {# <table id="acctsTable" class="display compact"> #}
             {# <thead> #}

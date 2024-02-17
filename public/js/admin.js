@@ -2,75 +2,45 @@
     'use strict';
 
 
-    let UsersTab = (function (selector) {
+    /*================================================================================
+     * Tab for display information about user accounts for the application
+     ================================================================================*/
+    let AccountsTab = (function (selector) {
         let $tab = $(selector);
+        let $acctsTable = $('#accounts-table');
 
-        let $userList = $tab.find('ul.user-list');
-        $userList.on('click', 'a', function () {
-            $userList.find('.selected').removeClass('selected');
-            $(this).addClass('selected');
-            let userId = $(this).data('user-id');
-            $.ajax({
-                url: 'api/accounts/' + userId,
-                type: 'get',
-
-                dataType: 'json',
-                success: function (json) {
-                    console.log(json);
-                    alert("Success");
-                },
-                error: function (xhr) {
-                    console.log(xhr);
-                    alert("Error");
+        let table = $acctsTable.DataTable({
+            dom: 'rtB',
+            select: {
+                style: 'single'
+            },
+            buttons: [{
+                text: 'New',
+                action: function (e, dt, node, config) {
+                    AcctDlg.clear().open();
                 }
+            }, {
+                text: 'Update',
+                extend: 'selected',
+                action: function (e, dt, node, config) {
+                    console.log(dt);
+                    var selected = dt.rows({selected: true}).indexes();
+                    if (1 < selected.length) {
+                        alert("Can edit only 1 record at a time");
+                    } else {
+                        AcctDlg.clear().populate($(dt.rows(selected[0]).nodes()[0]).data('account')).open();
+                    }
+                }
+            }, {
+                text: 'Delete',
+                action: function (e, dt, node, config) {
+                    alert("Delete");
+                }
+            }]
 
-            })
         });
-
         return {};
-    })('#users-tab');
-
-
-    let AcctsTable = (function () {
-        let $table;
-
-        function init(selector) {
-            $table = $(selector);
-            $table.DataTable({
-                dom: 'rtB',
-                select: {
-                    style: 'single'
-                },
-                buttons: [{
-                    text: 'New',
-                    action: function (e, dt, node, config) {
-                        AcctDlg.clear().open();
-                    }
-                }, {
-                    text: 'Update',
-                    extend: 'selected',
-                    action: function (e, dt, node, config) {
-                        console.log(dt);
-                        var selected = dt.rows({selected: true}).indexes();
-                        if (1 < selected.length) {
-                            alert("Can edit only 1 record at a time");
-                        } else {
-                            AcctDlg.clear().populate($(dt.rows(selected[0]).nodes()[0]).data('account')).open();
-                        }
-                    }
-                }, {
-                    text: 'Delete',
-                    action: function (e, dt, node, config) {
-                        alert("Delete");
-                    }
-                }]
-            });
-        }
-
-        return {
-            init: init
-        };
-    })();
+    })('#accounts-tab');
 
 
     let AcctDlg = (function () {
@@ -245,7 +215,6 @@
     $(function () {
         console.log('Document ready');
 
-        AcctsTable.init('#acctsTable');
         AcctDlg.init('#accountPropsDlg');
         DatabaseTab.init('#database-tab');
         SecurityTab.init('#security-tab');
