@@ -17,13 +17,24 @@
         </ul>
 
         <section class="tab" id="users-tab">
-            <p>This page allows administrators to manage authorized to use Attend.</p>
+            <p>This page allows administrators to manage users authorized to use Attend.</p>
 
-            <ul class="selectable user-list">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
                 {% for acct in accounts %}
-                    <li><a data-user-id="{{ acct.Id }}" href="javascript:void(0)">{{ acct.Username }}</a></li>
+                    <tr>
+                        <td><a data-user-id="{{ acct.Id }}" href="javascript:void(0)">{{ acct.Username }}</a></td>
+                        <td>{{ acct.email }}</td>
+                    </tr>
                 {% endfor %}
-            </ul>
+                </tbody>
+            </table>
 
             <hr>
             <section class="account-data">

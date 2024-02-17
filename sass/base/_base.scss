@@ -32,6 +32,9 @@ h1 {
     margin-bottom: .5rem;
 }
 
+ul {
+    list-style: none;
+}
 // Table and form are by their nature compound (ie, nested) elements.
 // The base styling of each are contained in the corresponding file in the "components/" subdirectory.
 table, form {}

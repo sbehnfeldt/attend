@@ -230,7 +230,6 @@
         function init(selector) {
             $tab = $(selector);
             $table = $tab.find('table');
-            console.log($table.length);
             $table.DataTable({
                 order: [[1, 'desc']]
             });

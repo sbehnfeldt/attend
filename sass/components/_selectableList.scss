@@ -1,23 +1,26 @@
 ul.selectable {
-    margin-top: 1rem;
+    border: 1px solid #888;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    margin-left: 2rem;
     width: 25%;
     list-style: none;
+    font-size: 1.2rem;
+
+    background-color: $primary-extra-pale;
 
     li {
-        border-top: 1px solid gray;
-
         &:last-child {
             border-bottom: 1px solid gray;
         }
 
         a {
-            padding: 1.5rem;
+            padding: .5rem;
             display: block;
             text-decoration: none;
 
-
             &:hover {
-                background-color: lightgreen;
+                background-color: $primary-pale;
             }
 
             &.selected {
