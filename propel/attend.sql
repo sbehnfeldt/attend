@@ -15,7 +15,7 @@ CREATE TABLE `accounts`
     `username` VARCHAR(31) NOT NULL,
     `pwhash` VARCHAR(63) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
-    `role` VARCHAR(31) NOT NULL,
+    `role` VARCHAR(31),
     PRIMARY KEY (`id`),
     UNIQUE INDEX `username` (`username`)
 ) ENGINE=InnoDB;

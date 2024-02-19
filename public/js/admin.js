@@ -6,7 +6,7 @@
      * Tab for display information about user accounts for the application
      ================================================================================*/
     let AccountsTab = (function (selector) {
-        let $tab = $(selector);
+        let $tab        = $(selector);
         let $acctsTable = $('#accounts-table');
 
         let table = $acctsTable.DataTable({
@@ -37,9 +37,13 @@
                     alert("Delete");
                 }
             }]
-
         });
-        return {};
+
+        function insert(data) {
+            table.row.add(data).draw();
+        }
+
+        return {insert};
     })('#accounts-tab');
 
 
@@ -53,17 +57,18 @@
             $role;
 
         function init(selector) {
-            $dlg = $(selector);
-            $form = $dlg.find('form');
-            $id = $dlg.find('input[name=id]');
+            $dlg      = $(selector);
+            $form     = $dlg.find('form');
+            $id       = $dlg.find('input[name=id]');
             $username = $form.find('input[name=username]');
             $password = $form.find('input[name=password]');
-            $email = $form.find('input[name=email]');
-            $role = $form.find('select[name=role]');
+            $email    = $form.find('input[name=email]');
+            // $role = $form.find('select[name=role]');
 
             $dlg.dialog({
                 modal: true,
                 autoOpen: false,
+                width: "750px",
                 buttons: {
                     Submit: function () {
                         console.log($dlg.find('form').serialize());
@@ -74,9 +79,9 @@
                                 method: 'put',
                                 data: $dlg.find('form').serialize(),
 
-                                success: function (success) {
+                                success: function (acct) {
                                     console.log('success');
-                                    console.log(success);
+                                    console.log(acct);
                                 },
                                 error: function (xhr) {
                                     console.log('error');
@@ -90,9 +95,13 @@
                                 method: 'post',
                                 data: $dlg.find('form').serialize(),
 
-                                success: function (success) {
+                                success: function (acct) {
                                     console.log('success');
-                                    console.log(success);
+                                    console.log(acct);
+                                    AccountsTab.insert([
+                                        `<a data-user-id="${acct.id}" href="javascript:void(0)">${acct.Username}</a>`,
+                                        acct.Email
+                                    ]);
                                 },
                                 error: function (xhr) {
                                     console.log('error');
@@ -114,7 +123,7 @@
             $username.val(undefined);
             $password.val(undefined);
             $email.val(undefined);
-            $role.val(undefined);
+            // $role.val(undefined);
             return this;
         }
 
@@ -126,7 +135,7 @@
 
             $password.val('');
             $email.val(acct.Email);
-            $role.val(acct.Role);
+            // $role.val(acct.Role);
             return this;
         }
 
@@ -148,8 +157,8 @@
             $restoreForm;
 
         function init(selector) {
-            $tab = $(selector);
-            $backupForm = $tab.find('form[name=backup-db]');
+            $tab         = $(selector);
+            $backupForm  = $tab.find('form[name=backup-db]');
             $restoreForm = $tab.find('form[name=restore-db]');
 
             $backupForm.find('button').on('click', function (e) {
@@ -198,7 +207,7 @@
             $table;
 
         function init(selector) {
-            $tab = $(selector);
+            $tab   = $(selector);
             $table = $tab.find('table');
             $table.DataTable({
                 order: [[1, 'desc']]
@@ -218,6 +227,7 @@
         AcctDlg.init('#accountPropsDlg');
         DatabaseTab.init('#database-tab');
         SecurityTab.init('#security-tab');
+
         $('#tabs').tabs().show();
     });
 

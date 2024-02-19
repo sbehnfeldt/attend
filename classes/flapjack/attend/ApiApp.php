@@ -2,6 +2,8 @@
 namespace flapjack\attend;
 
 
+use flapjack\attend\database\Account;
+use flapjack\attend\database\AccountQuery;
 use flapjack\attend\PropelEngine\PropelEngine;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -285,12 +287,16 @@ class ApiApp extends App
             $acct->setUsername($body['username']);
             $acct->setEmail($body['email']);
             $acct->setPwhash(password_hash($body['password'], PASSWORD_BCRYPT));
-            $acct->setRole($body['role']);
+//            $acct->setRole($body['role']);
             $acct->save();
 
             $response = $response->withStatus(201, 'Created');
             $response = $response->withHeader('Content-Type', 'application/json');
-            $response->getBody()->write(json_encode($acct->getId()));
+            $response->getBody()->write(json_encode([
+                'id' => $acct->getId(),
+                'Username' => $acct->getUsername(),
+                'Email' => $acct->getEmail()
+            ]));
 
             return $response;
         });

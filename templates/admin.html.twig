@@ -9,6 +9,7 @@
 
 {% block main %}
     <div id="tabs">
+        <h2>Admin</h2>
         <ul>
             <li><a href="#users-tab">Users</a></li>
             <li><a href="#database-tab">Database</a></li>
@@ -42,46 +43,9 @@
             </div>
 
             <hr>
-{#            <section class="account-data">#}
-{#                <form>#}
-{#                    <div class="form-box">#}
-{#                        <label for="">User Name</label>#}
-{#                        <input type="text" name="username" placeholder="User name">#}
-{#                    </div>#}
-{#                    <div class="form-box">#}
-{#                        <label for="">Email</label>#}
-{#                        <input type="email" name="email" placeholder="Account holder email">#}
-{#                    </div>#}
-{#                </form>#}
-
-{#            </section>#}
-
-            {# <table id="acctsTable" class="display compact"> #}
-            {# <thead> #}
-            {# <tr> #}
-            {# <th>Id</th> #}
-            {# <th>Username</th> #}
-            {# <th>Hash</th> #}
-            {# <th>Email</th> #}
-            {# <th>Role</th> #}
-            {# </tr> #}
-            {# </thead> #}
-
-            {# <tbody> #}
-            {# {% for a in accounts %} #}
-            {# <tr data-account="{{ a.toJson }}"> #}
-            {# <td>{{ a.Id }}</td> #}
-            {# <td>{{ a.Username }}</td> #}
-            {# <td>{{ a.Pwhash }}</td> #}
-            {# <td>{{ a.Email }}</td> #}
-            {# <td>{{ a.Role }}</td> #}
-            {# </tr> #}
-            {# {% endfor %} #}
-            {# </tbody> #}
-            {# </table> #}
 
             <section class="dialog" id="accountPropsDlg" title="Account Properties">
-                <form action="">
+                <form action="" autocomplete="off">
                     <input type="hidden" name="id">
                     <div class="form-box">
                         <label for="">Username</label>
@@ -95,14 +59,14 @@
                         <label for="">Email</label>
                         <input type="email" name="email" placeholder="Email address">
                     </div>
-                    <div class="form-box">
-                        <label for="">Role</label>
-                        <select name="role" id="">
-                            <option value="">Select a role</option>
-                            <option value="user">User</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                    </div>
+                    {#                    <div class="form-box"> #}
+                    {#                        <label for="">Role</label> #}
+                    {#                        <select name="role" id=""> #}
+                    {#                            <option value="">Select a role</option> #}
+                    {#                            <option value="user">User</option> #}
+                    {#                            <option value="admin">Admin</option> #}
+                    {#                        </select> #}
+                    {#                    </div> #}
                 </form>
             </section>
         </section>
@@ -124,12 +88,12 @@
             <h2>Login Attempts</h2>
             <table class="compact display">
                 <thead>
-                <tr>
-                    <td>Username</td>
-                    <td>Attempted At</td>
-                    <td>Pass</td>
-                    <td>Note</td>
-                </tr>
+                    <tr>
+                        <td>Username</td>
+                        <td>Attempted At</td>
+                        <td>Pass</td>
+                        <td>Note</td>
+                    </tr>
                 </thead>
                 <tbody>
                 {% for login in logins %}

@@ -201,7 +201,7 @@ class AccountTableMap extends TableMap
         $this->addColumn('username', 'Username', 'VARCHAR', true, 31, null);
         $this->addColumn('pwhash', 'Pwhash', 'VARCHAR', true, 63, null);
         $this->addColumn('email', 'Email', 'VARCHAR', true, 255, null);
-        $this->addColumn('role', 'Role', 'VARCHAR', true, 31, null);
+        $this->addColumn('role', 'Role', 'VARCHAR', false, 31, null);
     }
 
     /**

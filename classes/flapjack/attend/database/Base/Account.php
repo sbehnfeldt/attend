@@ -103,7 +103,7 @@ abstract class Account implements ActiveRecordInterface
     /**
      * The value for the role field.
      *
-     * @var        string
+     * @var        string|null
      */
     protected $role;
 
@@ -426,7 +426,7 @@ abstract class Account implements ActiveRecordInterface
     /**
      * Get the [role] column value.
      *
-     * @return string
+     * @return string|null
      */
     public function getRole()
     {
@@ -516,7 +516,7 @@ abstract class Account implements ActiveRecordInterface
     /**
      * Set the value of [role] column.
      *
-     * @param string $v New value
+     * @param string|null $v New value
      * @return $this The current object (for fluent API support)
      */
     public function setRole($v)

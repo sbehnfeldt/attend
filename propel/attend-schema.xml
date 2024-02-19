@@ -6,7 +6,7 @@
         <column name="username" phpName="Username" type="VARCHAR" size="31" required="true"/>
         <column name="pwhash" phpName="Pwhash" type="VARCHAR" size="63" required="true"/>
         <column name="email" phpName="Email" type="VARCHAR" size="255" required="true"/>
-        <column name="role" phpName="Role" type="VARCHAR" size="31" required="true"/>
+        <column name="role" phpName="Role" type="VARCHAR" size="31" required="false"/>
         <unique name="username">
             <unique-column name="username"/>
         </unique>
