@@ -24,7 +24,7 @@
                 extend: 'selected',
                 action: function (e, dt, node, config) {
                     console.log(dt);
-                    var selected = dt.rows({selected: true}).indexes();
+                    let selected = dt.rows({selected: true}).indexes();
                     if (1 < selected.length) {
                         alert("Can edit only 1 record at a time");
                     } else {
@@ -33,8 +33,34 @@
                 }
             }, {
                 text: 'Delete',
-                action: function (e, dt, node, config) {
-                    alert("Delete");
+                extend: 'selected',
+                action: function (event, table, node, config) {
+                    try {
+                        let selected = table.rows({selected: true});
+                        let acctId = $(selected.nodes()[0]).attr('data-id');
+                        try {
+                            Attend.loadAnother();
+                            $.ajax({
+                                url: '/api/accounts/' + acctId,
+                                method: 'delete',
+
+                                success: function (success) {
+                                    selected.remove().draw(false);
+                                },
+                                error: function (xhr) {
+                                    console.log(xhr);
+                                    alert("Error!");
+                                }
+                            });
+                        } catch (e) {
+                            console.log(e);
+                            alert("Exception!");
+                        } finally {
+                            Attend.doneLoading();
+                        }
+                    } catch (e) {
+                        console.log(e);
+                    }
                 }
             }]
         });

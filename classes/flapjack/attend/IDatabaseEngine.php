@@ -10,6 +10,8 @@ interface IDatabaseEngine
 
     public function getAccount($id): ?array;
 
+    public function deleteAccountById(int $id): int;
+
     public function getClassroomById(int $id): ?array;
 
     public function getClassrooms(): array;

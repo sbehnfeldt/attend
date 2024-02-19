@@ -29,7 +29,7 @@
                 </thead>
                 <tbody>
                 {% for acct in accounts %}
-                    <tr>
+                    <tr data-id="{{ acct.Id }}">
                         <td><a data-user-id="{{ acct.Id }}" href="javascript:void(0)">{{ acct.Username }}</a></td>
                         <td>{{ acct.email }}</td>
                     </tr>

@@ -71,6 +71,18 @@ class PropelEngine implements IDatabaseEngine
         return $resource->toArray();
     }
 
+    public function deleteAccountById(int $id): int
+    {
+        $query = AccountQuery::create();
+        $resource = $query->findOneById($id);
+        if ( null === $resource ) {
+            return 0;
+        }
+        $resource->delete();
+
+        return $id;
+    }
+
 
     public function getClassroomById(int $id): array
     {
