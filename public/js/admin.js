@@ -14,6 +14,10 @@
             select: {
                 style: 'single'
             },
+            autoWidth: false,
+            columnDefs: [
+                {targets: [0], visible: false}
+            ],
             buttons: [{
                 text: 'New',
                 action: function (e, dt, node, config) {
@@ -37,7 +41,7 @@
                 action: function (event, table, node, config) {
                     try {
                         let selected = table.rows({selected: true});
-                        let acctId = $(selected.nodes()[0]).attr('data-id');
+                        let acctId   = $(selected.nodes()[0]).attr('data-id');
                         try {
                             Attend.loadAnother();
                             $.ajax({
@@ -45,18 +49,19 @@
                                 method: 'delete',
 
                                 success: function (success) {
+                                    Attend.doneLoading();
                                     selected.remove().draw(false);
                                 },
                                 error: function (xhr) {
+                                    Attend.doneLoading();
                                     console.log(xhr);
                                     alert("Error!");
                                 }
                             });
                         } catch (e) {
+                            Attend.doneLoading();
                             console.log(e);
                             alert("Exception!");
-                        } finally {
-                            Attend.doneLoading();
                         }
                     } catch (e) {
                         console.log(e);
@@ -65,8 +70,15 @@
             }]
         });
 
-        function insert(data) {
-            table.row.add(data).draw();
+
+        function insert(acct) {
+            let data = [
+                acct.id,
+                `<a data-user-id="${acct.id}" href="javascript:void(0)">${acct.Username}</a>`,
+                acct.Email
+            ];
+
+            table.row.add(data).draw().nodes().to$().attr('data-id', acct.id);
         }
 
         return {insert};
@@ -97,9 +109,9 @@
                 width: "750px",
                 buttons: {
                     Submit: function () {
-                        console.log($dlg.find('form').serialize());
-                        console.log($dlg.find('form').serializeArray());
                         if ($id.val()) {
+                            // Update existing account
+                            Attend.loadAnother();
                             $.ajax({
                                 url: 'api/accounts/' + $id.val(),
                                 method: 'put',
@@ -108,30 +120,30 @@
                                 success: function (acct) {
                                     console.log('success');
                                     console.log(acct);
+                                    Attend.doneLoading();
                                 },
                                 error: function (xhr) {
                                     console.log('error');
                                     console.log(xhr);
+                                    Attend.doneLoading();
                                 }
                             });
 
                         } else {
+                            Attend.loadAnother();
                             $.ajax({
                                 url: 'api/accounts',
                                 method: 'post',
                                 data: $dlg.find('form').serialize(),
 
                                 success: function (acct) {
-                                    console.log('success');
-                                    console.log(acct);
-                                    AccountsTab.insert([
-                                        `<a data-user-id="${acct.id}" href="javascript:void(0)">${acct.Username}</a>`,
-                                        acct.Email
-                                    ]);
+                                    AccountsTab.insert(acct);
+                                    Attend.doneLoading();
                                 },
                                 error: function (xhr) {
                                     console.log('error');
                                     console.log(xhr);
+                                    Attend.doneLoading();
                                 }
                             });
                         }
