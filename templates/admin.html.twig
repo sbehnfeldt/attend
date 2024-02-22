@@ -30,7 +30,7 @@
                 </thead>
                 <tbody>
                 {% for acct in accounts %}
-                    <tr data-id="{{ acct.Id }}">
+                    <tr data-id="{{ acct.Id }}" data-account="{{ acct.toArray|json_encode  }}">
                         <td>{{ acct.Id }}</td>
                         <td><a data-user-id="{{ acct.Id }}" href="javascript:void(0)">{{ acct.Username }}</a></td>
                         <td>{{ acct.email }}</td>

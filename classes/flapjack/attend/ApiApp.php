@@ -290,7 +290,7 @@ class ApiApp extends App
             $response = $response->withStatus(201, 'Created');
             $response = $response->withHeader('Content-Type', 'application/json');
             $response->getBody()->write(json_encode([
-                'id' => $acct->getId(),
+                'Id' => $acct->getId(),
                 'Username' => $acct->getUsername(),
                 'Email' => $acct->getEmail()
             ]));

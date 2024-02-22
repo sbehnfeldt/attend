@@ -27,7 +27,6 @@
                 text: 'Update',
                 extend: 'selected',
                 action: function (e, dt, node, config) {
-                    console.log(dt);
                     let selected = dt.rows({selected: true}).indexes();
                     if (1 < selected.length) {
                         alert("Can edit only 1 record at a time");
@@ -73,12 +72,15 @@
 
         function insert(acct) {
             let data = [
-                acct.id,
-                `<a data-user-id="${acct.id}" href="javascript:void(0)">${acct.Username}</a>`,
+                acct.Id,
+                `<a data-user-id="${acct.Id}" href="javascript:void(0)">${acct.Username}</a>`,
                 acct.Email
             ];
 
-            table.row.add(data).draw().nodes().to$().attr('data-id', acct.id);
+            let row = table.row.add(data);
+            row.nodes().to$().attr('data-id', acct.Id);
+            row.nodes().to$().attr('data-account', JSON.stringify(acct));
+            table.draw();
         }
 
         return {insert};
@@ -166,9 +168,7 @@
         }
 
         function populate(acct) {
-            console.log(acct);
             $id.val(acct.Id);
-            console.log($id.val());
             $username.val(acct.Username);
 
             $password.val('');
