@@ -1,38 +1,20 @@
-body#login-page {
+form.login-form {
+    @include absCenter;
+    padding-top: 2rem;
+    box-shadow: 2rem 2rem 2rem rgba(128, 128, 204, .2);
 
-    main {
-        position: relative;
+    p {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
 
-        border-radius: 7px;
+    #form-error {
+        display: none;
+        margin: 0 10px 0 10px;
+        padding: 15px;
 
-
-        form.login-form {
-            @include absCenter;
-            padding-top: 2rem;
-            box-shadow: 2rem 2rem 2rem rgba(128, 128, 204, .2);
-
-            p {
-                margin-bottom: 2rem;
-                text-align: center;
-            }
-
-            .form-box {
-                margin: 1.5rem 2rem;
-
-                label {
-                    padding-right: .5rem;
-                }
-            }
-
-            #form-error {
-                display: none;
-                margin: 0 10px 0 10px;
-                padding: 15px;
-
-                background-color: pink;
-                color: orangered;
-                text-align: center;
-            }
-        }
+        background-color: pink;
+        color: orangered;
+        text-align: center;
     }
 }

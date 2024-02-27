@@ -40,12 +40,19 @@
 
                 <div class="form-box">
                     <label for="Label">Classroom Name</label>
-                    <input type="text" name="Label" id="Label" class="required" required>
+                    <div class="control-group">
+                        <input type="text" name="Label" id="Label" class="required" required>
+                        <div class="error label-error"></div>
+                    </div>
                 </div>
 
                 <div class="form-box">
                     <label for="Ordering">Order</label>
-                    <input type="number" name="Ordering" id="Ordering">
+                    <div class="control-group">
+                        <input type="number" name="Ordering" id="Ordering">
+                        <div class="error order-error"></div>
+
+                    </div>
                 </div>
             </form>
         </div>
