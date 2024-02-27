@@ -18,14 +18,20 @@
 
                 <div id="form-error"></div>
 
-                <div class="form-box">
-                    <label class="required">Name</label>
-                    <input type="text" name="username" placeholder="User Name" value="{{ username }}">
+                <div class="form-box required">
+                    <label>Name</label>
+                    <div class="control-group">
+                        <input type="text" name="username" placeholder="User Name" value="{{ username }}">
+                        <div class="error name-error"></div>
+                    </div>
                 </div>
 
-                <div class="form-box">
-                    <label class="required">Password</label>
-                    <input type="password" name="password" placeholder="Password" value="{{ password }}">
+                <div class="form-box required">
+                    <label>Password</label>
+                    <div class="control-group">
+                        <input type="password" name="password" placeholder="Password" value="{{ password }}">
+                        <div class="error password-error"></div>
+                    </div>
                 </div>
 
                 {#  TODO: "Remember Me" checkbox #}

@@ -9,6 +9,7 @@
         let $username = $('input[name=username]').first();
         let $password = $('input[name=password]').first();
         let $formError  = $('div#form-error');
+        let $controlErrors = $('.form-box .control-group .error');
 
 
         // Ensure the username and password fields are non-empty.
@@ -17,11 +18,13 @@
         function validateCredentials(username, password) {
             let valid = true;
             if ('' === $username.val().trim()) {
-                $username.addClass('invalid');
+                $username.addClass('missing').addClass('invalid');
+                $form.find('.name-error').text('Username cannot be blank').show();
                 valid = false;
             }
             if ('' === $password.val().trim()) {
-                $password.addClass('invalid');
+                $password.addClass('missing').addClass('invalid');
+                $form.find('.password-error').text('Password cannot be blank').show();
                 valid = false;
             }
             return valid;
@@ -29,7 +32,11 @@
 
 
         $form.on('submit', function (event) {
+            $username.removeClass('invalid').removeClass('missing');
+            $password.removeClass('invalid').removeClass('missing');
             $formError.hide();
+            $controlErrors.text('').hide();
+
 
             if (!validateCredentials()) {
                 $formError.text('Please fill in required fields.').show();

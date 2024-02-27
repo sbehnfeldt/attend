@@ -12,6 +12,10 @@ form {
         // In desktop-first, display label and control next to each other
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
+        @include respond(tablet) {
+            flex-direction: column;
+        }
 
         label {
             margin: auto;
@@ -29,60 +33,71 @@ form {
             }
         }
 
-        input[type=text],
-        input[type=email],
-        input[type=password],
-        input[type=number],
-        select {
-            display: block;
-            padding: .5rem;
-            border-radius: 10px;
+        .control-group {
             flex-basis: 9rem;
             flex-grow: 1;
 
-            color: $text-color-dark;
-            background-color: $primary-pale;
-
-
-            transform: scaleX(.95);
-            transition: transform .2s;
-
-            &::placeholder {
+            .error {
+                text-align: center;
+                font-size: 1.4rem;
+                color: red;
                 font-style: italic;
-                color: $text-color;
+            }
+
+
+            input[type=text],
+            input[type=email],
+            input[type=password],
+            input[type=number],
+            select {
+                width: 100%;
+                display: block;
+                padding: .5rem;
+                border-radius: 10px;
+
+                color: $text-color-dark;
+                background-color: $primary-pale;
+
+
+                transform: scaleX(.95);
+                transition: transform .2s;
+
+                &::placeholder {
+                    font-style: italic;
+                    color: $text-color;
+                }
+            }
+
+            input:focus,
+            select:focus {
+                color: $text-color-dark;
+                background-image: linear-gradient(#fff 0%, $primary-light 100%);
+                outline-style: none;
+                box-shadow: none;
+                transform: scaleX(1);
+            }
+
+            input.modified,
+            select.modified {
+                background-color: $text-color;
+                background-image: none;
+            }
+
+            input.invalid {
+                background-color: pink;
+            }
+
+            input.invalid::placeholder {
+                color: orangered;
+            }
+
+            .required.missing {
+                background-color: pink;
+                background-image: none;
+                color: red;
             }
         }
-
-        input:focus,
-        select:focus {
-            color: $text-color-dark;
-            background-image: linear-gradient(#fff 0%, $primary-light 100%);
-            outline-style: none;
-            box-shadow: none;
-            transform: scaleX(1);
-        }
-
-        input.modified,
-        select.modified {
-            background-color: $text-color;
-            background-image: none;
-        }
-
-        input.invalid {
-            background-color: pink;
-        }
-
-        input.invalid::placeholder {
-            color: orangered;
-        }
-
-        .required.missing {
-            background-color: pink;
-            background-image: none;
-            color: red;
-        }
     }
-
     button {
         margin: auto;
         padding: .5rem 2rem;
