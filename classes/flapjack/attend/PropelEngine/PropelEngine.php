@@ -121,6 +121,7 @@ class PropelEngine implements IDatabaseEngine
         if ($body['Ordering']) {
             $classrooms = ClassroomQuery::create()
                                         ->filterByOrdering(['min' => $body['Ordering']])
+                                        ->orderBy('Ordering', Criteria::DESC)
                                         ->find();
 
             /** @var Classroom $classroom */
@@ -159,18 +160,18 @@ class PropelEngine implements IDatabaseEngine
             // Decrease sort order for all classrooms higher than current sort order (exclusive) and lower than new sort order (inclusive)
             $query     = new ClassroomQuery();
             $resources = $query
-                ->filterByOrdering([ 'min' => $resource->getOrdering() + 1, 'max' => $body[ 'Ordering']])
+                ->filterByOrdering(['min' => $resource->getOrdering() + 1, 'max' => $body['Ordering']])
                 ->find();
             foreach ($resources as $r) {
                 $r->setOrdering($r->getOrdering() - 1);
                 $r->save();
             }
-        } elseif ($body[ 'Ordering' ] < $resource->getOrdering()) {
+        } elseif ($body['Ordering'] < $resource->getOrdering()) {
             // Moving classroom LOWER in the sort order;
             // Increase sort order for all classrooms higher than new sort order (inclusive) and lower than current sort order (exclusive)
             $query     = new ClassroomQuery();
             $resources = $query
-                ->filterByOrdering([ 'min' => $body['Ordering'], 'max' => $resource->getOrdering() - 1])
+                ->filterByOrdering(['min' => $body['Ordering'], 'max' => $resource->getOrdering() - 1])
                 ->find();
             foreach ($resources as $r) {
                 $r->setOrdering($r->getOrdering() + 1);
