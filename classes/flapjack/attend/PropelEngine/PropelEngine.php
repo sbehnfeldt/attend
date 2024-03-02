@@ -146,12 +146,36 @@ class PropelEngine implements IDatabaseEngine
         return $resource->toArray();
     }
 
-    public function putClassroomById(int $id, array $body): array
+    public function putClassroomById(int $id, array $body): ?array
     {
         $query    = new ClassroomQuery();
         $resource = $query->findPk($id);
         if (null === $resource) {
-            return [];
+            return null;
+        }
+
+        if ($body['Ordering'] > $resource->getOrdering()) {
+            // Moving classroom HIGHER in the sort order;
+            // Decrease sort order for all classrooms higher than current sort order (exclusive) and lower than new sort order (inclusive)
+            $query     = new ClassroomQuery();
+            $resources = $query
+                ->filterByOrdering([ 'min' => $resource->getOrdering() + 1, 'max' => $body[ 'Ordering']])
+                ->find();
+            foreach ($resources as $r) {
+                $r->setOrdering($r->getOrdering() - 1);
+                $r->save();
+            }
+        } elseif ($body[ 'Ordering' ] < $resource->getOrdering()) {
+            // Moving classroom LOWER in the sort order;
+            // Increase sort order for all classrooms higher than new sort order (inclusive) and lower than current sort order (exclusive)
+            $query     = new ClassroomQuery();
+            $resources = $query
+                ->filterByOrdering([ 'min' => $body['Ordering'], 'max' => $resource->getOrdering() - 1])
+                ->find();
+            foreach ($resources as $r) {
+                $r->setOrdering($r->getOrdering() + 1);
+                $r->save();
+            }
         }
 
         $resource->setLabel($body['Label']);

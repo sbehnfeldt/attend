@@ -129,10 +129,7 @@ class ApiApp extends App
             function (Request $request, Response $response, array $args) {
                 /** @var PropelEngine $engine */
                 $engine  = $this->get('dbEngine');
-//                $results = $engine->putClassroomById($args['id'], $request->getParsedBody());
-                $id = $args[ 'id' ];
-                $body = $request->getParsedBody();
-                $results = $engine->putClassroomById($id, $body);
+                $results = $engine->putClassroomById($args['id'], $request->getParsedBody());
                 if (null === $results) {
                     return $response->withStatus(404, 'Not Found');
                 }

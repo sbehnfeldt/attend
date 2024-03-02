@@ -18,7 +18,7 @@ interface IDatabaseEngine
 
     public function postClassroom(array $body): array;
 
-    public function putClassroomById(int $id, array $body): array;
+    public function putClassroomById(int $id, array $body): ?array;
 
     public function deleteClassroomById(int $id): int;
 
