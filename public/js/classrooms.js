@@ -294,21 +294,29 @@
 
         }
 
-        function update(id, data) {
+        function update(data) {
             Attend.loadAnother();
             $.ajax({
-                "url": "api/classrooms/" + id,
+                "url": "api/classrooms/" + data.Id,
                 "method": "put",
                 'data': data,
 
                 "dataType": "json",
                 "success": function (json) {
                     console.log(json);
-                    ClassroomsTab.redrawRow(json);
+                    ClassroomsTab.reload(json);
+                    ClassroomPropsDlg.close();
                     Attend.doneLoading();
                 },
                 "error": function (xhr) {
                     console.log(xhr);
+                    console.log(xhr);
+                    if ('_' in xhr.responseJSON) {
+                        $form.find(".form-error").text(xhr.responseJSON['_']).show();
+                    }
+                    if ('Label' in xhr.responseJSON) {
+                        $label.next().text(temp['Label']).show();
+                    }
                     Attend.doneLoading();
                 }
             });
