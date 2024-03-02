@@ -5,11 +5,13 @@ namespace flapjack\attend\PropelEngine;
 use flapjack\attend\database\AccountQuery;
 use flapjack\attend\database\Classroom;
 use flapjack\attend\database\ClassroomQuery;
+use flapjack\attend\database\Map\ClassroomTableMap;
 use flapjack\attend\database\Schedule;
 use flapjack\attend\database\ScheduleQuery;
 use flapjack\attend\database\Student;
 use flapjack\attend\database\StudentQuery;
 use flapjack\attend\IDatabaseEngine;
+use Propel\Runtime\ActiveQuery\Criteria;
 
 class PropelEngine implements IDatabaseEngine
 {
@@ -20,9 +22,9 @@ class PropelEngine implements IDatabaseEngine
     public function connect(array $config)
     {
         $host     = $config['host'];
-        $dbname   = $config[ 'dbname' ];
-        $user     = $config[ 'uname' ];
-        $password = $config[ 'pword' ];
+        $dbname   = $config['dbname'];
+        $user     = $config['uname'];
+        $password = $config['pword'];
 
         $serviceContainer = \Propel\Runtime\Propel::getServiceContainer();
         $serviceContainer->checkVersion('2.0.0-dev');
@@ -73,9 +75,9 @@ class PropelEngine implements IDatabaseEngine
 
     public function deleteAccountById(int $id): int
     {
-        $query = AccountQuery::create();
+        $query    = AccountQuery::create();
         $resource = $query->findOneById($id);
-        if ( null === $resource ) {
+        if (null === $resource) {
             return 0;
         }
         $resource->delete();
@@ -96,7 +98,7 @@ class PropelEngine implements IDatabaseEngine
     }
 
 
-    public function getClassrooms() : array
+    public function getClassrooms(): array
     {
         $query    = new ClassroomQuery();
         $resource = $query->find();
@@ -104,17 +106,47 @@ class PropelEngine implements IDatabaseEngine
         return $resource->toArray();
     }
 
-    public function postClassroom(array $body) : array
+    /**
+     * @param  array  $body
+     *
+     * @return array
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function postClassroom(array $body): array
     {
         $resource = new Classroom();
         $resource->setLabel($body['Label']);
-        $resource->setOrdering($body[ 'Ordering' ]);
+        $resource->setOrdering($body['Ordering']);
+
+        if ($body['Ordering']) {
+            $classrooms = ClassroomQuery::create()
+                                        ->filterByOrdering(['min' => $body['Ordering']])
+                                        ->find();
+
+            /** @var Classroom $classroom */
+            foreach ($classrooms as $classroom) {
+                $classroom->setOrdering($classroom->getOrdering() + 1);
+                $classroom->save();
+            }
+        } else {
+            $maxValue = ClassroomQuery::create()
+                                      ->withColumn(
+                                          'MAX(Ordering)',
+                                          'max_ordering'
+                                      )
+                                      ->select(['max_ordering'])
+                                      ->orderBy('max_ordering', Criteria::DESC)
+                                      ->findOne();
+
+            $resource->setOrdering($maxValue + 1);
+        }
+
         $resource->save();
 
         return $resource->toArray();
     }
 
-    public function putClassroomById(int $id, array $body) : array
+    public function putClassroomById(int $id, array $body): array
     {
         $query    = new ClassroomQuery();
         $resource = $query->findPk($id);
@@ -122,14 +154,14 @@ class PropelEngine implements IDatabaseEngine
             return [];
         }
 
-        $resource->setLabel($body[ 'Label' ]);
-        $resource->setOrdering($body[ 'Ordering' ]);
+        $resource->setLabel($body['Label']);
+        $resource->setOrdering($body['Ordering']);
         $resource->save();
 
         return $resource->toArray();
     }
 
-    public function deleteClassroomById(int $id) : int
+    public function deleteClassroomById(int $id): int
     {
         $query    = new ClassroomQuery();
         $resource = $query->findPk($id);
@@ -152,7 +184,7 @@ class PropelEngine implements IDatabaseEngine
         return $resource->toArray();
     }
 
-    public function getStudents() : array
+    public function getStudents(): array
     {
         $query    = new StudentQuery();
         $resource = $query->find();
@@ -161,13 +193,13 @@ class PropelEngine implements IDatabaseEngine
     }
 
 
-    public function postStudent(array $body) : array
+    public function postStudent(array $body): array
     {
         $resource = new Student();
         $resource->setFamilyName($body['FamilyName']);
-        $resource->setFirstName($body[ 'FirstName' ]);
-        $resource->setEnrolled($body[ 'Enrolled' ]);
-        $resource->setClassroomId($body[ 'ClassroomId' ]);
+        $resource->setFirstName($body['FirstName']);
+        $resource->setEnrolled($body['Enrolled']);
+        $resource->setClassroomId($body['ClassroomId']);
         $resource->save();
 
         return $resource->toArray();
@@ -214,7 +246,7 @@ class PropelEngine implements IDatabaseEngine
         return $resource->toArray();
     }
 
-    public function getSchedules() : array
+    public function getSchedules(): array
     {
         $query    = new ScheduleQuery();
         $resource = $query->find();
@@ -222,12 +254,12 @@ class PropelEngine implements IDatabaseEngine
         return $resource->toArray();
     }
 
-    public function postSchedule(array $body) : array
+    public function postSchedule(array $body): array
     {
         $resource = new Schedule();
         $resource->setStartDate($body['StartDate']);
-        $resource->setSchedule($body[ 'Schedule' ]);
-        $resource->setStudentId($body[ 'StudentId' ]);
+        $resource->setSchedule($body['Schedule']);
+        $resource->setStudentId($body['StudentId']);
         $resource->save();
 
         return $resource->toArray();

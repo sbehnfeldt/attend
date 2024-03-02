@@ -15,7 +15,7 @@
 
                     'success': function (json) {
                         console.log(json);
-                        for (var i = 0; i < json.length; i++) {
+                        for (let i = 0; i < json.length; i++) {
                             table.row.add(json[i]);
                         }
                         table.draw();
@@ -29,7 +29,7 @@
             },
             "paging": false,
             "searching": false,
-            "select": true,
+            "select": "single",
             "order": [[2, "asc"]],
             "columns": [
                 {
@@ -63,7 +63,7 @@
                 "extend": "selected",
                 "text": "Edit",
                 "action": function (e, dt, button, config) {
-                    var selected = dt.rows({selected: true}).indexes();
+                    let selected = dt.rows({selected: true}).indexes();
                     if (1 < selected.length) {
                         alert("Can edit only 1 record at a time");
                     } else {
@@ -74,13 +74,13 @@
                 "extend": "selected",
                 "text": "Delete",
                 "action": function (e, dt) {
-                    var selected = dt.rows({selected: true});
-                    var msg      = (1 === selected[0].length) ? 'Are you sure you want to delete this record?' : 'Are you sure you want to delete these ' + selected[0].length + ' records?';
+                    let selected = dt.rows({selected: true});
+                    let msg      = (1 === selected[0].length) ? 'Are you sure you want to delete this record?' : 'Are you sure you want to delete these ' + selected[0].length + ' records?';
                     if (confirm(msg)) {
-                        var length = selected[0].length;
+                        let length = selected[0].length;
                         selected.every(function () {
-                            var row  = this;
-                            var data = row.data();
+                            let row  = this;
+                            let data = row.data();
                             Attend.loadAnother();
                             $.ajax({
                                 "url": "api/classrooms/" + data.Id,
@@ -130,15 +130,16 @@
         }
 
         function reload() {
+            table.clear();
             table.ajax.reload();
         }
 
         function redrawRow(newData) {
             table.rows().every(function ( /* rowIdx, tableLoop, rowLoop */) {
-                var data = this.data();
-                if (data.Id == newData.Id) {
-                    var oldData = this.data();
-                    for (var p in newData) {
+                let data = this.data();
+                if (data.Id === newData.Id) {
+                    let oldData = this.data();
+                    for (let p in newData) {
                         oldData[p] = newData[p];
                     }
                     this.data(oldData);
@@ -148,7 +149,7 @@
 
         function deleteRow(classroom_id) {
             table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-                var data = this.data();
+                let data = this.data();
                 console.log(rowIdx);
                 console.log(tableLoop);
                 console.log(rowLoop);
@@ -185,7 +186,6 @@
         $label       = $form.find('[name=Label]');
         $order       = $form.find('[name=Ordering]');
 
-
         $inputs = $form.find('input');
         $inputs.on('change', function () {
             if ($(this).val() !== $(this).data('db-val')) {
@@ -195,17 +195,16 @@
             }
         });
 
-        $required = $form.find('.required');
+        $required = $form.find('.required input');
 
         dialog = $self.dialog({
             "autoOpen": false,
             "modal": true,
-            "width": "300px",
+            "width": "600px",
             "buttons": {
                 "Submit": function () {
                     if (validate()) {
                         submit();
-                        close();
                     }
                 },
                 "Cancel": function () {
@@ -229,6 +228,7 @@
         function clear() {
             $form[0].reset();
             $required.removeClass('missing');
+            $('.error').text('').hide();
             $inputs.data('db-val', '').removeClass('modified');
         }
 
@@ -240,35 +240,31 @@
 
 
         function validate() {
-            var valid = true;
+            let valid = true;
             $required.each(function (i, e) {
                 if (!$(e).val()) {
                     $(e).addClass('missing');
+                    $(e).next().text("This field cannot be blank").show();
                     valid = false;
                 } else {
                     $(e).removeClass('missing');
+                    $(e).next().text("").hide();
                 }
             });
             return valid;
         }
 
         function submit() {
-            var id       = $classroomId.val();
-            var label    = $label.val();
-            var ordering = $order.val();
-            if (ordering === '') {
-                ordering = null;
-            }
-            var data = {
-                "Label": label,
-                "Ordering": ordering
+            let data = {
+                "Id": '' === $classroomId.val() ? null : $classroomId.val(),
+                "Label": $label.val(),
+                "Ordering": '' === $order.val() ? null : $order.val()
             };
-            if (!id) {
-                insert(data);
+            if ($classroomId.val()) {
+                update(data);
             } else {
-                update(id, data);
+                insert(data);
             }
-            ClassroomPropsDlg.close();
         }
 
         function insert(data) {
@@ -280,44 +276,18 @@
 
                 "dataType": "json",
                 "success": function (json) {
-                    console.log(json);
-                    if (!data.ordering) {
-                        // If ordering not specified, it defaults to current max + 1,
-                        // so table is fine; just add new row
-                        ClassroomsTab.insert(json);
-                    } else {
-                        // If ordering IS specified, ordering of other classrooms may be affected;
-                        // so, reload entire table.
-                        ClassroomsTab.reload(json);
-                    }
+                    ClassroomsTab.reload(json);
+                    ClassroomPropsDlg.close();
                     Attend.doneLoading();
-
-//                    $.ajax( {
-//                        'url'   : "api/classrooms/" + json,
-//                        "method": "get",
-//
-//                        "success": function ( json ) {
-//                            console.log( json );
-//                            if ( !data.ordering ) {
-//                                // If ordering not specified, it defaults to current max + 1,
-//                                // so table is fine; just add new row
-//                                ClassroomsTab.insert( json );
-//                            } else {
-//                                // If ordering IS specified, ordering of other classrooms may be affected;
-//                                // so, reload entire table.
-//                                ClassroomsTab.reload( json );
-//                            }
-//                            Attend.doneLoading();
-//                        },
-//                        "error"  : function ( xhr ) {
-//                            console.log( xhr );
-//                            Attend.doneLoading();
-//                        }
-//                    } );
-
                 },
                 "error": function (xhr) {
                     console.log(xhr);
+                    if ('_' in xhr.responseJSON) {
+                        $form.find(".form-error").text(xhr.responseJSON['_']).show();
+                    }
+                    if ('Label' in xhr.responseJSON) {
+                        $label.next().text(temp['Label']).show();
+                    }
                     Attend.doneLoading();
                 }
             });

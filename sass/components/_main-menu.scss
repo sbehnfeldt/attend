@@ -4,7 +4,7 @@ nav.main {
     flex-direction: row;
     justify-content: space-between;
     padding: 2px;
-    background-color: #222;
+    background-color: #333333;
 
     ul {
         padding: 5px 10px;
@@ -19,10 +19,10 @@ nav.main {
             font-size: 1.6rem;
 
             a {
-                color: green;
+                color: orange;
 
                 &:hover {
-                    color: greenyellow;
+                    color: yellow;
                 }
             }
         }

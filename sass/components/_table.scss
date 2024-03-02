@@ -22,3 +22,10 @@ table {
 .dailies td {
     background-color: lightskyblue;
 }
+
+.table {
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+    }
+}

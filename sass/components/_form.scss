@@ -6,6 +6,17 @@ form {
         margin: 1rem 2rem;
     }
 
+    .form-error {
+        display: none;
+        margin: 0 10px 0 10px;
+        padding: 15px;
+
+        background-color: pink;
+        color: orangered;
+        text-align: center;
+    }
+
+
     // A label/input control pair
     .form-box {
         margin: 1.5rem 2rem;
@@ -23,7 +34,7 @@ form {
             margin: auto;
             padding-right: .5rem;
 
-            flex-basis: 15rem;
+            flex-basis: 20rem;
             flex-shrink: 0;
             flex-grow: 0;
 
@@ -40,6 +51,7 @@ form {
             flex-grow: 1;
 
             .error {
+                display: none;
                 text-align: center;
                 font-size: 1.4rem;
                 color: red;
@@ -81,7 +93,7 @@ form {
 
             input.modified,
             select.modified {
-                background-color: $text-color;
+                background-color: var(--modified);
                 background-image: none;
             }
 
@@ -99,7 +111,13 @@ form {
                 color: red;
             }
         }
+
+        &.required label::before {
+            content: "*"
+
+        }
     }
+
     button {
         margin: auto;
         padding: .5rem 2rem;

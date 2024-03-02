@@ -27,7 +27,7 @@
                 <tbody></tbody>
             </table>
 
-            <div class="buttons">
+            <div class="buttons" style="display: flex">
                 <div class="record-buttons"></div>
                 <div class="table-buttons"></div>
             </div>
@@ -35,10 +35,11 @@
 
         <div class="dialog" id="classroom-props-dlg" title="Add/Edit Classroom">
             <form>
+                <div class="error form-error"></div>
                 <p class="update-tips"></p>
                 <input type="hidden" name="Id" id="Id">
 
-                <div class="form-box">
+                <div class="form-box required">
                     <label for="Label">Classroom Name</label>
                     <div class="control-group">
                         <input type="text" name="Label" id="Label" class="required" required>
@@ -51,7 +52,6 @@
                     <div class="control-group">
                         <input type="number" name="Ordering" id="Ordering">
                         <div class="error order-error"></div>
-
                     </div>
                 </div>
             </form>

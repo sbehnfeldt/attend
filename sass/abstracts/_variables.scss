@@ -1,3 +1,6 @@
+:root {
+    --modified: #8fe371;
+}
 $neutral: rgb(186, 190, 196);
 $neutral-light: lighten($neutral, 10%);
 $neutral-dark: darken($neutral, 25%);
