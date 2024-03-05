@@ -64,11 +64,7 @@
                 "text": "Edit",
                 "action": function (e, dt, button, config) {
                     let selected = dt.rows({selected: true}).indexes();
-                    if (1 < selected.length) {
-                        alert("Can edit only 1 record at a time");
-                    } else {
-                        ClassroomPropsDlg.open(dt.rows(selected[0]).data()[0]);
-                    }
+                    ClassroomPropsDlg.open(dt.rows(selected[0]).data()[0]);
                 }
             }, {
                 "extend": "selected",
@@ -84,20 +80,11 @@
                             "method": "delete",
 
                             "success": function (json) {
-                                length--;
-                                if (!length) {
-                                    selected.remove().draw(false);
-                                }
+                                reload();
                                 Attend.doneLoading();
                             },
                             "error": function (xhr) {
                                 console.log(xhr);
-                                length--;
-                                row.deselect();
-                                selected = dt.rows({selected: true});
-                                if (!length) {
-                                    selected.remove().draw(false);
-                                }
                                 Attend.doneLoading();
                             }
                         });

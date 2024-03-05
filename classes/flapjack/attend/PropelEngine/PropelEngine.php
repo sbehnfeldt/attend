@@ -195,6 +195,18 @@ class PropelEngine implements IDatabaseEngine
         }
         $resource->delete();
 
+        // Decrease by 1 the value of the "ordering" field for all classrooms with an "ordering" value higher
+        // than the "ordering" value of the classroom being deleted
+        $query = new ClassroomQuery();
+        $resources = $query
+            ->filterByOrdering([ 'min' => $resource->getOrdering() + 1])
+            ->find();
+
+        foreach ($resources as $r) {
+            $r->setOrdering($r->getOrdering()-1);
+            $r->save();
+        }
+
         return $id;
     }
 
