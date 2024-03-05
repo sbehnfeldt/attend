@@ -7,13 +7,13 @@
 
         $self = $(selector);
         table = $self.find('table').DataTable({
-            "ajax": function () {
+            ajax: function () {
                 Attend.loadAnother();
                 $.ajax({
-                    'url': 'api/classrooms',
-                    'method': 'get',
+                    url: 'api/classrooms',
+                    method: 'get',
 
-                    'success': function (json) {
+                    success: function (json) {
                         console.log(json);
                         for (let i = 0; i < json.length; i++) {
                             table.row.add(json[i]);
@@ -21,69 +21,67 @@
                         table.draw();
                         Attend.doneLoading();
                     },
-                    'error': function (xhr) {
+                    error: function (xhr) {
                         console.log(xhr);
                         Attend.doneLoading();
                     }
                 });
             },
-            "paging": false,
-            "searching": false,
-            "select": "single",
-            "order": [[2, "asc"]],
-            "columns": [
-                {
-                    'data': "Id",
-                    'visible': false
-                },
-                {'data': "Label"},
-                {'data': "Ordering"},
-                {
-                    'data': "CreatedAt",
-                    'render': (x) => {
-                        return moment(x).format('YYYY-MM-D');
-                    }
-                },
-                {
-                    'data': "UpdatedAt",
-                    'render': (x) => {
-                        return moment(x).format('YYYY-MM-D');
-                    }
+            paging: false,
+            searching: false,
+            select: "single",
+            order: [[2, "asc"]],
+            columns: [{
+                data: "Id",
+                visible: false
+            }, {
+                data: "Label"
+            }, {
+                data: "Ordering"
+            }, {
+                data: "CreatedAt",
+                render: (x) => {
+                    return moment(x).format('YYYY-MM-D');
                 }
-            ]
+            }, {
+                data: "UpdatedAt",
+                render: (x) => {
+                    return moment(x).format('YYYY-MM-D');
+                }
+            }]
         });
 
         let b0 = new $.fn.dataTable.Buttons(table, {
             buttons: [{
-                "text": "New",
-                "action": function () {
+                text: "New",
+                action: function () {
                     ClassroomPropsDlg.open();
                 }
             }, {
-                "extend": "selected",
-                "text": "Edit",
-                "action": function (e, dt, button, config) {
+                extend: "selected",
+                text: "Edit",
+                action: function (e, dt, button, config) {
                     let selected = dt.rows({selected: true}).indexes();
                     ClassroomPropsDlg.open(dt.rows(selected[0]).data()[0]);
                 }
             }, {
-                "extend": "selected",
-                "text": "Delete",
-                "action": function (e, dt) {
+                extend: "selected",
+                text: "Delete",
+                action: function (e, dt) {
                     let selected = dt.rows({selected: true});
                     if (confirm('Are you sure you want to delete this record?')) {
 
                         let data = dt.row(selected[0]).data();
                         Attend.loadAnother();
                         $.ajax({
-                            "url": "api/classrooms/" + data.Id,
-                            "method": "delete",
+                            url: "api/classrooms/" + data.Id,
+                            method: "delete",
 
-                            "success": function (json) {
+                            success: function (json) {
                                 reload();
                                 Attend.doneLoading();
                             },
-                            "error": function (xhr) {
+                            error: function (xhr) {
                                 console.log(xhr);
                                 Attend.doneLoading();
                             }
@@ -96,9 +94,9 @@
 
 
         let b1 = new $.fn.dataTable.Buttons(table, {
-            "buttons": [{
-                "text": "Reload",
-                "action": function (e, dt) {
+            buttons: [{
+                text: "Reload",
+                action: function (e, dt) {
                     Attend.loadAnother();
                     table.clear();
                     dt.ajax.reload(Attend.doneLoading);
@@ -145,10 +143,7 @@
         }
 
         return {
-            "insert": insert,
-            "reload": reload,
-            "redrawRow": redrawRow,
-            "deleteRow": deleteRow
+            insert, reload, redrawRow, deleteRow
         };
     })('#classrooms-tab');
 
@@ -181,16 +176,16 @@
         $required = $form.find('.required input');
 
         dialog = $self.dialog({
-            "autoOpen": false,
-            "modal": true,
-            "width": "600px",
-            "buttons": {
-                "Submit": function () {
+            autoOpen: false,
+            modal: true,
+            width: "600px",
+            buttons: {
+                Submit: function () {
                     if (validate()) {
                         submit();
                     }
                 },
-                "Cancel": function () {
+                Cancel: function () {
                     ClassroomPropsDlg.close();
                 }
             }
@@ -239,9 +234,9 @@
 
         function submit() {
             let data = {
-                "Id": '' === $classroomId.val() ? null : $classroomId.val(),
-                "Label": $label.val(),
-                "Ordering": '' === $order.val() ? null : $order.val()
+                Id: '' === $classroomId.val() ? null : $classroomId.val(),
+                Label: $label.val(),
+                Ordering: '' === $order.val() ? null : $order.val()
             };
             if ($classroomId.val()) {
                 update(data);
@@ -253,17 +248,17 @@
         function insert(data) {
             Attend.loadAnother();
             $.ajax({
-                "url": "api/classrooms",
-                "method": "post",
-                'data': data,
+                url: "api/classrooms",
+                method: "post",
+                data: data,
 
-                "dataType": "json",
-                "success": function (json) {
+                dataType: "json",
+                success: function (json) {
                     ClassroomsTab.reload(json);
                     ClassroomPropsDlg.close();
                     Attend.doneLoading();
                 },
-                "error": function (xhr) {
+                error: function (xhr) {
                     console.log(xhr);
                     if ('_' in xhr.responseJSON) {
                         $form.find(".form-error").text(xhr.responseJSON['_']).show();
@@ -280,18 +275,18 @@
         function update(data) {
             Attend.loadAnother();
             $.ajax({
-                "url": "api/classrooms/" + data.Id,
-                "method": "put",
-                'data': data,
+                url: "api/classrooms/" + data.Id,
+                method: "put",
+                data: data,
 
-                "dataType": "json",
-                "success": function (json) {
+                dataType: "json",
+                success: function (json) {
                     console.log(json);
                     ClassroomsTab.reload(json);
                     ClassroomPropsDlg.close();
                     Attend.doneLoading();
                 },
-                "error": function (xhr) {
+                error: function (xhr) {
                     console.log(xhr);
                     console.log(xhr);
                     if ('_' in xhr.responseJSON) {
@@ -306,10 +301,7 @@
         }
 
 
-        return {
-            'open': open,
-            'close': close
-        };
+        return {open, close};
     })('#classroom-props-dlg');
 
     // $(function () {
