@@ -7,26 +7,7 @@
 
         $self = $(selector);
         table = $self.find('table').DataTable({
-            ajax: function () {
-                Attend.loadAnother();
-                $.ajax({
-                    url: 'api/classrooms',
-                    method: 'get',
-
-                    success: function (json) {
-                        console.log(json);
-                        for (let i = 0; i < json.length; i++) {
-                            table.row.add(json[i]);
-                        }
-                        table.draw();
-                        Attend.doneLoading();
-                    },
-                    error: function (xhr) {
-                        console.log(xhr);
-                        Attend.doneLoading();
-                    }
-                });
-            },
+            ajax: loadClassrooms,
             paging: false,
             searching: false,
             select: "single",
@@ -105,6 +86,27 @@
         });
         b1.dom.container.eq(0).appendTo($self.find('.table-buttons'));
 
+
+        function loadClassrooms() {
+            Attend.loadAnother();
+            fetch('/api/classrooms')
+                .then((response) => {
+                    return response.json();
+                })
+                .then((json) => {
+                    console.log(json);
+                    for (let i = 0; i < json.length; i++) {
+                        table.row.add(json[i]);
+                    }
+                    table.draw();
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+                .finally(() => {
+                    Attend.doneLoading();
+                })
+        }
 
         function insert(data) {
             table.row.add(data).draw();
