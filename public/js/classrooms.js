@@ -105,7 +105,7 @@
                 })
                 .finally(() => {
                     Attend.doneLoading();
-                })
+                });
         }
 
         function insert(data) {
