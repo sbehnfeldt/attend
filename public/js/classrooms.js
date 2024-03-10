@@ -87,25 +87,20 @@
         b1.dom.container.eq(0).appendTo($self.find('.table-buttons'));
 
 
-        function loadClassrooms() {
+        async function loadClassrooms() {
             Attend.loadAnother();
-            fetch('/api/classrooms')
-                .then((response) => {
-                    return response.json();
-                })
-                .then((json) => {
-                    console.log(json);
-                    for (let i = 0; i < json.length; i++) {
-                        table.row.add(json[i]);
-                    }
-                    table.draw();
-                })
-                .catch((err) => {
-                    console.log(err);
-                })
-                .finally(() => {
-                    Attend.doneLoading();
-                });
+            try {
+                const result = await fetch('/api/classrooms');
+                const json   = await (result.json());
+                for (let i = 0; i < json.length; i++) {
+                    table.row.add(json[i]);
+                }
+                table.draw();
+            } catch (e) {
+                console.log(e);
+            } finally {
+                Attend.doneLoading();
+            }
         }
 
         function insert(data) {
