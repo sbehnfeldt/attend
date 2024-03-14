@@ -25,10 +25,14 @@
                     return moment(x).format('YYYY-MM-D');
                 }
             }, {
+                data: "CreatedBy"
+            }, {
                 data: "UpdatedAt",
                 render: (x) => {
                     return moment(x).format('YYYY-MM-D');
                 }
+            }, {
+                data: "UpdatedBy"
             }]
         });
 
@@ -92,6 +96,7 @@
             try {
                 const result = await fetch('/api/classrooms');
                 const json   = await (result.json());
+                console.log(json);
                 for (let i = 0; i < json.length; i++) {
                     table.row.add(json[i]);
                 }

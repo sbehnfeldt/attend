@@ -12,6 +12,7 @@ use flapjack\attend\database\Student;
 use flapjack\attend\database\StudentQuery;
 use flapjack\attend\IDatabaseEngine;
 use Propel\Runtime\ActiveQuery\Criteria;
+use Propel\Runtime\Collection\Collection;
 
 class PropelEngine implements IDatabaseEngine
 {
@@ -93,17 +94,18 @@ class PropelEngine implements IDatabaseEngine
         if (null === $resource) {
             return [];
         }
+        $c = $resource->getCreator();
 
         return $resource->toArray();
     }
 
 
-    public function getClassrooms(): array
+    /**
+     * @return array|Classroom[]|Collection
+     */
+    public function getClassrooms(): Classroom|Collection
     {
-        $query    = new ClassroomQuery();
-        $resource = $query->find();
-
-        return $resource->toArray();
+        return ClassroomQuery::create()->find();
     }
 
     /**

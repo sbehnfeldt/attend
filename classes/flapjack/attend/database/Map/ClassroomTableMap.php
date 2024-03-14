@@ -63,7 +63,7 @@ class ClassroomTableMap extends TableMap
     /**
      * The total number of columns
      */
-    public const NUM_COLUMNS = 5;
+    public const NUM_COLUMNS = 7;
 
     /**
      * The number of lazy-loaded columns
@@ -73,7 +73,7 @@ class ClassroomTableMap extends TableMap
     /**
      * The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS)
      */
-    public const NUM_HYDRATE_COLUMNS = 5;
+    public const NUM_HYDRATE_COLUMNS = 7;
 
     /**
      * the column name for the id field
@@ -101,6 +101,16 @@ class ClassroomTableMap extends TableMap
     public const COL_UPDATED_AT = 'classrooms.updated_at';
 
     /**
+     * the column name for the created_by field
+     */
+    public const COL_CREATED_BY = 'classrooms.created_by';
+
+    /**
+     * the column name for the updated_by field
+     */
+    public const COL_UPDATED_BY = 'classrooms.updated_by';
+
+    /**
      * The default string format for model objects of the related table
      */
     public const DEFAULT_STRING_FORMAT = 'YAML';
@@ -114,11 +124,11 @@ class ClassroomTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldNames = [
-        self::TYPE_PHPNAME       => ['Id', 'Label', 'Ordering', 'CreatedAt', 'UpdatedAt', ],
-        self::TYPE_CAMELNAME     => ['id', 'label', 'ordering', 'createdAt', 'updatedAt', ],
-        self::TYPE_COLNAME       => [ClassroomTableMap::COL_ID, ClassroomTableMap::COL_LABEL, ClassroomTableMap::COL_ORDERING, ClassroomTableMap::COL_CREATED_AT, ClassroomTableMap::COL_UPDATED_AT, ],
-        self::TYPE_FIELDNAME     => ['id', 'label', 'ordering', 'created_at', 'updated_at', ],
-        self::TYPE_NUM           => [0, 1, 2, 3, 4, ]
+        self::TYPE_PHPNAME       => ['Id', 'Label', 'Ordering', 'CreatedAt', 'UpdatedAt', 'CreatedBy', 'UpdatedBy', ],
+        self::TYPE_CAMELNAME     => ['id', 'label', 'ordering', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', ],
+        self::TYPE_COLNAME       => [ClassroomTableMap::COL_ID, ClassroomTableMap::COL_LABEL, ClassroomTableMap::COL_ORDERING, ClassroomTableMap::COL_CREATED_AT, ClassroomTableMap::COL_UPDATED_AT, ClassroomTableMap::COL_CREATED_BY, ClassroomTableMap::COL_UPDATED_BY, ],
+        self::TYPE_FIELDNAME     => ['id', 'label', 'ordering', 'created_at', 'updated_at', 'created_by', 'updated_by', ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, 6, ]
     ];
 
     /**
@@ -130,11 +140,11 @@ class ClassroomTableMap extends TableMap
      * @var array<string, mixed>
      */
     protected static $fieldKeys = [
-        self::TYPE_PHPNAME       => ['Id' => 0, 'Label' => 1, 'Ordering' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, ],
-        self::TYPE_CAMELNAME     => ['id' => 0, 'label' => 1, 'ordering' => 2, 'createdAt' => 3, 'updatedAt' => 4, ],
-        self::TYPE_COLNAME       => [ClassroomTableMap::COL_ID => 0, ClassroomTableMap::COL_LABEL => 1, ClassroomTableMap::COL_ORDERING => 2, ClassroomTableMap::COL_CREATED_AT => 3, ClassroomTableMap::COL_UPDATED_AT => 4, ],
-        self::TYPE_FIELDNAME     => ['id' => 0, 'label' => 1, 'ordering' => 2, 'created_at' => 3, 'updated_at' => 4, ],
-        self::TYPE_NUM           => [0, 1, 2, 3, 4, ]
+        self::TYPE_PHPNAME       => ['Id' => 0, 'Label' => 1, 'Ordering' => 2, 'CreatedAt' => 3, 'UpdatedAt' => 4, 'CreatedBy' => 5, 'UpdatedBy' => 6, ],
+        self::TYPE_CAMELNAME     => ['id' => 0, 'label' => 1, 'ordering' => 2, 'createdAt' => 3, 'updatedAt' => 4, 'createdBy' => 5, 'updatedBy' => 6, ],
+        self::TYPE_COLNAME       => [ClassroomTableMap::COL_ID => 0, ClassroomTableMap::COL_LABEL => 1, ClassroomTableMap::COL_ORDERING => 2, ClassroomTableMap::COL_CREATED_AT => 3, ClassroomTableMap::COL_UPDATED_AT => 4, ClassroomTableMap::COL_CREATED_BY => 5, ClassroomTableMap::COL_UPDATED_BY => 6, ],
+        self::TYPE_FIELDNAME     => ['id' => 0, 'label' => 1, 'ordering' => 2, 'created_at' => 3, 'updated_at' => 4, 'created_by' => 5, 'updated_by' => 6, ],
+        self::TYPE_NUM           => [0, 1, 2, 3, 4, 5, 6, ]
     ];
 
     /**
@@ -180,6 +190,22 @@ class ClassroomTableMap extends TableMap
         'COL_UPDATED_AT' => 'UPDATED_AT',
         'updated_at' => 'UPDATED_AT',
         'classrooms.updated_at' => 'UPDATED_AT',
+        'CreatedBy' => 'CREATED_BY',
+        'Classroom.CreatedBy' => 'CREATED_BY',
+        'createdBy' => 'CREATED_BY',
+        'classroom.createdBy' => 'CREATED_BY',
+        'ClassroomTableMap::COL_CREATED_BY' => 'CREATED_BY',
+        'COL_CREATED_BY' => 'CREATED_BY',
+        'created_by' => 'CREATED_BY',
+        'classrooms.created_by' => 'CREATED_BY',
+        'UpdatedBy' => 'UPDATED_BY',
+        'Classroom.UpdatedBy' => 'UPDATED_BY',
+        'updatedBy' => 'UPDATED_BY',
+        'classroom.updatedBy' => 'UPDATED_BY',
+        'ClassroomTableMap::COL_UPDATED_BY' => 'UPDATED_BY',
+        'COL_UPDATED_BY' => 'UPDATED_BY',
+        'updated_by' => 'UPDATED_BY',
+        'classrooms.updated_by' => 'UPDATED_BY',
     ];
 
     /**
@@ -204,6 +230,8 @@ class ClassroomTableMap extends TableMap
         $this->addColumn('ordering', 'Ordering', 'INTEGER', false, null, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP');
         $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
+        $this->addForeignKey('created_by', 'CreatedBy', 'INTEGER', 'accounts', 'id', true, null, null);
+        $this->addForeignKey('updated_by', 'UpdatedBy', 'INTEGER', 'accounts', 'id', false, null, null);
     }
 
     /**
@@ -213,6 +241,20 @@ class ClassroomTableMap extends TableMap
      */
     public function buildRelations(): void
     {
+        $this->addRelation('Creator', '\\flapjack\\attend\\database\\Account', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':created_by',
+    1 => ':id',
+  ),
+), 'RESTRICT', null, null, false);
+        $this->addRelation('Updater', '\\flapjack\\attend\\database\\Account', RelationMap::MANY_TO_ONE, array (
+  0 =>
+  array (
+    0 => ':updated_by',
+    1 => ':id',
+  ),
+), 'RESTRICT', null, null, false);
         $this->addRelation('Student', '\\flapjack\\attend\\database\\Student', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
@@ -379,12 +421,16 @@ class ClassroomTableMap extends TableMap
             $criteria->addSelectColumn(ClassroomTableMap::COL_ORDERING);
             $criteria->addSelectColumn(ClassroomTableMap::COL_CREATED_AT);
             $criteria->addSelectColumn(ClassroomTableMap::COL_UPDATED_AT);
+            $criteria->addSelectColumn(ClassroomTableMap::COL_CREATED_BY);
+            $criteria->addSelectColumn(ClassroomTableMap::COL_UPDATED_BY);
         } else {
             $criteria->addSelectColumn($alias . '.id');
             $criteria->addSelectColumn($alias . '.label');
             $criteria->addSelectColumn($alias . '.ordering');
             $criteria->addSelectColumn($alias . '.created_at');
             $criteria->addSelectColumn($alias . '.updated_at');
+            $criteria->addSelectColumn($alias . '.created_by');
+            $criteria->addSelectColumn($alias . '.updated_by');
         }
     }
 
@@ -408,12 +454,16 @@ class ClassroomTableMap extends TableMap
             $criteria->removeSelectColumn(ClassroomTableMap::COL_ORDERING);
             $criteria->removeSelectColumn(ClassroomTableMap::COL_CREATED_AT);
             $criteria->removeSelectColumn(ClassroomTableMap::COL_UPDATED_AT);
+            $criteria->removeSelectColumn(ClassroomTableMap::COL_CREATED_BY);
+            $criteria->removeSelectColumn(ClassroomTableMap::COL_UPDATED_BY);
         } else {
             $criteria->removeSelectColumn($alias . '.id');
             $criteria->removeSelectColumn($alias . '.label');
             $criteria->removeSelectColumn($alias . '.ordering');
             $criteria->removeSelectColumn($alias . '.created_at');
             $criteria->removeSelectColumn($alias . '.updated_at');
+            $criteria->removeSelectColumn($alias . '.created_by');
+            $criteria->removeSelectColumn($alias . '.updated_by');
         }
     }
 

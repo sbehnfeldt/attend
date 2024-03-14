@@ -18,6 +18,8 @@ use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 use flapjack\attend\database\Account as ChildAccount;
 use flapjack\attend\database\AccountQuery as ChildAccountQuery;
+use flapjack\attend\database\Classroom as ChildClassroom;
+use flapjack\attend\database\ClassroomQuery as ChildClassroomQuery;
 use flapjack\attend\database\GroupMember as ChildGroupMember;
 use flapjack\attend\database\GroupMemberQuery as ChildGroupMemberQuery;
 use flapjack\attend\database\IndividualPermission as ChildIndividualPermission;
@@ -25,6 +27,7 @@ use flapjack\attend\database\IndividualPermissionQuery as ChildIndividualPermiss
 use flapjack\attend\database\TokenAuth as ChildTokenAuth;
 use flapjack\attend\database\TokenAuthQuery as ChildTokenAuthQuery;
 use flapjack\attend\database\Map\AccountTableMap;
+use flapjack\attend\database\Map\ClassroomTableMap;
 use flapjack\attend\database\Map\GroupMemberTableMap;
 use flapjack\attend\database\Map\IndividualPermissionTableMap;
 use flapjack\attend\database\Map\TokenAuthTableMap;
@@ -108,6 +111,20 @@ abstract class Account implements ActiveRecordInterface
     protected $role;
 
     /**
+     * @var        ObjectCollection|ChildClassroom[] Collection to store aggregation of ChildClassroom objects.
+     * @phpstan-var ObjectCollection&\Traversable<ChildClassroom> Collection to store aggregation of ChildClassroom objects.
+     */
+    protected $collClassroomsRelatedByCreatedBy;
+    protected $collClassroomsRelatedByCreatedByPartial;
+
+    /**
+     * @var        ObjectCollection|ChildClassroom[] Collection to store aggregation of ChildClassroom objects.
+     * @phpstan-var ObjectCollection&\Traversable<ChildClassroom> Collection to store aggregation of ChildClassroom objects.
+     */
+    protected $collClassroomsRelatedByUpdatedBy;
+    protected $collClassroomsRelatedByUpdatedByPartial;
+
+    /**
      * @var        ObjectCollection|ChildGroupMember[] Collection to store aggregation of ChildGroupMember objects.
      * @phpstan-var ObjectCollection&\Traversable<ChildGroupMember> Collection to store aggregation of ChildGroupMember objects.
      */
@@ -135,6 +152,20 @@ abstract class Account implements ActiveRecordInterface
      * @var bool
      */
     protected $alreadyInSave = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildClassroom[]
+     * @phpstan-var ObjectCollection&\Traversable<ChildClassroom>
+     */
+    protected $classroomsRelatedByCreatedByScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var ObjectCollection|ChildClassroom[]
+     * @phpstan-var ObjectCollection&\Traversable<ChildClassroom>
+     */
+    protected $classroomsRelatedByUpdatedByScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -653,6 +684,10 @@ abstract class Account implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->collClassroomsRelatedByCreatedBy = null;
+
+            $this->collClassroomsRelatedByUpdatedBy = null;
+
             $this->collGroupMembers = null;
 
             $this->collIndividualPermissions = null;
@@ -771,6 +806,41 @@ abstract class Account implements ActiveRecordInterface
                     $affectedRows += $this->doUpdate($con);
                 }
                 $this->resetModified();
+            }
+
+            if ($this->classroomsRelatedByCreatedByScheduledForDeletion !== null) {
+                if (!$this->classroomsRelatedByCreatedByScheduledForDeletion->isEmpty()) {
+                    \flapjack\attend\database\ClassroomQuery::create()
+                        ->filterByPrimaryKeys($this->classroomsRelatedByCreatedByScheduledForDeletion->getPrimaryKeys(false))
+                        ->delete($con);
+                    $this->classroomsRelatedByCreatedByScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collClassroomsRelatedByCreatedBy !== null) {
+                foreach ($this->collClassroomsRelatedByCreatedBy as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->classroomsRelatedByUpdatedByScheduledForDeletion !== null) {
+                if (!$this->classroomsRelatedByUpdatedByScheduledForDeletion->isEmpty()) {
+                    foreach ($this->classroomsRelatedByUpdatedByScheduledForDeletion as $classroomRelatedByUpdatedBy) {
+                        // need to save related object because we set the relation to null
+                        $classroomRelatedByUpdatedBy->save($con);
+                    }
+                    $this->classroomsRelatedByUpdatedByScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collClassroomsRelatedByUpdatedBy !== null) {
+                foreach ($this->collClassroomsRelatedByUpdatedBy as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             if ($this->groupMembersScheduledForDeletion !== null) {
@@ -1013,6 +1083,36 @@ abstract class Account implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
+            if (null !== $this->collClassroomsRelatedByCreatedBy) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'classrooms';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'classroomss';
+                        break;
+                    default:
+                        $key = 'Classrooms';
+                }
+
+                $result[$key] = $this->collClassroomsRelatedByCreatedBy->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collClassroomsRelatedByUpdatedBy) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'classrooms';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'classroomss';
+                        break;
+                    default:
+                        $key = 'Classrooms';
+                }
+
+                $result[$key] = $this->collClassroomsRelatedByUpdatedBy->toArray(null, false, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
             if (null !== $this->collGroupMembers) {
 
                 switch ($keyType) {
@@ -1306,6 +1406,18 @@ abstract class Account implements ActiveRecordInterface
             // the getter/setter methods for fkey referrer objects.
             $copyObj->setNew(false);
 
+            foreach ($this->getClassroomsRelatedByCreatedBy() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addClassroomRelatedByCreatedBy($relObj->copy($deepCopy));
+                }
+            }
+
+            foreach ($this->getClassroomsRelatedByUpdatedBy() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addClassroomRelatedByUpdatedBy($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getGroupMembers() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addGroupMember($relObj->copy($deepCopy));
@@ -1365,6 +1477,14 @@ abstract class Account implements ActiveRecordInterface
      */
     public function initRelation($relationName): void
     {
+        if ('ClassroomRelatedByCreatedBy' === $relationName) {
+            $this->initClassroomsRelatedByCreatedBy();
+            return;
+        }
+        if ('ClassroomRelatedByUpdatedBy' === $relationName) {
+            $this->initClassroomsRelatedByUpdatedBy();
+            return;
+        }
         if ('GroupMember' === $relationName) {
             $this->initGroupMembers();
             return;
@@ -1377,6 +1497,484 @@ abstract class Account implements ActiveRecordInterface
             $this->initTokenAuths();
             return;
         }
+    }
+
+    /**
+     * Clears out the collClassroomsRelatedByCreatedBy collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return $this
+     * @see addClassroomsRelatedByCreatedBy()
+     */
+    public function clearClassroomsRelatedByCreatedBy()
+    {
+        $this->collClassroomsRelatedByCreatedBy = null; // important to set this to NULL since that means it is uninitialized
+
+        return $this;
+    }
+
+    /**
+     * Reset is the collClassroomsRelatedByCreatedBy collection loaded partially.
+     *
+     * @return void
+     */
+    public function resetPartialClassroomsRelatedByCreatedBy($v = true): void
+    {
+        $this->collClassroomsRelatedByCreatedByPartial = $v;
+    }
+
+    /**
+     * Initializes the collClassroomsRelatedByCreatedBy collection.
+     *
+     * By default this just sets the collClassroomsRelatedByCreatedBy collection to an empty array (like clearcollClassroomsRelatedByCreatedBy());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param bool $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initClassroomsRelatedByCreatedBy(bool $overrideExisting = true): void
+    {
+        if (null !== $this->collClassroomsRelatedByCreatedBy && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = ClassroomTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collClassroomsRelatedByCreatedBy = new $collectionClassName;
+        $this->collClassroomsRelatedByCreatedBy->setModel('\flapjack\attend\database\Classroom');
+    }
+
+    /**
+     * Gets an array of ChildClassroom objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildAccount is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildClassroom[] List of ChildClassroom objects
+     * @phpstan-return ObjectCollection&\Traversable<ChildClassroom> List of ChildClassroom objects
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function getClassroomsRelatedByCreatedBy(?Criteria $criteria = null, ?ConnectionInterface $con = null)
+    {
+        $partial = $this->collClassroomsRelatedByCreatedByPartial && !$this->isNew();
+        if (null === $this->collClassroomsRelatedByCreatedBy || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collClassroomsRelatedByCreatedBy) {
+                    $this->initClassroomsRelatedByCreatedBy();
+                } else {
+                    $collectionClassName = ClassroomTableMap::getTableMap()->getCollectionClassName();
+
+                    $collClassroomsRelatedByCreatedBy = new $collectionClassName;
+                    $collClassroomsRelatedByCreatedBy->setModel('\flapjack\attend\database\Classroom');
+
+                    return $collClassroomsRelatedByCreatedBy;
+                }
+            } else {
+                $collClassroomsRelatedByCreatedBy = ChildClassroomQuery::create(null, $criteria)
+                    ->filterByCreator($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collClassroomsRelatedByCreatedByPartial && count($collClassroomsRelatedByCreatedBy)) {
+                        $this->initClassroomsRelatedByCreatedBy(false);
+
+                        foreach ($collClassroomsRelatedByCreatedBy as $obj) {
+                            if (false == $this->collClassroomsRelatedByCreatedBy->contains($obj)) {
+                                $this->collClassroomsRelatedByCreatedBy->append($obj);
+                            }
+                        }
+
+                        $this->collClassroomsRelatedByCreatedByPartial = true;
+                    }
+
+                    return $collClassroomsRelatedByCreatedBy;
+                }
+
+                if ($partial && $this->collClassroomsRelatedByCreatedBy) {
+                    foreach ($this->collClassroomsRelatedByCreatedBy as $obj) {
+                        if ($obj->isNew()) {
+                            $collClassroomsRelatedByCreatedBy[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collClassroomsRelatedByCreatedBy = $collClassroomsRelatedByCreatedBy;
+                $this->collClassroomsRelatedByCreatedByPartial = false;
+            }
+        }
+
+        return $this->collClassroomsRelatedByCreatedBy;
+    }
+
+    /**
+     * Sets a collection of ChildClassroom objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param Collection $classroomsRelatedByCreatedBy A Propel collection.
+     * @param ConnectionInterface $con Optional connection object
+     * @return $this The current object (for fluent API support)
+     */
+    public function setClassroomsRelatedByCreatedBy(Collection $classroomsRelatedByCreatedBy, ?ConnectionInterface $con = null)
+    {
+        /** @var ChildClassroom[] $classroomsRelatedByCreatedByToDelete */
+        $classroomsRelatedByCreatedByToDelete = $this->getClassroomsRelatedByCreatedBy(new Criteria(), $con)->diff($classroomsRelatedByCreatedBy);
+
+
+        $this->classroomsRelatedByCreatedByScheduledForDeletion = $classroomsRelatedByCreatedByToDelete;
+
+        foreach ($classroomsRelatedByCreatedByToDelete as $classroomRelatedByCreatedByRemoved) {
+            $classroomRelatedByCreatedByRemoved->setCreator(null);
+        }
+
+        $this->collClassroomsRelatedByCreatedBy = null;
+        foreach ($classroomsRelatedByCreatedBy as $classroomRelatedByCreatedBy) {
+            $this->addClassroomRelatedByCreatedBy($classroomRelatedByCreatedBy);
+        }
+
+        $this->collClassroomsRelatedByCreatedBy = $classroomsRelatedByCreatedBy;
+        $this->collClassroomsRelatedByCreatedByPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Classroom objects.
+     *
+     * @param Criteria $criteria
+     * @param bool $distinct
+     * @param ConnectionInterface $con
+     * @return int Count of related Classroom objects.
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function countClassroomsRelatedByCreatedBy(?Criteria $criteria = null, bool $distinct = false, ?ConnectionInterface $con = null): int
+    {
+        $partial = $this->collClassroomsRelatedByCreatedByPartial && !$this->isNew();
+        if (null === $this->collClassroomsRelatedByCreatedBy || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collClassroomsRelatedByCreatedBy) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getClassroomsRelatedByCreatedBy());
+            }
+
+            $query = ChildClassroomQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByCreator($this)
+                ->count($con);
+        }
+
+        return count($this->collClassroomsRelatedByCreatedBy);
+    }
+
+    /**
+     * Method called to associate a ChildClassroom object to this object
+     * through the ChildClassroom foreign key attribute.
+     *
+     * @param ChildClassroom $l ChildClassroom
+     * @return $this The current object (for fluent API support)
+     */
+    public function addClassroomRelatedByCreatedBy(ChildClassroom $l)
+    {
+        if ($this->collClassroomsRelatedByCreatedBy === null) {
+            $this->initClassroomsRelatedByCreatedBy();
+            $this->collClassroomsRelatedByCreatedByPartial = true;
+        }
+
+        if (!$this->collClassroomsRelatedByCreatedBy->contains($l)) {
+            $this->doAddClassroomRelatedByCreatedBy($l);
+
+            if ($this->classroomsRelatedByCreatedByScheduledForDeletion and $this->classroomsRelatedByCreatedByScheduledForDeletion->contains($l)) {
+                $this->classroomsRelatedByCreatedByScheduledForDeletion->remove($this->classroomsRelatedByCreatedByScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildClassroom $classroomRelatedByCreatedBy The ChildClassroom object to add.
+     */
+    protected function doAddClassroomRelatedByCreatedBy(ChildClassroom $classroomRelatedByCreatedBy): void
+    {
+        $this->collClassroomsRelatedByCreatedBy[]= $classroomRelatedByCreatedBy;
+        $classroomRelatedByCreatedBy->setCreator($this);
+    }
+
+    /**
+     * @param ChildClassroom $classroomRelatedByCreatedBy The ChildClassroom object to remove.
+     * @return $this The current object (for fluent API support)
+     */
+    public function removeClassroomRelatedByCreatedBy(ChildClassroom $classroomRelatedByCreatedBy)
+    {
+        if ($this->getClassroomsRelatedByCreatedBy()->contains($classroomRelatedByCreatedBy)) {
+            $pos = $this->collClassroomsRelatedByCreatedBy->search($classroomRelatedByCreatedBy);
+            $this->collClassroomsRelatedByCreatedBy->remove($pos);
+            if (null === $this->classroomsRelatedByCreatedByScheduledForDeletion) {
+                $this->classroomsRelatedByCreatedByScheduledForDeletion = clone $this->collClassroomsRelatedByCreatedBy;
+                $this->classroomsRelatedByCreatedByScheduledForDeletion->clear();
+            }
+            $this->classroomsRelatedByCreatedByScheduledForDeletion[]= clone $classroomRelatedByCreatedBy;
+            $classroomRelatedByCreatedBy->setCreator(null);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Clears out the collClassroomsRelatedByUpdatedBy collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return $this
+     * @see addClassroomsRelatedByUpdatedBy()
+     */
+    public function clearClassroomsRelatedByUpdatedBy()
+    {
+        $this->collClassroomsRelatedByUpdatedBy = null; // important to set this to NULL since that means it is uninitialized
+
+        return $this;
+    }
+
+    /**
+     * Reset is the collClassroomsRelatedByUpdatedBy collection loaded partially.
+     *
+     * @return void
+     */
+    public function resetPartialClassroomsRelatedByUpdatedBy($v = true): void
+    {
+        $this->collClassroomsRelatedByUpdatedByPartial = $v;
+    }
+
+    /**
+     * Initializes the collClassroomsRelatedByUpdatedBy collection.
+     *
+     * By default this just sets the collClassroomsRelatedByUpdatedBy collection to an empty array (like clearcollClassroomsRelatedByUpdatedBy());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param bool $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initClassroomsRelatedByUpdatedBy(bool $overrideExisting = true): void
+    {
+        if (null !== $this->collClassroomsRelatedByUpdatedBy && !$overrideExisting) {
+            return;
+        }
+
+        $collectionClassName = ClassroomTableMap::getTableMap()->getCollectionClassName();
+
+        $this->collClassroomsRelatedByUpdatedBy = new $collectionClassName;
+        $this->collClassroomsRelatedByUpdatedBy->setModel('\flapjack\attend\database\Classroom');
+    }
+
+    /**
+     * Gets an array of ChildClassroom objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this ChildAccount is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param ConnectionInterface $con optional connection object
+     * @return ObjectCollection|ChildClassroom[] List of ChildClassroom objects
+     * @phpstan-return ObjectCollection&\Traversable<ChildClassroom> List of ChildClassroom objects
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function getClassroomsRelatedByUpdatedBy(?Criteria $criteria = null, ?ConnectionInterface $con = null)
+    {
+        $partial = $this->collClassroomsRelatedByUpdatedByPartial && !$this->isNew();
+        if (null === $this->collClassroomsRelatedByUpdatedBy || null !== $criteria || $partial) {
+            if ($this->isNew()) {
+                // return empty collection
+                if (null === $this->collClassroomsRelatedByUpdatedBy) {
+                    $this->initClassroomsRelatedByUpdatedBy();
+                } else {
+                    $collectionClassName = ClassroomTableMap::getTableMap()->getCollectionClassName();
+
+                    $collClassroomsRelatedByUpdatedBy = new $collectionClassName;
+                    $collClassroomsRelatedByUpdatedBy->setModel('\flapjack\attend\database\Classroom');
+
+                    return $collClassroomsRelatedByUpdatedBy;
+                }
+            } else {
+                $collClassroomsRelatedByUpdatedBy = ChildClassroomQuery::create(null, $criteria)
+                    ->filterByUpdater($this)
+                    ->find($con);
+
+                if (null !== $criteria) {
+                    if (false !== $this->collClassroomsRelatedByUpdatedByPartial && count($collClassroomsRelatedByUpdatedBy)) {
+                        $this->initClassroomsRelatedByUpdatedBy(false);
+
+                        foreach ($collClassroomsRelatedByUpdatedBy as $obj) {
+                            if (false == $this->collClassroomsRelatedByUpdatedBy->contains($obj)) {
+                                $this->collClassroomsRelatedByUpdatedBy->append($obj);
+                            }
+                        }
+
+                        $this->collClassroomsRelatedByUpdatedByPartial = true;
+                    }
+
+                    return $collClassroomsRelatedByUpdatedBy;
+                }
+
+                if ($partial && $this->collClassroomsRelatedByUpdatedBy) {
+                    foreach ($this->collClassroomsRelatedByUpdatedBy as $obj) {
+                        if ($obj->isNew()) {
+                            $collClassroomsRelatedByUpdatedBy[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collClassroomsRelatedByUpdatedBy = $collClassroomsRelatedByUpdatedBy;
+                $this->collClassroomsRelatedByUpdatedByPartial = false;
+            }
+        }
+
+        return $this->collClassroomsRelatedByUpdatedBy;
+    }
+
+    /**
+     * Sets a collection of ChildClassroom objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param Collection $classroomsRelatedByUpdatedBy A Propel collection.
+     * @param ConnectionInterface $con Optional connection object
+     * @return $this The current object (for fluent API support)
+     */
+    public function setClassroomsRelatedByUpdatedBy(Collection $classroomsRelatedByUpdatedBy, ?ConnectionInterface $con = null)
+    {
+        /** @var ChildClassroom[] $classroomsRelatedByUpdatedByToDelete */
+        $classroomsRelatedByUpdatedByToDelete = $this->getClassroomsRelatedByUpdatedBy(new Criteria(), $con)->diff($classroomsRelatedByUpdatedBy);
+
+
+        $this->classroomsRelatedByUpdatedByScheduledForDeletion = $classroomsRelatedByUpdatedByToDelete;
+
+        foreach ($classroomsRelatedByUpdatedByToDelete as $classroomRelatedByUpdatedByRemoved) {
+            $classroomRelatedByUpdatedByRemoved->setUpdater(null);
+        }
+
+        $this->collClassroomsRelatedByUpdatedBy = null;
+        foreach ($classroomsRelatedByUpdatedBy as $classroomRelatedByUpdatedBy) {
+            $this->addClassroomRelatedByUpdatedBy($classroomRelatedByUpdatedBy);
+        }
+
+        $this->collClassroomsRelatedByUpdatedBy = $classroomsRelatedByUpdatedBy;
+        $this->collClassroomsRelatedByUpdatedByPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Classroom objects.
+     *
+     * @param Criteria $criteria
+     * @param bool $distinct
+     * @param ConnectionInterface $con
+     * @return int Count of related Classroom objects.
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function countClassroomsRelatedByUpdatedBy(?Criteria $criteria = null, bool $distinct = false, ?ConnectionInterface $con = null): int
+    {
+        $partial = $this->collClassroomsRelatedByUpdatedByPartial && !$this->isNew();
+        if (null === $this->collClassroomsRelatedByUpdatedBy || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collClassroomsRelatedByUpdatedBy) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getClassroomsRelatedByUpdatedBy());
+            }
+
+            $query = ChildClassroomQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByUpdater($this)
+                ->count($con);
+        }
+
+        return count($this->collClassroomsRelatedByUpdatedBy);
+    }
+
+    /**
+     * Method called to associate a ChildClassroom object to this object
+     * through the ChildClassroom foreign key attribute.
+     *
+     * @param ChildClassroom $l ChildClassroom
+     * @return $this The current object (for fluent API support)
+     */
+    public function addClassroomRelatedByUpdatedBy(ChildClassroom $l)
+    {
+        if ($this->collClassroomsRelatedByUpdatedBy === null) {
+            $this->initClassroomsRelatedByUpdatedBy();
+            $this->collClassroomsRelatedByUpdatedByPartial = true;
+        }
+
+        if (!$this->collClassroomsRelatedByUpdatedBy->contains($l)) {
+            $this->doAddClassroomRelatedByUpdatedBy($l);
+
+            if ($this->classroomsRelatedByUpdatedByScheduledForDeletion and $this->classroomsRelatedByUpdatedByScheduledForDeletion->contains($l)) {
+                $this->classroomsRelatedByUpdatedByScheduledForDeletion->remove($this->classroomsRelatedByUpdatedByScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ChildClassroom $classroomRelatedByUpdatedBy The ChildClassroom object to add.
+     */
+    protected function doAddClassroomRelatedByUpdatedBy(ChildClassroom $classroomRelatedByUpdatedBy): void
+    {
+        $this->collClassroomsRelatedByUpdatedBy[]= $classroomRelatedByUpdatedBy;
+        $classroomRelatedByUpdatedBy->setUpdater($this);
+    }
+
+    /**
+     * @param ChildClassroom $classroomRelatedByUpdatedBy The ChildClassroom object to remove.
+     * @return $this The current object (for fluent API support)
+     */
+    public function removeClassroomRelatedByUpdatedBy(ChildClassroom $classroomRelatedByUpdatedBy)
+    {
+        if ($this->getClassroomsRelatedByUpdatedBy()->contains($classroomRelatedByUpdatedBy)) {
+            $pos = $this->collClassroomsRelatedByUpdatedBy->search($classroomRelatedByUpdatedBy);
+            $this->collClassroomsRelatedByUpdatedBy->remove($pos);
+            if (null === $this->classroomsRelatedByUpdatedByScheduledForDeletion) {
+                $this->classroomsRelatedByUpdatedByScheduledForDeletion = clone $this->collClassroomsRelatedByUpdatedBy;
+                $this->classroomsRelatedByUpdatedByScheduledForDeletion->clear();
+            }
+            $this->classroomsRelatedByUpdatedByScheduledForDeletion[]= $classroomRelatedByUpdatedBy;
+            $classroomRelatedByUpdatedBy->setUpdater(null);
+        }
+
+        return $this;
     }
 
     /**
@@ -2183,6 +2781,16 @@ abstract class Account implements ActiveRecordInterface
     public function clearAllReferences(bool $deep = false)
     {
         if ($deep) {
+            if ($this->collClassroomsRelatedByCreatedBy) {
+                foreach ($this->collClassroomsRelatedByCreatedBy as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
+            if ($this->collClassroomsRelatedByUpdatedBy) {
+                foreach ($this->collClassroomsRelatedByUpdatedBy as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collGroupMembers) {
                 foreach ($this->collGroupMembers as $o) {
                     $o->clearAllReferences($deep);
@@ -2200,6 +2808,8 @@ abstract class Account implements ActiveRecordInterface
             }
         } // if ($deep)
 
+        $this->collClassroomsRelatedByCreatedBy = null;
+        $this->collClassroomsRelatedByUpdatedBy = null;
         $this->collGroupMembers = null;
         $this->collIndividualPermissions = null;
         $this->collTokenAuths = null;

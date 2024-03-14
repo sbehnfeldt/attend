@@ -2,6 +2,9 @@
 namespace flapjack\attend;
 
 
+use flapjack\attend\database\Classroom;
+use Propel\Runtime\Collection\Collection;
+
 interface IDatabaseEngine
 {
     public function connect(array $config);
@@ -14,7 +17,7 @@ interface IDatabaseEngine
 
     public function getClassroomById(int $id): ?array;
 
-    public function getClassrooms(): array;
+    public function getClassrooms(): Classroom|Collection;
 
     public function postClassroom(array $body): array;
 

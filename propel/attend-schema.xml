@@ -6,7 +6,7 @@
         <column name="username" phpName="Username" type="VARCHAR" size="31" required="true"/>
         <column name="pwhash" phpName="Pwhash" type="VARCHAR" size="63" required="true"/>
         <column name="email" phpName="Email" type="VARCHAR" size="255" required="true"/>
-        <column name="role" phpName="Role" type="VARCHAR" size="31" required="false"/>
+        <column name="role" phpName="Role" type="VARCHAR" size="31"/>
         <unique name="username">
             <unique-column name="username"/>
         </unique>
@@ -35,6 +35,20 @@
         <column name="ordering" phpName="Ordering" type="INTEGER"/>
         <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" required="true" defaultExpr="CURRENT_TIMESTAMP"/>
         <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP"/>
+        <column name="created_by" type="INTEGER" required="true"/>
+        <column name="updated_by" type="INTEGER"/>
+        <foreign-key foreignTable="accounts" name="classrooms_accounts_FK" phpName="Creator"  onDelete="RESTRICT">
+            <reference local="created_by" foreign="id"/>
+        </foreign-key>
+        <foreign-key foreignTable="accounts" name="classrooms_accounts_FK_1" phpName="Updater" onDelete="RESTRICT">
+            <reference local="updated_by" foreign="id"/>
+        </foreign-key>
+        <index name="classrooms_accounts_FK">
+            <index-column name="created_by"/>
+        </index>
+        <index name="classrooms_accounts_FK_1">
+            <index-column name="updated_by"/>
+        </index>
         <unique name="id_UNIQUE">
             <unique-column name="id"/>
         </unique>

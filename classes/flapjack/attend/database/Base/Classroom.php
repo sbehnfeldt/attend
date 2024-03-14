@@ -18,6 +18,8 @@ use Propel\Runtime\Exception\PropelException;
 use Propel\Runtime\Map\TableMap;
 use Propel\Runtime\Parser\AbstractParser;
 use Propel\Runtime\Util\PropelDateTime;
+use flapjack\attend\database\Account as ChildAccount;
+use flapjack\attend\database\AccountQuery as ChildAccountQuery;
 use flapjack\attend\database\Classroom as ChildClassroom;
 use flapjack\attend\database\ClassroomQuery as ChildClassroomQuery;
 use flapjack\attend\database\Student as ChildStudent;
@@ -104,6 +106,30 @@ abstract class Classroom implements ActiveRecordInterface
      * @var        DateTime|null
      */
     protected $updated_at;
+
+    /**
+     * The value for the created_by field.
+     *
+     * @var        int
+     */
+    protected $created_by;
+
+    /**
+     * The value for the updated_by field.
+     *
+     * @var        int|null
+     */
+    protected $updated_by;
+
+    /**
+     * @var        ChildAccount
+     */
+    protected $aCreator;
+
+    /**
+     * @var        ChildAccount
+     */
+    protected $aUpdater;
 
     /**
      * @var        ObjectCollection|ChildStudent[] Collection to store aggregation of ChildStudent objects.
@@ -440,6 +466,26 @@ abstract class Classroom implements ActiveRecordInterface
     }
 
     /**
+     * Get the [created_by] column value.
+     *
+     * @return int
+     */
+    public function getCreatedBy()
+    {
+        return $this->created_by;
+    }
+
+    /**
+     * Get the [updated_by] column value.
+     *
+     * @return int|null
+     */
+    public function getUpdatedBy()
+    {
+        return $this->updated_by;
+    }
+
+    /**
      * Set the value of [id] column.
      *
      * @param int $v New value
@@ -540,6 +586,54 @@ abstract class Classroom implements ActiveRecordInterface
     }
 
     /**
+     * Set the value of [created_by] column.
+     *
+     * @param int $v New value
+     * @return $this The current object (for fluent API support)
+     */
+    public function setCreatedBy($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->created_by !== $v) {
+            $this->created_by = $v;
+            $this->modifiedColumns[ClassroomTableMap::COL_CREATED_BY] = true;
+        }
+
+        if ($this->aCreator !== null && $this->aCreator->getId() !== $v) {
+            $this->aCreator = null;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Set the value of [updated_by] column.
+     *
+     * @param int|null $v New value
+     * @return $this The current object (for fluent API support)
+     */
+    public function setUpdatedBy($v)
+    {
+        if ($v !== null) {
+            $v = (int) $v;
+        }
+
+        if ($this->updated_by !== $v) {
+            $this->updated_by = $v;
+            $this->modifiedColumns[ClassroomTableMap::COL_UPDATED_BY] = true;
+        }
+
+        if ($this->aUpdater !== null && $this->aUpdater->getId() !== $v) {
+            $this->aUpdater = null;
+        }
+
+        return $this;
+    }
+
+    /**
      * Indicates whether the columns in this object are only set to default values.
      *
      * This method can be used in conjunction with isModified() to indicate whether an object is both
@@ -596,6 +690,12 @@ abstract class Classroom implements ActiveRecordInterface
             }
             $this->updated_at = (null !== $col) ? PropelDateTime::newInstance($col, null, 'DateTime') : null;
 
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 5 + $startcol : ClassroomTableMap::translateFieldName('CreatedBy', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->created_by = (null !== $col) ? (int) $col : null;
+
+            $col = $row[TableMap::TYPE_NUM == $indexType ? 6 + $startcol : ClassroomTableMap::translateFieldName('UpdatedBy', TableMap::TYPE_PHPNAME, $indexType)];
+            $this->updated_by = (null !== $col) ? (int) $col : null;
+
             $this->resetModified();
             $this->setNew(false);
 
@@ -603,7 +703,7 @@ abstract class Classroom implements ActiveRecordInterface
                 $this->ensureConsistency();
             }
 
-            return $startcol + 5; // 5 = ClassroomTableMap::NUM_HYDRATE_COLUMNS.
+            return $startcol + 7; // 7 = ClassroomTableMap::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException(sprintf('Error populating %s object', '\\flapjack\\attend\\database\\Classroom'), 0, $e);
@@ -626,6 +726,12 @@ abstract class Classroom implements ActiveRecordInterface
      */
     public function ensureConsistency(): void
     {
+        if ($this->aCreator !== null && $this->created_by !== $this->aCreator->getId()) {
+            $this->aCreator = null;
+        }
+        if ($this->aUpdater !== null && $this->updated_by !== $this->aUpdater->getId()) {
+            $this->aUpdater = null;
+        }
     }
 
     /**
@@ -665,6 +771,8 @@ abstract class Classroom implements ActiveRecordInterface
 
         if ($deep) {  // also de-associate any related objects?
 
+            $this->aCreator = null;
+            $this->aUpdater = null;
             $this->collStudents = null;
 
         } // if (deep)
@@ -770,6 +878,25 @@ abstract class Classroom implements ActiveRecordInterface
         if (!$this->alreadyInSave) {
             $this->alreadyInSave = true;
 
+            // We call the save method on the following object(s) if they
+            // were passed to this object by their corresponding set
+            // method.  This object relates to these object(s) by a
+            // foreign key reference.
+
+            if ($this->aCreator !== null) {
+                if ($this->aCreator->isModified() || $this->aCreator->isNew()) {
+                    $affectedRows += $this->aCreator->save($con);
+                }
+                $this->setCreator($this->aCreator);
+            }
+
+            if ($this->aUpdater !== null) {
+                if ($this->aUpdater->isModified() || $this->aUpdater->isNew()) {
+                    $affectedRows += $this->aUpdater->save($con);
+                }
+                $this->setUpdater($this->aUpdater);
+            }
+
             if ($this->isNew() || $this->isModified()) {
                 // persist changes
                 if ($this->isNew()) {
@@ -839,6 +966,12 @@ abstract class Classroom implements ActiveRecordInterface
         if ($this->isColumnModified(ClassroomTableMap::COL_UPDATED_AT)) {
             $modifiedColumns[':p' . $index++]  = 'updated_at';
         }
+        if ($this->isColumnModified(ClassroomTableMap::COL_CREATED_BY)) {
+            $modifiedColumns[':p' . $index++]  = 'created_by';
+        }
+        if ($this->isColumnModified(ClassroomTableMap::COL_UPDATED_BY)) {
+            $modifiedColumns[':p' . $index++]  = 'updated_by';
+        }
 
         $sql = sprintf(
             'INSERT INTO classrooms (%s) VALUES (%s)',
@@ -868,6 +1001,14 @@ abstract class Classroom implements ActiveRecordInterface
                         break;
                     case 'updated_at':
                         $stmt->bindValue($identifier, $this->updated_at ? $this->updated_at->format("Y-m-d H:i:s.u") : null, PDO::PARAM_STR);
+
+                        break;
+                    case 'created_by':
+                        $stmt->bindValue($identifier, $this->created_by, PDO::PARAM_INT);
+
+                        break;
+                    case 'updated_by':
+                        $stmt->bindValue($identifier, $this->updated_by, PDO::PARAM_INT);
 
                         break;
                 }
@@ -947,6 +1088,12 @@ abstract class Classroom implements ActiveRecordInterface
             case 4:
                 return $this->getUpdatedAt();
 
+            case 5:
+                return $this->getCreatedBy();
+
+            case 6:
+                return $this->getUpdatedBy();
+
             default:
                 return null;
         } // switch()
@@ -980,6 +1127,8 @@ abstract class Classroom implements ActiveRecordInterface
             $keys[2] => $this->getOrdering(),
             $keys[3] => $this->getCreatedAt(),
             $keys[4] => $this->getUpdatedAt(),
+            $keys[5] => $this->getCreatedBy(),
+            $keys[6] => $this->getUpdatedBy(),
         ];
         if ($result[$keys[3]] instanceof \DateTimeInterface) {
             $result[$keys[3]] = $result[$keys[3]]->format('Y-m-d H:i:s.u');
@@ -995,6 +1144,36 @@ abstract class Classroom implements ActiveRecordInterface
         }
 
         if ($includeForeignObjects) {
+            if (null !== $this->aCreator) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'account';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'accounts';
+                        break;
+                    default:
+                        $key = 'Creator';
+                }
+
+                $result[$key] = $this->aCreator->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aUpdater) {
+
+                switch ($keyType) {
+                    case TableMap::TYPE_CAMELNAME:
+                        $key = 'account';
+                        break;
+                    case TableMap::TYPE_FIELDNAME:
+                        $key = 'accounts';
+                        break;
+                    default:
+                        $key = 'Updater';
+                }
+
+                $result[$key] = $this->aUpdater->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
             if (null !== $this->collStudents) {
 
                 switch ($keyType) {
@@ -1061,6 +1240,12 @@ abstract class Classroom implements ActiveRecordInterface
             case 4:
                 $this->setUpdatedAt($value);
                 break;
+            case 5:
+                $this->setCreatedBy($value);
+                break;
+            case 6:
+                $this->setUpdatedBy($value);
+                break;
         } // switch()
 
         return $this;
@@ -1101,6 +1286,12 @@ abstract class Classroom implements ActiveRecordInterface
         }
         if (array_key_exists($keys[4], $arr)) {
             $this->setUpdatedAt($arr[$keys[4]]);
+        }
+        if (array_key_exists($keys[5], $arr)) {
+            $this->setCreatedBy($arr[$keys[5]]);
+        }
+        if (array_key_exists($keys[6], $arr)) {
+            $this->setUpdatedBy($arr[$keys[6]]);
         }
 
         return $this;
@@ -1159,6 +1350,12 @@ abstract class Classroom implements ActiveRecordInterface
         }
         if ($this->isColumnModified(ClassroomTableMap::COL_UPDATED_AT)) {
             $criteria->add(ClassroomTableMap::COL_UPDATED_AT, $this->updated_at);
+        }
+        if ($this->isColumnModified(ClassroomTableMap::COL_CREATED_BY)) {
+            $criteria->add(ClassroomTableMap::COL_CREATED_BY, $this->created_by);
+        }
+        if ($this->isColumnModified(ClassroomTableMap::COL_UPDATED_BY)) {
+            $criteria->add(ClassroomTableMap::COL_UPDATED_BY, $this->updated_by);
         }
 
         return $criteria;
@@ -1252,6 +1449,8 @@ abstract class Classroom implements ActiveRecordInterface
         $copyObj->setOrdering($this->getOrdering());
         $copyObj->setCreatedAt($this->getCreatedAt());
         $copyObj->setUpdatedAt($this->getUpdatedAt());
+        $copyObj->setCreatedBy($this->getCreatedBy());
+        $copyObj->setUpdatedBy($this->getUpdatedBy());
 
         if ($deepCopy) {
             // important: temporarily setNew(false) because this affects the behavior of
@@ -1292,6 +1491,108 @@ abstract class Classroom implements ActiveRecordInterface
         $this->copyInto($copyObj, $deepCopy);
 
         return $copyObj;
+    }
+
+    /**
+     * Declares an association between this object and a ChildAccount object.
+     *
+     * @param ChildAccount $v
+     * @return $this The current object (for fluent API support)
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function setCreator(ChildAccount $v = null)
+    {
+        if ($v === null) {
+            $this->setCreatedBy(NULL);
+        } else {
+            $this->setCreatedBy($v->getId());
+        }
+
+        $this->aCreator = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildAccount object, it will not be re-added.
+        if ($v !== null) {
+            $v->addClassroomRelatedByCreatedBy($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildAccount object
+     *
+     * @param ConnectionInterface $con Optional Connection object.
+     * @return ChildAccount The associated ChildAccount object.
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function getCreator(?ConnectionInterface $con = null)
+    {
+        if ($this->aCreator === null && ($this->created_by != 0)) {
+            $this->aCreator = ChildAccountQuery::create()->findPk($this->created_by, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aCreator->addClassroomsRelatedByCreatedBy($this);
+             */
+        }
+
+        return $this->aCreator;
+    }
+
+    /**
+     * Declares an association between this object and a ChildAccount object.
+     *
+     * @param ChildAccount|null $v
+     * @return $this The current object (for fluent API support)
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function setUpdater(ChildAccount $v = null)
+    {
+        if ($v === null) {
+            $this->setUpdatedBy(NULL);
+        } else {
+            $this->setUpdatedBy($v->getId());
+        }
+
+        $this->aUpdater = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the ChildAccount object, it will not be re-added.
+        if ($v !== null) {
+            $v->addClassroomRelatedByUpdatedBy($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated ChildAccount object
+     *
+     * @param ConnectionInterface $con Optional Connection object.
+     * @return ChildAccount|null The associated ChildAccount object.
+     * @throws \Propel\Runtime\Exception\PropelException
+     */
+    public function getUpdater(?ConnectionInterface $con = null)
+    {
+        if ($this->aUpdater === null && ($this->updated_by != 0)) {
+            $this->aUpdater = ChildAccountQuery::create()->findPk($this->updated_by, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aUpdater->addClassroomsRelatedByUpdatedBy($this);
+             */
+        }
+
+        return $this->aUpdater;
     }
 
 
@@ -1559,11 +1860,19 @@ abstract class Classroom implements ActiveRecordInterface
      */
     public function clear()
     {
+        if (null !== $this->aCreator) {
+            $this->aCreator->removeClassroomRelatedByCreatedBy($this);
+        }
+        if (null !== $this->aUpdater) {
+            $this->aUpdater->removeClassroomRelatedByUpdatedBy($this);
+        }
         $this->id = null;
         $this->label = null;
         $this->ordering = null;
         $this->created_at = null;
         $this->updated_at = null;
+        $this->created_by = null;
+        $this->updated_by = null;
         $this->alreadyInSave = false;
         $this->clearAllReferences();
         $this->applyDefaultValues();
@@ -1594,6 +1903,8 @@ abstract class Classroom implements ActiveRecordInterface
         } // if ($deep)
 
         $this->collStudents = null;
+        $this->aCreator = null;
+        $this->aUpdater = null;
         return $this;
     }
 

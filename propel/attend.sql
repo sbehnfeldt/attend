@@ -53,9 +53,21 @@ CREATE TABLE `classrooms`
     `ordering` INTEGER,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    `created_by` INTEGER NOT NULL,
+    `updated_by` INTEGER,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `id_UNIQUE` (`id`),
-    UNIQUE INDEX `name_UNIQUE` (`label`)
+    UNIQUE INDEX `name_UNIQUE` (`label`),
+    INDEX `classrooms_accounts_FK` (`created_by`),
+    INDEX `classrooms_accounts_FK_1` (`updated_by`),
+    CONSTRAINT `classrooms_accounts_FK`
+        FOREIGN KEY (`created_by`)
+        REFERENCES `accounts` (`id`)
+        ON DELETE RESTRICT,
+    CONSTRAINT `classrooms_accounts_FK_1`
+        FOREIGN KEY (`updated_by`)
+        REFERENCES `accounts` (`id`)
+        ON DELETE RESTRICT
 ) ENGINE=InnoDB;
 
 -- ---------------------------------------------------------------------

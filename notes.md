@@ -74,10 +74,9 @@ _propel/propel.json_
 ```
 
 ### Schema.xml
+Write the `schema.xml` file describing the database schema.
 
-Write the schema.xml file describing the database schema. If using an existing database, it can be generated
-automatically.
-
+If using an existing database, the schema file can be generated automatically:
 ```shell
 $> .\vendor\bin\propel reverse --config-dir=propel --output-dir=propel --schema-name=attend-schema --database-name=attend --namespace=flapjack\attend\database "mysql:host=localhost;dbname=attend;user=attend;password=attend" 
 $> .\vendor\bin\propel reverse --config-dir=propel --output-dir=propel --schema-name=attend-schema --database-name=attend --namespace=flapjack\attend\database attend
@@ -95,6 +94,7 @@ $> .\vendor\bin\propel reverse --config-dir=propel --output-dir=propel --schema-
 **TODO:** Correct value of namespace attributes in database and table elements, as necessary
 
 ### SQL and Schema Map
+Generate the SQL commands that will generate the database described in the XML schema  
 
 ```shell
 .\vendor\bin\propel sql:build --config-dir=propel --schema-dir=propel --output-dir=propel --overwrite
@@ -105,9 +105,18 @@ $> .\vendor\bin\propel reverse --config-dir=propel --output-dir=propel --schema-
 * --output-dir: directory to create the sql and map files.
 
 ### Model Classes
-
+Generate the Model and Query classes and base classes from the XML schema
 ```shell
+$> .\vendor\bin\propel help model:build 
 $> .\vendor\bin\propel model:build --config-dir=propel --schema-dir=propel --output-dir=classes/flapjack/attend/database
+```
+
+### Configuration
+Transform the Propel configuration to PHP code leveraging the ServiceContainer
+```shell
+cls && vendor\bin\propel help convert
+; cls && vendor\bin\propel convert --config-dir=generated-reversed-database --output-dir=lib
+cls && vendor\bin\propel convert --config-dir=../ --output-dir=lib
 ```
 
 ## Phinx
@@ -118,18 +127,6 @@ $> vendor/bin/phinx create <ClassName>
 $> vendor/bin/phinx migrate
 $> vendor/bin/phinx rollback
 ```
-
-cls && vendor\bin\propel help model:build
-cls && vendor\bin\propel model:build --config-dir=../ --schema-dir=generated-reversed-database
---output-dir=classes/Attend/Database
-
-cls && vendor\bin\propel help convert
-; cls && vendor\bin\propel convert --config-dir=generated-reversed-database --output-dir=lib
-cls && vendor\bin\propel convert --config-dir=../ --output-dir=lib
-
-; Use specific version of PHP to run composer.
-; Based on https://stackoverflow.com/questions/32750250/tell-composer-to-use-different-php-version
-c:\php\php-7.4.25\php.exe c:\ProgramData\ComposerSetup\bin\composer.phar install
 
 # Architecture
 

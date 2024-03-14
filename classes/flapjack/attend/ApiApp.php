@@ -4,6 +4,7 @@ namespace flapjack\attend;
 
 use flapjack\attend\database\Account;
 use flapjack\attend\database\AccountQuery;
+use flapjack\attend\database\Classroom;
 use flapjack\attend\PropelEngine\PropelEngine;
 use Propel\Runtime\Exception\PropelException;
 use Psr\Http\Message\ResponseInterface as Response;
@@ -68,7 +69,7 @@ class ApiApp extends App
         $api    = $this;
 
         $this->get(
-            'api/classrooms/{id}',
+            '/api/classrooms/{id}',
             function (Request $request, Response $response, array $args) {
                 /** @var PropelEngine $engine */
                 $engine   = $this->get('dbEngine');
@@ -90,6 +91,13 @@ class ApiApp extends App
                 /** @var PropelEngine $engine */
                 $engine  = $this->get('dbEngine');
                 $results = $engine->getClassrooms();
+
+                /** @var Classroom $r */
+                foreach ($results as $r) {
+                    $r->getCreator();
+                    $r->getUpdater();
+                }
+                $results = $results->toArray();
 
                 $response = $response->withStatus(200, 'OK');
                 $response = $response->withHeader('Content-type', 'application/json');
