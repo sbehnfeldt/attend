@@ -25,7 +25,7 @@
                     return moment(x).format('YYYY-MM-D');
                 }
             }, {
-                data: "CreatedBy.Username"
+                data: "CreatedBy.Username",
             }, {
                 data: "UpdatedAt",
                 render: (x) => {
@@ -97,8 +97,11 @@
         async function loadClassrooms() {
             Attend.loadAnother();
             try {
-                const result = await fetch('/api/classrooms');
-                const json   = await (result.json());
+                const response = await fetch('/api/classrooms');
+                if (!response.ok) {
+                    throw new Error(`HTTP error status: ${response.status}`)
+                }
+                const json = await response.json();
                 console.log(json);
                 for (let i = 0; i < json.length; i++) {
                     table.row.add(json[i]);
