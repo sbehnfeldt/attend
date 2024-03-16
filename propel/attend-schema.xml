@@ -33,15 +33,15 @@
         <column name="id" phpName="Id" type="INTEGER" primaryKey="true" autoIncrement="true" required="true"/>
         <column name="label" phpName="Label" type="VARCHAR" size="45" required="true"/>
         <column name="ordering" phpName="Ordering" type="INTEGER"/>
+        <column name="creator_id" type="INTEGER" required="true"/>
         <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" required="true" defaultExpr="CURRENT_TIMESTAMP"/>
+        <column name="updater_id" type="INTEGER"/>
         <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP"/>
-        <column name="created_by" type="INTEGER" required="true"/>
-        <column name="updated_by" type="INTEGER"/>
-        <foreign-key foreignTable="accounts" name="classrooms_accounts_FK" phpName="Creator"  onDelete="RESTRICT">
-            <reference local="created_by" foreign="id"/>
+        <foreign-key foreignTable="accounts" name="classrooms_accounts_FK" phpName="CreatedBy" onDelete="RESTRICT">
+            <reference local="creator_id" foreign="id"/>
         </foreign-key>
-        <foreign-key foreignTable="accounts" name="classrooms_accounts_FK_1" phpName="Updater" onDelete="RESTRICT">
-            <reference local="updated_by" foreign="id"/>
+        <foreign-key foreignTable="accounts" name="classrooms_accounts_FK_1" phpName="UpdatedBy" onDelete="RESTRICT">
+            <reference local="updater_id" foreign="id"/>
         </foreign-key>
         <index name="classrooms_accounts_FK">
             <index-column name="created_by"/>

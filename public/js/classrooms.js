@@ -25,14 +25,17 @@
                     return moment(x).format('YYYY-MM-D');
                 }
             }, {
-                data: "CreatedBy"
+                data: "CreatedBy.Username"
             }, {
                 data: "UpdatedAt",
                 render: (x) => {
                     return moment(x).format('YYYY-MM-D');
                 }
             }, {
-                data: "UpdatedBy"
+                data: "UpdatedBy",
+                render: (x) => {
+                    return x ? x.Username : '';
+                }
             }]
         });
 

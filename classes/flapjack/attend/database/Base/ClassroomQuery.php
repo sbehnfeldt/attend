@@ -22,18 +22,18 @@ use flapjack\attend\database\Map\ClassroomTableMap;
  * @method     ChildClassroomQuery orderById($order = Criteria::ASC) Order by the id column
  * @method     ChildClassroomQuery orderByLabel($order = Criteria::ASC) Order by the label column
  * @method     ChildClassroomQuery orderByOrdering($order = Criteria::ASC) Order by the ordering column
+ * @method     ChildClassroomQuery orderByCreatorId($order = Criteria::ASC) Order by the creator_id column
  * @method     ChildClassroomQuery orderByCreatedAt($order = Criteria::ASC) Order by the created_at column
+ * @method     ChildClassroomQuery orderByUpdaterId($order = Criteria::ASC) Order by the updater_id column
  * @method     ChildClassroomQuery orderByUpdatedAt($order = Criteria::ASC) Order by the updated_at column
- * @method     ChildClassroomQuery orderByCreatedBy($order = Criteria::ASC) Order by the created_by column
- * @method     ChildClassroomQuery orderByUpdatedBy($order = Criteria::ASC) Order by the updated_by column
  *
  * @method     ChildClassroomQuery groupById() Group by the id column
  * @method     ChildClassroomQuery groupByLabel() Group by the label column
  * @method     ChildClassroomQuery groupByOrdering() Group by the ordering column
+ * @method     ChildClassroomQuery groupByCreatorId() Group by the creator_id column
  * @method     ChildClassroomQuery groupByCreatedAt() Group by the created_at column
+ * @method     ChildClassroomQuery groupByUpdaterId() Group by the updater_id column
  * @method     ChildClassroomQuery groupByUpdatedAt() Group by the updated_at column
- * @method     ChildClassroomQuery groupByCreatedBy() Group by the created_by column
- * @method     ChildClassroomQuery groupByUpdatedBy() Group by the updated_by column
  *
  * @method     ChildClassroomQuery leftJoin($relation) Adds a LEFT JOIN clause to the query
  * @method     ChildClassroomQuery rightJoin($relation) Adds a RIGHT JOIN clause to the query
@@ -43,25 +43,25 @@ use flapjack\attend\database\Map\ClassroomTableMap;
  * @method     ChildClassroomQuery rightJoinWith($relation) Adds a RIGHT JOIN clause and with to the query
  * @method     ChildClassroomQuery innerJoinWith($relation) Adds a INNER JOIN clause and with to the query
  *
- * @method     ChildClassroomQuery leftJoinCreator($relationAlias = null) Adds a LEFT JOIN clause to the query using the Creator relation
- * @method     ChildClassroomQuery rightJoinCreator($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Creator relation
- * @method     ChildClassroomQuery innerJoinCreator($relationAlias = null) Adds a INNER JOIN clause to the query using the Creator relation
+ * @method     ChildClassroomQuery leftJoinCreatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the CreatedBy relation
+ * @method     ChildClassroomQuery rightJoinCreatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the CreatedBy relation
+ * @method     ChildClassroomQuery innerJoinCreatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the CreatedBy relation
  *
- * @method     ChildClassroomQuery joinWithCreator($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Creator relation
+ * @method     ChildClassroomQuery joinWithCreatedBy($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the CreatedBy relation
  *
- * @method     ChildClassroomQuery leftJoinWithCreator() Adds a LEFT JOIN clause and with to the query using the Creator relation
- * @method     ChildClassroomQuery rightJoinWithCreator() Adds a RIGHT JOIN clause and with to the query using the Creator relation
- * @method     ChildClassroomQuery innerJoinWithCreator() Adds a INNER JOIN clause and with to the query using the Creator relation
+ * @method     ChildClassroomQuery leftJoinWithCreatedBy() Adds a LEFT JOIN clause and with to the query using the CreatedBy relation
+ * @method     ChildClassroomQuery rightJoinWithCreatedBy() Adds a RIGHT JOIN clause and with to the query using the CreatedBy relation
+ * @method     ChildClassroomQuery innerJoinWithCreatedBy() Adds a INNER JOIN clause and with to the query using the CreatedBy relation
  *
- * @method     ChildClassroomQuery leftJoinUpdater($relationAlias = null) Adds a LEFT JOIN clause to the query using the Updater relation
- * @method     ChildClassroomQuery rightJoinUpdater($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Updater relation
- * @method     ChildClassroomQuery innerJoinUpdater($relationAlias = null) Adds a INNER JOIN clause to the query using the Updater relation
+ * @method     ChildClassroomQuery leftJoinUpdatedBy($relationAlias = null) Adds a LEFT JOIN clause to the query using the UpdatedBy relation
+ * @method     ChildClassroomQuery rightJoinUpdatedBy($relationAlias = null) Adds a RIGHT JOIN clause to the query using the UpdatedBy relation
+ * @method     ChildClassroomQuery innerJoinUpdatedBy($relationAlias = null) Adds a INNER JOIN clause to the query using the UpdatedBy relation
  *
- * @method     ChildClassroomQuery joinWithUpdater($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the Updater relation
+ * @method     ChildClassroomQuery joinWithUpdatedBy($joinType = Criteria::INNER_JOIN) Adds a join clause and with to the query using the UpdatedBy relation
  *
- * @method     ChildClassroomQuery leftJoinWithUpdater() Adds a LEFT JOIN clause and with to the query using the Updater relation
- * @method     ChildClassroomQuery rightJoinWithUpdater() Adds a RIGHT JOIN clause and with to the query using the Updater relation
- * @method     ChildClassroomQuery innerJoinWithUpdater() Adds a INNER JOIN clause and with to the query using the Updater relation
+ * @method     ChildClassroomQuery leftJoinWithUpdatedBy() Adds a LEFT JOIN clause and with to the query using the UpdatedBy relation
+ * @method     ChildClassroomQuery rightJoinWithUpdatedBy() Adds a RIGHT JOIN clause and with to the query using the UpdatedBy relation
+ * @method     ChildClassroomQuery innerJoinWithUpdatedBy() Adds a INNER JOIN clause and with to the query using the UpdatedBy relation
  *
  * @method     ChildClassroomQuery leftJoinStudent($relationAlias = null) Adds a LEFT JOIN clause to the query using the Student relation
  * @method     ChildClassroomQuery rightJoinStudent($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Student relation
@@ -81,10 +81,10 @@ use flapjack\attend\database\Map\ClassroomTableMap;
  * @method     ChildClassroom|null findOneById(int $id) Return the first ChildClassroom filtered by the id column
  * @method     ChildClassroom|null findOneByLabel(string $label) Return the first ChildClassroom filtered by the label column
  * @method     ChildClassroom|null findOneByOrdering(int $ordering) Return the first ChildClassroom filtered by the ordering column
+ * @method     ChildClassroom|null findOneByCreatorId(int $creator_id) Return the first ChildClassroom filtered by the creator_id column
  * @method     ChildClassroom|null findOneByCreatedAt(string $created_at) Return the first ChildClassroom filtered by the created_at column
+ * @method     ChildClassroom|null findOneByUpdaterId(int $updater_id) Return the first ChildClassroom filtered by the updater_id column
  * @method     ChildClassroom|null findOneByUpdatedAt(string $updated_at) Return the first ChildClassroom filtered by the updated_at column
- * @method     ChildClassroom|null findOneByCreatedBy(int $created_by) Return the first ChildClassroom filtered by the created_by column
- * @method     ChildClassroom|null findOneByUpdatedBy(int $updated_by) Return the first ChildClassroom filtered by the updated_by column
  *
  * @method     ChildClassroom requirePk($key, ?ConnectionInterface $con = null) Return the ChildClassroom by primary key and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildClassroom requireOne(?ConnectionInterface $con = null) Return the first ChildClassroom matching the query and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
@@ -92,10 +92,10 @@ use flapjack\attend\database\Map\ClassroomTableMap;
  * @method     ChildClassroom requireOneById(int $id) Return the first ChildClassroom filtered by the id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildClassroom requireOneByLabel(string $label) Return the first ChildClassroom filtered by the label column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildClassroom requireOneByOrdering(int $ordering) Return the first ChildClassroom filtered by the ordering column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildClassroom requireOneByCreatorId(int $creator_id) Return the first ChildClassroom filtered by the creator_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildClassroom requireOneByCreatedAt(string $created_at) Return the first ChildClassroom filtered by the created_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
+ * @method     ChildClassroom requireOneByUpdaterId(int $updater_id) Return the first ChildClassroom filtered by the updater_id column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  * @method     ChildClassroom requireOneByUpdatedAt(string $updated_at) Return the first ChildClassroom filtered by the updated_at column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildClassroom requireOneByCreatedBy(int $created_by) Return the first ChildClassroom filtered by the created_by column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
- * @method     ChildClassroom requireOneByUpdatedBy(int $updated_by) Return the first ChildClassroom filtered by the updated_by column and throws \Propel\Runtime\Exception\EntityNotFoundException when not found
  *
  * @method     ChildClassroom[]|Collection find(?ConnectionInterface $con = null) Return ChildClassroom objects based on current ModelCriteria
  * @psalm-method Collection&\Traversable<ChildClassroom> find(?ConnectionInterface $con = null) Return ChildClassroom objects based on current ModelCriteria
@@ -106,14 +106,14 @@ use flapjack\attend\database\Map\ClassroomTableMap;
  * @psalm-method Collection&\Traversable<ChildClassroom> findByLabel(string|array<string> $label) Return ChildClassroom objects filtered by the label column
  * @method     ChildClassroom[]|Collection findByOrdering(int|array<int> $ordering) Return ChildClassroom objects filtered by the ordering column
  * @psalm-method Collection&\Traversable<ChildClassroom> findByOrdering(int|array<int> $ordering) Return ChildClassroom objects filtered by the ordering column
+ * @method     ChildClassroom[]|Collection findByCreatorId(int|array<int> $creator_id) Return ChildClassroom objects filtered by the creator_id column
+ * @psalm-method Collection&\Traversable<ChildClassroom> findByCreatorId(int|array<int> $creator_id) Return ChildClassroom objects filtered by the creator_id column
  * @method     ChildClassroom[]|Collection findByCreatedAt(string|array<string> $created_at) Return ChildClassroom objects filtered by the created_at column
  * @psalm-method Collection&\Traversable<ChildClassroom> findByCreatedAt(string|array<string> $created_at) Return ChildClassroom objects filtered by the created_at column
+ * @method     ChildClassroom[]|Collection findByUpdaterId(int|array<int> $updater_id) Return ChildClassroom objects filtered by the updater_id column
+ * @psalm-method Collection&\Traversable<ChildClassroom> findByUpdaterId(int|array<int> $updater_id) Return ChildClassroom objects filtered by the updater_id column
  * @method     ChildClassroom[]|Collection findByUpdatedAt(string|array<string> $updated_at) Return ChildClassroom objects filtered by the updated_at column
  * @psalm-method Collection&\Traversable<ChildClassroom> findByUpdatedAt(string|array<string> $updated_at) Return ChildClassroom objects filtered by the updated_at column
- * @method     ChildClassroom[]|Collection findByCreatedBy(int|array<int> $created_by) Return ChildClassroom objects filtered by the created_by column
- * @psalm-method Collection&\Traversable<ChildClassroom> findByCreatedBy(int|array<int> $created_by) Return ChildClassroom objects filtered by the created_by column
- * @method     ChildClassroom[]|Collection findByUpdatedBy(int|array<int> $updated_by) Return ChildClassroom objects filtered by the updated_by column
- * @psalm-method Collection&\Traversable<ChildClassroom> findByUpdatedBy(int|array<int> $updated_by) Return ChildClassroom objects filtered by the updated_by column
  *
  * @method     ChildClassroom[]|\Propel\Runtime\Util\PropelModelPager paginate($page = 1, $maxPerPage = 10, ?ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
  * @psalm-method \Propel\Runtime\Util\PropelModelPager&\Traversable<ChildClassroom> paginate($page = 1, $maxPerPage = 10, ?ConnectionInterface $con = null) Issue a SELECT query based on the current ModelCriteria and uses a page and a maximum number of results per page to compute an offset and a limit
@@ -213,7 +213,7 @@ abstract class ClassroomQuery extends ModelCriteria
      */
     protected function findPkSimple($key, ConnectionInterface $con)
     {
-        $sql = 'SELECT id, label, ordering, created_at, updated_at, created_by, updated_by FROM classrooms WHERE id = :p0';
+        $sql = 'SELECT id, label, ordering, creator_id, created_at, updater_id, updated_at FROM classrooms WHERE id = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -422,6 +422,51 @@ abstract class ClassroomQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the creator_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByCreatorId(1234); // WHERE creator_id = 1234
+     * $query->filterByCreatorId(array(12, 34)); // WHERE creator_id IN (12, 34)
+     * $query->filterByCreatorId(array('min' => 12)); // WHERE creator_id > 12
+     * </code>
+     *
+     * @see       filterByCreatedBy()
+     *
+     * @param mixed $creatorId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this The current query, for fluid interface
+     */
+    public function filterByCreatorId($creatorId = null, ?string $comparison = null)
+    {
+        if (is_array($creatorId)) {
+            $useMinMax = false;
+            if (isset($creatorId['min'])) {
+                $this->addUsingAlias(ClassroomTableMap::COL_CREATOR_ID, $creatorId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($creatorId['max'])) {
+                $this->addUsingAlias(ClassroomTableMap::COL_CREATOR_ID, $creatorId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        $this->addUsingAlias(ClassroomTableMap::COL_CREATOR_ID, $creatorId, $comparison);
+
+        return $this;
+    }
+
+    /**
      * Filter the query on the created_at column
      *
      * Example usage:
@@ -462,6 +507,51 @@ abstract class ClassroomQuery extends ModelCriteria
         }
 
         $this->addUsingAlias(ClassroomTableMap::COL_CREATED_AT, $createdAt, $comparison);
+
+        return $this;
+    }
+
+    /**
+     * Filter the query on the updater_id column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByUpdaterId(1234); // WHERE updater_id = 1234
+     * $query->filterByUpdaterId(array(12, 34)); // WHERE updater_id IN (12, 34)
+     * $query->filterByUpdaterId(array('min' => 12)); // WHERE updater_id > 12
+     * </code>
+     *
+     * @see       filterByUpdatedBy()
+     *
+     * @param mixed $updaterId The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return $this The current query, for fluid interface
+     */
+    public function filterByUpdaterId($updaterId = null, ?string $comparison = null)
+    {
+        if (is_array($updaterId)) {
+            $useMinMax = false;
+            if (isset($updaterId['min'])) {
+                $this->addUsingAlias(ClassroomTableMap::COL_UPDATER_ID, $updaterId['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($updaterId['max'])) {
+                $this->addUsingAlias(ClassroomTableMap::COL_UPDATER_ID, $updaterId['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        $this->addUsingAlias(ClassroomTableMap::COL_UPDATER_ID, $updaterId, $comparison);
 
         return $this;
     }
@@ -512,96 +602,6 @@ abstract class ClassroomQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the created_by column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByCreatedBy(1234); // WHERE created_by = 1234
-     * $query->filterByCreatedBy(array(12, 34)); // WHERE created_by IN (12, 34)
-     * $query->filterByCreatedBy(array('min' => 12)); // WHERE created_by > 12
-     * </code>
-     *
-     * @see       filterByCreator()
-     *
-     * @param mixed $createdBy The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this The current query, for fluid interface
-     */
-    public function filterByCreatedBy($createdBy = null, ?string $comparison = null)
-    {
-        if (is_array($createdBy)) {
-            $useMinMax = false;
-            if (isset($createdBy['min'])) {
-                $this->addUsingAlias(ClassroomTableMap::COL_CREATED_BY, $createdBy['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($createdBy['max'])) {
-                $this->addUsingAlias(ClassroomTableMap::COL_CREATED_BY, $createdBy['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        $this->addUsingAlias(ClassroomTableMap::COL_CREATED_BY, $createdBy, $comparison);
-
-        return $this;
-    }
-
-    /**
-     * Filter the query on the updated_by column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByUpdatedBy(1234); // WHERE updated_by = 1234
-     * $query->filterByUpdatedBy(array(12, 34)); // WHERE updated_by IN (12, 34)
-     * $query->filterByUpdatedBy(array('min' => 12)); // WHERE updated_by > 12
-     * </code>
-     *
-     * @see       filterByUpdater()
-     *
-     * @param mixed $updatedBy The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param string|null $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return $this The current query, for fluid interface
-     */
-    public function filterByUpdatedBy($updatedBy = null, ?string $comparison = null)
-    {
-        if (is_array($updatedBy)) {
-            $useMinMax = false;
-            if (isset($updatedBy['min'])) {
-                $this->addUsingAlias(ClassroomTableMap::COL_UPDATED_BY, $updatedBy['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($updatedBy['max'])) {
-                $this->addUsingAlias(ClassroomTableMap::COL_UPDATED_BY, $updatedBy['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        $this->addUsingAlias(ClassroomTableMap::COL_UPDATED_BY, $updatedBy, $comparison);
-
-        return $this;
-    }
-
-    /**
      * Filter the query by a related \flapjack\attend\database\Account object
      *
      * @param \flapjack\attend\database\Account|ObjectCollection $account The related object(s) to use as filter
@@ -611,37 +611,37 @@ abstract class ClassroomQuery extends ModelCriteria
      *
      * @return $this The current query, for fluid interface
      */
-    public function filterByCreator($account, ?string $comparison = null)
+    public function filterByCreatedBy($account, ?string $comparison = null)
     {
         if ($account instanceof \flapjack\attend\database\Account) {
             return $this
-                ->addUsingAlias(ClassroomTableMap::COL_CREATED_BY, $account->getId(), $comparison);
+                ->addUsingAlias(ClassroomTableMap::COL_CREATOR_ID, $account->getId(), $comparison);
         } elseif ($account instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             $this
-                ->addUsingAlias(ClassroomTableMap::COL_CREATED_BY, $account->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(ClassroomTableMap::COL_CREATOR_ID, $account->toKeyValue('PrimaryKey', 'Id'), $comparison);
 
             return $this;
         } else {
-            throw new PropelException('filterByCreator() only accepts arguments of type \flapjack\attend\database\Account or Collection');
+            throw new PropelException('filterByCreatedBy() only accepts arguments of type \flapjack\attend\database\Account or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Creator relation
+     * Adds a JOIN clause to the query using the CreatedBy relation
      *
      * @param string|null $relationAlias Optional alias for the relation
      * @param string|null $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this The current query, for fluid interface
      */
-    public function joinCreator(?string $relationAlias = null, ?string $joinType = Criteria::INNER_JOIN)
+    public function joinCreatedBy(?string $relationAlias = null, ?string $joinType = Criteria::INNER_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Creator');
+        $relationMap = $tableMap->getRelation('CreatedBy');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -656,14 +656,14 @@ abstract class ClassroomQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Creator');
+            $this->addJoinObject($join, 'CreatedBy');
         }
 
         return $this;
     }
 
     /**
-     * Use the Creator relation Account object
+     * Use the CreatedBy relation Account object
      *
      * @see useQuery()
      *
@@ -673,15 +673,15 @@ abstract class ClassroomQuery extends ModelCriteria
      *
      * @return \flapjack\attend\database\AccountQuery A secondary query class using the current class as primary query
      */
-    public function useCreatorQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useCreatedByQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
     {
         return $this
-            ->joinCreator($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Creator', '\flapjack\attend\database\AccountQuery');
+            ->joinCreatedBy($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'CreatedBy', '\flapjack\attend\database\AccountQuery');
     }
 
     /**
-     * Use the Creator relation Account object
+     * Use the CreatedBy relation Account object
      *
      * @param callable(\flapjack\attend\database\AccountQuery):\flapjack\attend\database\AccountQuery $callable A function working on the related query
      *
@@ -691,12 +691,12 @@ abstract class ClassroomQuery extends ModelCriteria
      *
      * @return $this
      */
-    public function withCreatorQuery(
+    public function withCreatedByQuery(
         callable $callable,
         string $relationAlias = null,
         ?string $joinType = Criteria::INNER_JOIN
     ) {
-        $relatedQuery = $this->useCreatorQuery(
+        $relatedQuery = $this->useCreatedByQuery(
             $relationAlias,
             $joinType
         );
@@ -707,7 +707,7 @@ abstract class ClassroomQuery extends ModelCriteria
     }
 
     /**
-     * Use the Creator relation to the Account table for an EXISTS query.
+     * Use the CreatedBy relation to the Account table for an EXISTS query.
      *
      * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
      *
@@ -717,32 +717,32 @@ abstract class ClassroomQuery extends ModelCriteria
      *
      * @return \flapjack\attend\database\AccountQuery The inner query object of the EXISTS statement
      */
-    public function useCreatorExistsQuery($modelAlias = null, $queryClass = null, $typeOfExists = 'EXISTS')
+    public function useCreatedByExistsQuery($modelAlias = null, $queryClass = null, $typeOfExists = 'EXISTS')
     {
         /** @var $q \flapjack\attend\database\AccountQuery */
-        $q = $this->useExistsQuery('Creator', $modelAlias, $queryClass, $typeOfExists);
+        $q = $this->useExistsQuery('CreatedBy', $modelAlias, $queryClass, $typeOfExists);
         return $q;
     }
 
     /**
-     * Use the Creator relation to the Account table for a NOT EXISTS query.
+     * Use the CreatedBy relation to the Account table for a NOT EXISTS query.
      *
-     * @see useCreatorExistsQuery()
+     * @see useCreatedByExistsQuery()
      *
      * @param string|null $modelAlias sets an alias for the nested query
      * @param string|null $queryClass Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\AccountQuery The inner query object of the NOT EXISTS statement
      */
-    public function useCreatorNotExistsQuery($modelAlias = null, $queryClass = null)
+    public function useCreatedByNotExistsQuery($modelAlias = null, $queryClass = null)
     {
         /** @var $q \flapjack\attend\database\AccountQuery */
-        $q = $this->useExistsQuery('Creator', $modelAlias, $queryClass, 'NOT EXISTS');
+        $q = $this->useExistsQuery('CreatedBy', $modelAlias, $queryClass, 'NOT EXISTS');
         return $q;
     }
 
     /**
-     * Use the Creator relation to the Account table for an IN query.
+     * Use the CreatedBy relation to the Account table for an IN query.
      *
      * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useInQuery()
      *
@@ -752,27 +752,27 @@ abstract class ClassroomQuery extends ModelCriteria
      *
      * @return \flapjack\attend\database\AccountQuery The inner query object of the IN statement
      */
-    public function useInCreatorQuery($modelAlias = null, $queryClass = null, $typeOfIn = 'IN')
+    public function useInCreatedByQuery($modelAlias = null, $queryClass = null, $typeOfIn = 'IN')
     {
         /** @var $q \flapjack\attend\database\AccountQuery */
-        $q = $this->useInQuery('Creator', $modelAlias, $queryClass, $typeOfIn);
+        $q = $this->useInQuery('CreatedBy', $modelAlias, $queryClass, $typeOfIn);
         return $q;
     }
 
     /**
-     * Use the Creator relation to the Account table for a NOT IN query.
+     * Use the CreatedBy relation to the Account table for a NOT IN query.
      *
-     * @see useCreatorInQuery()
+     * @see useCreatedByInQuery()
      *
      * @param string|null $modelAlias sets an alias for the nested query
      * @param string|null $queryClass Allows to use a custom query class for the NOT IN query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\AccountQuery The inner query object of the NOT IN statement
      */
-    public function useNotInCreatorQuery($modelAlias = null, $queryClass = null)
+    public function useNotInCreatedByQuery($modelAlias = null, $queryClass = null)
     {
         /** @var $q \flapjack\attend\database\AccountQuery */
-        $q = $this->useInQuery('Creator', $modelAlias, $queryClass, 'NOT IN');
+        $q = $this->useInQuery('CreatedBy', $modelAlias, $queryClass, 'NOT IN');
         return $q;
     }
 
@@ -786,37 +786,37 @@ abstract class ClassroomQuery extends ModelCriteria
      *
      * @return $this The current query, for fluid interface
      */
-    public function filterByUpdater($account, ?string $comparison = null)
+    public function filterByUpdatedBy($account, ?string $comparison = null)
     {
         if ($account instanceof \flapjack\attend\database\Account) {
             return $this
-                ->addUsingAlias(ClassroomTableMap::COL_UPDATED_BY, $account->getId(), $comparison);
+                ->addUsingAlias(ClassroomTableMap::COL_UPDATER_ID, $account->getId(), $comparison);
         } elseif ($account instanceof ObjectCollection) {
             if (null === $comparison) {
                 $comparison = Criteria::IN;
             }
 
             $this
-                ->addUsingAlias(ClassroomTableMap::COL_UPDATED_BY, $account->toKeyValue('PrimaryKey', 'Id'), $comparison);
+                ->addUsingAlias(ClassroomTableMap::COL_UPDATER_ID, $account->toKeyValue('PrimaryKey', 'Id'), $comparison);
 
             return $this;
         } else {
-            throw new PropelException('filterByUpdater() only accepts arguments of type \flapjack\attend\database\Account or Collection');
+            throw new PropelException('filterByUpdatedBy() only accepts arguments of type \flapjack\attend\database\Account or Collection');
         }
     }
 
     /**
-     * Adds a JOIN clause to the query using the Updater relation
+     * Adds a JOIN clause to the query using the UpdatedBy relation
      *
      * @param string|null $relationAlias Optional alias for the relation
      * @param string|null $joinType Accepted values are null, 'left join', 'right join', 'inner join'
      *
      * @return $this The current query, for fluid interface
      */
-    public function joinUpdater(?string $relationAlias = null, ?string $joinType = Criteria::LEFT_JOIN)
+    public function joinUpdatedBy(?string $relationAlias = null, ?string $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
-        $relationMap = $tableMap->getRelation('Updater');
+        $relationMap = $tableMap->getRelation('UpdatedBy');
 
         // create a ModelJoin object for this join
         $join = new ModelJoin();
@@ -831,14 +831,14 @@ abstract class ClassroomQuery extends ModelCriteria
             $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
             $this->addJoinObject($join, $relationAlias);
         } else {
-            $this->addJoinObject($join, 'Updater');
+            $this->addJoinObject($join, 'UpdatedBy');
         }
 
         return $this;
     }
 
     /**
-     * Use the Updater relation Account object
+     * Use the UpdatedBy relation Account object
      *
      * @see useQuery()
      *
@@ -848,15 +848,15 @@ abstract class ClassroomQuery extends ModelCriteria
      *
      * @return \flapjack\attend\database\AccountQuery A secondary query class using the current class as primary query
      */
-    public function useUpdaterQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    public function useUpdatedByQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
-            ->joinUpdater($relationAlias, $joinType)
-            ->useQuery($relationAlias ? $relationAlias : 'Updater', '\flapjack\attend\database\AccountQuery');
+            ->joinUpdatedBy($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'UpdatedBy', '\flapjack\attend\database\AccountQuery');
     }
 
     /**
-     * Use the Updater relation Account object
+     * Use the UpdatedBy relation Account object
      *
      * @param callable(\flapjack\attend\database\AccountQuery):\flapjack\attend\database\AccountQuery $callable A function working on the related query
      *
@@ -866,12 +866,12 @@ abstract class ClassroomQuery extends ModelCriteria
      *
      * @return $this
      */
-    public function withUpdaterQuery(
+    public function withUpdatedByQuery(
         callable $callable,
         string $relationAlias = null,
         ?string $joinType = Criteria::LEFT_JOIN
     ) {
-        $relatedQuery = $this->useUpdaterQuery(
+        $relatedQuery = $this->useUpdatedByQuery(
             $relationAlias,
             $joinType
         );
@@ -882,7 +882,7 @@ abstract class ClassroomQuery extends ModelCriteria
     }
 
     /**
-     * Use the Updater relation to the Account table for an EXISTS query.
+     * Use the UpdatedBy relation to the Account table for an EXISTS query.
      *
      * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useExistsQuery()
      *
@@ -892,32 +892,32 @@ abstract class ClassroomQuery extends ModelCriteria
      *
      * @return \flapjack\attend\database\AccountQuery The inner query object of the EXISTS statement
      */
-    public function useUpdaterExistsQuery($modelAlias = null, $queryClass = null, $typeOfExists = 'EXISTS')
+    public function useUpdatedByExistsQuery($modelAlias = null, $queryClass = null, $typeOfExists = 'EXISTS')
     {
         /** @var $q \flapjack\attend\database\AccountQuery */
-        $q = $this->useExistsQuery('Updater', $modelAlias, $queryClass, $typeOfExists);
+        $q = $this->useExistsQuery('UpdatedBy', $modelAlias, $queryClass, $typeOfExists);
         return $q;
     }
 
     /**
-     * Use the Updater relation to the Account table for a NOT EXISTS query.
+     * Use the UpdatedBy relation to the Account table for a NOT EXISTS query.
      *
-     * @see useUpdaterExistsQuery()
+     * @see useUpdatedByExistsQuery()
      *
      * @param string|null $modelAlias sets an alias for the nested query
      * @param string|null $queryClass Allows to use a custom query class for the exists query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\AccountQuery The inner query object of the NOT EXISTS statement
      */
-    public function useUpdaterNotExistsQuery($modelAlias = null, $queryClass = null)
+    public function useUpdatedByNotExistsQuery($modelAlias = null, $queryClass = null)
     {
         /** @var $q \flapjack\attend\database\AccountQuery */
-        $q = $this->useExistsQuery('Updater', $modelAlias, $queryClass, 'NOT EXISTS');
+        $q = $this->useExistsQuery('UpdatedBy', $modelAlias, $queryClass, 'NOT EXISTS');
         return $q;
     }
 
     /**
-     * Use the Updater relation to the Account table for an IN query.
+     * Use the UpdatedBy relation to the Account table for an IN query.
      *
      * @see \Propel\Runtime\ActiveQuery\ModelCriteria::useInQuery()
      *
@@ -927,27 +927,27 @@ abstract class ClassroomQuery extends ModelCriteria
      *
      * @return \flapjack\attend\database\AccountQuery The inner query object of the IN statement
      */
-    public function useInUpdaterQuery($modelAlias = null, $queryClass = null, $typeOfIn = 'IN')
+    public function useInUpdatedByQuery($modelAlias = null, $queryClass = null, $typeOfIn = 'IN')
     {
         /** @var $q \flapjack\attend\database\AccountQuery */
-        $q = $this->useInQuery('Updater', $modelAlias, $queryClass, $typeOfIn);
+        $q = $this->useInQuery('UpdatedBy', $modelAlias, $queryClass, $typeOfIn);
         return $q;
     }
 
     /**
-     * Use the Updater relation to the Account table for a NOT IN query.
+     * Use the UpdatedBy relation to the Account table for a NOT IN query.
      *
-     * @see useUpdaterInQuery()
+     * @see useUpdatedByInQuery()
      *
      * @param string|null $modelAlias sets an alias for the nested query
      * @param string|null $queryClass Allows to use a custom query class for the NOT IN query, like ExtendedBookQuery::class
      *
      * @return \flapjack\attend\database\AccountQuery The inner query object of the NOT IN statement
      */
-    public function useNotInUpdaterQuery($modelAlias = null, $queryClass = null)
+    public function useNotInUpdatedByQuery($modelAlias = null, $queryClass = null)
     {
         /** @var $q \flapjack\attend\database\AccountQuery */
-        $q = $this->useInQuery('Updater', $modelAlias, $queryClass, 'NOT IN');
+        $q = $this->useInQuery('UpdatedBy', $modelAlias, $queryClass, 'NOT IN');
         return $q;
     }
 

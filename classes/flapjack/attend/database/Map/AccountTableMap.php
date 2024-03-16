@@ -211,20 +211,20 @@ class AccountTableMap extends TableMap
      */
     public function buildRelations(): void
     {
-        $this->addRelation('ClassroomRelatedByCreatedBy', '\\flapjack\\attend\\database\\Classroom', RelationMap::ONE_TO_MANY, array (
+        $this->addRelation('ClassroomRelatedByCreatorId', '\\flapjack\\attend\\database\\Classroom', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
-    0 => ':created_by',
+    0 => ':creator_id',
     1 => ':id',
   ),
-), 'RESTRICT', null, 'ClassroomsRelatedByCreatedBy', false);
-        $this->addRelation('ClassroomRelatedByUpdatedBy', '\\flapjack\\attend\\database\\Classroom', RelationMap::ONE_TO_MANY, array (
+), 'RESTRICT', null, 'ClassroomsRelatedByCreatorId', false);
+        $this->addRelation('ClassroomRelatedByUpdaterId', '\\flapjack\\attend\\database\\Classroom', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (
-    0 => ':updated_by',
+    0 => ':updater_id',
     1 => ':id',
   ),
-), 'RESTRICT', null, 'ClassroomsRelatedByUpdatedBy', false);
+), 'RESTRICT', null, 'ClassroomsRelatedByUpdaterId', false);
         $this->addRelation('GroupMember', '\\flapjack\\attend\\database\\GroupMember', RelationMap::ONE_TO_MANY, array (
   0 =>
   array (

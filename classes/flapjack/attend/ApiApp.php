@@ -94,8 +94,8 @@ class ApiApp extends App
 
                 /** @var Classroom $r */
                 foreach ($results as $r) {
-                    $r->getCreator();
-                    $r->getUpdater();
+                    $r->getCreatedBy();
+                    $r->getUpdatedBy();
                 }
                 $results = $results->toArray();
 
