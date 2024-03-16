@@ -36,7 +36,7 @@
         <column name="creator_id" type="INTEGER" required="true"/>
         <column name="created_at" phpName="CreatedAt" type="TIMESTAMP" required="true" defaultExpr="CURRENT_TIMESTAMP"/>
         <column name="updater_id" type="INTEGER"/>
-        <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" defaultExpr="CURRENT_TIMESTAMP"/>
+        <column name="updated_at" phpName="UpdatedAt" type="TIMESTAMP" />
         <foreign-key foreignTable="accounts" name="classrooms_accounts_FK" phpName="CreatedBy" onDelete="RESTRICT">
             <reference local="creator_id" foreign="id"/>
         </foreign-key>

@@ -51,21 +51,23 @@ CREATE TABLE `classrooms`
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `label` VARCHAR(45) NOT NULL,
     `ordering` INTEGER,
+    `creator_id` INTEGER NOT NULL,
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-    `created_by` INTEGER NOT NULL,
-    `updated_by` INTEGER,
+    `updater_id` INTEGER,
+    `updated_at` TIMESTAMP NULL,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `id_UNIQUE` (`id`),
     UNIQUE INDEX `name_UNIQUE` (`label`),
     INDEX `classrooms_accounts_FK` (`created_by`),
     INDEX `classrooms_accounts_FK_1` (`updated_by`),
+    INDEX `fi_ssrooms_accounts_FK` (`creator_id`),
+    INDEX `fi_ssrooms_accounts_FK_1` (`updater_id`),
     CONSTRAINT `classrooms_accounts_FK`
-        FOREIGN KEY (`created_by`)
+        FOREIGN KEY (`creator_id`)
         REFERENCES `accounts` (`id`)
         ON DELETE RESTRICT,
     CONSTRAINT `classrooms_accounts_FK_1`
-        FOREIGN KEY (`updated_by`)
+        FOREIGN KEY (`updater_id`)
         REFERENCES `accounts` (`id`)
         ON DELETE RESTRICT
 ) ENGINE=InnoDB;

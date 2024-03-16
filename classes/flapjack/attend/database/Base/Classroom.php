@@ -116,7 +116,6 @@ abstract class Classroom implements ActiveRecordInterface
     /**
      * The value for the updated_at field.
      *
-     * Note: this column has a database default value of: (expression) CURRENT_TIMESTAMP
      * @var        DateTime|null
      */
     protected $updated_at;

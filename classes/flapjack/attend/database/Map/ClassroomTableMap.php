@@ -231,7 +231,7 @@ class ClassroomTableMap extends TableMap
         $this->addForeignKey('creator_id', 'CreatorId', 'INTEGER', 'accounts', 'id', true, null, null);
         $this->addColumn('created_at', 'CreatedAt', 'TIMESTAMP', true, null, 'CURRENT_TIMESTAMP');
         $this->addForeignKey('updater_id', 'UpdaterId', 'INTEGER', 'accounts', 'id', false, null, null);
-        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, 'CURRENT_TIMESTAMP');
+        $this->addColumn('updated_at', 'UpdatedAt', 'TIMESTAMP', false, null, null);
     }
 
     /**

@@ -84,10 +84,17 @@
         let b1 = new $.fn.dataTable.Buttons(table, {
             buttons: [{
                 text: "Reload",
-                action: function (e, dt) {
+                action: async function (e, dt) {
                     Attend.loadAnother();
-                    table.clear();
-                    dt.ajax.reload(Attend.doneLoading);
+                    try {
+                        table.clear();
+                        await table.ajax.reload();
+                        table.draw();
+                    } catch (e) {
+                        console.log(e);
+                    } finally {
+                        Attend.doneLoading();
+                    }
                 }
             }]
         });

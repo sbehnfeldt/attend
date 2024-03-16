@@ -2,6 +2,7 @@
 namespace flapjack\attend\PropelEngine;
 
 
+use flapjack\attend\database\Account;
 use flapjack\attend\database\AccountQuery;
 use flapjack\attend\database\Classroom;
 use flapjack\attend\database\ClassroomQuery;
@@ -144,6 +145,10 @@ class PropelEngine implements IDatabaseEngine
             $resource->setOrdering($maxValue + 1);
         }
 
+        /** @var Account $account */
+        $account = $_SESSION['account'];
+        $resource->setCreatedBy($account);
+        $resource->setCreatedAt(time());
         $resource->save();
 
         return $resource->toArray();
@@ -183,6 +188,10 @@ class PropelEngine implements IDatabaseEngine
 
         $resource->setLabel($body['Label']);
         $resource->setOrdering($body['Ordering']);
+        /** @var Account $account */
+        $account = $_SESSION['account'];
+        $resource->setUpdatedBy($account);
+        $resource->setUpdatedAt(time());
         $resource->save();
 
         return $resource->toArray();
