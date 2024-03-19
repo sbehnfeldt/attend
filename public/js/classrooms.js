@@ -6,8 +6,8 @@
             table;
 
         $self = $(selector);
-        table = $self.find('table').DataTable({
-            ajax: loadClassrooms,
+        table = $self.find('table').eq(0).DataTable({
+            ajax: '/api/classrooms',
             paging: false,
             searching: false,
             select: "single",
@@ -29,7 +29,7 @@
             }, {
                 data: "UpdatedAt",
                 render: (x) => {
-                    return moment(x).format('YYYY-MM-D');
+                    return x ? moment(x).format('YYYY-MM-D') : '';
                 }
             }, {
                 data: "UpdatedBy",
@@ -84,11 +84,13 @@
         let b1 = new $.fn.dataTable.Buttons(table, {
             buttons: [{
                 text: "Reload",
-                action: async function (e, dt) {
+                action: function (e, dt) {
                     Attend.loadAnother();
                     try {
                         table.clear();
-                        await table.ajax.reload();
+                        // console.log( table.ajax)
+                        // console.log( table.ajax.reload)
+                        table.ajax.reload();
                         table.draw();
                     } catch (e) {
                         console.log(e);

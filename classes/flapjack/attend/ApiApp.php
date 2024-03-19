@@ -97,7 +97,7 @@ class ApiApp extends App
                     $r->getCreatedBy();
                     $r->getUpdatedBy();
                 }
-                $results = $results->toArray();
+                $results = ['data' => $results->toArray()];
 
                 $response = $response->withStatus(200, 'OK');
                 $response = $response->withHeader('Content-type', 'application/json');
