@@ -1,13 +1,80 @@
 ;(function (global, $) {
     'use strict';
 
+    // Classrooms API, for interacting with backend for classroom data
+    let api = (function () {
+
+        // Fetch all classroom data
+        async function select() {
+            const response = await fetch('/api/classrooms');
+            if (!response.ok) {
+                // throw new Error(`HTTP error status: ${response.status}`)
+                console.log(`HTTP error status: ${response.status}`);
+                return [];
+            }
+            let json = await response.json();
+            return json.data;   // All classroom data
+        }
+
+        // Insert a new classroom record
+        async function insert(data) {
+            const response = await fetch('/api/classrooms', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            });
+            if (!response.ok) {
+                // throw new Error(`HTTP error status: ${response.status}`)
+                console.log(`HTTP error status: ${response.status}`);
+                return [];
+            }
+            let json = await response.json();
+            return json.data;   // The new classroom
+        }
+
+        // Update an existing classroom record
+        async function update(data) {
+            const response = await fetch(`/api/classrooms/${data.Id}`, {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data)
+            });
+            if (!response.ok) {
+                // throw new Error(`HTTP error status: ${response.status}`)
+                console.log(`HTTP error status: ${response.status}`);
+                return [];
+            }
+            let json = await response.json();
+            return json.data;   // The updated classroom
+        }
+
+        // Delete an existing classroom record
+        async function remove(id) {
+            const response = await fetch(`/api/classrooms/${id}`, {
+                method: 'DELETE'
+            });
+            if (!response.ok) {
+                // throw new Error(`HTTP error status: ${response.status}`)
+                console.log(`HTTP error status: ${response.status}`);
+            }
+            return;
+        }
+
+        return {select, insert, update, remove}
+    })();
+
+
     let ClassroomsTab = (function (selector) {
         let $self,
             table;
 
         $self = $(selector);
-        table = $self.find('table').eq(0).DataTable({
-            ajax: '/api/classrooms',
+        table = $self.find('table').DataTable({
+            ajax: load,
             paging: false,
             searching: false,
             select: "single",
@@ -49,119 +116,47 @@
                 extend: "selected",
                 text: "Edit",
                 action: function (e, dt, button, config) {
-                    let selected = dt.rows({selected: true}).indexes();
+                    let selected = dt.rows({selected: true});
                     ClassroomPropsDlg.open(dt.rows(selected[0]).data()[0]);
                 }
             }, {
                 extend: "selected",
                 text: "Delete",
-                action: function (e, dt) {
+                action: async function (e, dt) {
                     let selected = dt.rows({selected: true});
                     if (confirm('Are you sure you want to delete this record?')) {
-
-                        let data = dt.row(selected[0]).data();
                         Attend.loadAnother();
-                        $.ajax({
-                            url: "api/classrooms/" + data.Id,
-                            method: "delete",
-
-                            success: function (json) {
-                                reload();
-                                Attend.doneLoading();
-                            },
-                            error: function (xhr) {
-                                console.log(xhr);
-                                Attend.doneLoading();
-                            }
-                        });
+                        let data = dt.row(selected[0]).data();
+                        await api.remove(data.Id);
+                        await ClassroomsTab.reload();
+                        Attend.doneLoading();
                     }
                 }
             }]
         });
         b0.dom.container.eq(0).appendTo($self.find('.record-buttons'));
 
-
         let b1 = new $.fn.dataTable.Buttons(table, {
             buttons: [{
                 text: "Reload",
-                action: function (e, dt) {
-                    Attend.loadAnother();
-                    try {
-                        table.clear();
-                        // console.log( table.ajax)
-                        // console.log( table.ajax.reload)
-                        table.ajax.reload();
-                        table.draw();
-                    } catch (e) {
-                        console.log(e);
-                    } finally {
-                        Attend.doneLoading();
-                    }
-                }
+                action: load
             }]
         });
         b1.dom.container.eq(0).appendTo($self.find('.table-buttons'));
 
-
-        async function loadClassrooms() {
+        // Fetch the classroom data from the server and populate the table
+        async function load() {
             Attend.loadAnother();
-            try {
-                const response = await fetch('/api/classrooms');
-                if (!response.ok) {
-                    throw new Error(`HTTP error status: ${response.status}`)
-                }
-                const json = await response.json();
-                console.log(json);
-                for (let i = 0; i < json.length; i++) {
-                    table.row.add(json[i]);
-                }
-                table.draw();
-            } catch (e) {
-                console.log(e);
-            } finally {
-                Attend.doneLoading();
-            }
-        }
-
-        function insert(data) {
-            table.row.add(data).draw();
-        }
-
-        function reload() {
+            let classrooms = await api.select();
             table.clear();
-            table.ajax.reload();
+            for (let i = 0; i < classrooms.length; i++) {
+                table.row.add(classrooms[i]);
+            }
+            table.draw();
+            Attend.doneLoading();
         }
 
-        function redrawRow(newData) {
-            table.rows().every(function ( /* rowIdx, tableLoop, rowLoop */) {
-                let data = this.data();
-                if (data.Id === newData.Id) {
-                    let oldData = this.data();
-                    for (let p in newData) {
-                        oldData[p] = newData[p];
-                    }
-                    this.data(oldData);
-                }
-            });
-        }
-
-        function deleteRow(classroom_id) {
-            table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-                let data = this.data();
-                console.log(rowIdx);
-                console.log(tableLoop);
-                console.log(rowLoop);
-
-                console.log(data);
-                if (classroom_id == data.id) {
-                    this.remove();
-                }
-            });
-        }
-
-        return {
-            insert, reload, redrawRow, deleteRow
-        };
+        return {reload: load};
     })('#classrooms-tab');
 
 
@@ -197,13 +192,14 @@
             modal: true,
             width: "600px",
             buttons: {
-                Submit: function () {
+                Submit: async function () {
                     if (validate()) {
-                        submit();
+                        await submit();
+                        await ClassroomsTab.reload();
                     }
                 },
                 Cancel: function () {
-                    ClassroomPropsDlg.close();
+                    close();
                 }
             }
         });
@@ -249,74 +245,19 @@
             return valid;
         }
 
-        function submit() {
+        async function submit() {
             let data = {
                 Id: '' === $classroomId.val() ? null : $classroomId.val(),
                 Label: $label.val(),
                 Ordering: '' === $order.val() ? null : $order.val()
             };
             if ($classroomId.val()) {
-                update(data);
+                await api.update(data);
             } else {
-                insert(data);
+                await api.insert(data);
             }
+            close();
         }
-
-        function insert(data) {
-            Attend.loadAnother();
-            $.ajax({
-                url: "api/classrooms",
-                method: "post",
-                data: data,
-
-                dataType: "json",
-                success: function (json) {
-                    ClassroomsTab.reload(json);
-                    ClassroomPropsDlg.close();
-                    Attend.doneLoading();
-                },
-                error: function (xhr) {
-                    console.log(xhr);
-                    if ('_' in xhr.responseJSON) {
-                        $form.find(".form-error").text(xhr.responseJSON['_']).show();
-                    }
-                    if ('Label' in xhr.responseJSON) {
-                        $label.next().text(temp['Label']).show();
-                    }
-                    Attend.doneLoading();
-                }
-            });
-
-        }
-
-        function update(data) {
-            Attend.loadAnother();
-            $.ajax({
-                url: "api/classrooms/" + data.Id,
-                method: "put",
-                data: data,
-
-                dataType: "json",
-                success: function (json) {
-                    console.log(json);
-                    ClassroomsTab.reload(json);
-                    ClassroomPropsDlg.close();
-                    Attend.doneLoading();
-                },
-                error: function (xhr) {
-                    console.log(xhr);
-                    console.log(xhr);
-                    if ('_' in xhr.responseJSON) {
-                        $form.find(".form-error").text(xhr.responseJSON['_']).show();
-                    }
-                    if ('Label' in xhr.responseJSON) {
-                        $label.next().text(temp['Label']).show();
-                    }
-                    Attend.doneLoading();
-                }
-            });
-        }
-
 
         return {open, close};
     })('#classroom-props-dlg');

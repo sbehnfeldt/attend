@@ -114,6 +114,7 @@ class ApiApp extends App
                 try {
                     /** @var PropelEngine $engine */
                     $engine   = $this->get('dbEngine');
+//                    $body = $request->getParsedBody();
                     $results  = $engine->postClassroom($request->getParsedBody());
                     $response = $response->withStatus(201, 'Created');
                     $response = $response->withHeader('Content-Type', 'application/json');
