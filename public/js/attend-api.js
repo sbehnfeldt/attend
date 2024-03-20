@@ -1,133 +1,73 @@
-;(function(global, $) {
+;(function (global, $) {
     'use strict';
 
-    global.AttendApi = (function() {
+    global.AttendApi = (function () {
+        let template = function (k, v) {
+            return {
+                // Select all records
+                select: async function () {
+                    const response = await fetch(`/api/${k}`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error status: ${response.status}`)
+                        return [];
+                    }
+                    let json = await response.json();
+                    return json.data;   // All records
+                },
 
-        let classrooms = {
-            // Fetch all classroom data
-            select: async function() {
-                const response = await fetch('/api/classrooms');
-                if (!response.ok) {
-                    // throw new Error(`HTTP error status: ${response.status}`)
-                    console.log(`HTTP error status: ${response.status}`);
-                    return [];
-                }
-                let json = await response.json();
-                return json.data;   // All classroom data
-            },
+                // Create and insert a new record
+                insert: async function (data) {
+                    const response = await fetch(`/api/${k}`, {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error status: ${response.status}`)
+                        return [];
+                    }
+                    let json = await response.json();
+                    return json.data;   // The new record
+                },
 
-            // Insert a new classroom record
-            insert: async function(data) {
-                const response = await fetch('/api/classrooms', {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(data)
-                });
-                if (!response.ok) {
-                    // throw new Error(`HTTP error status: ${response.status}`)
-                    console.log(`HTTP error status: ${response.status}`);
-                    return [];
-                }
-                let json = await response.json();
-                return json.data;   // The new classroom
-            },
+                // Update an existing record
+                update: async function (data) {
+                    const response = await fetch(`/api/${k}/${data.Id}`, {
+                        method: 'PUT',
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error status: ${response.status}`)
+                        return [];
+                    }
+                    let json = await response.json();
+                    return json.data;   // The updated record
+                },
 
-            // Update an existing classroom record
-            update: async function (data) {
-                const response = await fetch(`/api/classrooms/${data.Id}`, {
-                    method: 'PUT',
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(data)
-                });
-                if (!response.ok) {
-                    // throw new Error(`HTTP error status: ${response.status}`)
-                    console.log(`HTTP error status: ${response.status}`);
-                    return [];
+                // Delete an existing record
+                remove: async function (id) {
+                    const response = await fetch(`/api/${k}/${id}`, {
+                        method: 'DELETE'
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error status: ${response.status}`)
+                    }
+                    return;
                 }
-                let json = await response.json();
-                return json.data;   // The updated classroom
-            },
-
-            // Delete an existing classroom record
-            remove: async function (id) {
-                const response = await fetch(`/api/classrooms/${id}`, {
-                    method: 'DELETE'
-                });
-                if (!response.ok) {
-                    // throw new Error(`HTTP error status: ${response.status}`)
-                    console.log(`HTTP error status: ${response.status}`);
-                }
-                return;
             }
         }
 
-        let students = {
-            // Fetch all student data
-            select: async function() {
-                const response = await fetch('/api/students');
-                if (!response.ok) {
-                    // throw new Error(`HTTP error status: ${response.status}`)
-                    console.log(`HTTP error status: ${response.status}`);
-                    return [];
-                }
-                let json = await response.json();
-                return json.data;   // All classroom data
-            },
-
-            // Insert a new student record
-            insert: async function(data) {
-                const response = await fetch('/api/students', {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(data)
-                });
-                if (!response.ok) {
-                    // throw new Error(`HTTP error status: ${response.status}`)
-                    console.log(`HTTP error status: ${response.status}`);
-                    return [];
-                }
-                let json = await response.json();
-                return json.data;   // The new classroom
-            },
-
-            // Update an existing student record
-            update: async function (data) {
-                const response = await fetch(`/api/students/${data.Id}`, {
-                    method: 'PUT',
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(data)
-                });
-                if (!response.ok) {
-                    // throw new Error(`HTTP error status: ${response.status}`)
-                    console.log(`HTTP error status: ${response.status}`);
-                    return [];
-                }
-                let json = await response.json();
-                return json.data;   // The updated classroom
-            },
-
-            // Delete an existing student record
-            remove: async function (id) {
-                const response = await fetch(`/api/students/${id}`, {
-                    method: 'DELETE'
-                });
-                if (!response.ok) {
-                    // throw new Error(`HTTP error status: ${response.status}`)
-                    console.log(`HTTP error status: ${response.status}`);
-                }
-                return;
-            }
+        return {
+            accounts: template('accounts'),
+            classrooms: template('classrooms'),
+            students: template('students')
         }
-
-        return {classrooms, students};
+            ;
     })();
 
 })(this, jQuery);
