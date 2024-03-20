@@ -322,6 +322,14 @@ class ApiApp extends App
         $this->get('/api/accounts', function (Request $request, Response $response, array $args = []) use ($api) {
             /** @var PropelEngine $engine */
             $engine = $api->getDbEngine();
+            $results = $engine->getAccounts();
+            $results = ['data' => $results->toArray()];
+
+            $response = $response->withStatus(200, 'OK');
+            $response = $response->withHeader('Content-type', 'application/json');
+            $response->getBody()->write(json_encode($results));
+
+            return $response;
         });
 
         $this->get('/api/accounts/{id}', function (Request $request, Response $response, array $args = []) use ($api) {

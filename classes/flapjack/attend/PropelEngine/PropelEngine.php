@@ -53,15 +53,9 @@ class PropelEngine implements IDatabaseEngine
         $serviceContainer->setDefaultDatasource('attend');
     }
 
-    public function getAccounts(): array
+    public function getAccounts(): Collection
     {
-        $query    = AccountQuery::create();
-        $resource = $query->find();
-        if (null === $resource) {
-            return [];
-        }
-
-        return $resource->toArray();
+        return AccountQuery::create()->find();
     }
 
     public function getAccount($id): array
@@ -102,9 +96,9 @@ class PropelEngine implements IDatabaseEngine
 
 
     /**
-     * @return array|Classroom[]|Collection
+     * @return Collection
      */
-    public function getClassrooms(): Classroom|Collection
+    public function getClassrooms(): Collection
     {
         return ClassroomQuery::create()->find();
     }
@@ -208,13 +202,13 @@ class PropelEngine implements IDatabaseEngine
 
         // Decrease by 1 the value of the "ordering" field for all classrooms with an "ordering" value higher
         // than the "ordering" value of the classroom being deleted
-        $query = new ClassroomQuery();
+        $query     = new ClassroomQuery();
         $resources = $query
-            ->filterByOrdering([ 'min' => $resource->getOrdering() + 1])
+            ->filterByOrdering(['min' => $resource->getOrdering() + 1])
             ->find();
 
         foreach ($resources as $r) {
-            $r->setOrdering($r->getOrdering()-1);
+            $r->setOrdering($r->getOrdering() - 1);
             $r->save();
         }
 

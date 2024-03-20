@@ -9,7 +9,7 @@ interface IDatabaseEngine
 {
     public function connect(array $config);
 
-    public function getAccounts(): array;
+    public function getAccounts(): Collection;
 
     public function getAccount($id): ?array;
 
@@ -17,7 +17,7 @@ interface IDatabaseEngine
 
     public function getClassroomById(int $id): ?array;
 
-    public function getClassrooms(): Classroom|Collection;
+    public function getClassrooms(): Collection;
 
     public function postClassroom(array $body): array;
 
