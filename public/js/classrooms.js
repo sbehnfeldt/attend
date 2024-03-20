@@ -1,73 +1,6 @@
 ;(function (global, $) {
     'use strict';
 
-    // Classrooms API, for interacting with backend for classroom data
-    let api = (function () {
-
-        // Fetch all classroom data
-        async function select() {
-            const response = await fetch('/api/classrooms');
-            if (!response.ok) {
-                // throw new Error(`HTTP error status: ${response.status}`)
-                console.log(`HTTP error status: ${response.status}`);
-                return [];
-            }
-            let json = await response.json();
-            return json.data;   // All classroom data
-        }
-
-        // Insert a new classroom record
-        async function insert(data) {
-            const response = await fetch('/api/classrooms', {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data)
-            });
-            if (!response.ok) {
-                // throw new Error(`HTTP error status: ${response.status}`)
-                console.log(`HTTP error status: ${response.status}`);
-                return [];
-            }
-            let json = await response.json();
-            return json.data;   // The new classroom
-        }
-
-        // Update an existing classroom record
-        async function update(data) {
-            const response = await fetch(`/api/classrooms/${data.Id}`, {
-                method: 'PUT',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data)
-            });
-            if (!response.ok) {
-                // throw new Error(`HTTP error status: ${response.status}`)
-                console.log(`HTTP error status: ${response.status}`);
-                return [];
-            }
-            let json = await response.json();
-            return json.data;   // The updated classroom
-        }
-
-        // Delete an existing classroom record
-        async function remove(id) {
-            const response = await fetch(`/api/classrooms/${id}`, {
-                method: 'DELETE'
-            });
-            if (!response.ok) {
-                // throw new Error(`HTTP error status: ${response.status}`)
-                console.log(`HTTP error status: ${response.status}`);
-            }
-            return;
-        }
-
-        return {select, insert, update, remove}
-    })();
-
-
     let ClassroomsTab = (function (selector) {
         let $self,
             table;
@@ -127,7 +60,7 @@
                     if (confirm('Are you sure you want to delete this record?')) {
                         Attend.loadAnother();
                         let data = dt.row(selected[0]).data();
-                        await api.remove(data.Id);
+                        await AttendApi.classrooms.remove(data.Id);
                         await ClassroomsTab.reload();
                         Attend.doneLoading();
                     }
@@ -147,7 +80,7 @@
         // Fetch the classroom data from the server and populate the table
         async function load() {
             Attend.loadAnother();
-            let classrooms = await api.select();
+            let classrooms = await AttendApi.classrooms.select();
             table.clear();
             for (let i = 0; i < classrooms.length; i++) {
                 table.row.add(classrooms[i]);
@@ -252,9 +185,9 @@
                 Ordering: '' === $order.val() ? null : $order.val()
             };
             if ($classroomId.val()) {
-                await api.update(data);
+                await AttendApi.classrooms.update(data);
             } else {
-                await api.insert(data);
+                await AttendApi.classrooms.insert(data);
             }
             close();
         }

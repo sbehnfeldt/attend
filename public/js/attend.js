@@ -21,7 +21,7 @@
 
     Attend.getMonday = function ( d ) {
 
-        var dw = d.getDay();
+        let dw = d.getDay();
         switch ( dw ) {
             case 1:   // Monday: no op
                 break;
@@ -48,7 +48,7 @@
     };
 
     Date.prototype.addDays = function ( days ) {
-        var date = new Date( this.valueOf() );
+        let date = new Date( this.valueOf() );
         date.setDate( date.getDate() + days );
         return date;
     };
