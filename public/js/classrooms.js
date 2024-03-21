@@ -25,17 +25,14 @@
                     return moment(x).format('YYYY-MM-D');
                 }
             }, {
-                data: "CreatedBy.Username",
+                data: "CreatorId"
             }, {
                 data: "UpdatedAt",
                 render: (x) => {
                     return x ? moment(x).format('YYYY-MM-D') : '';
                 }
             }, {
-                data: "UpdatedBy",
-                render: (x) => {
-                    return x ? x.Username : '';
-                }
+                data: "UpdaterId",
             }]
         });
 
@@ -81,6 +78,7 @@
         async function load() {
             Attend.loadAnother();
             let classrooms = await AttendApi.classrooms.select();
+            // console.log(classrooms);
             table.clear();
             for (let i = 0; i < classrooms.length; i++) {
                 table.row.add(classrooms[i]);

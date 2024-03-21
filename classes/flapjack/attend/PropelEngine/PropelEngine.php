@@ -82,22 +82,15 @@ class PropelEngine implements IDatabaseEngine
     }
 
 
-    public function getClassroomById(int $id): array
+    public function getClassroomById(int $id): ?array
     {
         $query    = new ClassroomQuery();
         $resource = $query->findPk($id);
-        if (null === $resource) {
-            return [];
-        }
-        $c = $resource->getCreator();
 
-        return $resource->toArray();
+        return $resource?->toArray();
     }
 
 
-    /**
-     * @return Collection
-     */
     public function getClassrooms(): Collection
     {
         return ClassroomQuery::create()->find();

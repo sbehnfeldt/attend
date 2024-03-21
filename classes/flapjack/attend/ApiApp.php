@@ -92,11 +92,11 @@ class ApiApp extends App
                 $engine  = $this->get('dbEngine');
                 $results = $engine->getClassrooms();
 
-                /** @var Classroom $r */
-                foreach ($results as $r) {
-                    $r->getCreatedBy();
-                    $r->getUpdatedBy();
-                }
+//                /** @var Classroom $r */
+//                foreach ($results as $r) {
+//                    $r->getCreatedBy();
+//                    $r->getUpdatedBy();
+//                }
                 $results = ['data' => $results->toArray()];
 
                 $response = $response->withStatus(200, 'OK');
