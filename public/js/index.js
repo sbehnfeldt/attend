@@ -17,7 +17,7 @@
                     // Must be expressed as "Classrooms.classrooms", rather than simply referring to "classrooms"
                     // (a la closure). Not exactly sure why, but "classrooms" alone doesn't work - it refers to
                     // a separate object somehow.
-                    json.sort(function (a, b) {
+                    json.data.sort(function (a, b) {
                         if (a.ordering > b.ordering) return 1;
                         if (a.ordering < b.ordering) return -1;
                         return 0;
